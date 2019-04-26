@@ -40,3 +40,25 @@ example:
     "/usr/local/include/glib-2.0"
 ],
 ````
+
+next, configure debug option  
+generate `launch.json` by next commad in command palette  
+(command palette show by Ctrl + Shift + P)
+````
+Debug: Select and Start Debugging
+C++(GDB/LLDB)
+````
+
+fix to next code in `launch.json`  
+before
+````
+"program": "enter program name, for example ${workspaceFolder}/a.out"
+"cwd": "${workspaceFolder}"
+"externalConsole": true
+````
+after
+````
+"program": "${workspaceFolder}/bin/varAppName"
+"cwd": "${workspaceFolder}/bin"
+"externalConsole": false
+````
