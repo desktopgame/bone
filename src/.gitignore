@@ -1,0 +1,13 @@
+GPATH
+GRTAGS
+GTAGS
+HTML
+Testing
+CMakeFiles
+CMakeCache.txt
+CTestTestfile.cmake
+cmake_install.cmake
+Makefile
+nbproject
+*.info
+install_manifest.txt
