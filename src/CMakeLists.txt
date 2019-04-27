@@ -31,6 +31,7 @@ message(STATUS "varInstallDir=${varInstallDir}")
 #     WORKING_DIRECTORY .
 # )
 
+install(DIRECTORY DESTINATION ${varInstallDir})
 install(
     DIRECTORY ./../bin
     DESTINATION ${varInstallDir}
