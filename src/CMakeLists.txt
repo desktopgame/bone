@@ -13,13 +13,21 @@ if (WIN32)
     set(GLIB_LIBRARY_DIRS "C:/msys64/mingw64/bin" CACHE PATH "glib library dirs")
     set(GLIB_INCLUDE_DIRS "C:/msys64/mingw64/include/glib-2.0" "C:/msys64/mingw64/lib/glib-2.0/include" CACHE PATH "glib include dirs")
     set(GLIB_LIBRARIES "" CACHE FILEPATH "glib libraries")
+    set(CUNIT_LIBRARY "C:/msys64/mingw64/bin" CACHE PATH "cunit library dirs")
+    set(CUNIT_INCLUDE_DIR "C:/msys64/mingw64/include/CUnit" CACHE PATH "cunit include dirs")
 else()
     find_package(PkgConfig REQUIRED)
+    find_path(CUNIT_INCLUDE_DIR NAMES CUnit/CUnit.h)
+    find_library(CUNIT_LIBRARY NAMES cunit)
+    find_package_handle_standard_args(CUnit DEFAULT_MSG CUNIT_LIBRARY CUNIT_INCLUDE_DIR)
+
     pkg_check_modules(GLIB REQUIRED glib-2.0)
 endif (WIN32)
 message(STATUS "GLIB_LIBRARY_DIRS=${GLIB_LIBRARY_DIRS}")
 message(STATUS "GLIB_INCLUDE_DIRS=${GLIB_INCLUDE_DIRS}")
 message(STATUS "GLIB_LIBRARIES=${GLIB_LIBRARIES}")
+message(STATUS "CUNIT_INCLUDE_DIR=${CUNIT_INCLUDE_DIR}")
+message(STATUS "CUNIT_LIBRARY=${CUNIT_LIBRARY}")
 message(STATUS "varInstallDir=${varInstallDir}")
 
 
@@ -58,9 +66,11 @@ target_include_directories(
     ${varExecutable}
     PRIVATE
     ${GLIB_INCLUDE_DIRS}
+    ${CUNIT_INCLUDE_DIR}
 )
 target_link_libraries(
     ${varExecutable}
     PRIVATE
     ${GLIB_LIBRARIES}
+    ${CUNIT_LIBRARY}
 )
