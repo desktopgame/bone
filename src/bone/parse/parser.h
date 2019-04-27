@@ -1,5 +1,5 @@
-#ifndef CALC_PARSE_PARSER_H
-#define CALC_PARSE_PARSER_H
+#ifndef BONE_PARSE_PARSER_H
+#define BONE_PARSE_PARSER_H
 #include "ast.h"
 
 typedef enum parser_input_tag {
