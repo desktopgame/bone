@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 2.8)
-project(varAppName C)
+project(bone C)
 
 set(CMAKE_CXX_COMPILER clang)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
 set(CMAKE_C_FLAGS_DEBUG "-g -coverage -fsanitize=address -O0 -DDEBUG -MMD -Wall")
 set(CMAKE_C_FLAGS_RELEASE "-g -O2 -MMD -w -DNDEBUG")
-set(varExecutable "varAppName" CACHE STRING "executable file name")
-set(varInstallDir ${CMAKE_INSTALL_PREFIX}/varAppName CACHE PATH "Path to install")
-set(varIgnoreCompile "CMakeCCompilerId.c" "feature_tests.c")
+set(BONE_EXECUTABLE "bone" CACHE STRING "executable file name")
+set(BONE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/bone CACHE PATH "Path to install")
+set(BONE_IGNORE_COMPILE "CMakeCCompilerId.c" "feature_tests.c")
 
 if (WIN32)
     set(GLIB_LIBRARY_DIRS "C:/msys64/mingw64/bin" CACHE PATH "glib library dirs")
@@ -28,7 +28,7 @@ message(STATUS "GLIB_INCLUDE_DIRS=${GLIB_INCLUDE_DIRS}")
 message(STATUS "GLIB_LIBRARIES=${GLIB_LIBRARIES}")
 message(STATUS "CUNIT_INCLUDE_DIR=${CUNIT_INCLUDE_DIR}")
 message(STATUS "CUNIT_LIBRARY=${CUNIT_LIBRARY}")
-message(STATUS "varInstallDir=${varInstallDir}")
+message(STATUS "BONE_INSTALL_DIR=${BONE_INSTALL_DIR}")
 
 
 # enable_testing()
@@ -39,16 +39,16 @@ message(STATUS "varInstallDir=${varInstallDir}")
 #     WORKING_DIRECTORY .
 # )
 
-install(DIRECTORY DESTINATION ${varInstallDir})
+install(DIRECTORY DESTINATION ${BONE_INSTALL_DIR})
 install(
     DIRECTORY ./../bin
-    DESTINATION ${varInstallDir}
+    DESTINATION ${BONE_INSTALL_DIR}
 )
-add_custom_target(_uninstall rm -r ${varInstallDir})
+add_custom_target(_uninstall rm -r ${BONE_INSTALL_DIR})
 
 file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "**/*.c")
 foreach(e IN LISTS SOURCES)
-    foreach(pat IN LISTS varIgnoreCompile)
+    foreach(pat IN LISTS BONE_IGNORE_COMPILE)
         if(${e} MATCHES ${pat})
             message("remove compile target: ${e}")
             list(REMOVE_ITEM SOURCES ${e})
@@ -60,16 +60,16 @@ endforeach()
 link_directories (
     ${GLIB_LIBRARY_DIRS}
 )
-add_executable(${varExecutable} ${SOURCES})
+add_executable(${BONE_EXECUTABLE} ${SOURCES})
 add_definitions (${GLIB_CFLAGS_OTHER})
 target_include_directories(
-    ${varExecutable}
+    ${BONE_EXECUTABLE}
     PRIVATE
     ${GLIB_INCLUDE_DIRS}
     ${CUNIT_INCLUDE_DIR}
 )
 target_link_libraries(
-    ${varExecutable}
+    ${BONE_EXECUTABLE}
     PRIVATE
     ${GLIB_LIBRARIES}
     ${CUNIT_LIBRARY}
