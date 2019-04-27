@@ -36,6 +36,7 @@ install(
     DIRECTORY ./../bin
     DESTINATION ${varInstallDir}
 )
+add_custom_target(_uninstall rm -r ${varInstallDir})
 
 file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "**/*.c")
 foreach(e IN LISTS SOURCES)
