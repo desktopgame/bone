@@ -2,14 +2,14 @@
 #define BONE_PARSE_PARSER_H
 #include "ast.h"
 
-typedef enum parser_input_tag {
-        parser_input_from_source,
-        parser_input_from_file
-} parser_input_tag;
+typedef enum bnParserInputTag {
+        BN_PARSER_INPUT_FROM_SOURCE,
+        BN_PARSER_INPUT_FROM_FILE
+} bnParserInputTag;
 
-ast* parse_from_file(const char* filename);
+ast* bnParseFile(const char* filename);
 
-ast* parse_from_source(const char* source);
+ast* bnParseString(const char* source);
 
-parser_input_tag parse_get_input_tag();
+bnParserInputTag bnGetParserInputTag();
 #endif

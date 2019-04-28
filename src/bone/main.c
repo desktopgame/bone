@@ -5,7 +5,7 @@
 #include "parse/parser.h"
 
 static int fileParse() {
-        ast* ret = parse_from_file("sample.txt");
+        ast* ret = bnParseFile("sample.txt");
         int code = ret == NULL ? 1 : 0;
         bnDumpAST(ret);
         bnDeleteAST(ret);

@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include <string.h>
 
-static parser_input_tag gParserInputTag;
+static bnParserInputTag gParserInputTag;
 
-ast *parse_from_file(const char *filename) {
-        gParserInputTag = parser_input_from_file;
+ast *bnParseFile(const char *filename) {
+        gParserInputTag = BN_PARSER_INPUT_FROM_FILE;
         extern FILE *yyin;
         extern void yy_calc_start(void);
         extern int yyparse(void);
@@ -25,8 +25,8 @@ ast *parse_from_file(const char *filename) {
         return yy_release();
 }
 
-ast *parse_from_source(const char *source) {
-        gParserInputTag = parser_input_from_source;
+ast *bnParseString(const char *source) {
+        gParserInputTag = BN_PARSER_INPUT_FROM_SOURCE;
         extern void yy_setstr(char *source);
         extern void yy_clearstr();
         extern void yy_calc_start(void);
@@ -42,4 +42,4 @@ ast *parse_from_source(const char *source) {
         return yy_release();
 }
 
-parser_input_tag parse_get_input_tag() { return gParserInputTag; }
+bnParserInputTag bnGetParserInputTag() { return gParserInputTag; }

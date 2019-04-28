@@ -108,11 +108,11 @@ static int string_input(char *buf, int max_size) {
 
 static int my_yyinput(char *buf, int max_size) {
 	int result;
-	switch (parse_get_input_tag()) {
-		case parser_input_from_file:
+	switch (bnGetParserInputTag()) {
+		case BN_PARSER_INPUT_FROM_FILE:
 		result = file_input(buf, max_size);
 		break;
-	case parser_input_from_source:
+	case BN_PARSER_INPUT_FROM_SOURCE:
 		result = string_input(buf, max_size);
 		break;
 	default:
