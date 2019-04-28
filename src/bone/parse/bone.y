@@ -52,6 +52,10 @@ program
 		extern void yy_register(bnAST* a);
 		yy_register($1);
 	}
+	| error '\n'
+	{
+		yyclearin;
+	}
 	;
 argument_list
 	: expression

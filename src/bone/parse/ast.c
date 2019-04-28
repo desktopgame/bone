@@ -183,6 +183,9 @@ void bnPrintAST(bnAST* self) {
 }
 
 void bnDeleteAST(bnAST* self) {
+        if (self == NULL) {
+                return;
+        }
         g_list_free_full(self->children, ast_child_delete);
         free(self);
 }

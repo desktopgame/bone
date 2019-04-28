@@ -18,7 +18,7 @@ bnAST *bnParseFile(const char *filename) {
         extern bnAST *yy_release();
         FILE *fp = fopen(filename, "r");
         if (fp == NULL) {
-                printf("can't opened file: %s", filename);
+                perror("bnParseFile");
                 return NULL;
         }
         yy_calc_start();
