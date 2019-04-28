@@ -2,54 +2,54 @@
 #define BONE_PARSE_PARSE_AST_H
 #include "../bone.h"
 
-typedef enum ast_tag {
-        ast_root,
-        ast_int,
-        ast_double,
-        ast_ident,
+typedef enum bnASTTag {
+        BN_AST_ROOT,
+        BN_AST_LIT,
+        BN_AST_DOUBLE_LIT,
+        BN_AST_IDENT,
 
-        ast_pos,
-        ast_neg,
-        ast_childa,
-        ast_not,
+        BN_AST_POSITIVE,
+        BN_AST_NEGATIVE,
+        BN_AST_CHILDA,
+        BN_AST_NOT,
 
-        ast_add,
-        ast_sub,
-        ast_mul,
-        ast_div,
-        ast_mod,
+        BN_AST_PLUS,
+        BN_AST_MINUS,
+        BN_AST_MULTIPLY,
+        BN_AST_DIVIDE,
+        BN_AST_MODULO,
 
-        ast_bit_and,
-        ast_bit_or,
-        ast_logic_and,
-        ast_logic_or,
-        ast_exc_or,
+        BN_AST_BIT_AND,
+        BN_AST_BIT_OR,
+        BN_AST_LOGIC_AND,
+        BN_AST_LOGIC_OR,
+        BN_AST_EXC_OR,
 
-        ast_lshift,
-        ast_rshift,
+        BN_AST_LSHIFT,
+        BN_AST_RSHIFT,
 
-        ast_gt,
-        ast_ge,
-        ast_lt,
-        ast_le,
+        BN_AST_GT,
+        BN_AST_GE,
+        BN_AST_LT,
+        BN_AST_LE,
 
-        ast_equal,
-        ast_notequal,
+        BN_AST_EQUAL,
+        BN_AST_NOTEQUAL,
 
-        ast_assign,
-        ast_add_assign,
-        ast_sub_assign,
-        ast_mul_assign,
-        ast_div_assign,
-        ast_mod_assign,
+        BN_AST_ASSIGN,
+        BN_AST_PLUS_ASSIGN,
+        BN_AST_MINUS_ASSIGN,
+        BN_AST_MULTIPLY_ASSIGN,
+        BN_AST_DIVIDE_ASSIGN,
+        BN_AST_MODULO_ASSIGN,
 
-        ast_and_assign,
-        ast_or_assign,
-        ast_exc_or_assign,
-        ast_lshift_assign,
-        ast_rshift_assign
+        BN_AST_AND_ASSIGN,
+        BN_AST_OR_ASSIGN,
+        BN_AST_EXC_OR_ASSIGN,
+        BN_AST_LSHIFT_ASSIGN,
+        BN_AST_RSHIFT_ASSIGN
 
-} ast_tag;
+} bnASTTag;
 
 typedef struct ast {
         union {
@@ -58,18 +58,18 @@ typedef struct ast {
                 char* svalue;
         } u;
         GList* children;
-        ast_tag tag;
+        bnASTTag tag;
 } ast;
 
-ast* ast_new(ast_tag tag);
+ast* ast_new(bnASTTag tag);
 
 ast* ast_new_int(int ivalue);
 
 ast* ast_new_double(double dvalue);
 
-ast* ast_new_unary(ast_tag tag, ast* a);
+ast* ast_new_unary(bnASTTag tag, ast* a);
 
-ast* ast_new_binary(ast_tag tag, ast* left, ast* right);
+ast* ast_new_binary(bnASTTag tag, ast* left, ast* right);
 
 void ast_push(ast* self, ast* a);
 

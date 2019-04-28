@@ -65,7 +65,7 @@ static int file_input(char *buf, int max_size) {
 
 void yy_calc_start() {
 	yaccLineno = 0;
-	yaccNode = ast_new(ast_root);
+	yaccNode = ast_new(BN_AST_ROOT);
 }
 
 void yy_register(ast* a) {

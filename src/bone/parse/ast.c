@@ -6,7 +6,7 @@
 static void ast_child_delete(gpointer item);
 static void ast_dumpImpl(ast* self, int depth);
 
-ast* ast_new(ast_tag tag) {
+ast* ast_new(bnASTTag tag) {
         ast* ret = (ast*)malloc(sizeof(ast));
         ret->tag = tag;
         ret->children = NULL;
@@ -14,24 +14,24 @@ ast* ast_new(ast_tag tag) {
 }
 
 ast* ast_new_int(int ivalue) {
-        ast* ret = ast_new(ast_int);
+        ast* ret = ast_new(BN_AST_LIT);
         ret->u.ivalue = ivalue;
         return ret;
 }
 
 ast* ast_new_double(double dvalue) {
-        ast* ret = ast_new(ast_double);
+        ast* ret = ast_new(BN_AST_DOUBLE_LIT);
         ret->u.dvalue = dvalue;
         return ret;
 }
 
-ast* ast_new_unary(ast_tag tag, ast* a) {
+ast* ast_new_unary(bnASTTag tag, ast* a) {
         ast* ret = ast_new(tag);
         ast_push(ret, a);
         return ret;
 }
 
-ast* ast_new_binary(ast_tag tag, ast* left, ast* right) {
+ast* ast_new_binary(bnASTTag tag, ast* left, ast* right) {
         ast* ret = ast_new(tag);
         ast_push(ret, left);
         ast_push(ret, right);
@@ -50,74 +50,74 @@ void ast_print(ast* self) {
         printf((a)); \
         break
         switch (self->tag) {
-                case ast_root:
+                case BN_AST_ROOT:
                         p("root");
-                case ast_int:
+                case BN_AST_LIT:
                         printf("%d", self->u.ivalue);
                         break;
-                case ast_double:
+                case BN_AST_DOUBLE_LIT:
                         printf("%lf", self->u.dvalue);
                         break;
-                case ast_add:
+                case BN_AST_PLUS:
                         p("+");
-                case ast_pos:
+                case BN_AST_POSITIVE:
                         p("+");
-                case ast_sub:
+                case BN_AST_MINUS:
                         p("-");
-                case ast_neg:
+                case BN_AST_NEGATIVE:
                         p("-");
-                case ast_mul:
+                case BN_AST_MULTIPLY:
                         p("*");
-                case ast_div:
+                case BN_AST_DIVIDE:
                         p("/");
-                case ast_mod:
+                case BN_AST_MODULO:
                         p("%%");
 
-                case ast_bit_or:
+                case BN_AST_BIT_OR:
                         p("|");
-                case ast_bit_and:
+                case BN_AST_BIT_AND:
                         p("&");
 
-                case ast_logic_or:
+                case BN_AST_LOGIC_OR:
                         p("||");
-                case ast_logic_and:
+                case BN_AST_LOGIC_AND:
                         p("&&");
 
-                case ast_lshift:
+                case BN_AST_LSHIFT:
                         p("<<");
-                case ast_rshift:
+                case BN_AST_RSHIFT:
                         p(">>");
 
-                case ast_equal:
+                case BN_AST_EQUAL:
                         p("==");
-                case ast_notequal:
+                case BN_AST_NOTEQUAL:
                         p("!=");
 
-                case ast_gt:
+                case BN_AST_GT:
                         p(">");
-                case ast_ge:
+                case BN_AST_GE:
                         p(">=");
-                case ast_lt:
+                case BN_AST_LT:
                         p("<");
-                case ast_le:
+                case BN_AST_LE:
                         p("<=");
 
-                case ast_exc_or:
+                case BN_AST_EXC_OR:
                         p("^");
-                case ast_not:
+                case BN_AST_NOT:
                         p("!");
 
-                case ast_assign:
+                case BN_AST_ASSIGN:
                         p("=");
-                case ast_add_assign:
+                case BN_AST_PLUS_ASSIGN:
                         p("+=");
-                case ast_sub_assign:
+                case BN_AST_MINUS_ASSIGN:
                         p("-=");
-                case ast_mul_assign:
+                case BN_AST_MULTIPLY_ASSIGN:
                         p("*=");
-                case ast_div_assign:
+                case BN_AST_DIVIDE_ASSIGN:
                         p("/=");
-                case ast_mod_assign:
+                case BN_AST_MODULO_ASSIGN:
                         p("%%=");
                 default:
                         printf("undefined");
@@ -136,87 +136,87 @@ ast* ast_first(ast* self) { return self->children->data; }
 ast* ast_second(ast* self) { return self->children->next->data; }
 
 double ast_eval(ast* self) {
-        if (self->tag == ast_int) {
+        if (self->tag == BN_AST_LIT) {
                 return (double)self->u.ivalue;
         }
-        if (self->tag == ast_double) {
+        if (self->tag == BN_AST_DOUBLE_LIT) {
                 return self->u.dvalue;
         }
         switch (self->tag) {
-                case ast_add:
+                case BN_AST_PLUS:
                         return (ast_eval(ast_first(self)) +
                                 ast_eval(ast_second(self)));
-                case ast_pos:
+                case BN_AST_POSITIVE:
                         return +(ast_eval(ast_first(self)));
-                case ast_sub:
+                case BN_AST_MINUS:
                         return (ast_eval(ast_first(self)) -
                                 ast_eval(ast_second(self)));
-                case ast_neg:
+                case BN_AST_NEGATIVE:
                         return -(ast_eval(ast_first(self)));
-                case ast_mul:
+                case BN_AST_MULTIPLY:
                         return (ast_eval(ast_first(self)) *
                                 ast_eval(ast_second(self)));
-                case ast_div:
+                case BN_AST_DIVIDE:
                         return (ast_eval(ast_first(self)) /
                                 ast_eval(ast_second(self)));
-                case ast_mod:
+                case BN_AST_MODULO:
                         return ((int)ast_eval(ast_first(self)) %
                                 (int)ast_eval(ast_second(self)));
 
-                case ast_bit_or:
+                case BN_AST_BIT_OR:
                         return (int)ast_eval(ast_first(self)) |
                                (int)ast_eval(ast_second(self));
-                case ast_bit_and:
+                case BN_AST_BIT_AND:
                         return (int)ast_eval(ast_first(self)) &
                                (int)ast_eval(ast_second(self));
-                case ast_logic_or:
+                case BN_AST_LOGIC_OR:
                         return (int)ast_eval(ast_first(self)) ||
                                (int)ast_eval(ast_second(self));
-                case ast_logic_and:
+                case BN_AST_LOGIC_AND:
                         return (int)ast_eval(ast_first(self)) &&
                                (int)ast_eval(ast_second(self));
-                case ast_exc_or:
+                case BN_AST_EXC_OR:
                         return (int)ast_eval(ast_first(self)) ^
                                (int)ast_eval(ast_second(self));
 
-                case ast_lshift:
+                case BN_AST_LSHIFT:
                         return (int)ast_eval(ast_first(self))
                                << (int)ast_eval(ast_second(self));
-                case ast_rshift:
+                case BN_AST_RSHIFT:
                         return (int)ast_eval(ast_first(self)) >>
                                (int)ast_eval(ast_second(self));
 
-                case ast_gt:
+                case BN_AST_GT:
                         return ((int)ast_eval(ast_first(self)) >
                                 (int)ast_eval(ast_second(self)));
-                case ast_ge:
+                case BN_AST_GE:
                         return ((int)ast_eval(ast_first(self)) >=
                                 (int)ast_eval(ast_second(self)));
-                case ast_lt:
+                case BN_AST_LT:
                         return ((int)ast_eval(ast_first(self)) <
                                 (int)ast_eval(ast_second(self)));
-                case ast_le:
+                case BN_AST_LE:
                         return ((int)ast_eval(ast_first(self)) <=
                                 (int)ast_eval(ast_second(self)));
 
-                case ast_childa:
+                case BN_AST_CHILDA:
                         return ~(int)(ast_eval(ast_first(self)));
-                case ast_not:
+                case BN_AST_NOT:
                         return !(int)(ast_eval(ast_first(self)));
 
-                case ast_equal:
+                case BN_AST_EQUAL:
                         return ((int)ast_eval(ast_first(self)) ==
                                 (int)ast_eval(ast_second(self)));
-                case ast_notequal:
+                case BN_AST_NOTEQUAL:
                         return ((int)ast_eval(ast_first(self)) !=
                                 (int)ast_eval(ast_second(self)));
 
-                case ast_assign:
-                case ast_add_assign:
-                case ast_sub_assign:
-                case ast_mul_assign:
-                case ast_div_assign:
-                case ast_mod_assign:
+                case BN_AST_ASSIGN:
+                case BN_AST_PLUS_ASSIGN:
+                case BN_AST_MINUS_ASSIGN:
+                case BN_AST_MULTIPLY_ASSIGN:
+                case BN_AST_DIVIDE_ASSIGN:
+                case BN_AST_MODULO_ASSIGN:
                         return ast_eval(ast_second(self));
                 default:
                         return 0;
