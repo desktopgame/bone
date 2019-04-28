@@ -13,6 +13,11 @@ bnAST* bnNewAST(bnASTTag tag) {
         return ret;
 }
 
+bnAST* bnNewBlankAST() {
+        bnAST* ret = bnNewAST(BN_AST_BLANK);
+        return ret;
+}
+
 bnAST* bnNewIntAST(int ivalue) {
         bnAST* ret = bnNewAST(BN_AST_INT_LIT);
         ret->u.ivalue = ivalue;

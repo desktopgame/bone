@@ -4,6 +4,7 @@
 
 typedef enum bnASTTag {
         BN_AST_ROOT,
+        BN_AST_BLANK,
         BN_AST_INT_LIT,
         BN_AST_DOUBLE_LIT,
         BN_AST_STRING_LIT,
@@ -65,6 +66,8 @@ typedef struct bnAST {
 } bnAST;
 
 bnAST* bnNewAST(bnASTTag tag);
+
+bnAST* bnNewBlankAST();
 
 bnAST* bnNewIntAST(int ivalue);
 
