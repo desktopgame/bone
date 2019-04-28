@@ -65,12 +65,12 @@ static int file_input(char *buf, int max_size) {
 
 void yy_calc_start() {
 	yaccLineno = 0;
-	yaccNode = ast_new(BN_AST_ROOT);
+	yaccNode = bnNewAST(BN_AST_ROOT);
 }
 
 void yy_register(ast* a) {
 	assert(yaccNode != NULL);
-	ast_push(yaccNode, a);
+	bnPushAST(yaccNode, a);
 }
 
 ast* yy_release() {
@@ -193,7 +193,7 @@ static void update_loc() {
 <INITIAL>")"			{ return (RP); }
 
 <INITIAL>"0" {
-	yylval.ast_value = ast_new_int(0);
+	yylval.ast_value = bnNewIntAST(0);
 	return INT;
 }
 
@@ -202,12 +202,12 @@ static void update_loc() {
 }
 
 <INITIAL>[1-9][0-9]* {
-	yylval.ast_value = ast_new_int(atoi(yytext));
+	yylval.ast_value = bnNewIntAST(atoi(yytext));
 	return INT;
 }
 
 <INITIAL>[0-9]+\.[0-9]+ {
-	yylval.ast_value = ast_new_double(atof(yytext));
+	yylval.ast_value = bnNewDoubleAST(atof(yytext));
 	return DOUBLE;
 }
 

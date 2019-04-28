@@ -61,27 +61,27 @@ typedef struct ast {
         bnASTTag tag;
 } ast;
 
-ast* ast_new(bnASTTag tag);
+ast* bnNewAST(bnASTTag tag);
 
-ast* ast_new_int(int ivalue);
+ast* bnNewIntAST(int ivalue);
 
-ast* ast_new_double(double dvalue);
+ast* bnNewDoubleAST(double dvalue);
 
-ast* ast_new_unary(bnASTTag tag, ast* a);
+ast* bnNewUnaryAST(bnASTTag tag, ast* a);
 
-ast* ast_new_binary(bnASTTag tag, ast* left, ast* right);
+ast* bnNewBinaryAST(bnASTTag tag, ast* left, ast* right);
 
-void ast_push(ast* self, ast* a);
+void bnPushAST(ast* self, ast* a);
 
-void ast_dump(ast* self);
+void bnDumpAST(ast* self);
 
-void ast_print(ast* self);
+void bnPrintAST(ast* self);
 
-void ast_delete(ast* self);
+void bnDeleteAST(ast* self);
 
-ast* ast_first(ast* self);
+ast* bnFirstAST(ast* self);
 
-ast* ast_second(ast* self);
+ast* bnSecondAST(ast* self);
 
-double ast_eval(ast* self);
+double bnEvalAST(ast* self);
 #endif

@@ -7,8 +7,8 @@
 static int fileParse() {
         ast* ret = parse_from_file("sample.txt");
         int code = ret == NULL ? 1 : 0;
-        ast_dump(ret);
-        ast_delete(ret);
+        bnDumpAST(ret);
+        bnDeleteAST(ret);
         return code;
 }
 
