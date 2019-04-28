@@ -126,7 +126,7 @@ void bnPrintAST(bnAST* self) {
                         p("!");
 
                 case BN_AST_ASSIGN:
-                        p("=");
+                        p(":=");
                 case BN_AST_PLUS_ASSIGN:
                         p("+=");
                 case BN_AST_MINUS_ASSIGN:

@@ -155,7 +155,7 @@ static void update_loc() {
 <INITIAL>"%"				{ return (MOD); }
 <INITIAL>"!"				{ return (NOT); }
 
-<INITIAL>"="				{ return (ASSIGN); }
+<INITIAL>":="				{ return (ASSIGN); }
 <INITIAL>"+="				{ return (ADD_ASSIGN); }
 <INITIAL>"-="				{ return (SUB_ASSIGN); }
 <INITIAL>"*="				{ return (MUL_ASSIGN); }
