@@ -14,7 +14,7 @@ bnAST* bnNewAST(bnASTTag tag) {
 }
 
 bnAST* bnNewIntAST(int ivalue) {
-        bnAST* ret = bnNewAST(BN_AST_LIT);
+        bnAST* ret = bnNewAST(BN_AST_INT_LIT);
         ret->u.ivalue = ivalue;
         return ret;
 }
@@ -58,7 +58,7 @@ void bnPrintAST(bnAST* self) {
         switch (self->tag) {
                 case BN_AST_ROOT:
                         p("root");
-                case BN_AST_LIT:
+                case BN_AST_INT_LIT:
                         printf("%d", self->u.ivalue);
                         break;
                 case BN_AST_DOUBLE_LIT:
@@ -145,7 +145,7 @@ bnAST* bnFirstAST(bnAST* self) { return self->children->data; }
 bnAST* bnSecondAST(bnAST* self) { return self->children->next->data; }
 
 double bnEvalAST(bnAST* self) {
-        if (self->tag == BN_AST_LIT) {
+        if (self->tag == BN_AST_INT_LIT) {
                 return (double)self->u.ivalue;
         }
         if (self->tag == BN_AST_DOUBLE_LIT) {
