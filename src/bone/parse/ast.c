@@ -7,7 +7,7 @@ static void ast_child_delete(gpointer item);
 static void bnDumpASTImpl(bnAST* self, int depth);
 
 bnAST* bnNewAST(bnASTTag tag) {
-        bnAST* ret = (bnAST*)malloc(sizeof(bnAST));
+        bnAST* ret = (bnAST*)BN_MALLOC(sizeof(bnAST));
         ret->tag = tag;
         ret->children = NULL;
         return ret;
