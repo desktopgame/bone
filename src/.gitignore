@@ -10,4 +10,6 @@ cmake_install.cmake
 Makefile
 nbproject
 *.info
+*.in
+*.out
 install_manifest.txt
