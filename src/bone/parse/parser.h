@@ -7,9 +7,9 @@ typedef enum bnParserInputTag {
         BN_PARSER_INPUT_FROM_FILE
 } bnParserInputTag;
 
-ast* bnParseFile(const char* filename);
+bnAST* bnParseFile(const char* filename);
 
-ast* bnParseString(const char* source);
+bnAST* bnParseString(const char* source);
 
 bnParserInputTag bnGetParserInputTag();
 #endif

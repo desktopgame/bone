@@ -5,12 +5,12 @@
 
 static bnParserInputTag gParserInputTag;
 
-ast *bnParseFile(const char *filename) {
+bnAST *bnParseFile(const char *filename) {
         gParserInputTag = BN_PARSER_INPUT_FROM_FILE;
         extern FILE *yyin;
         extern void yy_calc_start(void);
         extern int yyparse(void);
-        extern ast *yy_release();
+        extern bnAST *yy_release();
         FILE *fp = fopen(filename, "r");
         if (fp == NULL) {
                 printf("can't opened file: %s", filename);
@@ -25,13 +25,13 @@ ast *bnParseFile(const char *filename) {
         return yy_release();
 }
 
-ast *bnParseString(const char *source) {
+bnAST *bnParseString(const char *source) {
         gParserInputTag = BN_PARSER_INPUT_FROM_SOURCE;
         extern void yy_setstr(char *source);
         extern void yy_clearstr();
         extern void yy_calc_start(void);
         extern int yyparse(void);
-        extern ast *yy_release();
+        extern bnAST *yy_release();
         yy_calc_start();
         yy_setstr(strdup(source));
         if (yyparse()) {

@@ -4,48 +4,48 @@
 
 // proto
 static void ast_child_delete(gpointer item);
-static void bnDumpASTImpl(ast* self, int depth);
+static void bnDumpASTImpl(bnAST* self, int depth);
 
-ast* bnNewAST(bnASTTag tag) {
-        ast* ret = (ast*)malloc(sizeof(ast));
+bnAST* bnNewAST(bnASTTag tag) {
+        bnAST* ret = (bnAST*)malloc(sizeof(bnAST));
         ret->tag = tag;
         ret->children = NULL;
         return ret;
 }
 
-ast* bnNewIntAST(int ivalue) {
-        ast* ret = bnNewAST(BN_AST_LIT);
+bnAST* bnNewIntAST(int ivalue) {
+        bnAST* ret = bnNewAST(BN_AST_LIT);
         ret->u.ivalue = ivalue;
         return ret;
 }
 
-ast* bnNewDoubleAST(double dvalue) {
-        ast* ret = bnNewAST(BN_AST_DOUBLE_LIT);
+bnAST* bnNewDoubleAST(double dvalue) {
+        bnAST* ret = bnNewAST(BN_AST_DOUBLE_LIT);
         ret->u.dvalue = dvalue;
         return ret;
 }
 
-ast* bnNewUnaryAST(bnASTTag tag, ast* a) {
-        ast* ret = bnNewAST(tag);
+bnAST* bnNewUnaryAST(bnASTTag tag, bnAST* a) {
+        bnAST* ret = bnNewAST(tag);
         bnPushAST(ret, a);
         return ret;
 }
 
-ast* bnNewBinaryAST(bnASTTag tag, ast* left, ast* right) {
-        ast* ret = bnNewAST(tag);
+bnAST* bnNewBinaryAST(bnASTTag tag, bnAST* left, bnAST* right) {
+        bnAST* ret = bnNewAST(tag);
         bnPushAST(ret, left);
         bnPushAST(ret, right);
         return ret;
 }
 
-void bnPushAST(ast* self, ast* a) {
+void bnPushAST(bnAST* self, bnAST* a) {
         assert(self != NULL && a != NULL);
         self->children = g_list_append(self->children, a);
 }
 
-void bnDumpAST(ast* self) { bnDumpASTImpl(self, 0); }
+void bnDumpAST(bnAST* self) { bnDumpASTImpl(self, 0); }
 
-void bnPrintAST(ast* self) {
+void bnPrintAST(bnAST* self) {
 #define p(a)         \
         printf((a)); \
         break
@@ -126,16 +126,16 @@ void bnPrintAST(ast* self) {
 #undef p
 }
 
-void bnDeleteAST(ast* self) {
+void bnDeleteAST(bnAST* self) {
         g_list_free_full(self->children, ast_child_delete);
         free(self);
 }
 
-ast* bnFirstAST(ast* self) { return self->children->data; }
+bnAST* bnFirstAST(bnAST* self) { return self->children->data; }
 
-ast* bnSecondAST(ast* self) { return self->children->next->data; }
+bnAST* bnSecondAST(bnAST* self) { return self->children->next->data; }
 
-double bnEvalAST(ast* self) {
+double bnEvalAST(bnAST* self) {
         if (self->tag == BN_AST_LIT) {
                 return (double)self->u.ivalue;
         }
@@ -226,11 +226,11 @@ double bnEvalAST(ast* self) {
 
 // private
 static void ast_child_delete(gpointer item) {
-        ast* e = (ast*)item;
+        bnAST* e = (bnAST*)item;
         bnDeleteAST(e);
 }
 
-static void bnDumpASTImpl(ast* self, int depth) {
+static void bnDumpASTImpl(bnAST* self, int depth) {
         for (int i = 0; i < depth; i++) {
                 printf(" ");
         }
@@ -238,7 +238,7 @@ static void bnDumpASTImpl(ast* self, int depth) {
         printf("\n");
         GList* iter = self->children;
         while (iter != NULL) {
-                ast* e = iter->data;
+                bnAST* e = iter->data;
                 bnDumpASTImpl(e, depth + 1);
                 iter = iter->next;
         }

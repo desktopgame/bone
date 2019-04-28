@@ -51,7 +51,7 @@ typedef enum bnASTTag {
 
 } bnASTTag;
 
-typedef struct ast {
+typedef struct bnAST {
         union {
                 int ivalue;
                 double dvalue;
@@ -59,29 +59,29 @@ typedef struct ast {
         } u;
         GList* children;
         bnASTTag tag;
-} ast;
+} bnAST;
 
-ast* bnNewAST(bnASTTag tag);
+bnAST* bnNewAST(bnASTTag tag);
 
-ast* bnNewIntAST(int ivalue);
+bnAST* bnNewIntAST(int ivalue);
 
-ast* bnNewDoubleAST(double dvalue);
+bnAST* bnNewDoubleAST(double dvalue);
 
-ast* bnNewUnaryAST(bnASTTag tag, ast* a);
+bnAST* bnNewUnaryAST(bnASTTag tag, bnAST* a);
 
-ast* bnNewBinaryAST(bnASTTag tag, ast* left, ast* right);
+bnAST* bnNewBinaryAST(bnASTTag tag, bnAST* left, bnAST* right);
 
-void bnPushAST(ast* self, ast* a);
+void bnPushAST(bnAST* self, bnAST* a);
 
-void bnDumpAST(ast* self);
+void bnDumpAST(bnAST* self);
 
-void bnPrintAST(ast* self);
+void bnPrintAST(bnAST* self);
 
-void bnDeleteAST(ast* self);
+void bnDeleteAST(bnAST* self);
 
-ast* bnFirstAST(ast* self);
+bnAST* bnFirstAST(bnAST* self);
 
-ast* bnSecondAST(ast* self);
+bnAST* bnSecondAST(bnAST* self);
 
-double bnEvalAST(ast* self);
+double bnEvalAST(bnAST* self);
 #endif

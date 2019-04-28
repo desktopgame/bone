@@ -6,7 +6,7 @@
 #define YYERROR_VERBOSE 1
 %}
 %union {
-	ast* ast_value;
+	bnAST* ast_value;
 	char* svalue;
 }
 
@@ -39,7 +39,7 @@
 program
 	: expression
 	{
-		extern void yy_register(ast* a);
+		extern void yy_register(bnAST* a);
 		yy_register($1);
 	}
 	;

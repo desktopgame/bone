@@ -155,7 +155,7 @@ union YYSTYPE
 {
 #line 8 "bone.y" /* yacc.c:355  */
 
-	ast* ast_value;
+	bnAST* ast_value;
 	char* svalue;
 
 #line 162 "bone.tab.c" /* yacc.c:355  */
@@ -1470,7 +1470,7 @@ yyreduce:
         case 2:
 #line 41 "bone.y" /* yacc.c:1663  */
     {
-		extern void yy_register(ast* a);
+		extern void yy_register(bnAST* a);
 		yy_register((yyvsp[0].ast_value));
 	}
 #line 1477 "bone.tab.c" /* yacc.c:1663  */

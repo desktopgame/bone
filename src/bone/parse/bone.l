@@ -20,7 +20,7 @@ static char* yaccSourceBuffer;
 static int yaccSourceOffset;
 static char* yaccErrorBuf;
 static int yaccLineno;
-static ast* yaccNode = NULL;
+static bnAST* yaccNode = NULL;
 
 static int curr_line;
 static int curr_col;
@@ -68,13 +68,13 @@ void yy_calc_start() {
 	yaccNode = bnNewAST(BN_AST_ROOT);
 }
 
-void yy_register(ast* a) {
+void yy_register(bnAST* a) {
 	assert(yaccNode != NULL);
 	bnPushAST(yaccNode, a);
 }
 
-ast* yy_release() {
-	ast* ret = yaccNode;
+bnAST* yy_release() {
+	bnAST* ret = yaccNode;
 	yaccNode = NULL;
 	return ret;
 }

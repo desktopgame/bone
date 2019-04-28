@@ -95,7 +95,7 @@ union YYSTYPE
 {
 #line 8 "bone.y" /* yacc.c:1916  */
 
-	ast* ast_value;
+	bnAST* ast_value;
 	char* svalue;
 
 #line 102 "bone.tab.h" /* yacc.c:1916  */
