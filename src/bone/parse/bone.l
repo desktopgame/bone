@@ -145,7 +145,7 @@ static void update_loc() {
 %option yy_scan_string
 %option yy_scan_buffer
 %option yy_scan_bytes
-%start ML_COMMENT L_COMMENT
+%start ML_COMMENT L_COMMENT STRING_LITERAL_STATE
 %%
 
 <INITIAL>"+"				{ return (ADD); }
@@ -216,7 +216,10 @@ static void update_loc() {
 	yylval.svalue = strdup(yytext);
 	return IDENT;
 }
-
+<INITIAL>\" {
+		bnBeginStringLit();
+    BEGIN STRING_LITERAL_STATE;
+}
 <INITIAL>"/*"     BEGIN ML_COMMENT;
 <INITIAL>"//"     BEGIN L_COMMENT;
 <ML_COMMENT>\n     {
@@ -236,4 +239,30 @@ static void update_loc() {
 	BEGIN INITIAL;
 }
 
+<STRING_LITERAL_STATE>\" {
+	yylval.ast_value = bnEndStringLit();
+  BEGIN INITIAL;
+	return STRING_LITERAL;
+}
+<STRING_LITERAL_STATE>\\\"	{
+	bnAppendStringLit('"');
+}
+<STRING_LITERAL_STATE>\\\'	{
+	bnAppendStringLit('\'');
+}
+<STRING_LITERAL_STATE>\\r	{
+	bnAppendStringLit('\r');
+}
+<STRING_LITERAL_STATE>\\n	{
+	bnAppendStringLit('\n');
+}
+<STRING_LITERAL_STATE>\\t	{
+	bnAppendStringLit('\t');
+}
+<STRING_LITERAL_STATE>\\\\	{
+	bnAppendStringLit('\\');
+}
+<STRING_LITERAL_STATE>.	{
+	bnAppendStringLit(yytext[0]);
+}
 %%

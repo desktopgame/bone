@@ -13,6 +13,7 @@
 %locations
 %token <ast_value>			INT
 %token <ast_value>			DOUBLE
+%token <ast_value>			STRING_LITERAL
 %token 	ADD SUB MUL DIV MOD
 		ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
 		AND_ASSIGN OR_ASSIGN LSHIFT_ASSIGN RSHIFT_ASSIGN EXC_OR_ASSIGN
@@ -183,5 +184,6 @@ expression
 primary
 	: INT
 	| DOUBLE
+	| STRING_LITERAL
 	;
 %%

@@ -19,6 +19,12 @@ bnAST* bnNewIntAST(int ivalue) {
         return ret;
 }
 
+bnAST* bnNewStringAST(GString* svalue) {
+        bnAST* ret = bnNewAST(BN_AST_STRING_LIT);
+        ret->u.svalue = svalue;
+        return ret;
+}
+
 bnAST* bnNewDoubleAST(double dvalue) {
         bnAST* ret = bnNewAST(BN_AST_DOUBLE_LIT);
         ret->u.dvalue = dvalue;
@@ -57,6 +63,9 @@ void bnPrintAST(bnAST* self) {
                         break;
                 case BN_AST_DOUBLE_LIT:
                         printf("%lf", self->u.dvalue);
+                        break;
+                case BN_AST_STRING_LIT:
+                        printf("%s", self->u.svalue->str);
                         break;
                 case BN_AST_PLUS:
                         p("+");

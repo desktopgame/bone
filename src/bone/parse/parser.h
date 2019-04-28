@@ -13,6 +13,12 @@ bnAST* bnParseString(const char* source);
 
 bnParserInputTag bnGetParserInputTag();
 
+void bnBeginStringLit();
+
+void bnAppendStringLit(char c);
+
+bnAST* bnEndStringLit();
+
 void bnSetParseLine(int line);
 
 int bnGetParseLine();

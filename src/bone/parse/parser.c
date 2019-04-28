@@ -2,10 +2,13 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+#include "../bone.h"
 
 static bnParserInputTag gParserInputTag;
 static int gLine = -1;
 static int gColumn = -1;
+static GString *gStr = NULL;
+static void init_string_lit();
 
 bnAST *bnParseFile(const char *filename) {
         gParserInputTag = BN_PARSER_INPUT_FROM_FILE;
@@ -46,6 +49,19 @@ bnAST *bnParseString(const char *source) {
 
 bnParserInputTag bnGetParserInputTag() { return gParserInputTag; }
 
+void bnBeginStringLit() { init_string_lit(); }
+
+void bnAppendStringLit(char c) {
+        assert(gStr != NULL);
+        g_string_append_c(gStr, c);
+}
+
+bnAST *bnEndStringLit() {
+        bnAST *ret = bnNewStringAST(gStr);
+        gStr = NULL;
+        return ret;
+}
+
 void bnSetParseLine(int line) { gLine = line; }
 
 int bnGetParseLine() { return gLine; }
@@ -53,3 +69,9 @@ int bnGetParseLine() { return gLine; }
 void bnSetParseColumn(int column) { gColumn = column; }
 
 int bnGetParseColumn() { return gColumn; }
+
+// private
+static void init_string_lit() {
+        assert(gStr == NULL);
+        gStr = g_string_new(NULL);
+}
