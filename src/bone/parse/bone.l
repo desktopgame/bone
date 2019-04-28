@@ -148,6 +148,8 @@ static void update_loc() {
 %start ML_COMMENT L_COMMENT STRING_LITERAL_STATE
 %%
 
+<INITIAL>"."				{ return (DOT); }
+<INITIAL>","				{ return (COMMA); }
 <INITIAL>"+"				{ return (ADD); }
 <INITIAL>"-"				{ return (SUB); }
 <INITIAL>"*"				{ return (MUL); }
@@ -213,7 +215,7 @@ static void update_loc() {
 }
 
 <INITIAL>[A-Za-z_][A-Za-z_0-9]* {
-	yylval.svalue = strdup(yytext);
+	yylval.svalue = g_string_new(yytext);
 	return IDENT;
 }
 <INITIAL>\'\\r\' {

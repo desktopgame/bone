@@ -49,44 +49,48 @@ extern int yydebug;
     DOUBLE = 259,
     STRING_LITERAL = 260,
     CHAR_LITERAL = 261,
-    ADD = 262,
-    SUB = 263,
-    MUL = 264,
-    DIV = 265,
-    MOD = 266,
-    ASSIGN = 267,
-    ADD_ASSIGN = 268,
-    SUB_ASSIGN = 269,
-    MUL_ASSIGN = 270,
-    DIV_ASSIGN = 271,
-    MOD_ASSIGN = 272,
-    AND_ASSIGN = 273,
-    OR_ASSIGN = 274,
-    LSHIFT_ASSIGN = 275,
-    RSHIFT_ASSIGN = 276,
-    EXC_OR_ASSIGN = 277,
-    EQUAL = 278,
-    NOTEQUAL = 279,
-    INC = 280,
-    DEC = 281,
-    GT = 282,
-    GE = 283,
-    LT = 284,
-    LE = 285,
-    LSHIFT = 286,
-    RSHIFT = 287,
-    NOT = 288,
-    BIT_AND = 289,
-    BIT_OR = 290,
-    LOGIC_AND = 291,
-    LOGIC_OR = 292,
-    LP = 293,
-    RP = 294,
-    EXC_OR = 295,
-    IDENT = 296,
-    NEGATIVE = 297,
-    POSITIVE = 298,
-    CHILDA = 299
+    IDENT = 262,
+    ADD = 263,
+    SUB = 264,
+    MUL = 265,
+    DIV = 266,
+    MOD = 267,
+    ASSIGN = 268,
+    ADD_ASSIGN = 269,
+    SUB_ASSIGN = 270,
+    MUL_ASSIGN = 271,
+    DIV_ASSIGN = 272,
+    MOD_ASSIGN = 273,
+    AND_ASSIGN = 274,
+    OR_ASSIGN = 275,
+    LSHIFT_ASSIGN = 276,
+    RSHIFT_ASSIGN = 277,
+    EXC_OR_ASSIGN = 278,
+    EQUAL = 279,
+    NOTEQUAL = 280,
+    INC = 281,
+    DEC = 282,
+    GT = 283,
+    GE = 284,
+    LT = 285,
+    LE = 286,
+    LSHIFT = 287,
+    RSHIFT = 288,
+    NOT = 289,
+    BIT_AND = 290,
+    BIT_OR = 291,
+    LOGIC_AND = 292,
+    LOGIC_OR = 293,
+    LP = 294,
+    RP = 295,
+    EXC_OR = 296,
+    DOT = 297,
+    COMMA = 298,
+    NEGATIVE = 299,
+    POSITIVE = 300,
+    CHILDA = 301,
+    FUNCCALL = 302,
+    ARRAY_SUBSCRIPT = 303
   };
 #endif
 
@@ -95,12 +99,12 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 8 "bone.y" /* yacc.c:1916  */
+#line 9 "bone.y" /* yacc.c:1916  */
 
 	bnAST* ast_value;
-	char* svalue;
+	GString* svalue;
 
-#line 104 "bone.tab.h" /* yacc.c:1916  */
+#line 108 "bone.tab.h" /* yacc.c:1916  */
 };
 
 typedef union YYSTYPE YYSTYPE;

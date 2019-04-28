@@ -18,6 +18,39 @@ bnAST* bnNewBlankAST() {
         return ret;
 }
 
+bnAST* bnNewArgumentAST(bnAST* aexpr) {
+        bnAST* ret = bnNewAST(BN_AST_ARGUMENT);
+        bnPushAST(ret, aexpr);
+        return ret;
+}
+
+bnAST* bnNewArgumentListAST(bnAST* aexpr, bnAST* aargs) {
+        bnAST* ret = bnNewAST(BN_AST_ARGUMENT_LIST);
+        bnPushAST(ret, aargs);
+        bnPushAST(ret, aexpr);
+        return ret;
+}
+
+bnAST* bnNewVariableAST(GString* svalue) {
+        bnAST* ret = bnNewAST(BN_AST_VARIABLE);
+        ret->u.svalue = svalue;
+        return ret;
+}
+
+bnAST* bnNewMemberAccessAST(bnAST* aexpr, GString* name) {
+        bnAST* ret = bnNewAST(BN_AST_MEMBER_ACCESS);
+        ret->u.svalue = name;
+        bnPushAST(ret, aexpr);
+        return ret;
+}
+
+bnAST* bnNewFuncCall(bnAST* aexpr, bnAST* aargs) {
+        bnAST* ret = bnNewAST(BN_AST_FUNCCALL);
+        bnPushAST(ret, aexpr);
+        bnPushAST(ret, aargs);
+        return ret;
+}
+
 bnAST* bnNewIntAST(int ivalue) {
         bnAST* ret = bnNewAST(BN_AST_INT_LIT);
         ret->u.ivalue = ivalue;

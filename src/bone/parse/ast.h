@@ -5,10 +5,15 @@
 typedef enum bnASTTag {
         BN_AST_ROOT,
         BN_AST_BLANK,
+        BN_AST_ARGUMENT,
+        BN_AST_ARGUMENT_LIST,
         BN_AST_INT_LIT,
         BN_AST_DOUBLE_LIT,
         BN_AST_STRING_LIT,
         BN_AST_CHAR_LIT,
+        BN_AST_VARIABLE,
+        BN_AST_MEMBER_ACCESS,
+        BN_AST_FUNCCALL,
         BN_AST_IDENT,
 
         BN_AST_POSITIVE,
@@ -68,6 +73,16 @@ typedef struct bnAST {
 bnAST* bnNewAST(bnASTTag tag);
 
 bnAST* bnNewBlankAST();
+
+bnAST* bnNewArgumentAST(bnAST* aexpr);
+
+bnAST* bnNewArgumentListAST(bnAST* aexpr, bnAST* aargs);
+
+bnAST* bnNewVariableAST(GString* svalue);
+
+bnAST* bnNewMemberAccessAST(bnAST* aexpr, GString* name);
+
+bnAST* bnNewFuncCall(bnAST* aexpr, bnAST* aargs);
 
 bnAST* bnNewIntAST(int ivalue);
 

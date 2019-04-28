@@ -2,12 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ast.h"
+#include "../bone.h"
 #define YYDEBUG 1
 #define YYERROR_VERBOSE 1
 %}
 %union {
 	bnAST* ast_value;
-	char* svalue;
+	GString* svalue;
 }
 
 %locations
@@ -15,6 +16,7 @@
 %token <ast_value>			DOUBLE
 %token <ast_value>			STRING_LITERAL
 %token <ast_value>			CHAR_LITERAL
+%token <svalue>			IDENT
 %token 	ADD SUB MUL DIV MOD
 		ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
 		AND_ASSIGN OR_ASSIGN LSHIFT_ASSIGN RSHIFT_ASSIGN EXC_OR_ASSIGN
@@ -22,8 +24,13 @@
 		GT GE LT LE LSHIFT RSHIFT
 		NOT BIT_AND BIT_OR LOGIC_AND LOGIC_OR LP RP
 		EXC_OR
-		IDENT
-%type <ast_value> expression primary
+		DOT COMMA
+%type <ast_value>
+	argument_list
+	expression
+	expression_nobrace
+	lhs
+	primary
 %left EQUAL NOTEQUAL
 %left GT GE LT LE
 %left LOGIC_AND
@@ -37,6 +44,7 @@
 %left NEGATIVE POSITIVE
 %right ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN AND_ASSIGN OR_ASSIGN LSHIFT_ASSIGN RSHIFT_ASSIGN EXC_OR_ASSIGN
 %right CHILDA NOT
+%left DOT FUNCCALL ARRAY_SUBSCRIPT
 %%
 program
 	: expression
@@ -45,9 +53,26 @@ program
 		yy_register($1);
 	}
 	;
+argument_list
+	: expression
+	{
+		$$ = bnNewArgumentAST($1);
+	}
+	| argument_list COMMA expression
+	{
+		$$ = bnNewArgumentListAST(bnNewArgumentAST($3), $1);
+	}
+	;
 expression
-	: primary
-	| ADD expression %prec POSITIVE
+	: LP expression RP
+	{
+		$$ = $2;
+	}
+	| primary
+	|  expression_nobrace
+	;
+expression_nobrace
+	: ADD expression %prec POSITIVE
 	{
 		$$ = bnNewUnaryAST(BN_AST_POSITIVE, $2);
 	}
@@ -103,47 +128,47 @@ expression
 	{
 		$$ = bnNewBinaryAST(BN_AST_LOGIC_AND, $1, $3);
 	}
-	| expression ASSIGN expression
+	| lhs ASSIGN expression
 	{
 		$$ = bnNewBinaryAST(BN_AST_ASSIGN, $1, $3);
 	}
-	| expression ADD_ASSIGN expression
+	| lhs ADD_ASSIGN expression
 	{
 		$$ = bnNewBinaryAST(BN_AST_PLUS_ASSIGN, $1, $3);
 	}
-	| expression SUB_ASSIGN expression
+	| lhs SUB_ASSIGN expression
 	{
 		$$ = bnNewBinaryAST(BN_AST_MINUS_ASSIGN, $1, $3);
 	}
-	| expression MUL_ASSIGN expression
+	| lhs MUL_ASSIGN expression
 	{
 		$$ = bnNewBinaryAST(BN_AST_MULTIPLY_ASSIGN, $1, $3);
 	}
-	| expression DIV_ASSIGN expression
+	| lhs DIV_ASSIGN expression
 	{
 		$$ = bnNewBinaryAST(BN_AST_DIVIDE_ASSIGN, $1, $3);
 	}
-	| expression MOD_ASSIGN expression
+	| lhs MOD_ASSIGN expression
 	{
 		$$ = bnNewBinaryAST(BN_AST_MODULO_ASSIGN, $1, $3);
 	}
-	| expression AND_ASSIGN expression
+	| lhs AND_ASSIGN expression
 	{
 		$$ = bnNewBinaryAST(BN_AST_AND_ASSIGN, $1, $3);
 	}
-	| expression OR_ASSIGN expression
+	| lhs OR_ASSIGN expression
 	{
 		$$ = bnNewBinaryAST(BN_AST_OR_ASSIGN, $1, $3);
 	}
-	| expression EXC_OR_ASSIGN expression
+	| lhs EXC_OR_ASSIGN expression
 	{
 		$$ = bnNewBinaryAST(BN_AST_EXC_OR_ASSIGN, $1, $3);
 	}
-	| expression LSHIFT_ASSIGN expression
+	| lhs LSHIFT_ASSIGN expression
 	{
 		$$ = bnNewBinaryAST(BN_AST_LSHIFT_ASSIGN, $1, $3);
 	}
-	| expression RSHIFT_ASSIGN expression
+	| lhs RSHIFT_ASSIGN expression
 	{
 		$$ = bnNewBinaryAST(BN_AST_RSHIFT_ASSIGN, $1, $3);
 	}
@@ -177,9 +202,23 @@ expression
 	{
 		$$ = bnNewUnaryAST(BN_AST_NOT, $2);
 	}
-	| LP expression RP
+	;
+lhs
+	: IDENT
 	{
-		$$ = $2;
+		$$ = bnNewVariableAST($1);
+	}
+	| expression DOT IDENT
+	{
+		$$ = bnNewMemberAccessAST($1, $3);
+	}
+	| expression_nobrace LP argument_list RP %prec FUNCCALL
+	{
+		$$ = bnNewFuncCall($1, $3);
+	}
+	| expression_nobrace LP RP %prec FUNCCALL
+	{
+		$$ = bnNewFuncCall($1, bnNewBlankAST());
 	}
 	;
 primary
