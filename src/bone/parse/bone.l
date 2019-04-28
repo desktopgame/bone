@@ -199,6 +199,7 @@ static void update_loc() {
 
 <INITIAL>"\n" {
 	yaccLineno++;
+	bnSetParseLine(yaccLineno);
 }
 
 <INITIAL>[1-9][0-9]* {
@@ -220,6 +221,7 @@ static void update_loc() {
 <INITIAL>"//"     BEGIN L_COMMENT;
 <ML_COMMENT>\n     {
 	yaccLineno++;
+	bnSetParseLine(yaccLineno);
 }
 <ML_COMMENT>"*/"     {
     BEGIN INITIAL;
@@ -227,6 +229,7 @@ static void update_loc() {
 <ML_COMMENT>.      ;
 <L_COMMENT>\n  {
 	yaccLineno++;
+	bnSetParseLine(yaccLineno);
 	BEGIN INITIAL;
 }
 <L_COMMENT><<EOF>>   {

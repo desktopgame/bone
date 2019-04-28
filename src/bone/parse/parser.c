@@ -4,6 +4,8 @@
 #include <string.h>
 
 static bnParserInputTag gParserInputTag;
+static int gLine = -1;
+static int gColumn = -1;
 
 bnAST *bnParseFile(const char *filename) {
         gParserInputTag = BN_PARSER_INPUT_FROM_FILE;
@@ -43,3 +45,11 @@ bnAST *bnParseString(const char *source) {
 }
 
 bnParserInputTag bnGetParserInputTag() { return gParserInputTag; }
+
+void bnSetParseLine(int line) { gLine = line; }
+
+int bnGetParseLine() { return gLine; }
+
+void bnSetParseColumn(int column) { gColumn = column; }
+
+int bnGetParseColumn() { return gColumn; }

@@ -12,4 +12,12 @@ bnAST* bnParseFile(const char* filename);
 bnAST* bnParseString(const char* source);
 
 bnParserInputTag bnGetParserInputTag();
+
+void bnSetParseLine(int line);
+
+int bnGetParseLine();
+
+void bnSetParseColumn(int column);
+
+int bnGetParseColumn();
 #endif
