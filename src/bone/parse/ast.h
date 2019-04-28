@@ -7,6 +7,7 @@ typedef enum bnASTTag {
         BN_AST_INT_LIT,
         BN_AST_DOUBLE_LIT,
         BN_AST_STRING_LIT,
+        BN_AST_CHAR_LIT,
         BN_AST_IDENT,
 
         BN_AST_POSITIVE,
@@ -56,6 +57,7 @@ typedef struct bnAST {
         union {
                 int ivalue;
                 double dvalue;
+                char cvalue;
                 GString* svalue;
         } u;
         GList* children;
@@ -67,6 +69,8 @@ bnAST* bnNewAST(bnASTTag tag);
 bnAST* bnNewIntAST(int ivalue);
 
 bnAST* bnNewStringAST(GString* svalue);
+
+bnAST* bnNewCharAST(char cvalue);
 
 bnAST* bnNewDoubleAST(double dvalue);
 

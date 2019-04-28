@@ -216,6 +216,26 @@ static void update_loc() {
 	yylval.svalue = strdup(yytext);
 	return IDENT;
 }
+<INITIAL>\'\\r\' {
+	yylval.ast_value = bnNewCharAST('\r');
+	return CHAR_LITERAL;
+}
+<INITIAL>\'\\n\' {
+	yylval.ast_value = bnNewCharAST('\n');
+	return CHAR_LITERAL;
+}
+<INITIAL>\'\\t\' {
+	yylval.ast_value = bnNewCharAST('\t');
+	return CHAR_LITERAL;
+}
+<INITIAL>\'\\b\' {
+	yylval.ast_value = bnNewCharAST('\b');
+	return CHAR_LITERAL;
+}
+<INITIAL>\'.\' {
+	yylval.ast_value = bnNewCharAST(yytext[1]);
+	return CHAR_LITERAL;
+}
 <INITIAL>\" {
 		bnBeginStringLit();
     BEGIN STRING_LITERAL_STATE;
