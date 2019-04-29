@@ -18,6 +18,8 @@ typedef struct bnILStmtIf {
  */
 bnILStmtIf* bnNewILStmtIf(bnILExpression* cond);
 
+void bnDumpILStmtIf(FILE* fp, bnILStmtIf* self, int depth);
+
 /**
  * free a bnILStmtIf.
  * @param self
@@ -38,6 +40,8 @@ typedef struct bnILStmtIfElse {
  * @return
  */
 bnILStmtIfElse* bnNewILStmtIfElse(bnILStmtIf* trueCase);
+
+void bnDumpILStmtIfElse(FILE* fp, bnILStmtIfElse* self, int depth);
 
 /**
  * free a bnILStmtIf.

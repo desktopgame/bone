@@ -6,4 +6,9 @@ bnILExprString* bnNewILExprString(GString* value) {
         return ret;
 }
 
+void bnDumpILExprString(FILE* fp, bnILExprString* self, int depth) {
+        bnFindent(fp, depth);
+        fprintf(fp, "\"%s\"\n", self->value->str);
+}
+
 void bnDeleteILExprString(bnILExprString* self) { BN_FREE(self); }

@@ -6,4 +6,9 @@ bnILExprChar* bnNewILExprDouble(char value) {
         return ret;
 }
 
+void bnDumpILExprChar(FILE* fp, bnILExprChar* self, int depth) {
+        bnFindent(fp, depth);
+        fprintf(fp, "%c\n");
+}
+
 void bnDeleteILExprDouble(bnILExprChar* self) { BN_FREE(self); }

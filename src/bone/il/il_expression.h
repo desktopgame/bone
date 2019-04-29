@@ -1,5 +1,7 @@
 #ifndef BONE_IL_ILEXPRESSION_H
 #define BONE_IL_ILEXPRESSION_H
+#include <stdio.h>
+
 typedef enum bnILExpressionType {
         BN_IL_EXPR_NONE,
         BN_IL_EXPR_INT,
@@ -22,6 +24,10 @@ typedef struct bnILExpression {
                 struct bnILExprString* vString;
         } u;
 } bnILExpression;
+
+bnILExpression* bnNewILExpression(bnILExpressionType type);
+
+void bnDumpILExpression(FILE* fp, bnILExpression* self, int depth);
 
 void bnDeleteILExpression(bnILExpression* self);
 #endif

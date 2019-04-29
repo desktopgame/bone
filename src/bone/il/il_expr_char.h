@@ -16,6 +16,8 @@ typedef struct bnILExprChar {
  */
 bnILExprChar* bnNewILExprChar(char value);
 
+void bnDumpILExprChar(FILE* fp, bnILExprChar* self, int depth);
+
 /**
  * free a bnILExprChar.
  * @param self

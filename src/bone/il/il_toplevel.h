@@ -20,4 +20,11 @@ bnILToplevel* bnNewILTopLevel();
  * @param self
  */
 void bnDeleteILTopLevel(bnILToplevel* self);
+
+/**
+ * @param fp
+ * @param self
+ * @param depth
+ */
+void bnDumpILTopLevel(FILE* fp, bnILToplevel* self, int depth);
 #endif

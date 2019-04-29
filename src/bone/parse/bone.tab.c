@@ -1570,7 +1570,7 @@ yyreduce:
   case 8:
 #line 85 "bone.y" /* yacc.c:1663  */
     {
-		(yyval.ast_value) = (yyvsp[-1].ast_value);
+		(yyval.ast_value) = bnNewExprStmtAST((yyvsp[-1].ast_value));
 	}
 #line 1576 "bone.tab.c" /* yacc.c:1663  */
     break;

@@ -83,7 +83,7 @@ statement_list
 statement
 	: expression SEMICOLON
 	{
-		$$ = $1;
+		$$ = bnNewExprStmtAST($1);
 	}
 	| comp_stmt
 	| IF LP expression RP statement
