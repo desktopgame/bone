@@ -24,9 +24,10 @@
 		GT GE LT LE LSHIFT RSHIFT
 		NOT BIT_AND BIT_OR LOGIC_AND LOGIC_OR LP RP
 		EXC_OR
-		DOT COMMA
+		DOT COMMA LINE
 %type <ast_value>
 	argument_list
+	expression_list
 	expression
 	expression_nobrace
 	lhs
@@ -47,7 +48,7 @@
 %left DOT FUNCCALL ARRAY_SUBSCRIPT
 %%
 program
-	: expression
+	: expression_list
 	{
 		extern void yy_register(bnAST* a);
 		yy_register($1);
@@ -65,6 +66,16 @@ argument_list
 	| argument_list COMMA expression
 	{
 		$$ = bnNewArgumentListAST(bnNewArgumentAST($3), $1);
+	}
+	;
+expression_list
+	: expression
+	{
+		$$ = $1;
+	}
+	| expression_list LINE expression
+	{
+		$$ = bnNewExpressionListAST($3, $1);
 	}
 	;
 expression

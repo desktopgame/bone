@@ -34,6 +34,13 @@ bnAST* bnNewArgumentListAST(bnAST* aexpr, bnAST* aargs) {
         return ret;
 }
 
+bnAST* bnNewExpressionListAST(bnAST* aexpr, bnAST* aexprList) {
+        bnAST* ret = bnNewAST(BN_AST_EXPRESSION_LIST);
+        bnPushAST(ret, aexpr);
+        bnPushAST(ret, aexprList);
+        return ret;
+}
+
 bnAST* bnNewVariableAST(GString* svalue) {
         bnAST* ret = bnNewAST(BN_AST_VARIABLE);
         ret->u.svalue = svalue;
@@ -126,6 +133,9 @@ void bnPrintAST(FILE* fp, bnAST* self) {
                         break;
                 case BN_AST_FUNCCALL:
                         fprintf(fp, "FuncCall");
+                        break;
+                case BN_AST_EXPRESSION_LIST:
+                        fprintf(fp, "ExprList");
                         break;
                 case BN_AST_MEMBER_ACCESS:
                         fprintf(fp, ".%s", self->u.svalue->str);

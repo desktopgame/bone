@@ -1156,11 +1156,12 @@ YY_RULE_SETUP
 {
 	yaccLineno++;
 	bnSetParseLine(yaccLineno);
+	return LINE;
 }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 208 "bone.l"
+#line 209 "bone.l"
 {
 	yylval.ast_value = bnNewIntAST(atoi(yytext));
 	return INT;
@@ -1168,7 +1169,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 213 "bone.l"
+#line 214 "bone.l"
 {
 	yylval.ast_value = bnNewDoubleAST(atof(yytext));
 	return DOUBLE;
@@ -1176,7 +1177,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 218 "bone.l"
+#line 219 "bone.l"
 {
 	yylval.svalue = g_string_new(yytext);
 	return IDENT;
@@ -1184,7 +1185,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 222 "bone.l"
+#line 223 "bone.l"
 {
 	yylval.ast_value = bnNewCharAST('\r');
 	return CHAR_LITERAL;
@@ -1192,7 +1193,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 226 "bone.l"
+#line 227 "bone.l"
 {
 	yylval.ast_value = bnNewCharAST('\n');
 	return CHAR_LITERAL;
@@ -1200,7 +1201,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 230 "bone.l"
+#line 231 "bone.l"
 {
 	yylval.ast_value = bnNewCharAST('\t');
 	return CHAR_LITERAL;
@@ -1208,7 +1209,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 234 "bone.l"
+#line 235 "bone.l"
 {
 	yylval.ast_value = bnNewCharAST('\b');
 	return CHAR_LITERAL;
@@ -1216,7 +1217,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 238 "bone.l"
+#line 239 "bone.l"
 {
 	yylval.ast_value = bnNewCharAST(yytext[1]);
 	return CHAR_LITERAL;
@@ -1224,7 +1225,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 242 "bone.l"
+#line 243 "bone.l"
 {
 		bnBeginStringLit();
     BEGIN STRING_LITERAL_STATE;
@@ -1232,18 +1233,18 @@ YY_RULE_SETUP
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 246 "bone.l"
+#line 247 "bone.l"
 BEGIN ML_COMMENT;
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 247 "bone.l"
+#line 248 "bone.l"
 BEGIN L_COMMENT;
 	YY_BREAK
 case 51:
 /* rule 51 can match eol */
 YY_RULE_SETUP
-#line 248 "bone.l"
+#line 249 "bone.l"
 {
 	yaccLineno++;
 	bnSetParseLine(yaccLineno);
@@ -1251,20 +1252,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 252 "bone.l"
+#line 253 "bone.l"
 {
     BEGIN INITIAL;
 }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 255 "bone.l"
+#line 256 "bone.l"
 ;
 	YY_BREAK
 case 54:
 /* rule 54 can match eol */
 YY_RULE_SETUP
-#line 256 "bone.l"
+#line 257 "bone.l"
 {
 	yaccLineno++;
 	bnSetParseLine(yaccLineno);
@@ -1272,14 +1273,14 @@ YY_RULE_SETUP
 }
 	YY_BREAK
 case YY_STATE_EOF(L_COMMENT):
-#line 261 "bone.l"
+#line 262 "bone.l"
 {
 	BEGIN INITIAL;
 }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 265 "bone.l"
+#line 266 "bone.l"
 {
 	yylval.ast_value = bnEndStringLit();
   BEGIN INITIAL;
@@ -1288,59 +1289,59 @@ YY_RULE_SETUP
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 270 "bone.l"
+#line 271 "bone.l"
 {
 	bnAppendStringLit('"');
 }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 273 "bone.l"
+#line 274 "bone.l"
 {
 	bnAppendStringLit('\'');
 }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 276 "bone.l"
+#line 277 "bone.l"
 {
 	bnAppendStringLit('\r');
 }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 279 "bone.l"
+#line 280 "bone.l"
 {
 	bnAppendStringLit('\n');
 }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 282 "bone.l"
+#line 283 "bone.l"
 {
 	bnAppendStringLit('\t');
 }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 285 "bone.l"
+#line 286 "bone.l"
 {
 	bnAppendStringLit('\\');
 }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 288 "bone.l"
+#line 289 "bone.l"
 {
 	bnAppendStringLit(yytext[0]);
 }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 291 "bone.l"
+#line 292 "bone.l"
 ECHO;
 	YY_BREAK
-#line 1344 "lex.yy.c"
+#line 1345 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(ML_COMMENT):
 case YY_STATE_EOF(STRING_LITERAL_STATE):
@@ -2351,6 +2352,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 291 "bone.l"
+#line 292 "bone.l"
 
 

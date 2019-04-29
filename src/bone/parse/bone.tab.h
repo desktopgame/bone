@@ -86,11 +86,12 @@ extern int yydebug;
     EXC_OR = 296,
     DOT = 297,
     COMMA = 298,
-    NEGATIVE = 299,
-    POSITIVE = 300,
-    CHILDA = 301,
-    FUNCCALL = 302,
-    ARRAY_SUBSCRIPT = 303
+    LINE = 299,
+    NEGATIVE = 300,
+    POSITIVE = 301,
+    CHILDA = 302,
+    FUNCCALL = 303,
+    ARRAY_SUBSCRIPT = 304
   };
 #endif
 
@@ -104,7 +105,7 @@ union YYSTYPE
 	bnAST* ast_value;
 	GString* svalue;
 
-#line 108 "bone.tab.h" /* yacc.c:1916  */
+#line 109 "bone.tab.h" /* yacc.c:1916  */
 };
 
 typedef union YYSTYPE YYSTYPE;
