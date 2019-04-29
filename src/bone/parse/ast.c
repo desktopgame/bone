@@ -21,6 +21,20 @@ bnAST* bnNewBlankAST() {
         return ret;
 }
 
+bnAST* bnNewIfAST(bnAST* aexpr, bnAST* astmt) {
+        bnAST* ret = bnNewAST(BN_AST_IF);
+        bnPushAST(ret, aexpr);
+        bnPushAST(ret, astmt);
+        return ret;
+}
+
+bnAST* bnNewIfElseAST(bnAST* aif, bnAST* astmt) {
+        bnAST* ret = bnNewAST(BN_AST_IF_ELSE);
+        bnPushAST(ret, aif);
+        bnPushAST(ret, astmt);
+        return ret;
+}
+
 bnAST* bnNewArgumentAST(bnAST* aexpr) {
         bnAST* ret = bnNewAST(BN_AST_ARGUMENT);
         bnPushAST(ret, aexpr);
@@ -133,6 +147,12 @@ void bnPrintAST(FILE* fp, bnAST* self) {
                         break;
                 case BN_AST_FUNCCALL:
                         fprintf(fp, "FuncCall");
+                        break;
+                case BN_AST_IF:
+                        fprintf(fp, "if");
+                        break;
+                case BN_AST_IF_ELSE:
+                        fprintf(fp, "if-else");
                         break;
                 case BN_AST_STATEMENT_LIST:
                         fprintf(fp, "StmtList");

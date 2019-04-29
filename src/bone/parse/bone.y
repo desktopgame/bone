@@ -88,11 +88,11 @@ statement
 	| comp_stmt
 	| IF LP expression RP statement
 	{
-		$$ = bnNewBlankAST();
+		$$ = bnNewIfAST($3, $5);
 	}
 	| IF LP expression RP statement ELSE statement
 	{
-		$$ = bnNewBlankAST();
+		$$ = bnNewIfElseAST(bnNewIfAST($3, $5), $7);
 	}
 	;
 comp_stmt

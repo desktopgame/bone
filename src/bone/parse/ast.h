@@ -9,6 +9,8 @@ typedef enum bnASTTag {
         BN_AST_ARGUMENT,
         BN_AST_ARGUMENT_LIST,
         BN_AST_STATEMENT_LIST,
+        BN_AST_IF,
+        BN_AST_IF_ELSE,
         BN_AST_INT_LIT,
         BN_AST_DOUBLE_LIT,
         BN_AST_STRING_LIT,
@@ -76,6 +78,10 @@ typedef struct bnAST {
 bnAST* bnNewAST(bnASTTag tag);
 
 bnAST* bnNewBlankAST();
+
+bnAST* bnNewIfAST(bnAST* aexpr, bnAST* astmt);
+
+bnAST* bnNewIfElseAST(bnAST* aif, bnAST* astmt);
 
 bnAST* bnNewArgumentAST(bnAST* aexpr);
 
