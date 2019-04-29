@@ -114,6 +114,15 @@ void bnPrintAST(FILE* fp, bnAST* self) {
                 case BN_AST_CHAR_LIT:
                         fprintf(fp, "%c", self->u.cvalue);
                         break;
+                case BN_AST_VARIABLE:
+                        fprintf(fp, "$%s", self->u.svalue->str);
+                        break;
+                case BN_AST_BLANK:
+                        fprintf(fp, "BLANK");
+                        break;
+                case BN_AST_FUNCCALL:
+                        fprintf(fp, "FuncCall");
+                        break;
                 case BN_AST_PLUS:
                         p("+");
                 case BN_AST_POSITIVE:

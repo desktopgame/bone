@@ -206,6 +206,7 @@ expression_nobrace
 	{
 		$$ = bnNewUnaryAST(BN_AST_NOT, $2);
 	}
+	| lhs
 	;
 lhs
 	: IDENT

@@ -447,7 +447,7 @@ union yyalloc
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  7
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  49
+#define YYNRULES  50
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  92
 
@@ -504,7 +504,8 @@ static const yytype_uint8 yyrline[] =
       83,    87,    91,    95,    99,   103,   107,   111,   115,   119,
      123,   127,   131,   135,   139,   143,   147,   151,   155,   159,
      163,   167,   171,   175,   179,   183,   187,   191,   195,   198,
-     201,   205,   211,   215,   219,   223,   229,   230,   231,   232
+     201,   205,   209,   212,   216,   220,   224,   230,   231,   232,
+     233
 };
 #endif
 
@@ -569,15 +570,15 @@ static const yytype_int16 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     0,    46,    47,    48,    49,    42,     0,     0,     0,
-       0,     0,     0,     2,     8,     0,     7,     3,     9,    10,
+       0,     0,    47,    48,    49,    50,    43,     0,     0,     0,
+       0,     0,     0,     2,     8,    42,     7,     3,     9,    10,
       41,     0,    40,     1,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     6,    11,    12,    13,    14,
       15,    17,    18,    34,    35,    36,    37,    38,    39,    19,
-      16,    22,    21,    20,    43,    45,     0,     4,    23,    24,
-      25,    26,    27,    28,    29,    30,    32,    33,    31,    44,
+      16,    22,    21,    20,    44,    46,     0,     4,    23,    24,
+      25,    26,    27,    28,    29,    30,    32,    33,    31,    45,
        0,     5
 };
 
@@ -683,7 +684,8 @@ static const yytype_uint8 yyr1[] =
       54,    54,    54,    54,    54,    54,    54,    54,    54,    54,
       54,    54,    54,    54,    54,    54,    54,    54,    54,    54,
       54,    54,    54,    54,    54,    54,    54,    54,    54,    54,
-      54,    54,    55,    55,    55,    55,    56,    56,    56,    56
+      54,    54,    54,    55,    55,    55,    55,    56,    56,    56,
+      56
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -693,7 +695,8 @@ static const yytype_uint8 yyr2[] =
        2,     3,     3,     3,     3,     3,     3,     3,     3,     3,
        3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
        3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
-       2,     2,     1,     3,     4,     3,     1,     1,     1,     1
+       2,     2,     1,     1,     3,     4,     3,     1,     1,     1,
+       1
 };
 
 
@@ -1470,7 +1473,7 @@ yyreduce:
 		extern void yy_register(bnAST* a);
 		yy_register((yyvsp[0].ast_value));
 	}
-#line 1474 "bone.tab.c" /* yacc.c:1663  */
+#line 1477 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 3:
@@ -1478,7 +1481,7 @@ yyreduce:
     {
 		yyclearin;
 	}
-#line 1482 "bone.tab.c" /* yacc.c:1663  */
+#line 1485 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 4:
@@ -1486,7 +1489,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewArgumentAST((yyvsp[0].ast_value));
 	}
-#line 1490 "bone.tab.c" /* yacc.c:1663  */
+#line 1493 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 5:
@@ -1494,7 +1497,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewArgumentListAST(bnNewArgumentAST((yyvsp[0].ast_value)), (yyvsp[-2].ast_value));
 	}
-#line 1498 "bone.tab.c" /* yacc.c:1663  */
+#line 1501 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 6:
@@ -1502,7 +1505,7 @@ yyreduce:
     {
 		(yyval.ast_value) = (yyvsp[-1].ast_value);
 	}
-#line 1506 "bone.tab.c" /* yacc.c:1663  */
+#line 1509 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 9:
@@ -1510,7 +1513,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewUnaryAST(BN_AST_POSITIVE, (yyvsp[0].ast_value));
 	}
-#line 1514 "bone.tab.c" /* yacc.c:1663  */
+#line 1517 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 10:
@@ -1518,7 +1521,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewUnaryAST(BN_AST_NEGATIVE, (yyvsp[0].ast_value));
 	}
-#line 1522 "bone.tab.c" /* yacc.c:1663  */
+#line 1525 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 11:
@@ -1526,7 +1529,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_PLUS, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1530 "bone.tab.c" /* yacc.c:1663  */
+#line 1533 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 12:
@@ -1534,7 +1537,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_MINUS, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1538 "bone.tab.c" /* yacc.c:1663  */
+#line 1541 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 13:
@@ -1542,7 +1545,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_MULTIPLY, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1546 "bone.tab.c" /* yacc.c:1663  */
+#line 1549 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 14:
@@ -1550,7 +1553,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_DIVIDE, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1554 "bone.tab.c" /* yacc.c:1663  */
+#line 1557 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 15:
@@ -1558,7 +1561,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_MODULO, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1562 "bone.tab.c" /* yacc.c:1663  */
+#line 1565 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 16:
@@ -1566,7 +1569,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_BIT_OR, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1570 "bone.tab.c" /* yacc.c:1663  */
+#line 1573 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 17:
@@ -1574,7 +1577,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_EQUAL, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1578 "bone.tab.c" /* yacc.c:1663  */
+#line 1581 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 18:
@@ -1582,7 +1585,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_NOTEQUAL, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1586 "bone.tab.c" /* yacc.c:1663  */
+#line 1589 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 19:
@@ -1590,7 +1593,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_BIT_AND, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1594 "bone.tab.c" /* yacc.c:1663  */
+#line 1597 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 20:
@@ -1598,7 +1601,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_EXC_OR, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1602 "bone.tab.c" /* yacc.c:1663  */
+#line 1605 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 21:
@@ -1606,7 +1609,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_LOGIC_OR, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1610 "bone.tab.c" /* yacc.c:1663  */
+#line 1613 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 22:
@@ -1614,7 +1617,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_LOGIC_AND, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1618 "bone.tab.c" /* yacc.c:1663  */
+#line 1621 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 23:
@@ -1622,7 +1625,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_ASSIGN, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1626 "bone.tab.c" /* yacc.c:1663  */
+#line 1629 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 24:
@@ -1630,7 +1633,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_PLUS_ASSIGN, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1634 "bone.tab.c" /* yacc.c:1663  */
+#line 1637 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 25:
@@ -1638,7 +1641,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_MINUS_ASSIGN, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1642 "bone.tab.c" /* yacc.c:1663  */
+#line 1645 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 26:
@@ -1646,7 +1649,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_MULTIPLY_ASSIGN, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1650 "bone.tab.c" /* yacc.c:1663  */
+#line 1653 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 27:
@@ -1654,7 +1657,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_DIVIDE_ASSIGN, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1658 "bone.tab.c" /* yacc.c:1663  */
+#line 1661 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 28:
@@ -1662,7 +1665,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_MODULO_ASSIGN, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1666 "bone.tab.c" /* yacc.c:1663  */
+#line 1669 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 29:
@@ -1670,7 +1673,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_AND_ASSIGN, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1674 "bone.tab.c" /* yacc.c:1663  */
+#line 1677 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 30:
@@ -1678,7 +1681,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_OR_ASSIGN, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1682 "bone.tab.c" /* yacc.c:1663  */
+#line 1685 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 31:
@@ -1686,7 +1689,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_EXC_OR_ASSIGN, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1690 "bone.tab.c" /* yacc.c:1663  */
+#line 1693 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 32:
@@ -1694,7 +1697,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_LSHIFT_ASSIGN, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1698 "bone.tab.c" /* yacc.c:1663  */
+#line 1701 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 33:
@@ -1702,7 +1705,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_RSHIFT_ASSIGN, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1706 "bone.tab.c" /* yacc.c:1663  */
+#line 1709 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 34:
@@ -1710,7 +1713,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_GT, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1714 "bone.tab.c" /* yacc.c:1663  */
+#line 1717 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 35:
@@ -1718,7 +1721,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_GE, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1722 "bone.tab.c" /* yacc.c:1663  */
+#line 1725 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 36:
@@ -1726,7 +1729,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_LT, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1730 "bone.tab.c" /* yacc.c:1663  */
+#line 1733 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 37:
@@ -1734,7 +1737,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_LE, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1738 "bone.tab.c" /* yacc.c:1663  */
+#line 1741 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 38:
@@ -1742,7 +1745,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_LSHIFT, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1746 "bone.tab.c" /* yacc.c:1663  */
+#line 1749 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 39:
@@ -1750,7 +1753,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewBinaryAST(BN_AST_RSHIFT, (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
-#line 1754 "bone.tab.c" /* yacc.c:1663  */
+#line 1757 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 40:
@@ -1758,7 +1761,7 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewUnaryAST(BN_AST_CHILDA, (yyvsp[0].ast_value));
 	}
-#line 1762 "bone.tab.c" /* yacc.c:1663  */
+#line 1765 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 41:
@@ -1766,43 +1769,43 @@ yyreduce:
     {
 		(yyval.ast_value) = bnNewUnaryAST(BN_AST_NOT, (yyvsp[0].ast_value));
 	}
-#line 1770 "bone.tab.c" /* yacc.c:1663  */
-    break;
-
-  case 42:
-#line 212 "bone.y" /* yacc.c:1663  */
-    {
-		(yyval.ast_value) = bnNewVariableAST((yyvsp[0].svalue));
-	}
-#line 1778 "bone.tab.c" /* yacc.c:1663  */
+#line 1773 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 43:
-#line 216 "bone.y" /* yacc.c:1663  */
+#line 213 "bone.y" /* yacc.c:1663  */
     {
-		(yyval.ast_value) = bnNewMemberAccessAST((yyvsp[-2].ast_value), (yyvsp[0].svalue));
+		(yyval.ast_value) = bnNewVariableAST((yyvsp[0].svalue));
 	}
-#line 1786 "bone.tab.c" /* yacc.c:1663  */
+#line 1781 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 44:
-#line 220 "bone.y" /* yacc.c:1663  */
+#line 217 "bone.y" /* yacc.c:1663  */
     {
-		(yyval.ast_value) = bnNewFuncCall((yyvsp[-3].ast_value), (yyvsp[-1].ast_value));
+		(yyval.ast_value) = bnNewMemberAccessAST((yyvsp[-2].ast_value), (yyvsp[0].svalue));
 	}
-#line 1794 "bone.tab.c" /* yacc.c:1663  */
+#line 1789 "bone.tab.c" /* yacc.c:1663  */
     break;
 
   case 45:
-#line 224 "bone.y" /* yacc.c:1663  */
+#line 221 "bone.y" /* yacc.c:1663  */
+    {
+		(yyval.ast_value) = bnNewFuncCall((yyvsp[-3].ast_value), (yyvsp[-1].ast_value));
+	}
+#line 1797 "bone.tab.c" /* yacc.c:1663  */
+    break;
+
+  case 46:
+#line 225 "bone.y" /* yacc.c:1663  */
     {
 		(yyval.ast_value) = bnNewFuncCall((yyvsp[-2].ast_value), bnNewBlankAST());
 	}
-#line 1802 "bone.tab.c" /* yacc.c:1663  */
+#line 1805 "bone.tab.c" /* yacc.c:1663  */
     break;
 
 
-#line 1806 "bone.tab.c" /* yacc.c:1663  */
+#line 1809 "bone.tab.c" /* yacc.c:1663  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2036,4 +2039,4 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 234 "bone.y" /* yacc.c:1907  */
+#line 235 "bone.y" /* yacc.c:1907  */
