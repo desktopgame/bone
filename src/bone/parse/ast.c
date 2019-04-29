@@ -1,6 +1,7 @@
 #include "ast.h"
 #include <assert.h>
 #include <stdio.h>
+#include "parser.h"
 
 // proto
 static void ast_child_delete(gpointer item);
@@ -10,6 +11,8 @@ bnAST* bnNewAST(bnASTTag tag) {
         bnAST* ret = (bnAST*)BN_MALLOC(sizeof(bnAST));
         ret->tag = tag;
         ret->children = NULL;
+        ret->line = bnGetParseLine();
+        bnPushParseLine(ret->line);
         return ret;
 }
 
@@ -91,6 +94,7 @@ bnAST* bnNewBinaryAST(bnASTTag tag, bnAST* left, bnAST* right) {
 void bnPushAST(bnAST* self, bnAST* a) {
         assert(self != NULL && a != NULL);
         self->children = g_list_append(self->children, a);
+        self->line = bnPopParseLine();
 }
 
 void bnDumpAST(FILE* fp, bnAST* self) { bnDumpASTImpl(fp, self, 0); }
@@ -191,6 +195,7 @@ void bnPrintAST(FILE* fp, bnAST* self) {
                         fprintf(fp, "undefined");
                         break;
         }
+        fprintf(fp, "<%d>", self->line);
 #undef p
 }
 

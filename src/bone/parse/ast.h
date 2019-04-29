@@ -69,6 +69,7 @@ typedef struct bnAST {
         } u;
         GList* children;
         bnASTTag tag;
+        int line;
 } bnAST;
 
 bnAST* bnNewAST(bnASTTag tag);

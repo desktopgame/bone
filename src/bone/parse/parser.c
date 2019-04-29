@@ -8,7 +8,9 @@ static bnParserInputTag gParserInputTag;
 static int gLine = -1;
 static int gColumn = -1;
 static GString *gStr = NULL;
+static GQueue *gLineQ = NULL;
 static void init_string_lit();
+static void free_lq();
 
 bnAST *bnParseFile(const char *filename) {
         gParserInputTag = BN_PARSER_INPUT_FROM_FILE;
@@ -23,10 +25,13 @@ bnAST *bnParseFile(const char *filename) {
         }
         yy_calc_start();
         yyin = fp;
+        gLineQ = g_queue_new();
         if (yyparse()) {
                 //失敗
+                free_lq();
                 return NULL;
         }
+        free_lq();
         return yy_release();
 }
 
@@ -39,11 +44,14 @@ bnAST *bnParseString(const char *source) {
         extern bnAST *yy_release();
         yy_calc_start();
         yy_setstr(strdup(source));
+        gLineQ = g_queue_new();
         if (yyparse()) {
                 yy_clearstr();
+                free_lq();
                 return NULL;
         }
         yy_clearstr();
+        free_lq();
         return yy_release();
 }
 
@@ -70,8 +78,28 @@ void bnSetParseColumn(int column) { gColumn = column; }
 
 int bnGetParseColumn() { return gColumn; }
 
+void bnPushParseLine(int lineno) {
+        if (gLineQ == NULL) {
+                return;
+        }
+        g_queue_push_head(gLineQ, GINT_TO_POINTER(lineno));
+}
+
+int bnPopParseLine() {
+        guint len = g_queue_get_length(gLineQ);
+        if (len == 0) {
+                return -1;
+        }
+        return g_queue_pop_head(gLineQ);
+}
+
 // private
 static void init_string_lit() {
         assert(gStr == NULL);
         gStr = g_string_new(NULL);
+}
+
+static void free_lq() {
+        g_queue_free(gLineQ);
+        gLineQ = NULL;
 }

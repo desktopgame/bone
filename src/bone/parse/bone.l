@@ -65,6 +65,7 @@ static int file_input(char *buf, int max_size) {
 
 void yy_calc_start() {
 	yaccLineno = 0;
+	bnSetParseLine(yaccLineno);
 	yaccNode = bnNewAST(BN_AST_ROOT);
 }
 

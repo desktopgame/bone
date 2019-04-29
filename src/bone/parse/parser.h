@@ -26,4 +26,8 @@ int bnGetParseLine();
 void bnSetParseColumn(int column);
 
 int bnGetParseColumn();
+
+void bnPushParseLine(int lineno);
+
+int bnPopParseLine();
 #endif
