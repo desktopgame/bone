@@ -8,7 +8,7 @@ typedef enum bnASTTag {
         BN_AST_BLANK,
         BN_AST_ARGUMENT,
         BN_AST_ARGUMENT_LIST,
-        BN_AST_EXPRESSION_LIST,
+        BN_AST_STATEMENT_LIST,
         BN_AST_INT_LIT,
         BN_AST_DOUBLE_LIT,
         BN_AST_STRING_LIT,
@@ -81,7 +81,7 @@ bnAST* bnNewArgumentAST(bnAST* aexpr);
 
 bnAST* bnNewArgumentListAST(bnAST* aexpr, bnAST* aargs);
 
-bnAST* bnNewExpressionListAST(bnAST* aexpr, bnAST* aexprList);
+bnAST* bnNewStatementListAST(bnAST* astmt, bnAST* astmtList);
 
 bnAST* bnNewVariableAST(GString* svalue);
 

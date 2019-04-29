@@ -149,6 +149,7 @@ static void update_loc() {
 %start ML_COMMENT L_COMMENT STRING_LITERAL_STATE
 %%
 
+<INITIAL>";"				{ return (SEMICOLON); }
 <INITIAL>"."				{ return (DOT); }
 <INITIAL>","				{ return (COMMA); }
 <INITIAL>"+"				{ return (ADD); }
@@ -203,7 +204,6 @@ static void update_loc() {
 <INITIAL>"\n" {
 	yaccLineno++;
 	bnSetParseLine(yaccLineno);
-	return LINE;
 }
 
 <INITIAL>[1-9][0-9]* {

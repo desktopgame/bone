@@ -86,7 +86,7 @@ extern int yydebug;
     EXC_OR = 296,
     DOT = 297,
     COMMA = 298,
-    LINE = 299,
+    SEMICOLON = 299,
     NEGATIVE = 300,
     POSITIVE = 301,
     CHILDA = 302,
