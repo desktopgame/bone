@@ -150,6 +150,8 @@ static void update_loc() {
 %%
 
 <INITIAL>";"				{ return (SEMICOLON); }
+<INITIAL>"if"				{ return (IF); }
+<INITIAL>"else"			{ return (ELSE); }
 <INITIAL>"."				{ return (DOT); }
 <INITIAL>","				{ return (COMMA); }
 <INITIAL>"+"				{ return (ADD); }
@@ -195,6 +197,9 @@ static void update_loc() {
 
 <INITIAL>"("				{ return (LP); }
 <INITIAL>")"			{ return (RP); }
+
+<INITIAL>"{"				{ return (LB); }
+<INITIAL>"}"			{ return (RB); }
 
 <INITIAL>"0" {
 	yylval.ast_value = bnNewIntAST(0);

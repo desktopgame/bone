@@ -1,0 +1,7 @@
+if(cond) {
+    a();
+} else if(cond) {
+    b();
+} else if(cond) {
+    c();
+}

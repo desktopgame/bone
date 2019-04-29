@@ -22,13 +22,14 @@
 		AND_ASSIGN OR_ASSIGN LSHIFT_ASSIGN RSHIFT_ASSIGN EXC_OR_ASSIGN
 		EQUAL NOTEQUAL INC DEC
 		GT GE LT LE LSHIFT RSHIFT
-		NOT BIT_AND BIT_OR LOGIC_AND LOGIC_OR LP RP
+		NOT BIT_AND BIT_OR LOGIC_AND LOGIC_OR LP RP LB RB IF ELSE
 		EXC_OR
 		DOT COMMA SEMICOLON
 %type <ast_value>
 	argument_list
 	statement_list
 	statement
+	comp_stmt
 	expression
 	expression_nobrace
 	lhs
@@ -83,6 +84,21 @@ statement
 	: expression SEMICOLON
 	{
 		$$ = $1;
+	}
+	| comp_stmt
+	| IF LP expression RP statement
+	{
+		$$ = bnNewBlankAST();
+	}
+	| IF LP expression RP statement ELSE statement
+	{
+		$$ = bnNewBlankAST();
+	}
+	;
+comp_stmt
+	: LB statement_list RB
+	{
+		$$ = $2;
 	}
 	;
 expression
