@@ -3,9 +3,9 @@
 #include <stdlib.h>
 
 #if DEBUG
-#define BN_MALLOC(size) bnMallocFunc(size, __FILE__, __LINE__)
-#define BN_REALLOC(block, size) bnReallocFunc(block, size, __FILE__, __LINE__)
-#define BN_FREE(block) bnFreeFunc(block, __FILE__, __LINE__)
+#define BN_MALLOC(size) (bnMallocFunc(size, __FILE__, __LINE__))
+#define BN_REALLOC(block, size) (bnReallocFunc(block, size, __FILE__, __LINE__))
+#define BN_FREE(block) (bnFreeFunc(block, __FILE__, __LINE__))
 #else
 #define BN_MALLOC(size) (bnSafeMalloc(size))
 #define BN_REALLOC(block, size) (bnSafeRealloc(block, size))
