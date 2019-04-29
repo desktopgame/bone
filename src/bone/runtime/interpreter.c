@@ -11,7 +11,7 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef) {
 int bnEval(bnInterpreter* self) {
         bnAST* ret = bnParseFile(self->filenameRef);
         int code = ret == NULL ? 1 : 0;
-        bnDumpAST(ret);
+        bnDumpAST(stdout, ret);
         bnDeleteAST(ret);
         return code;
 }

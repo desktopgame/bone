@@ -1,5 +1,6 @@
 #ifndef BONE_PARSE_PARSE_AST_H
 #define BONE_PARSE_PARSE_AST_H
+#include <stdio.h>
 #include "../bone.h"
 
 typedef enum bnASTTag {
@@ -98,9 +99,9 @@ bnAST* bnNewBinaryAST(bnASTTag tag, bnAST* left, bnAST* right);
 
 void bnPushAST(bnAST* self, bnAST* a);
 
-void bnDumpAST(bnAST* self);
+void bnDumpAST(FILE* fp, bnAST* self);
 
-void bnPrintAST(bnAST* self);
+void bnPrintAST(FILE* fp, bnAST* self);
 
 void bnDeleteAST(bnAST* self);
 

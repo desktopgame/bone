@@ -4,7 +4,7 @@
 
 // proto
 static void ast_child_delete(gpointer item);
-static void bnDumpASTImpl(bnAST* self, int depth);
+static void bnDumpASTImpl(FILE* fp, bnAST* self, int depth);
 
 bnAST* bnNewAST(bnASTTag tag) {
         bnAST* ret = (bnAST*)BN_MALLOC(sizeof(bnAST));
@@ -93,26 +93,26 @@ void bnPushAST(bnAST* self, bnAST* a) {
         self->children = g_list_append(self->children, a);
 }
 
-void bnDumpAST(bnAST* self) { bnDumpASTImpl(self, 0); }
+void bnDumpAST(FILE* fp, bnAST* self) { bnDumpASTImpl(fp, self, 0); }
 
-void bnPrintAST(bnAST* self) {
-#define p(a)         \
-        printf((a)); \
+void bnPrintAST(FILE* fp, bnAST* self) {
+#define p(a)              \
+        fprintf(fp, (a)); \
         break
         switch (self->tag) {
                 case BN_AST_ROOT:
                         p("root");
                 case BN_AST_INT_LIT:
-                        printf("%d", self->u.ivalue);
+                        fprintf(fp, "%d", self->u.ivalue);
                         break;
                 case BN_AST_DOUBLE_LIT:
-                        printf("%lf", self->u.dvalue);
+                        fprintf(fp, "%lf", self->u.dvalue);
                         break;
                 case BN_AST_STRING_LIT:
-                        printf("%s", self->u.svalue->str);
+                        fprintf(fp, "%s", self->u.svalue->str);
                         break;
                 case BN_AST_CHAR_LIT:
-                        printf("%c", self->u.cvalue);
+                        fprintf(fp, "%c", self->u.cvalue);
                         break;
                 case BN_AST_PLUS:
                         p("+");
@@ -176,7 +176,7 @@ void bnPrintAST(bnAST* self) {
                 case BN_AST_MODULO_ASSIGN:
                         p("%%=");
                 default:
-                        printf("undefined");
+                        fprintf(fp, "undefined");
                         break;
         }
 #undef p
@@ -289,16 +289,16 @@ static void ast_child_delete(gpointer item) {
         bnDeleteAST(e);
 }
 
-static void bnDumpASTImpl(bnAST* self, int depth) {
+static void bnDumpASTImpl(FILE* fp, bnAST* self, int depth) {
         for (int i = 0; i < depth; i++) {
-                printf(" ");
+                fprintf(fp, " ");
         }
-        bnPrintAST(self);
-        printf("\n");
+        bnPrintAST(fp, self);
+        fprintf(fp, "\n");
         GList* iter = self->children;
         while (iter != NULL) {
                 bnAST* e = iter->data;
-                bnDumpASTImpl(e, depth + 1);
+                bnDumpASTImpl(fp, e, depth + 1);
                 iter = iter->next;
         }
 }
