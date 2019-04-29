@@ -24,7 +24,7 @@
 		GT GE LT LE LSHIFT RSHIFT
 		NOT BIT_AND BIT_OR LOGIC_AND LOGIC_OR LP RP LB RB IF ELSE
 		EXC_OR
-		DOT COMMA SEMICOLON
+		DOT COMMA SEMICOLON WHILE
 %type <ast_value>
 	argument_list
 	statement_list
@@ -93,6 +93,10 @@ statement
 	| IF LP expression RP statement ELSE statement
 	{
 		$$ = bnNewIfElseAST(bnNewIfAST($3, $5), $7);
+	}
+	| WHILE LP expression RP statement
+	{
+		$$ = bnNewWhileAST($3, $5);
 	}
 	;
 comp_stmt

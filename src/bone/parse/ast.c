@@ -35,6 +35,13 @@ bnAST* bnNewIfElseAST(bnAST* aif, bnAST* astmt) {
         return ret;
 }
 
+bnAST* bnNewWhileAST(bnAST* aexpr, bnAST* astmt) {
+        bnAST* ret = bnNewAST(BN_AST_WHILE);
+        bnPushAST(ret, aexpr);
+        bnPushAST(ret, astmt);
+        return ret;
+}
+
 bnAST* bnNewArgumentAST(bnAST* aexpr) {
         bnAST* ret = bnNewAST(BN_AST_ARGUMENT);
         bnPushAST(ret, aexpr);
@@ -153,6 +160,9 @@ void bnPrintAST(FILE* fp, bnAST* self) {
                         break;
                 case BN_AST_IF_ELSE:
                         fprintf(fp, "if-else");
+                        break;
+                case BN_AST_WHILE:
+                        fprintf(fp, "while");
                         break;
                 case BN_AST_STATEMENT_LIST:
                         fprintf(fp, "StmtList");

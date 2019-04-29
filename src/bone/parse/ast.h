@@ -11,6 +11,7 @@ typedef enum bnASTTag {
         BN_AST_STATEMENT_LIST,
         BN_AST_IF,
         BN_AST_IF_ELSE,
+        BN_AST_WHILE,
         BN_AST_INT_LIT,
         BN_AST_DOUBLE_LIT,
         BN_AST_STRING_LIT,
@@ -82,6 +83,8 @@ bnAST* bnNewBlankAST();
 bnAST* bnNewIfAST(bnAST* aexpr, bnAST* astmt);
 
 bnAST* bnNewIfElseAST(bnAST* aif, bnAST* astmt);
+
+bnAST* bnNewWhileAST(bnAST* aexpr, bnAST* astmt);
 
 bnAST* bnNewArgumentAST(bnAST* aexpr);
 
