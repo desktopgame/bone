@@ -50,6 +50,7 @@
 %right ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN AND_ASSIGN OR_ASSIGN LSHIFT_ASSIGN RSHIFT_ASSIGN EXC_OR_ASSIGN
 %right CHILDA NOT
 %left DOT FUNCCALL ARRAY_SUBSCRIPT
+%nonassoc LP
 %%
 program
 	: statement_list
@@ -257,6 +258,14 @@ expression_nobrace
 		$$ = bnNewUnaryAST(BN_AST_NOT, $2);
 	}
 	| lhs
+	| expression LP argument_list RP %prec FUNCCALL
+	{
+		$$ = bnNewFuncCall($1, $3);
+	}
+	| expression LP RP %prec FUNCCALL
+	{
+		$$ = bnNewFuncCall($1, bnNewBlankAST());
+	}
 	;
 lambda_expr
 	: DEF LP parameter_list RP comp_stmt
@@ -284,14 +293,6 @@ lhs
 	| expression DOT IDENT
 	{
 		$$ = bnNewMemberAccessAST($1, $3);
-	}
-	| expression_nobrace LP argument_list RP %prec FUNCCALL
-	{
-		$$ = bnNewFuncCall($1, $3);
-	}
-	| expression_nobrace LP RP %prec FUNCCALL
-	{
-		$$ = bnNewFuncCall($1, bnNewBlankAST());
 	}
 	;
 primary
