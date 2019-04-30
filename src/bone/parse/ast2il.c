@@ -3,9 +3,19 @@
 #include "../il/il_expr_all.h"
 #include "../il/il_stmt_all.h"
 
+static bnILExprBinOp* ast2ilbinop(bnAST* a, bnILBinOpType type);
 static bnILExpression* ast2expr(bnAST* a);
 static bnILStatement* ast2stmt(bnAST* a);
 static void ast2stmts(bnAST* a, GList* dest);
+
+static bnILExprBinOp* ast2ilbinop(bnAST* a, bnILBinOpType type) {
+        bnILExprBinOp* ret = bnNewILExprBinOp(type);
+        bnAST* left = bnFirstAST(a);
+        bnAST* right = bnSecondAST(a);
+        ret->left = ast2expr(left);
+        ret->left = ast2expr(right);
+        return ret;
+}
 
 static bnILExpression* ast2expr(bnAST* a) {
         bnILExpression* ret = bnNewILExpression(BN_IL_EXPR_NONE);
@@ -21,6 +31,21 @@ static bnILExpression* ast2expr(bnAST* a) {
         } else if (a->tag == BN_AST_STRING_LIT) {
                 ret->type = BN_IL_EXPR_STRING;
                 ret->u.vString = bnNewILExprString(a->u.svalue);
+        } else if (a->tag == BN_AST_PLUS) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_PLUS);
+        } else if (a->tag == BN_AST_MINUS) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_MINUS);
+        } else if (a->tag == BN_AST_MULTIPLY) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_MULTIPLY);
+        } else if (a->tag == BN_AST_DIVIDE) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_DIVIDE);
+        } else if (a->tag == BN_AST_MODULO) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_MODULO);
         }
         return ret;
 }
