@@ -23,7 +23,8 @@ static GList* ast2args(bnAST* a, GList* dest) {
                 }
                 return dest;
         } else {
-                return g_list_append(dest, ast2expr(a));
+                bnAST* aexpr = bnFirstAST(a);
+                return g_list_append(dest, ast2expr(aexpr));
         }
 }
 
