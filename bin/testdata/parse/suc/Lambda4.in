@@ -1,0 +1,3 @@
+fn := def(paramA, paramB) (returnA, returnB) {
+    hoge();
+};

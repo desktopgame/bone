@@ -8,7 +8,10 @@ typedef enum bnASTTag {
         BN_AST_BLANK,
         BN_AST_ARGUMENT,
         BN_AST_ARGUMENT_LIST,
+        BN_AST_PARAMETER,
+        BN_AST_PARAMETER_LIST,
         BN_AST_STATEMENT_LIST,
+        BN_AST_LAMBDA,
         BN_AST_EXPRSTMT,
         BN_AST_IF,
         BN_AST_IF_ELSE,
@@ -93,6 +96,12 @@ bnAST* bnNewArgumentAST(bnAST* aexpr);
 
 bnAST* bnNewArgumentListAST(bnAST* aexpr, bnAST* aargs);
 
+bnAST* bnNewParameterAST(GString* name);
+
+bnAST* bnNewParameterListAST(bnAST* aparam, bnAST* aparams);
+
+bnAST* bnNewLambda(bnAST* aparams, bnAST* areturn, bnAST* astmt);
+
 bnAST* bnNewStatementListAST(bnAST* astmt, bnAST* astmtList);
 
 bnAST* bnNewVariableAST(GString* svalue);
@@ -124,6 +133,8 @@ void bnDeleteAST(bnAST* self);
 bnAST* bnFirstAST(bnAST* self);
 
 bnAST* bnSecondAST(bnAST* self);
+
+bnAST* bnThirdAST(bnAST* self);
 
 double bnEvalAST(bnAST* self);
 #endif

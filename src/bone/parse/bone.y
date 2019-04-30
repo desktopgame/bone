@@ -24,14 +24,16 @@
 		GT GE LT LE LSHIFT RSHIFT
 		NOT BIT_AND BIT_OR LOGIC_AND LOGIC_OR LP RP LB RB IF ELSE
 		EXC_OR
-		DOT COMMA SEMICOLON WHILE
+		DOT COMMA SEMICOLON WHILE DEF
 %type <ast_value>
 	argument_list
+	parameter_list
 	statement_list
 	statement
 	comp_stmt
 	expression
 	expression_nobrace
+	lambda_expr
 	lhs
 	primary
 %left EQUAL NOTEQUAL
@@ -68,6 +70,16 @@ argument_list
 	| argument_list COMMA expression
 	{
 		$$ = bnNewArgumentListAST(bnNewArgumentAST($3), $1);
+	}
+	;
+parameter_list
+	: IDENT
+	{
+		$$ = bnNewParameterAST($1);
+	}
+	| parameter_list COMMA IDENT
+	{
+		$$ = bnNewParameterListAST(bnNewParameterAST($3), $1);
 	}
 	;
 statement_list
@@ -246,6 +258,24 @@ expression_nobrace
 	}
 	| lhs
 	;
+lambda_expr
+	: DEF LP parameter_list RP comp_stmt
+	{
+		$$ = bnNewLambda($3, bnNewBlankAST(), $5);
+	}
+	| DEF LP RP comp_stmt
+	{
+		$$ = bnNewLambda(bnNewBlankAST(), bnNewBlankAST(), $4);
+	}
+	| DEF LP parameter_list RP LP parameter_list RP comp_stmt
+	{
+		$$ = bnNewLambda($3, $6, $8);
+	}
+	| DEF LP RP LP parameter_list RP comp_stmt
+	{
+		$$ = bnNewLambda(bnNewBlankAST(), $5, $7);
+	}
+	;
 lhs
 	: IDENT
 	{
@@ -269,5 +299,6 @@ primary
 	| DOUBLE
 	| STRING_LITERAL
 	| CHAR_LITERAL
+	| lambda_expr
 	;
 %%

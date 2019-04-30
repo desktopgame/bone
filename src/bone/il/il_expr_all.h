@@ -6,6 +6,7 @@
 #include "il_expr_double.h"
 #include "il_expr_funccallop.h"
 #include "il_expr_int.h"
+#include "il_expr_lambda.h"
 #include "il_expr_memberop.h"
 #include "il_expr_string.h"
 #include "il_expr_uop.h"

@@ -151,6 +151,7 @@ static void update_loc() {
 
 <INITIAL>";"				{ return (SEMICOLON); }
 <INITIAL>"if"				{ return (IF); }
+<INITIAL>"def"				{ return (DEF); }
 <INITIAL>"else"			{ return (ELSE); }
 <INITIAL>"while"		{ return (WHILE); }
 <INITIAL>"."				{ return (DOT); }

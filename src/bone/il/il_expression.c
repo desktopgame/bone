@@ -39,6 +39,9 @@ void bnDumpILExpression(FILE* fp, bnILExpression* self, int depth) {
                 case BN_IL_EXPR_VARIABLE:
                         bnDumpILExprVariable(fp, self->u.vVariable, depth);
                         break;
+                case BN_IL_EXPR_LAMBDA:
+                        bnDumpILExprLambda(fp, self->u.vLambda, depth);
+                        break;
                 default:
                         assert(false);
                         break;

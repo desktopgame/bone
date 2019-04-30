@@ -61,6 +61,27 @@ bnAST* bnNewArgumentListAST(bnAST* aexpr, bnAST* aargs) {
         return ret;
 }
 
+bnAST* bnNewParameterAST(GString* name) {
+        bnAST* ret = bnNewAST(BN_AST_PARAMETER);
+        ret->u.svalue = name;
+        return ret;
+}
+
+bnAST* bnNewParameterListAST(bnAST* aparam, bnAST* aparams) {
+        bnAST* ret = bnNewAST(BN_AST_PARAMETER_LIST);
+        bnPushAST(ret, aparams);
+        bnPushAST(ret, aparam);
+        return ret;
+}
+
+bnAST* bnNewLambda(bnAST* aparams, bnAST* areturn, bnAST* astmt) {
+        bnAST* ret = bnNewAST(BN_AST_LAMBDA);
+        bnPushAST(ret, aparams);
+        bnPushAST(ret, areturn);
+        bnPushAST(ret, astmt);
+        return ret;
+}
+
 bnAST* bnNewStatementListAST(bnAST* astmt, bnAST* astmtList) {
         bnAST* ret = bnNewAST(BN_AST_STATEMENT_LIST);
         bnPushAST(ret, astmt);
@@ -256,6 +277,8 @@ void bnDeleteAST(bnAST* self) {
 bnAST* bnFirstAST(bnAST* self) { return self->children->data; }
 
 bnAST* bnSecondAST(bnAST* self) { return self->children->next->data; }
+
+bnAST* bnThirdAST(bnAST* self) { return self->children->next->next->data; }
 
 double bnEvalAST(bnAST* self) {
         if (self->tag == BN_AST_INT_LIT) {

@@ -4,11 +4,28 @@
 #include "../il/il_stmt_all.h"
 #include "../il/il_toplevel.h"
 
+static GList* ast2params(bnAST* a, GList* dest);
 static GList* ast2args(bnAST* a, GList* dest);
 static bnILExprBinOp* ast2ilbinop(bnAST* a, bnILBinOpType type);
 static bnILExpression* ast2expr(bnAST* a);
 static bnILStatement* ast2stmt(bnAST* a);
 static GList* ast2stmts(bnAST* a, GList* dest);
+
+static GList* ast2params(bnAST* a, GList* dest) {
+        if (a->tag == BN_AST_BLANK) {
+                return dest;
+        }
+        if (a->tag == BN_AST_PARAMETER_LIST) {
+                GList* iter = a->children;
+                while (iter != NULL) {
+                        dest = ast2params(iter->data, dest);
+                        iter = iter->next;
+                }
+                return dest;
+        } else {
+                return g_list_append(dest, a->u.svalue);
+        }
+}
 
 static GList* ast2args(bnAST* a, GList* dest) {
         if (a->tag == BN_AST_BLANK) {
@@ -83,6 +100,17 @@ static bnILExpression* ast2expr(bnAST* a) {
                 bnAST* aargs = bnSecondAST(a);
                 ret->u.vFuncCallOp = bnNewILExprFuncCallOp(ast2expr(aexpr));
                 ast2args(aargs, ret->u.vFuncCallOp->arguments);
+        } else if (a->tag == BN_AST_LAMBDA) {
+                ret->type = BN_IL_EXPR_LAMBDA;
+                bnILExprLambda* illambda = bnNewILExprLambda();
+                bnAST* aparams = bnFirstAST(a);
+                bnAST* areturns = bnSecondAST(a);
+                bnAST* astmt = bnThirdAST(a);
+                illambda->parameters =
+                    ast2params(aparams, illambda->parameters);
+                illambda->returns = ast2params(areturns, illambda->returns);
+                illambda->statements = ast2stmts(astmt, illambda->statements);
+                ret->u.vLambda = illambda;
         } else {
                 assert(false);
         }
