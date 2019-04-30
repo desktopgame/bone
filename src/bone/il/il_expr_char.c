@@ -1,6 +1,6 @@
 #include "il_expr_char.h"
 
-bnILExprChar* bnNewILExprDouble(char value) {
+bnILExprChar* bnNewILExprChar(char value) {
         bnILExprChar* ret = BN_MALLOC(sizeof(bnILExprChar));
         ret->value = value;
         return ret;
@@ -8,7 +8,7 @@ bnILExprChar* bnNewILExprDouble(char value) {
 
 void bnDumpILExprChar(FILE* fp, bnILExprChar* self, int depth) {
         bnFindent(fp, depth);
-        fprintf(fp, "%c\n");
+        fprintf(fp, "char %c\n", self->value);
 }
 
-void bnDeleteILExprDouble(bnILExprChar* self) { BN_FREE(self); }
+void bnDeleteILExprChar(bnILExprChar* self) { BN_FREE(self); }

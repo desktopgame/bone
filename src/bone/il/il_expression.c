@@ -24,7 +24,23 @@ void bnDumpILExpression(FILE* fp, bnILExpression* self, int depth) {
                 case BN_IL_EXPR_STRING:
                         bnDumpILExprString(fp, self->u.vString, depth);
                         break;
+                case BN_IL_EXPR_BINOP:
+                        bnDumpILExprBinOp(fp, self->u.vBinOp, depth);
+                        break;
+                case BN_IL_EXPR_UOP:
+                        bnDumpILExprUOp(fp, self->u.vUOp, depth);
+                        break;
+                case BN_IL_EXPR_MEMBEROP:
+                        bnDumpILExprMemberOp(fp, self->u.vMemberOp, depth);
+                        break;
+                case BN_IL_EXPR_FUNCCALLOP:
+                        bnDumpILExprFuncCallOp(fp, self->u.vFuncCallOp, depth);
+                        break;
+                case BN_IL_EXPR_VARIABLE:
+                        bnDumpILExprVariable(fp, self->u.vVariable, depth);
+                        break;
                 default:
+                        assert(false);
                         break;
         }
 }
@@ -40,6 +56,10 @@ void bnDeleteILExpression(bnILExpression* self) {
                 case BN_IL_EXPR_CHAR:
                         break;
                 case BN_IL_EXPR_STRING:
+                        break;
+                case BN_IL_EXPR_FUNCCALLOP:
+                        break;
+                case BN_IL_EXPR_VARIABLE:
                         break;
                 default:
                         break;

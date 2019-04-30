@@ -25,6 +25,7 @@ void bnDumpILStatement(FILE* fp, bnILStatement* self, int depth) {
                         bnDumpILStmtWhile(fp, self->u.vWhile, depth);
                         break;
                 default:
+                        assert(false);
                         break;
         }
 }

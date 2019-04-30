@@ -2,18 +2,37 @@
 #include "../bone.h"
 #include "../il/il_expr_all.h"
 #include "../il/il_stmt_all.h"
+#include "../il/il_toplevel.h"
 
+static GList* ast2args(bnAST* a, GList* dest);
 static bnILExprBinOp* ast2ilbinop(bnAST* a, bnILBinOpType type);
 static bnILExpression* ast2expr(bnAST* a);
 static bnILStatement* ast2stmt(bnAST* a);
-static void ast2stmts(bnAST* a, GList* dest);
+static GList* ast2stmts(bnAST* a, GList* dest);
+
+static GList* ast2args(bnAST* a, GList* dest) {
+        if (a->tag == BN_AST_BLANK) {
+                // empty arguments
+                return dest;
+        }
+        if (a->tag == BN_AST_ARGUMENT_LIST) {
+                GList* iter = a->children;
+                while (iter != NULL) {
+                        dest = ast2args(iter->data, dest);
+                        iter = iter->next;
+                }
+                return dest;
+        } else {
+                return g_list_append(dest, ast2expr(a));
+        }
+}
 
 static bnILExprBinOp* ast2ilbinop(bnAST* a, bnILBinOpType type) {
         bnILExprBinOp* ret = bnNewILExprBinOp(type);
         bnAST* left = bnFirstAST(a);
         bnAST* right = bnSecondAST(a);
         ret->left = ast2expr(left);
-        ret->left = ast2expr(right);
+        ret->right = ast2expr(right);
         return ret;
 }
 
@@ -46,6 +65,25 @@ static bnILExpression* ast2expr(bnAST* a) {
         } else if (a->tag == BN_AST_MODULO) {
                 ret->type = BN_IL_EXPR_BINOP;
                 ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_MODULO);
+        } else if (a->tag == BN_AST_ASSIGN) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_ASSIGN);
+        } else if (a->tag == BN_AST_MEMBER_ACCESS) {
+                ret->type = BN_IL_EXPR_MEMBEROP;
+                bnAST* aexpr = bnFirstAST(a);
+                ret->u.vMemberOp = bnNewILExprMemberOp(a->u.svalue);
+                ret->u.vMemberOp->expr = ast2expr(aexpr);
+        } else if (a->tag == BN_AST_VARIABLE) {
+                ret->type = BN_IL_EXPR_VARIABLE;
+                ret->u.vVariable = bnNewILExprVariable(a->u.svalue);
+        } else if (a->tag == BN_AST_FUNCCALL) {
+                ret->type = BN_IL_EXPR_FUNCCALLOP;
+                bnAST* aexpr = bnFirstAST(a);
+                bnAST* aargs = bnSecondAST(a);
+                ret->u.vFuncCallOp = bnNewILExprFuncCallOp(ast2expr(aexpr));
+                ast2args(aargs, ret->u.vFuncCallOp->arguments);
+        } else {
+                assert(false);
         }
         return ret;
 }
@@ -72,33 +110,35 @@ static bnILStatement* ast2stmt(bnAST* a) {
                 bnAST* aCond = bnFirstAST(a);
                 bnAST* aBody = bnSecondAST(a);
                 ret->u.vWhile = bnNewILStmtWhile(ast2expr(aCond));
-                ast2stmt(aBody, ret->u.vWhile->statements);
+                ast2stmts(aBody, ret->u.vWhile->statements);
         }
         return ret;
 }
 
-static void ast2stmts(bnAST* a, GList* dest) {
+static GList* ast2stmts(bnAST* a, GList* dest) {
         if (a->tag == BN_AST_STATEMENT_LIST) {
                 GList* iter = a->children;
                 while (iter != NULL) {
-                        ast2stmts(iter->data, dest);
+                        dest = ast2stmts(iter->data, dest);
                         iter = iter->next;
                 }
+                return dest;
         } else {
-                g_list_append(dest, ast2stmt(a));
+                return g_list_append(dest, ast2stmt(a));
         }
 }
 
 bnILToplevel* bnAST2IL(bnAST* a) {
         assert(a != NULL);
-        bnILToplevel* ret = bnNewILToplevel();
+        bnILToplevel* ret = bnNewILTopLevel();
         GList* iter = a->children;
         while (iter != NULL) {
                 bnAST* child = iter->data;
                 if (child->tag == BN_AST_STATEMENT_LIST) {
-                        ast2stmts(child, ret->statements);
+                        ret->statements = ast2stmts(child, ret->statements);
                 } else {
-                        g_list_append(ret->statements, ast2stmt(child));
+                        ret->statements =
+                            g_list_append(ret->statements, ast2stmt(child));
                 }
                 iter = iter->next;
         }

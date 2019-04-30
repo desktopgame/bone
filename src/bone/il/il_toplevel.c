@@ -3,7 +3,7 @@
 
 bnILToplevel* bnNewILTopLevel() {
         bnILToplevel* ret = BN_MALLOC(sizeof(bnILToplevel));
-        ret->statementList = NULL;
+        ret->statements = NULL;
         return ret;
 }
 
@@ -12,7 +12,7 @@ void bnDeleteILTopLevel(bnILToplevel* self) { BN_FREE(self); }
 void bnDumpILTopLevel(FILE* fp, bnILToplevel* self, int depth) {
         bnFindent(fp, depth);
         fprintf(fp, "TopLevel\n");
-        GList* iter = self->statementList;
+        GList* iter = self->statements;
         while (iter != NULL) {
                 bnILStatement* ilstmt = iter->data;
                 bnDumpILStatement(fp, ilstmt, depth + 1);

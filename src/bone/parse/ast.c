@@ -22,7 +22,7 @@ bnAST* bnNewBlankAST() {
 }
 
 bnAST* bnNewExprStmtAST(bnAST* aexpr) {
-        bnAST* ret = BN_MALLOC(sizeof(bnAST));
+        bnAST* ret = bnNewAST(BN_AST_EXPRSTMT);
         bnPushAST(ret, aexpr);
         return ret;
 }

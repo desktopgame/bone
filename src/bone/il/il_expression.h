@@ -10,6 +10,9 @@ typedef enum bnILExpressionType {
         BN_IL_EXPR_STRING,
         BN_IL_EXPR_BINOP,
         BN_IL_EXPR_UOP,
+        BN_IL_EXPR_MEMBEROP,
+        BN_IL_EXPR_VARIABLE,
+        BN_IL_EXPR_FUNCCALLOP,
 } bnILExpressionType;
 
 struct bnILExprInt;
@@ -18,6 +21,9 @@ struct bnILExprChar;
 struct bnILExprString;
 struct bnILExprBinOp;
 struct bnILExprUOp;
+struct bnILExprMemberOp;
+struct bnILExprVariable;
+struct bnILExprFuncCallOp;
 
 typedef struct bnILExpression {
         bnILExpressionType type;
@@ -28,6 +34,9 @@ typedef struct bnILExpression {
                 struct bnILExprString* vString;
                 struct bnILExprBinOp* vBinOp;
                 struct bnILExprUOp* vUOp;
+                struct bnILExprMemberOp* vMemberOp;
+                struct bnILExprVariable* vVariable;
+                struct bnILExprFuncCallOp* vFuncCallOp;
         } u;
 } bnILExpression;
 

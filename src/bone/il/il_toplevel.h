@@ -5,7 +5,7 @@
  * bnILToplevel is structure of toplevel of source code.
  */
 typedef struct bnILToplevel {
-        GList* statementList;
+        GList* statements;
 } bnILToplevel;
 
 /**

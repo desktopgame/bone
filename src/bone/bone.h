@@ -3,6 +3,7 @@
 
 #include <assert.h>
 #include <glib-2.0/glib.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include "util/fmt.h"
 #include "util/memory.h"

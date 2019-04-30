@@ -1,5 +1,5 @@
-#ifndef $INCLUDE
-#define $INCLUDE
+#ifndef BONE_IL_ILEXPRBINOP_H
+#define BONE_IL_ILEXPRBINOP_H
 #include "../bone.h"
 #include "il_expression.h"
 
@@ -17,6 +17,7 @@ typedef enum bnILBinOpType {
         BN_IL_BINOP_LOGIC_OR,
         BN_IL_BINOP_LOGIC_AND,
         BN_IL_BINOP_EXC_OR,
+        BN_IL_BINOP_ASSIGN,
 } bnILBinOpType;
 
 /**

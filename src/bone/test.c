@@ -3,10 +3,25 @@
 #include <CUnit/CUnit.h>
 #include <CUnit/Console.h>
 #include "bone.h"
+#include "il/il_toplevel.h"
+#include "parse/ast2il.h"
 #include "parse/parser.h"
 
 #define EXPECT_ERR (0)
 #define EXPECT_SUC (1)
+
+static void writeIL(const gchar* out, bnILToplevel* il) {
+        if (il == NULL) {
+                return;
+        }
+        FILE* fp = fopen(out, "w");
+        if (fp == NULL) {
+                perror("writeIL");
+                return;
+        }
+        bnDumpILTopLevel(fp, il, 0);
+        fclose(fp);
+}
 
 static void writeAST(const gchar* out, bnAST* a) {
         if (a == NULL) {
@@ -14,7 +29,7 @@ static void writeAST(const gchar* out, bnAST* a) {
         }
         FILE* fp = fopen(out, "w");
         if (fp == NULL) {
-                perror("bnParse");
+                perror("writeAST");
                 return;
         }
         bnDumpAST(fp, a);
@@ -42,7 +57,8 @@ static int bnParse(const char* dir, int flag) {
                 bnAST* a = bnParseFile(path);
                 printf("%s\n", path);
                 if (flag == EXPECT_SUC) {
-                        writeAST(out, a);
+                        bnILToplevel* iltop = bnAST2IL(a);
+                        writeIL(out, iltop);
                         CU_ASSERT(a != NULL);
                         bnDeleteAST(a);
                 } else if (flag == EXPECT_ERR) {
