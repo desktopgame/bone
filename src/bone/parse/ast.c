@@ -84,8 +84,8 @@ bnAST* bnNewLambda(bnAST* aparams, bnAST* areturn, bnAST* astmt) {
 
 bnAST* bnNewStatementListAST(bnAST* astmt, bnAST* astmtList) {
         bnAST* ret = bnNewAST(BN_AST_STATEMENT_LIST);
-        bnPushAST(ret, astmt);
         bnPushAST(ret, astmtList);
+        bnPushAST(ret, astmt);
         return ret;
 }
 
