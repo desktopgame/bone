@@ -17,6 +17,12 @@ typedef struct bnILStmtExpr {
  */
 bnILStmtExpr* bnNewILStmtExpr(bnILExpression* expr);
 
+/**
+ * print a information of bnILStmtExpr.
+ * @param fp
+ * @param self
+ * @param depth
+ */
 void bnDumpILStmtExpr(FILE* fp, bnILStmtExpr* self, int depth);
 
 /**

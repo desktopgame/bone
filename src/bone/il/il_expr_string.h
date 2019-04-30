@@ -16,6 +16,12 @@ typedef struct bnILExprString {
  */
 bnILExprString* bnNewILExprString(GString* value);
 
+/**
+ * print a information of bnILExprString.
+ * @param fp
+ * @param self
+ * @param depth
+ */
 void bnDumpILExprString(FILE* fp, bnILExprString* self, int depth);
 
 /**

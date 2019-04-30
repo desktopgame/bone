@@ -15,6 +15,12 @@ typedef struct bnILExprDouble {
  */
 bnILExprDouble* bnNewILExprDouble(double value);
 
+/**
+ * print a information of bnILExprDouble.
+ * @param fp
+ * @param self
+ * @param depth
+ */
 void bnDumpILExprDouble(FILE* fp, bnILExprDouble* self, int depth);
 
 /**

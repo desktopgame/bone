@@ -18,6 +18,12 @@ typedef struct bnILStmtWhile {
  */
 bnILStmtWhile* bnNewILStmtWhile(bnILExpression* cond);
 
+/**
+ * print a information of bnILStmtWhile.
+ * @param fp
+ * @param self
+ * @param depth
+ */
 void bnDumpILStmtWhile(FILE* fp, bnILStmtWhile* self, int depth);
 
 /**
