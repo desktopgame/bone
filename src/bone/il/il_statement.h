@@ -23,6 +23,7 @@ typedef struct bnILStatement {
                 struct bnILStmtIfElse* vIfElse;
                 struct bnILStmtWhile* vWhile;
         } u;
+        int line;
 } bnILStatement;
 
 bnILStatement* bnNewILStatement(bnILStatementType type);

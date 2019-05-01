@@ -1,14 +1,17 @@
 #include "il_expression.h"
 #include "../bone.h"
 #include "il_expr_all.h"
+#include "il_lineno.h"
 
 bnILExpression* bnNewILExpression(bnILExpressionType type) {
         bnILExpression* ret = BN_MALLOC(sizeof(bnILExpression));
         ret->type = type;
+        ret->line = -1;
         return ret;
 }
 
 void bnDumpILExpression(FILE* fp, bnILExpression* self, int depth) {
+        bnDumpLineno(fp, self->line);
         switch (self->type) {
                 case BN_IL_EXPR_NONE:
                         break;

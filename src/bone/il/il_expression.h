@@ -41,6 +41,7 @@ typedef struct bnILExpression {
                 struct bnILExprFuncCallOp* vFuncCallOp;
                 struct bnILExprLambda* vLambda;
         } u;
+        int line;
 } bnILExpression;
 
 bnILExpression* bnNewILExpression(bnILExpressionType type);

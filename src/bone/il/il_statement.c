@@ -1,14 +1,17 @@
 #include "il_statement.h"
 #include "../bone.h"
+#include "il_lineno.h"
 #include "il_stmt_all.h"
 
 bnILStatement* bnNewILStatement(bnILStatementType type) {
         bnILStatement* ret = BN_MALLOC(sizeof(bnILStatement));
         ret->type = type;
+        ret->line = -1;
         return ret;
 }
 
 void bnDumpILStatement(FILE* fp, bnILStatement* self, int depth) {
+        bnDumpLineno(fp, self->line);
         switch (self->type) {
                 case BN_IL_STMT_NONE:
                         break;

@@ -115,6 +115,7 @@ static bnILExpression* ast2expr(bnAST* a) {
         } else {
                 assert(false);
         }
+        ret->line = a->line;
         return ret;
 }
 
@@ -126,22 +127,27 @@ static bnILStatement* ast2stmt(bnAST* a) {
         } else if (a->tag == BN_AST_IF) {
                 ret->type = BN_IL_STMT_IF;
                 ret->u.vIf = bnNewILStmtIf(ast2expr(bnFirstAST(a)));
-                ast2stmts(bnSecondAST(a), ret->u.vIf->statements);
+                ret->u.vIf->statements =
+                    ast2stmts(bnSecondAST(a), ret->u.vIf->statements);
         } else if (a->tag == BN_AST_IF_ELSE) {
                 ret->type = BN_IL_STMT_IF_ELSE;
                 bnAST* aif = bnFirstAST(a);
                 bnAST* aElseBody = bnSecondAST(a);
                 bnILStmtIf* ilIf = bnNewILStmtIf(ast2expr(bnFirstAST(aif)));
-                ast2stmts(bnSecondAST(aif), ilIf->statements);
+                ilIf->statements =
+                    ast2stmts(bnSecondAST(aif), ilIf->statements);
                 ret->u.vIfElse = bnNewILStmtIfElse(ilIf);
-                ast2stmts(aElseBody, ret->u.vIfElse->statements);
+                ret->u.vIfElse->statements =
+                    ast2stmts(aElseBody, ret->u.vIfElse->statements);
         } else if (a->tag == BN_AST_WHILE) {
                 ret->type = BN_IL_STMT_WHILE;
                 bnAST* aCond = bnFirstAST(a);
                 bnAST* aBody = bnSecondAST(a);
                 ret->u.vWhile = bnNewILStmtWhile(ast2expr(aCond));
-                ast2stmts(aBody, ret->u.vWhile->statements);
+                ret->u.vWhile->statements =
+                    ast2stmts(aBody, ret->u.vWhile->statements);
         }
+        ret->line = a->line;
         return ret;
 }
 
