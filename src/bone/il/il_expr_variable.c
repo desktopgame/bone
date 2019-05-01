@@ -12,4 +12,7 @@ void bnDumpILExprVariable(FILE* fp, bnILExprVariable* self, int depth) {
         fprintf(fp, "%s\n", self->nameRef->str);
 }
 
-void bnDeleteILExprVariable(bnILExprVariable* self) { BN_FREE(self); }
+void bnDeleteILExprVariable(bnILExprVariable* self) {
+        g_string_free(self->nameRef, TRUE);
+        BN_FREE(self);
+}

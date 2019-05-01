@@ -7,7 +7,10 @@ bnILToplevel* bnNewILTopLevel() {
         return ret;
 }
 
-void bnDeleteILTopLevel(bnILToplevel* self) { BN_FREE(self); }
+void bnDeleteILTopLevel(bnILToplevel* self) {
+        g_list_free_full(self->statements, bnDeleteILStatement);
+        BN_FREE(self);
+}
 
 void bnDumpILTopLevel(FILE* fp, bnILToplevel* self, int depth) {
         bnFindent(fp, depth);

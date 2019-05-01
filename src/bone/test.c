@@ -61,6 +61,7 @@ static int bnParse(const char* dir, int flag) {
                         writeIL(out, iltop);
                         CU_ASSERT(a != NULL);
                         bnDeleteAST(a);
+                        bnDeleteILTopLevel(iltop);
                 } else if (flag == EXPECT_ERR) {
                         CU_ASSERT(a == NULL);
                 }

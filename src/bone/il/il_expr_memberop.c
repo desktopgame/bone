@@ -15,5 +15,6 @@ void bnDumpILExprMemberOp(FILE* fp, bnILExprMemberOp* self, int depth) {
 
 void bnDeleteILExprMemberOp(bnILExprMemberOp* self) {
         bnDeleteILExpression(self->expr);
+        g_string_free(self->nameRef, TRUE);
         BN_FREE(self);
 }

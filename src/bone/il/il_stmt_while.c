@@ -20,4 +20,8 @@ void bnDumpILStmtWhile(FILE* fp, bnILStmtWhile* self, int depth) {
         }
 }
 
-void bnDeleteILStmtWhile(bnILStmtWhile* self) {}
+void bnDeleteILStmtWhile(bnILStmtWhile* self) {
+        bnDeleteILExpression(self->cond);
+        g_list_free_full(self->statements, bnDeleteILStatement);
+        BN_FREE(self);
+}

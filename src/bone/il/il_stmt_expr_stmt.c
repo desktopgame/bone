@@ -13,4 +13,7 @@ void bnDumpILStmtExpr(FILE* fp, bnILStmtExpr* self, int depth) {
         bnDumpILExpression(fp, self->expr, depth + 1);
 }
 
-void bnDeleteILStmtExpr(bnILStmtExpr* self) {}
+void bnDeleteILStmtExpr(bnILStmtExpr* self) {
+        bnDeleteILExpression(self->expr);
+        BN_FREE(self);
+}

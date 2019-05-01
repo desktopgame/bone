@@ -11,4 +11,7 @@ void bnDumpILExprString(FILE* fp, bnILExprString* self, int depth) {
         fprintf(fp, "string \"%s\"\n", self->value->str);
 }
 
-void bnDeleteILExprString(bnILExprString* self) { BN_FREE(self); }
+void bnDeleteILExprString(bnILExprString* self) {
+        g_string_free(self->value, TRUE);
+        BN_FREE(self);
+}

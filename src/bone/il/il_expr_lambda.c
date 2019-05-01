@@ -43,4 +43,8 @@ void bnDumpILExprLambda(FILE* fp, bnILExprLambda* self, int depth) {
         }
 }
 
-void bnDeleteILExprLambda(bnILExprLambda* self) {}
+void bnDeleteILExprLambda(bnILExprLambda* self) {
+        g_list_free_full(self->parameters, g_string_free);
+        g_list_free_full(self->returns, g_string_free);
+        g_list_free_full(self->statements, bnDeleteILStatement);
+}

@@ -56,18 +56,38 @@ void bnDeleteILExpression(bnILExpression* self) {
                 case BN_IL_EXPR_NONE:
                         break;
                 case BN_IL_EXPR_INT:
+                        bnDeleteILExprInt(self->u.vInt);
                         break;
                 case BN_IL_EXPR_DOUBLE:
+                        bnDeleteILExprDouble(self->u.vDouble);
                         break;
                 case BN_IL_EXPR_CHAR:
+                        bnDeleteILExprChar(self->u.vChar);
                         break;
                 case BN_IL_EXPR_STRING:
+                        bnDeleteILExprString(self->u.vString);
+                        break;
+                case BN_IL_EXPR_BINOP:
+                        bnDeleteILExprBinOp(self->u.vBinOp);
+                        break;
+                case BN_IL_EXPR_UOP:
+                        bnDeleteILExprUOp(self->u.vUOp);
+                        break;
+                case BN_IL_EXPR_MEMBEROP:
+                        bnDeleteILExprMemberOp(self->u.vMemberOp);
                         break;
                 case BN_IL_EXPR_FUNCCALLOP:
+                        bnDeleteILExprFuncCallOp(self->u.vFuncCallOp);
                         break;
                 case BN_IL_EXPR_VARIABLE:
+                        bnDeleteILExprVariable(self->u.vVariable);
+                        break;
+                case BN_IL_EXPR_LAMBDA:
+                        bnDeleteILExprLambda(self->u.vLambda);
                         break;
                 default:
+                        assert(false);
                         break;
         }
+        BN_FREE(self);
 }

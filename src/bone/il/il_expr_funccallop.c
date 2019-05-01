@@ -20,4 +20,6 @@ void bnDumpILExprFuncCallOp(FILE* fp, bnILExprFuncCallOp* self, int depth) {
 
 void bnDeleteILExprFuncCallOp(bnILExprFuncCallOp* self) {
         bnDeleteILExpression(self->expr);
+        g_list_free_full(self->arguments, bnDeleteILExpression);
+        BN_FREE(self);
 }

@@ -20,7 +20,11 @@ void bnDumpILStmtIf(FILE* fp, bnILStmtIf* self, int depth) {
         }
 }
 
-void bnDeleteILStmtIf(bnILStmtIf* self) {}
+void bnDeleteILStmtIf(bnILStmtIf* self) {
+        bnDeleteILExpression(self->cond);
+        g_list_free_full(self->statements, bnDeleteILStatement);
+        BN_FREE(self);
+}
 
 bnILStmtIfElse* bnNewILStmtIfElse(bnILStmtIf* trueCase) {
         bnILStmtIfElse* ret = BN_MALLOC(sizeof(bnILStmtIfElse));
@@ -40,4 +44,8 @@ void bnDumpILStmtIfElse(FILE* fp, bnILStmtIfElse* self, int depth) {
         }
 }
 
-void bnDeleteILStmtIfElse(bnILStmtIfElse* self) {}
+void bnDeleteILStmtIfElse(bnILStmtIfElse* self) {
+        bnDeleteILStmtIf(self->trueCase);
+        g_list_free_full(self->statements, bnDeleteILStatement);
+        BN_FREE(self);
+}

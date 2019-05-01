@@ -38,14 +38,20 @@ void bnDeleteILStatement(bnILStatement* self) {
                 case BN_IL_STMT_NONE:
                         break;
                 case BN_IL_STMT_EXPRSTMT:
+                        bnDeleteILStmtExpr(self->u.vExprStmt);
                         break;
                 case BN_IL_STMT_IF:
+                        bnDeleteILStmtIf(self->u.vIf);
                         break;
                 case BN_IL_STMT_IF_ELSE:
+                        bnDeleteILStmtIfElse(self->u.vIfElse);
                         break;
                 case BN_IL_STMT_WHILE:
+                        bnDeleteILStmtWhile(self->u.vWhile);
                         break;
                 default:
+                        assert(false);
                         break;
         }
+        BN_FREE(self);
 }
