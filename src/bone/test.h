@@ -2,4 +2,6 @@
 #define BONE_TEST_H
 
 void bnParseTest();
+
+void bnStringPoolTest();
 #endif

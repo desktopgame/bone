@@ -2,10 +2,12 @@
 #include <CUnit/Basic.h>
 #include <CUnit/CUnit.h>
 #include <CUnit/Console.h>
+#include <string.h>
 #include "bone.h"
 #include "il/il_toplevel.h"
 #include "parse/ast2il.h"
 #include "parse/parser.h"
+#include "util/string_pool.h"
 
 #define EXPECT_ERR (0)
 #define EXPECT_SUC (1)
@@ -76,4 +78,16 @@ static int bnParse(const char* dir, int flag) {
 void bnParseTest() {
         bnParse("./testdata/parse/err", EXPECT_ERR);
         bnParse("./testdata/parse/suc", EXPECT_SUC);
+}
+
+void bnStringPoolTest() {
+        struct bnStringPool* pool = bnNewStringPool();
+        bnStringView nullView = bnIntern(pool, NULL);
+        bnStringView emptyView = bnIntern(pool, "");
+        CU_ASSERT(nullView == BN_NULL_VIEW);
+        CU_ASSERT(emptyView == BN_EMPTY_VIEW);
+        const char* kwdstr = "keyword";
+        bnStringView kwdView = bnIntern(pool, kwdstr);
+        CU_ASSERT(!strcmp(kwdstr, bnView2Str(pool, kwdView)));
+        bnDeleteStringPool(pool);
 }
