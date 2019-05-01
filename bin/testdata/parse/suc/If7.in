@@ -1,8 +1,8 @@
-if(cond) {
+if(condA) {
     a();
-} else if(cond) {
+} else if(condB) {
     b();
-} else if(cond) {
+} else if(condC) {
     c();
 } else {
     d();
