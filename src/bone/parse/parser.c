@@ -9,10 +9,12 @@ static int gLine = -1;
 static int gColumn = -1;
 static GString *gStr = NULL;
 static GQueue *gLineQ = NULL;
+static GRecMutex gMutex;
 static void init_string_lit();
 static void free_lq();
 
 bnAST *bnParseFile(const char *filename) {
+        g_rec_mutex_lock(&gMutex);
         gParserInputTag = BN_PARSER_INPUT_FROM_FILE;
         extern FILE *yyin;
         extern void yy_calc_start(void);
@@ -21,6 +23,7 @@ bnAST *bnParseFile(const char *filename) {
         FILE *fp = fopen(filename, "r");
         if (fp == NULL) {
                 perror("bnParseFile");
+                g_rec_mutex_unlock(&gMutex);
                 return NULL;
         }
         yy_calc_start();
@@ -29,13 +32,17 @@ bnAST *bnParseFile(const char *filename) {
         if (yyparse()) {
                 //失敗
                 free_lq();
+                g_rec_mutex_unlock(&gMutex);
                 return NULL;
         }
         free_lq();
-        return yy_release();
+        bnAST *ret = yy_release();
+        g_rec_mutex_unlock(&gMutex);
+        return ret;
 }
 
 bnAST *bnParseString(const char *source) {
+        g_rec_mutex_lock(&gMutex);
         gParserInputTag = BN_PARSER_INPUT_FROM_SOURCE;
         extern void yy_setstr(char *source);
         extern void yy_clearstr();
@@ -48,11 +55,14 @@ bnAST *bnParseString(const char *source) {
         if (yyparse()) {
                 yy_clearstr();
                 free_lq();
+                g_rec_mutex_unlock(&gMutex);
                 return NULL;
         }
         yy_clearstr();
         free_lq();
-        return yy_release();
+        bnAST *ret = yy_release();
+        g_rec_mutex_unlock(&gMutex);
+        return ret;
 }
 
 bnParserInputTag bnGetParserInputTag() { return gParserInputTag; }
