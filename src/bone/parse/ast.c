@@ -75,7 +75,7 @@ bnAST* bnNewParameterListAST(bnAST* aparam, bnAST* aparams) {
         return ret;
 }
 
-bnAST* bnNewLambda(bnAST* aparams, bnAST* areturn, bnAST* astmt) {
+bnAST* bnNewLambdaAST(bnAST* aparams, bnAST* areturn, bnAST* astmt) {
         bnAST* ret = bnNewAST(BN_AST_LAMBDA);
         bnPushAST(ret, aparams);
         bnPushAST(ret, areturn);

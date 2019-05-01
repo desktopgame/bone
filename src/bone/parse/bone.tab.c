@@ -1942,7 +1942,7 @@ yyreduce:
   case 55:
 #line 272 "bone.y" /* yacc.c:1663  */
     {
-		(yyval.ast_value) = bnNewLambda((yyvsp[-2].ast_value), bnNewBlankAST(), (yyvsp[0].ast_value));
+		(yyval.ast_value) = bnNewLambdaAST((yyvsp[-2].ast_value), bnNewBlankAST(), (yyvsp[0].ast_value));
 	}
 #line 1948 "bone.tab.c" /* yacc.c:1663  */
     break;
@@ -1950,7 +1950,7 @@ yyreduce:
   case 56:
 #line 276 "bone.y" /* yacc.c:1663  */
     {
-		(yyval.ast_value) = bnNewLambda(bnNewBlankAST(), bnNewBlankAST(), (yyvsp[0].ast_value));
+		(yyval.ast_value) = bnNewLambdaAST(bnNewBlankAST(), bnNewBlankAST(), (yyvsp[0].ast_value));
 	}
 #line 1956 "bone.tab.c" /* yacc.c:1663  */
     break;
@@ -1958,7 +1958,7 @@ yyreduce:
   case 57:
 #line 280 "bone.y" /* yacc.c:1663  */
     {
-		(yyval.ast_value) = bnNewLambda((yyvsp[-5].ast_value), (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
+		(yyval.ast_value) = bnNewLambdaAST((yyvsp[-5].ast_value), (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
 #line 1964 "bone.tab.c" /* yacc.c:1663  */
     break;
@@ -1966,7 +1966,7 @@ yyreduce:
   case 58:
 #line 284 "bone.y" /* yacc.c:1663  */
     {
-		(yyval.ast_value) = bnNewLambda(bnNewBlankAST(), (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
+		(yyval.ast_value) = bnNewLambdaAST(bnNewBlankAST(), (yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
 #line 1972 "bone.tab.c" /* yacc.c:1663  */
     break;

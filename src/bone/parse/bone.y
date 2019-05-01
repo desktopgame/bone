@@ -270,19 +270,19 @@ expression_nobrace
 lambda_expr
 	: DEF LP parameter_list RP comp_stmt
 	{
-		$$ = bnNewLambda($3, bnNewBlankAST(), $5);
+		$$ = bnNewLambdaAST($3, bnNewBlankAST(), $5);
 	}
 	| DEF LP RP comp_stmt
 	{
-		$$ = bnNewLambda(bnNewBlankAST(), bnNewBlankAST(), $4);
+		$$ = bnNewLambdaAST(bnNewBlankAST(), bnNewBlankAST(), $4);
 	}
 	| DEF LP parameter_list RP LP parameter_list RP comp_stmt
 	{
-		$$ = bnNewLambda($3, $6, $8);
+		$$ = bnNewLambdaAST($3, $6, $8);
 	}
 	| DEF LP RP LP parameter_list RP comp_stmt
 	{
-		$$ = bnNewLambda(bnNewBlankAST(), $5, $7);
+		$$ = bnNewLambdaAST(bnNewBlankAST(), $5, $7);
 	}
 	;
 lhs

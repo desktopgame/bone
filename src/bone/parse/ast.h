@@ -100,7 +100,7 @@ bnAST* bnNewParameterAST(bnStringView name);
 
 bnAST* bnNewParameterListAST(bnAST* aparam, bnAST* aparams);
 
-bnAST* bnNewLambda(bnAST* aparams, bnAST* areturn, bnAST* astmt);
+bnAST* bnNewLambdaAST(bnAST* aparams, bnAST* areturn, bnAST* astmt);
 
 bnAST* bnNewStatementListAST(bnAST* astmt, bnAST* astmtList);
 
