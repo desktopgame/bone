@@ -18,10 +18,12 @@ bnILExprDouble* bnNewILExprDouble(double value);
 /**
  * print a information of bnILExprDouble.
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDumpILExprDouble(FILE* fp, bnILExprDouble* self, int depth);
+void bnDumpILExprDouble(FILE* fp, struct bnStringPool* pool,
+                        bnILExprDouble* self, int depth);
 
 /**
  * free a bnILExprDouble.

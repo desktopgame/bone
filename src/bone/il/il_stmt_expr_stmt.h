@@ -20,10 +20,12 @@ bnILStmtExpr* bnNewILStmtExpr(bnILExpression* expr);
 /**
  * print a information of bnILStmtExpr.
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDumpILStmtExpr(FILE* fp, bnILStmtExpr* self, int depth);
+void bnDumpILStmtExpr(FILE* fp, struct bnStringPool* pool, bnILStmtExpr* self,
+                      int depth);
 
 /**
  * free a bnILStmtExpr.

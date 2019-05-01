@@ -7,10 +7,11 @@ bnILStmtExpr* bnNewILStmtExpr(bnILExpression* expr) {
         return ret;
 }
 
-void bnDumpILStmtExpr(FILE* fp, bnILStmtExpr* self, int depth) {
+void bnDumpILStmtExpr(FILE* fp, struct bnStringPool* pool, bnILStmtExpr* self,
+                      int depth) {
         bnFindent(fp, depth);
         fprintf(fp, "ExprStmt\n");
-        bnDumpILExpression(fp, self->expr, depth + 1);
+        bnDumpILExpression(fp, pool, self->expr, depth + 1);
 }
 
 void bnDeleteILStmtExpr(bnILStmtExpr* self) {

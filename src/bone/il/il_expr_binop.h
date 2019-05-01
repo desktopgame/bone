@@ -39,10 +39,12 @@ bnILExprBinOp* bnNewILExprBinOp(bnILBinOpType type);
 /**
  * print a information of bnILExprBinOp.
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDumpILExprBinOp(FILE* fp, bnILExprBinOp* self, int depth);
+void bnDumpILExprBinOp(FILE* fp, struct bnStringPool* pool, bnILExprBinOp* self,
+                       int depth);
 
 /**
  * free a bnILExprBinOp.

@@ -1222,7 +1222,7 @@ case 49:
 YY_RULE_SETUP
 #line 226 "bone.l"
 {
-	yylval.svalue = g_string_new(yytext);
+	yylval.svvalue = bnInternIdentifier(yytext);
 	return IDENT;
 }
 	YY_BREAK

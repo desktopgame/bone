@@ -1,6 +1,7 @@
 #ifndef BONE_IL_ILSTATEMENT_H
 #define BONE_IL_ILSTATEMENT_H
 #include <stdio.h>
+#include "../util/string_pool.h"
 
 typedef enum bnILStatementType {
         BN_IL_STMT_NONE,
@@ -28,7 +29,8 @@ typedef struct bnILStatement {
 
 bnILStatement* bnNewILStatement(bnILStatementType type);
 
-void bnDumpILStatement(FILE* fp, bnILStatement* self, int depth);
+void bnDumpILStatement(FILE* fp, struct bnStringPool* pool, bnILStatement* self,
+                       int depth);
 
 void bnDeleteILStatement(bnILStatement* self);
 #endif

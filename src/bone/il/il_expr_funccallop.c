@@ -7,13 +7,14 @@ bnILExprFuncCallOp* bnNewILExprFuncCallOp(bnILExpression* expr) {
         return ret;
 }
 
-void bnDumpILExprFuncCallOp(FILE* fp, bnILExprFuncCallOp* self, int depth) {
+void bnDumpILExprFuncCallOp(FILE* fp, struct bnStringPool* pool,
+                            bnILExprFuncCallOp* self, int depth) {
         bnFindent(fp, depth);
         fprintf(fp, "()\n");
-        bnDumpILExpression(fp, self->expr, depth + 1);
+        bnDumpILExpression(fp, pool, self->expr, depth + 1);
         GList* iter = self->arguments;
         while (iter != NULL) {
-                bnDumpILExpression(fp, iter->data, depth + 1);
+                bnDumpILExpression(fp, pool, iter->data, depth + 1);
                 iter = iter->next;
         }
 }

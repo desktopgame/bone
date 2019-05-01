@@ -8,7 +8,7 @@
 %}
 %union {
 	bnAST* ast_value;
-	GString* svalue;
+	bnStringView svvalue;
 }
 
 %locations
@@ -16,7 +16,7 @@
 %token <ast_value>			DOUBLE
 %token <ast_value>			STRING_LITERAL
 %token <ast_value>			CHAR_LITERAL
-%token <svalue>			IDENT
+%token <svvalue>			IDENT
 %token 	ADD SUB MUL DIV MOD
 		ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
 		AND_ASSIGN OR_ASSIGN LSHIFT_ASSIGN RSHIFT_ASSIGN EXC_OR_ASSIGN

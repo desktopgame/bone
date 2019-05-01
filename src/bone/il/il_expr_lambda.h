@@ -20,10 +20,12 @@ bnILExprLambda* bnNewILExprLambda();
 /**
  * print a information of bnILExprLambda.
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDumpILExprLambda(FILE* fp, bnILExprLambda* self, int depth);
+void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
+                        bnILExprLambda* self, int depth);
 
 /**
  * free a bnILExprLambda.

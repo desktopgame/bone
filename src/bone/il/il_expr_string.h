@@ -6,7 +6,7 @@
  * bnILExprString is literal of string.
  */
 typedef struct bnILExprString {
-        GString* value;
+        bnStringView value;
 } bnILExprString;
 
 /**
@@ -14,15 +14,17 @@ typedef struct bnILExprString {
  * @param value
  * @return
  */
-bnILExprString* bnNewILExprString(GString* value);
+bnILExprString* bnNewILExprString(bnStringView value);
 
 /**
  * print a information of bnILExprString.
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDumpILExprString(FILE* fp, bnILExprString* self, int depth);
+void bnDumpILExprString(FILE* fp, struct bnStringPool* pool,
+                        bnILExprString* self, int depth);
 
 /**
  * free a bnILExprString.

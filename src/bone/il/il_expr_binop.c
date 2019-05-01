@@ -8,11 +8,12 @@ bnILExprBinOp* bnNewILExprBinOp(bnILBinOpType type) {
         return ret;
 }
 
-void bnDumpILExprBinOp(FILE* fp, bnILExprBinOp* self, int depth) {
+void bnDumpILExprBinOp(FILE* fp, struct bnStringPool* pool, bnILExprBinOp* self,
+                       int depth) {
         bnFindent(fp, depth);
         fprintf(fp, "binop\n");
-        bnDumpILExpression(fp, self->left, depth + 1);
-        bnDumpILExpression(fp, self->right, depth + 1);
+        bnDumpILExpression(fp, pool, self->left, depth + 1);
+        bnDumpILExpression(fp, pool, self->right, depth + 1);
 }
 
 void bnDeleteILExprBinOp(bnILExprBinOp* self) {

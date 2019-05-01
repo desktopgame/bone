@@ -10,40 +10,44 @@ bnILExpression* bnNewILExpression(bnILExpressionType type) {
         return ret;
 }
 
-void bnDumpILExpression(FILE* fp, bnILExpression* self, int depth) {
+void bnDumpILExpression(FILE* fp, struct bnStringPool* pool,
+                        bnILExpression* self, int depth) {
         bnDumpLineno(fp, self->line);
         switch (self->type) {
                 case BN_IL_EXPR_NONE:
                         break;
                 case BN_IL_EXPR_INT:
-                        bnDumpILExprInt(fp, self->u.vInt, depth);
+                        bnDumpILExprInt(fp, pool, self->u.vInt, depth);
                         break;
                 case BN_IL_EXPR_DOUBLE:
-                        bnDumpILExprDouble(fp, self->u.vDouble, depth);
+                        bnDumpILExprDouble(fp, pool, self->u.vDouble, depth);
                         break;
                 case BN_IL_EXPR_CHAR:
-                        bnDumpILExprChar(fp, self->u.vChar, depth);
+                        bnDumpILExprChar(fp, pool, self->u.vChar, depth);
                         break;
                 case BN_IL_EXPR_STRING:
-                        bnDumpILExprString(fp, self->u.vString, depth);
+                        bnDumpILExprString(fp, pool, self->u.vString, depth);
                         break;
                 case BN_IL_EXPR_BINOP:
-                        bnDumpILExprBinOp(fp, self->u.vBinOp, depth);
+                        bnDumpILExprBinOp(fp, pool, self->u.vBinOp, depth);
                         break;
                 case BN_IL_EXPR_UOP:
-                        bnDumpILExprUOp(fp, self->u.vUOp, depth);
+                        bnDumpILExprUOp(fp, pool, self->u.vUOp, depth);
                         break;
                 case BN_IL_EXPR_MEMBEROP:
-                        bnDumpILExprMemberOp(fp, self->u.vMemberOp, depth);
+                        bnDumpILExprMemberOp(fp, pool, self->u.vMemberOp,
+                                             depth);
                         break;
                 case BN_IL_EXPR_FUNCCALLOP:
-                        bnDumpILExprFuncCallOp(fp, self->u.vFuncCallOp, depth);
+                        bnDumpILExprFuncCallOp(fp, pool, self->u.vFuncCallOp,
+                                               depth);
                         break;
                 case BN_IL_EXPR_VARIABLE:
-                        bnDumpILExprVariable(fp, self->u.vVariable, depth);
+                        bnDumpILExprVariable(fp, pool, self->u.vVariable,
+                                             depth);
                         break;
                 case BN_IL_EXPR_LAMBDA:
-                        bnDumpILExprLambda(fp, self->u.vLambda, depth);
+                        bnDumpILExprLambda(fp, pool, self->u.vLambda, depth);
                         break;
                 default:
                         assert(false);

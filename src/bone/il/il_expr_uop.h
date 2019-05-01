@@ -30,10 +30,12 @@ bnILExprUOp* bnNewILExprUOp(bnILUOpType type);
 /**
  * print a information of bnILExprUOp.
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDumpILExprUOp(FILE* fp, bnILExprUOp* self, int depth);
+void bnDumpILExprUOp(FILE* fp, struct bnStringPool* pool, bnILExprUOp* self,
+                     int depth);
 
 /**
  * free a bnILExprUOp.

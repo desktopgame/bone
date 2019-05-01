@@ -21,10 +21,12 @@ bnILStmtIf* bnNewILStmtIf(bnILExpression* cond);
 /**
  * print a information of bnILStmtIf.
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDumpILStmtIf(FILE* fp, bnILStmtIf* self, int depth);
+void bnDumpILStmtIf(FILE* fp, struct bnStringPool* pool, bnILStmtIf* self,
+                    int depth);
 
 /**
  * free a bnILStmtIf.
@@ -50,10 +52,12 @@ bnILStmtIfElse* bnNewILStmtIfElse(bnILStmtIf* trueCase);
 /**
  * print a information of bnILStmtIfElse.
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDumpILStmtIfElse(FILE* fp, bnILStmtIfElse* self, int depth);
+void bnDumpILStmtIfElse(FILE* fp, struct bnStringPool* pool,
+                        bnILStmtIfElse* self, int depth);
 
 /**
  * free a bnILStmtIf.

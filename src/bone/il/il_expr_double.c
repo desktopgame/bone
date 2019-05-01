@@ -6,7 +6,8 @@ bnILExprDouble* bnNewILExprDouble(double value) {
         return ret;
 }
 
-void bnDumpILExprDouble(FILE* fp, bnILExprDouble* self, int depth) {
+void bnDumpILExprDouble(FILE* fp, struct bnStringPool* pool,
+                        bnILExprDouble* self, int depth) {
         bnFindent(fp, depth);
         fprintf(fp, "%lf\n", self->value);
 }

@@ -23,7 +23,7 @@ static GList* ast2params(bnAST* a, GList* dest) {
                 }
                 return dest;
         } else {
-                return g_list_append(dest, a->u.svalue);
+                return g_list_append(dest, a->u.svvalue);
         }
 }
 
@@ -67,7 +67,7 @@ static bnILExpression* ast2expr(bnAST* a) {
                 ret->u.vChar = bnNewILExprChar(a->u.cvalue);
         } else if (a->tag == BN_AST_STRING_LIT) {
                 ret->type = BN_IL_EXPR_STRING;
-                ret->u.vString = bnNewILExprString(a->u.svalue);
+                ret->u.vString = bnNewILExprString(a->u.svvalue);
         } else if (a->tag == BN_AST_PLUS) {
                 ret->type = BN_IL_EXPR_BINOP;
                 ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_PLUS);
@@ -89,11 +89,11 @@ static bnILExpression* ast2expr(bnAST* a) {
         } else if (a->tag == BN_AST_MEMBER_ACCESS) {
                 ret->type = BN_IL_EXPR_MEMBEROP;
                 bnAST* aexpr = bnFirstAST(a);
-                ret->u.vMemberOp = bnNewILExprMemberOp(a->u.svalue);
+                ret->u.vMemberOp = bnNewILExprMemberOp(a->u.svvalue);
                 ret->u.vMemberOp->expr = ast2expr(aexpr);
         } else if (a->tag == BN_AST_VARIABLE) {
                 ret->type = BN_IL_EXPR_VARIABLE;
-                ret->u.vVariable = bnNewILExprVariable(a->u.svalue);
+                ret->u.vVariable = bnNewILExprVariable(a->u.svvalue);
         } else if (a->tag == BN_AST_FUNCCALL) {
                 ret->type = BN_IL_EXPR_FUNCCALLOP;
                 bnAST* aexpr = bnFirstAST(a);

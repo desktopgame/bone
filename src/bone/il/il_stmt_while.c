@@ -9,13 +9,14 @@ bnILStmtWhile* bnNewILStmtWhile(bnILExpression* cond) {
         return ret;
 }
 
-void bnDumpILStmtWhile(FILE* fp, bnILStmtWhile* self, int depth) {
+void bnDumpILStmtWhile(FILE* fp, struct bnStringPool* pool, bnILStmtWhile* self,
+                       int depth) {
         bnFindent(fp, depth);
         fprintf(fp, "while\n");
-        bnDumpILExpression(fp, self->cond, depth + 1);
+        bnDumpILExpression(fp, pool, self->cond, depth + 1);
         GList* iter = self->statements;
         while (iter != NULL) {
-                bnDumpILStatement(fp, iter->data, depth + 1);
+                bnDumpILStatement(fp, pool, iter->data, depth + 1);
                 iter = iter->next;
         }
 }

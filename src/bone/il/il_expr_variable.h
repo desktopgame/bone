@@ -6,23 +6,25 @@
  * bnILExprVariable is local variable.
  */
 typedef struct bnILExprVariable {
-        GString* nameRef;
+        bnStringView name;
 } bnILExprVariable;
 
 /**
  * return new instance of bnILExprVariable.
- * @param nameRef
+ * @param name
  * @return
  */
-bnILExprVariable* bnNewILExprVariable(GString* nameRef);
+bnILExprVariable* bnNewILExprVariable(bnStringView name);
 
 /**
  * print a information of bnILExprVariable.
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDumpILExprVariable(FILE* fp, bnILExprVariable* self, int depth);
+void bnDumpILExprVariable(FILE* fp, struct bnStringPool* pool,
+                          bnILExprVariable* self, int depth);
 
 /**
  * free a bnILExprVariable.

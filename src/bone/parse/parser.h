@@ -1,5 +1,6 @@
 #ifndef BONE_PARSE_PARSER_H
 #define BONE_PARSE_PARSER_H
+#include "../util/string_pool.h"
 #include "ast.h"
 
 typedef enum bnParserInputTag {
@@ -7,11 +8,13 @@ typedef enum bnParserInputTag {
         BN_PARSER_INPUT_FROM_FILE
 } bnParserInputTag;
 
-bnAST* bnParseFile(const char* filename);
+bnAST* bnParseFile(struct bnStringPool* pool, const char* filename);
 
-bnAST* bnParseString(const char* source);
+bnAST* bnParseString(struct bnStringPool* pool, const char* source);
 
 bnParserInputTag bnGetParserInputTag();
+
+bnStringView bnInternIdentifier(const char* str);
 
 void bnBeginStringLit();
 

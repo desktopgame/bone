@@ -6,7 +6,8 @@ bnILExprChar* bnNewILExprChar(char value) {
         return ret;
 }
 
-void bnDumpILExprChar(FILE* fp, bnILExprChar* self, int depth) {
+void bnDumpILExprChar(FILE* fp, struct bnStringPool* pool, bnILExprChar* self,
+                      int depth) {
         bnFindent(fp, depth);
         fprintf(fp, "char %c\n", self->value);
 }

@@ -170,7 +170,7 @@ union YYSTYPE
 #line 9 "bone.y" /* yacc.c:355  */
 
 	bnAST* ast_value;
-	GString* svalue;
+	bnStringView svvalue;
 
 #line 176 "bone.tab.c" /* yacc.c:355  */
 };
@@ -1582,7 +1582,7 @@ yyreduce:
   case 6:
 #line 78 "bone.y" /* yacc.c:1663  */
     {
-		(yyval.ast_value) = bnNewParameterAST((yyvsp[0].svalue));
+		(yyval.ast_value) = bnNewParameterAST((yyvsp[0].svvalue));
 	}
 #line 1588 "bone.tab.c" /* yacc.c:1663  */
     break;
@@ -1590,7 +1590,7 @@ yyreduce:
   case 7:
 #line 82 "bone.y" /* yacc.c:1663  */
     {
-		(yyval.ast_value) = bnNewParameterListAST(bnNewParameterAST((yyvsp[0].svalue)), (yyvsp[-2].ast_value));
+		(yyval.ast_value) = bnNewParameterListAST(bnNewParameterAST((yyvsp[0].svvalue)), (yyvsp[-2].ast_value));
 	}
 #line 1596 "bone.tab.c" /* yacc.c:1663  */
     break;
@@ -1974,7 +1974,7 @@ yyreduce:
   case 59:
 #line 290 "bone.y" /* yacc.c:1663  */
     {
-		(yyval.ast_value) = bnNewVariableAST((yyvsp[0].svalue));
+		(yyval.ast_value) = bnNewVariableAST((yyvsp[0].svvalue));
 	}
 #line 1980 "bone.tab.c" /* yacc.c:1663  */
     break;
@@ -1982,7 +1982,7 @@ yyreduce:
   case 60:
 #line 294 "bone.y" /* yacc.c:1663  */
     {
-		(yyval.ast_value) = bnNewMemberAccessAST((yyvsp[-2].ast_value), (yyvsp[0].svalue));
+		(yyval.ast_value) = bnNewMemberAccessAST((yyvsp[-2].ast_value), (yyvsp[0].svvalue));
 	}
 #line 1988 "bone.tab.c" /* yacc.c:1663  */
     break;

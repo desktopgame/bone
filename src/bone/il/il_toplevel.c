@@ -12,13 +12,14 @@ void bnDeleteILTopLevel(bnILToplevel* self) {
         BN_FREE(self);
 }
 
-void bnDumpILTopLevel(FILE* fp, bnILToplevel* self, int depth) {
+void bnDumpILTopLevel(FILE* fp, struct bnStringPool* pool, bnILToplevel* self,
+                      int depth) {
         bnFindent(fp, depth);
         fprintf(fp, "TopLevel\n");
         GList* iter = self->statements;
         while (iter != NULL) {
                 bnILStatement* ilstmt = iter->data;
-                bnDumpILStatement(fp, ilstmt, depth + 1);
+                bnDumpILStatement(fp, pool, ilstmt, depth + 1);
                 iter = iter->next;
         }
 }

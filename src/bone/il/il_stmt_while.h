@@ -21,10 +21,12 @@ bnILStmtWhile* bnNewILStmtWhile(bnILExpression* cond);
 /**
  * print a information of bnILStmtWhile.
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDumpILStmtWhile(FILE* fp, bnILStmtWhile* self, int depth);
+void bnDumpILStmtWhile(FILE* fp, struct bnStringPool* pool, bnILStmtWhile* self,
+                       int depth);
 
 /**
  * free a bnILStmtWhile.

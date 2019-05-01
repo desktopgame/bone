@@ -21,10 +21,12 @@ bnILExprFuncCallOp* bnNewILExprFuncCallOp(bnILExpression* expr);
 /**
  * print a information of bnILExprFuncCallOp.
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDumpILExprFuncCallOp(FILE* fp, bnILExprFuncCallOp* self, int depth);
+void bnDumpILExprFuncCallOp(FILE* fp, struct bnStringPool* pool,
+                            bnILExprFuncCallOp* self, int depth);
 
 /**
  * free a bnILExprFuncCallOp.

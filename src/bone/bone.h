@@ -7,4 +7,5 @@
 #include <stdio.h>
 #include "util/fmt.h"
 #include "util/memory.h"
+#include "util/string_pool.h"
 #endif

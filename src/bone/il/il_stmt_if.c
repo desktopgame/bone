@@ -9,13 +9,14 @@ bnILStmtIf* bnNewILStmtIf(bnILExpression* cond) {
         return ret;
 }
 
-void bnDumpILStmtIf(FILE* fp, bnILStmtIf* self, int depth) {
+void bnDumpILStmtIf(FILE* fp, struct bnStringPool* pool, bnILStmtIf* self,
+                    int depth) {
         bnFindent(fp, depth);
         fprintf(fp, "If\n");
-        bnDumpILExpression(fp, self->cond, depth + 1);
+        bnDumpILExpression(fp, pool, self->cond, depth + 1);
         GList* iter = self->statements;
         while (iter != NULL) {
-                bnDumpILStatement(fp, iter->data, depth + 1);
+                bnDumpILStatement(fp, pool, iter->data, depth + 1);
                 iter = iter->next;
         }
 }
@@ -33,13 +34,14 @@ bnILStmtIfElse* bnNewILStmtIfElse(bnILStmtIf* trueCase) {
         return ret;
 }
 
-void bnDumpILStmtIfElse(FILE* fp, bnILStmtIfElse* self, int depth) {
+void bnDumpILStmtIfElse(FILE* fp, struct bnStringPool* pool,
+                        bnILStmtIfElse* self, int depth) {
         bnFindent(fp, depth);
         fprintf(fp, "if else\n");
-        bnDumpILStmtIf(fp, self->trueCase, depth + 1);
+        bnDumpILStmtIf(fp, pool, self->trueCase, depth + 1);
         GList* iter = self->statements;
         while (iter != NULL) {
-                bnDumpILStatement(fp, iter->data, depth + 1);
+                bnDumpILStatement(fp, pool, iter->data, depth + 1);
                 iter = iter->next;
         }
 }

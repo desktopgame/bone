@@ -10,22 +10,23 @@ bnILStatement* bnNewILStatement(bnILStatementType type) {
         return ret;
 }
 
-void bnDumpILStatement(FILE* fp, bnILStatement* self, int depth) {
+void bnDumpILStatement(FILE* fp, struct bnStringPool* pool, bnILStatement* self,
+                       int depth) {
         bnDumpLineno(fp, self->line);
         switch (self->type) {
                 case BN_IL_STMT_NONE:
                         break;
                 case BN_IL_STMT_EXPRSTMT:
-                        bnDumpILStmtExpr(fp, self->u.vExprStmt, depth);
+                        bnDumpILStmtExpr(fp, pool, self->u.vExprStmt, depth);
                         break;
                 case BN_IL_STMT_IF:
-                        bnDumpILStmtIf(fp, self->u.vIf, depth);
+                        bnDumpILStmtIf(fp, pool, self->u.vIf, depth);
                         break;
                 case BN_IL_STMT_IF_ELSE:
-                        bnDumpILStmtIfElse(fp, self->u.vIfElse, depth);
+                        bnDumpILStmtIfElse(fp, pool, self->u.vIfElse, depth);
                         break;
                 case BN_IL_STMT_WHILE:
-                        bnDumpILStmtWhile(fp, self->u.vWhile, depth);
+                        bnDumpILStmtWhile(fp, pool, self->u.vWhile, depth);
                         break;
                 default:
                         assert(false);

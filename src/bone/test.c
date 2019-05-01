@@ -12,7 +12,8 @@
 #define EXPECT_ERR (0)
 #define EXPECT_SUC (1)
 
-static void writeIL(const gchar* out, bnILToplevel* il) {
+static void writeIL(const gchar* out, struct bnStringPool* pool,
+                    bnILToplevel* il) {
         if (il == NULL) {
                 return;
         }
@@ -21,11 +22,11 @@ static void writeIL(const gchar* out, bnILToplevel* il) {
                 perror("writeIL");
                 return;
         }
-        bnDumpILTopLevel(fp, il, 0);
+        bnDumpILTopLevel(fp, pool, il, 0);
         fclose(fp);
 }
 
-static void writeAST(const gchar* out, bnAST* a) {
+static void writeAST(const gchar* out, struct bnStringPool* pool, bnAST* a) {
         if (a == NULL) {
                 return;
         }
@@ -34,7 +35,7 @@ static void writeAST(const gchar* out, bnAST* a) {
                 perror("writeAST");
                 return;
         }
-        bnDumpAST(fp, a);
+        bnDumpAST(fp, pool, a);
         fclose(fp);
 }
 
@@ -43,6 +44,7 @@ static int bnParse(const char* dir, int flag) {
         GDir* dirp = g_dir_open(dir, 0, &err);
         gchar* file = ".";
         gchar* cwd = g_get_current_dir();
+        struct bnStringPool* pool = bnNewStringPool();
         while ((file = g_dir_read_name(dirp)) != NULL) {
                 // do process only a suffix .in
                 gchar* path = g_build_filename(cwd, dir, file, NULL);
@@ -56,11 +58,11 @@ static int bnParse(const char* dir, int flag) {
                         g_remove(out);
                 }
                 // parse and test
-                bnAST* a = bnParseFile(path);
+                bnAST* a = bnParseFile(pool, path);
                 printf("%s\n", path);
                 if (flag == EXPECT_SUC) {
                         bnILToplevel* iltop = bnAST2IL(a);
-                        writeIL(out, iltop);
+                        writeIL(out, pool, iltop);
                         CU_ASSERT(a != NULL);
                         bnDeleteAST(a);
                         bnDeleteILTopLevel(iltop);
@@ -72,6 +74,7 @@ static int bnParse(const char* dir, int flag) {
         }
         g_dir_close(dirp);
         g_free(cwd);
+        bnDeleteStringPool(pool);
         return 0;
 }
 

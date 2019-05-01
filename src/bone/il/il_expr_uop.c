@@ -7,10 +7,11 @@ bnILExprUOp* bnNewILExprUOp(bnILUOpType type) {
         return ret;
 }
 
-void bnDumpILExprUOp(FILE* fp, bnILExprUOp* self, int depth) {
+void bnDumpILExprUOp(FILE* fp, struct bnStringPool* pool, bnILExprUOp* self,
+                     int depth) {
         bnFindent(fp, depth);
         fprintf(fp, "uop\n");
-        bnDumpILExpression(fp, self->a, depth + 1);
+        bnDumpILExpression(fp, pool, self->a, depth + 1);
 }
 
 void bnDeleteILExprUOp(bnILExprUOp* self) {

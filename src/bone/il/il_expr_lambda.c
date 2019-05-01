@@ -9,7 +9,8 @@ bnILExprLambda* bnNewILExprLambda() {
         return ret;
 }
 
-void bnDumpILExprLambda(FILE* fp, bnILExprLambda* self, int depth) {
+void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
+                        bnILExprLambda* self, int depth) {
         bnFindent(fp, depth);
         fprintf(fp, "lambda\n");
         // parameters
@@ -17,9 +18,9 @@ void bnDumpILExprLambda(FILE* fp, bnILExprLambda* self, int depth) {
         fprintf(fp, "parameters\n");
         GList* iter = self->parameters;
         while (iter != NULL) {
-                GString* param = iter->data;
+                bnStringView param = iter->data;
                 bnFindent(fp, depth + 2);
-                fprintf(fp, "%s\n", param->str);
+                fprintf(fp, "%s\n", bnView2Str(pool, param));
                 iter = iter->next;
         }
         // returns
@@ -27,9 +28,9 @@ void bnDumpILExprLambda(FILE* fp, bnILExprLambda* self, int depth) {
         fprintf(fp, "returns\n");
         iter = self->returns;
         while (iter != NULL) {
-                GString* param = iter->data;
+                bnStringView param = iter->data;
                 bnFindent(fp, depth + 2);
-                fprintf(fp, "%s\n", param->str);
+                fprintf(fp, "%s\n", bnView2Str(pool, param));
                 iter = iter->next;
         }
         // statements
@@ -38,13 +39,13 @@ void bnDumpILExprLambda(FILE* fp, bnILExprLambda* self, int depth) {
         iter = self->statements;
         while (iter != NULL) {
                 bnILStatement* stmt = iter->data;
-                bnDumpILStatement(fp, stmt, depth + 2);
+                bnDumpILStatement(fp, pool, stmt, depth + 2);
                 iter = iter->next;
         }
 }
 
 void bnDeleteILExprLambda(bnILExprLambda* self) {
-        g_list_free_full(self->parameters, g_string_free);
-        g_list_free_full(self->returns, g_string_free);
+        g_list_free(self->parameters);
+        g_list_free(self->returns);
         g_list_free_full(self->statements, bnDeleteILStatement);
 }

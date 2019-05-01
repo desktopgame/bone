@@ -19,10 +19,12 @@ bnILExprChar* bnNewILExprChar(char value);
 /**
  * print a information of bnILExprChar.
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDumpILExprChar(FILE* fp, bnILExprChar* self, int depth);
+void bnDumpILExprChar(FILE* fp, struct bnStringPool* pool, bnILExprChar* self,
+                      int depth);
 
 /**
  * free a bnILExprChar.

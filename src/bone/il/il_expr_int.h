@@ -19,10 +19,12 @@ bnILExprInt* bnNewILExprInt(int value);
 /**
  * print a information of bnILExprInt.
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDumpILExprInt(FILE* fp, bnILExprInt* self, int depth);
+void bnDumpILExprInt(FILE* fp, struct bnStringPool* pool, bnILExprInt* self,
+                     int depth);
 
 /**
  * free a bnILExprInt.

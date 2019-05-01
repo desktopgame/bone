@@ -224,7 +224,7 @@ static void update_loc() {
 }
 
 <INITIAL>[A-Za-z_][A-Za-z_0-9]* {
-	yylval.svalue = g_string_new(yytext);
+	yylval.svvalue = bnInternIdentifier(yytext);
 	return IDENT;
 }
 <INITIAL>\'\\r\' {

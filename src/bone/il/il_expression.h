@@ -1,6 +1,7 @@
 #ifndef BONE_IL_ILEXPRESSION_H
 #define BONE_IL_ILEXPRESSION_H
 #include <stdio.h>
+#include "../util/string_pool.h"
 
 typedef enum bnILExpressionType {
         BN_IL_EXPR_NONE,
@@ -46,7 +47,8 @@ typedef struct bnILExpression {
 
 bnILExpression* bnNewILExpression(bnILExpressionType type);
 
-void bnDumpILExpression(FILE* fp, bnILExpression* self, int depth);
+void bnDumpILExpression(FILE* fp, struct bnStringPool* pool,
+                        bnILExpression* self, int depth);
 
 void bnDeleteILExpression(bnILExpression* self);
 #endif

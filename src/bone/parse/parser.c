@@ -10,12 +10,14 @@ static int gColumn = -1;
 static GString *gStr = NULL;
 static GQueue *gLineQ = NULL;
 static GRecMutex gMutex;
+static struct bnStringPool *gPool;
 static void init_string_lit();
 static void free_lq();
 
-bnAST *bnParseFile(const char *filename) {
+bnAST *bnParseFile(struct bnStringPool *pool, const char *filename) {
         g_rec_mutex_lock(&gMutex);
         gParserInputTag = BN_PARSER_INPUT_FROM_FILE;
+        gPool = pool;
         extern FILE *yyin;
         extern void yy_calc_start(void);
         extern int yyparse(void);
@@ -41,9 +43,10 @@ bnAST *bnParseFile(const char *filename) {
         return ret;
 }
 
-bnAST *bnParseString(const char *source) {
+bnAST *bnParseString(struct bnStringPool *pool, const char *source) {
         g_rec_mutex_lock(&gMutex);
         gParserInputTag = BN_PARSER_INPUT_FROM_SOURCE;
+        gPool = pool;
         extern void yy_setstr(char *source);
         extern void yy_clearstr();
         extern void yy_calc_start(void);
@@ -69,13 +72,18 @@ bnParserInputTag bnGetParserInputTag() { return gParserInputTag; }
 
 void bnBeginStringLit() { init_string_lit(); }
 
+bnStringView bnInternIdentifier(const char *str) {
+        return bnIntern(gPool, str);
+}
+
 void bnAppendStringLit(char c) {
         assert(gStr != NULL);
         g_string_append_c(gStr, c);
 }
 
 bnAST *bnEndStringLit() {
-        bnAST *ret = bnNewStringAST(gStr);
+        bnAST *ret = bnNewStringAST(bnInternIdentifier(gStr->str));
+        g_string_free(gStr, TRUE);
         gStr = NULL;
         return ret;
 }

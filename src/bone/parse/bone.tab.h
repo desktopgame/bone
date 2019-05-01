@@ -109,7 +109,7 @@ union YYSTYPE
 #line 9 "bone.y" /* yacc.c:1916  */
 
 	bnAST* ast_value;
-	GString* svalue;
+	bnStringView svvalue;
 
 #line 115 "bone.tab.h" /* yacc.c:1916  */
 };

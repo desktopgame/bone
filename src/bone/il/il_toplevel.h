@@ -23,8 +23,10 @@ void bnDeleteILTopLevel(bnILToplevel* self);
 
 /**
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDumpILTopLevel(FILE* fp, bnILToplevel* self, int depth);
+void bnDumpILTopLevel(FILE* fp, struct bnStringPool* pool, bnILToplevel* self,
+                      int depth);
 #endif

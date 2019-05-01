@@ -8,23 +8,25 @@
  */
 typedef struct bnILExprMemberOp {
         bnILExpression* expr;
-        GString* nameRef;
+        bnStringView name;
 } bnILExprMemberOp;
 
 /**
  * return new instance of bnILExprMemberOp.
- * @param nameRef
+ * @param name
  * @return
  */
-bnILExprMemberOp* bnNewILExprMemberOp(GString* nameRef);
+bnILExprMemberOp* bnNewILExprMemberOp(bnStringView name);
 
 /**
  * print a information of bnILExprMemberOp.
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDumpILExprMemberOp(FILE* fp, bnILExprMemberOp* self, int depth);
+void bnDumpILExprMemberOp(FILE* fp, struct bnStringPool* pool,
+                          bnILExprMemberOp* self, int depth);
 
 /**
  * free a bnILExprMemberOp.

@@ -5,7 +5,8 @@
 
 // proto
 static void ast_child_delete(gpointer item);
-static void bnDumpASTImpl(FILE* fp, bnAST* self, int depth);
+static void bnDumpASTImpl(FILE* fp, struct bnStringPool* pool, bnAST* self,
+                          int depth);
 
 bnAST* bnNewAST(bnASTTag tag) {
         bnAST* ret = (bnAST*)BN_MALLOC(sizeof(bnAST));
@@ -61,9 +62,9 @@ bnAST* bnNewArgumentListAST(bnAST* aexpr, bnAST* aargs) {
         return ret;
 }
 
-bnAST* bnNewParameterAST(GString* name) {
+bnAST* bnNewParameterAST(bnStringView name) {
         bnAST* ret = bnNewAST(BN_AST_PARAMETER);
-        ret->u.svalue = name;
+        ret->u.svvalue = name;
         return ret;
 }
 
@@ -89,15 +90,15 @@ bnAST* bnNewStatementListAST(bnAST* astmt, bnAST* astmtList) {
         return ret;
 }
 
-bnAST* bnNewVariableAST(GString* svalue) {
+bnAST* bnNewVariableAST(bnStringView name) {
         bnAST* ret = bnNewAST(BN_AST_VARIABLE);
-        ret->u.svalue = svalue;
+        ret->u.svvalue = name;
         return ret;
 }
 
-bnAST* bnNewMemberAccessAST(bnAST* aexpr, GString* name) {
+bnAST* bnNewMemberAccessAST(bnAST* aexpr, bnStringView name) {
         bnAST* ret = bnNewAST(BN_AST_MEMBER_ACCESS);
-        ret->u.svalue = name;
+        ret->u.svvalue = name;
         bnPushAST(ret, aexpr);
         return ret;
 }
@@ -115,9 +116,9 @@ bnAST* bnNewIntAST(int ivalue) {
         return ret;
 }
 
-bnAST* bnNewStringAST(GString* svalue) {
+bnAST* bnNewStringAST(bnStringView value) {
         bnAST* ret = bnNewAST(BN_AST_STRING_LIT);
-        ret->u.svalue = svalue;
+        ret->u.svvalue = value;
         return ret;
 }
 
@@ -152,9 +153,11 @@ void bnPushAST(bnAST* self, bnAST* a) {
         self->line = bnPopParseLine();
 }
 
-void bnDumpAST(FILE* fp, bnAST* self) { bnDumpASTImpl(fp, self, 0); }
+void bnDumpAST(FILE* fp, struct bnStringPool* pool, bnAST* self) {
+        bnDumpASTImpl(fp, pool, self, 0);
+}
 
-void bnPrintAST(FILE* fp, bnAST* self) {
+void bnPrintAST(FILE* fp, struct bnStringPool* pool, bnAST* self) {
 #define p(a)              \
         fprintf(fp, (a)); \
         break
@@ -168,13 +171,13 @@ void bnPrintAST(FILE* fp, bnAST* self) {
                         fprintf(fp, "%lf", self->u.dvalue);
                         break;
                 case BN_AST_STRING_LIT:
-                        fprintf(fp, "%s", self->u.svalue->str);
+                        fprintf(fp, "%s", bnView2Str(pool, self->u.svvalue));
                         break;
                 case BN_AST_CHAR_LIT:
                         fprintf(fp, "%c", self->u.cvalue);
                         break;
                 case BN_AST_VARIABLE:
-                        fprintf(fp, "$%s", self->u.svalue->str);
+                        fprintf(fp, "$%s", bnView2Str(pool, self->u.svvalue));
                         break;
                 case BN_AST_BLANK:
                         fprintf(fp, "BLANK");
@@ -195,7 +198,7 @@ void bnPrintAST(FILE* fp, bnAST* self) {
                         fprintf(fp, "StmtList");
                         break;
                 case BN_AST_MEMBER_ACCESS:
-                        fprintf(fp, ".%s", self->u.svalue->str);
+                        fprintf(fp, ".%s", bnView2Str(pool, self->u.svvalue));
                         break;
                 case BN_AST_PLUS:
                         p("+");
@@ -375,16 +378,17 @@ static void ast_child_delete(gpointer item) {
         bnDeleteAST(e);
 }
 
-static void bnDumpASTImpl(FILE* fp, bnAST* self, int depth) {
+static void bnDumpASTImpl(FILE* fp, struct bnStringPool* pool, bnAST* self,
+                          int depth) {
         for (int i = 0; i < depth; i++) {
                 fprintf(fp, " ");
         }
-        bnPrintAST(fp, self);
+        bnPrintAST(fp, pool, self);
         fprintf(fp, "\n");
         GList* iter = self->children;
         while (iter != NULL) {
                 bnAST* e = iter->data;
-                bnDumpASTImpl(fp, e, depth + 1);
+                bnDumpASTImpl(fp, pool, e, depth + 1);
                 iter = iter->next;
         }
 }

@@ -73,7 +73,7 @@ typedef struct bnAST {
                 int ivalue;
                 double dvalue;
                 char cvalue;
-                GString* svalue;
+                bnStringView svvalue;
         } u;
         GList* children;
         bnASTTag tag;
@@ -96,7 +96,7 @@ bnAST* bnNewArgumentAST(bnAST* aexpr);
 
 bnAST* bnNewArgumentListAST(bnAST* aexpr, bnAST* aargs);
 
-bnAST* bnNewParameterAST(GString* name);
+bnAST* bnNewParameterAST(bnStringView name);
 
 bnAST* bnNewParameterListAST(bnAST* aparam, bnAST* aparams);
 
@@ -104,15 +104,15 @@ bnAST* bnNewLambda(bnAST* aparams, bnAST* areturn, bnAST* astmt);
 
 bnAST* bnNewStatementListAST(bnAST* astmt, bnAST* astmtList);
 
-bnAST* bnNewVariableAST(GString* svalue);
+bnAST* bnNewVariableAST(bnStringView name);
 
-bnAST* bnNewMemberAccessAST(bnAST* aexpr, GString* name);
+bnAST* bnNewMemberAccessAST(bnAST* aexpr, bnStringView name);
 
 bnAST* bnNewFuncCall(bnAST* aexpr, bnAST* aargs);
 
 bnAST* bnNewIntAST(int ivalue);
 
-bnAST* bnNewStringAST(GString* svalue);
+bnAST* bnNewStringAST(bnStringView value);
 
 bnAST* bnNewCharAST(char cvalue);
 
@@ -124,9 +124,9 @@ bnAST* bnNewBinaryAST(bnASTTag tag, bnAST* left, bnAST* right);
 
 void bnPushAST(bnAST* self, bnAST* a);
 
-void bnDumpAST(FILE* fp, bnAST* self);
+void bnDumpAST(FILE* fp, struct bnStringPool* pool, bnAST* self);
 
-void bnPrintAST(FILE* fp, bnAST* self);
+void bnPrintAST(FILE* fp, struct bnStringPool* pool, bnAST* self);
 
 void bnDeleteAST(bnAST* self);
 
