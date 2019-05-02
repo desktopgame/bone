@@ -1,10 +1,11 @@
 #ifndef BONE_RUNTIME_FRAME_H
 #define BONE_RUNTIME_FRAME_H
 #include "../bone.h"
+#include "../util/stack.h"
 
 typedef struct bnFrame {
         int pc;
-        GTrashStack* stack;
+        bnStack* vStack;
         GHashTable* variableTable;
         struct bnFrame* prev;
         struct bnFrame* next;

@@ -4,8 +4,9 @@ bnFrame* bnNewFrame() {
         bnFrame* ret = BN_MALLOC(sizeof(bnFrame));
         ret->prev = NULL;
         ret->next = NULL;
-        ret->stack = NULL;
-        ret->variableTable = g_hash_table_new(g_int_hash, g_int_equal);
+        ret->vStack = bnNewStack();
+        ret->variableTable =
+            g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         ret->pc = 0;
         return ret;
 }
@@ -23,5 +24,6 @@ void bnDeleteFrame(bnFrame* self) {
         if (self->prev != NULL) {
                 self->prev->next = NULL;
         }
+        bnDeleteStack(self->vStack, NULL);
         BN_FREE(self);
 }
