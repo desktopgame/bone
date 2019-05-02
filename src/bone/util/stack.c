@@ -30,6 +30,19 @@ void* bnPopStack(bnStack* self) {
         }
 }
 
+int bnGetStackSize(bnStack* self) {
+        if (self->head == NULL) {
+                return 0;
+        }
+        int count = 0;
+        bnStackElement* iter = self->head;
+        while (iter != NULL) {
+                count++;
+                iter = iter->next;
+        }
+        return count;
+}
+
 void bnDeleteStack(bnStack* self, bnStackElementDeleter deleter) {
         free_impl(self->head, deleter);
         BN_FREE(self);

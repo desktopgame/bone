@@ -18,5 +18,7 @@ void bnPushStack(bnStack* self, void* data);
 
 void* bnPopStack(bnStack* self);
 
+int bnGetStackSize(bnStack* self);
+
 void bnDeleteStack(bnStack* self, bnStackElementDeleter deleter);
 #endif
