@@ -3,17 +3,36 @@
 #include "enviroment.h"
 #include "object.h"
 
+struct bnFrame;
+typedef void (*bnNativeFunc)(struct bnFrame* frame);
+
+typedef enum bnLambdaType {
+        BN_LAMBDA_SCRIPT,
+        BN_LAMBDA_NATIVE,
+} bnLambdaType;
+
 typedef struct bnLambda {
         bnObject base;
-        bnEnviroment* env;
+        bnLambdaType type;
+        union {
+                bnEnviroment* vEnv;
+                bnNativeFunc vFunc;
+        } u;
 } bnLambda;
 
 /**
  * return new instance of bnLambda.
- * @param name
+ * @param type
  * @return
  */
-bnLambda* bnNewLambda();
+bnLambda* bnNewLambda(bnLambdaType type);
+
+/**
+ * return new instance of bnLambda, from C function.
+ * @param func
+ * @return
+ */
+bnLambda* bnNewLambdaFromCFunc(bnNativeFunc func);
 
 /**
  * return new instance of bnLambda.

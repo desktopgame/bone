@@ -2,12 +2,23 @@
 #define BONE_RUNTIME_OBJECT_H
 #include "../bone.h"
 
+typedef enum bnObjectType {
+        BN_OBJECT_PROTO,
+        BN_OBJECT_INTEGER,
+        BN_OBJECT_DOUBLE,
+        BN_OBJECT_CHAR,
+        BN_OBJECT_STRING,
+        BN_OBJECT_BOOL,
+        BN_OBJECT_LAMBDA,
+} bnObjectType;
+
 typedef struct bnObject {
         GHashTable* table;
         bool mark;
+        bnObjectType type;
 } bnObject;
 
-void bnInitObject(bnObject* self);
+void bnInitObject(bnObject* self, bnObjectType type);
 
 /**
  * return new instance of bnObject.

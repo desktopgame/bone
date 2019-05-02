@@ -2,7 +2,7 @@
 
 bnDouble* bnNewDouble(double value) {
         bnDouble* ret = BN_MALLOC(sizeof(bnDouble));
-        bnInitObject(&ret->base);
+        bnInitObject(&ret->base, BN_OBJECT_DOUBLE);
         ret->value = value;
         return ret;
 }
