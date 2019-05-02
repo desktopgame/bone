@@ -11,8 +11,8 @@ bnObject* bnNewObject() {
         return ret;
 }
 
-void bnDefine(bnObject* self, const char* name, bnObject* value) {
-        g_hash_table_insert(self->table, name, value);
+void bnDefine(bnObject* self, bnStringView name, bnObject* value) {
+        g_hash_table_insert(self->table, (int)name, value);
 }
 
 void bnDeleteObject(bnObject* self) {}

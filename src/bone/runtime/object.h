@@ -21,7 +21,7 @@ bnObject* bnNewObject();
  * @param name
  * @param value
  */
-void bnDefine(bnObject* self, const char* name, bnObject* value);
+void bnDefine(bnObject* self, bnStringView name, bnObject* value);
 
 /**
  * return new instance of bnObject.
