@@ -1,6 +1,7 @@
 #ifndef BONE_IL_ILEXPRVARIABLE_H
 #define BONE_IL_ILEXPRVARIABLE_H
 #include "../bone.h"
+struct bnEnviroment;
 
 /**
  * bnILExprVariable is local variable.
@@ -25,6 +26,8 @@ bnILExprVariable* bnNewILExprVariable(bnStringView name);
  */
 void bnDumpILExprVariable(FILE* fp, struct bnStringPool* pool,
                           bnILExprVariable* self, int depth);
+
+void bnGenerateILExprVariable(bnILExprVariable* self, struct bnEnviroment* env);
 
 /**
  * free a bnILExprVariable.

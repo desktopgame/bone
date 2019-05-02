@@ -2,6 +2,7 @@
 #define BONE_IL_ILEXPRMEMBEROP_H
 #include "../bone.h"
 #include "il_expression.h"
+struct bnEnviroment;
 
 /**
  * bnILExprMemberOp is member operator.
@@ -27,6 +28,8 @@ bnILExprMemberOp* bnNewILExprMemberOp(bnStringView name);
  */
 void bnDumpILExprMemberOp(FILE* fp, struct bnStringPool* pool,
                           bnILExprMemberOp* self, int depth);
+
+void bnGenerateILExprMemberOp(bnILExprMemberOp* self, struct bnEnviroment* env);
 
 /**
  * free a bnILExprMemberOp.

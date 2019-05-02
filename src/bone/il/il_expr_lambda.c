@@ -1,4 +1,5 @@
 #include "il_expr_lambda.h"
+#include "../runtime/enviroment.h"
 #include "il_statement.h"
 
 bnILExprLambda* bnNewILExprLambda() {
@@ -43,6 +44,8 @@ void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
                 iter = iter->next;
         }
 }
+
+void bnGenerateILExprLambda(bnILExprLambda* self, bnEnviroment* env) {}
 
 void bnDeleteILExprLambda(bnILExprLambda* self) {
         g_list_free(self->parameters);

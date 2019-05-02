@@ -1,6 +1,7 @@
 #ifndef BONE_IL_ILEXPRCHAR_H
 #define BONE_IL_ILEXPRCHAR_H
 #include "../bone.h"
+struct bnEnviroment;
 
 /**
  * bnILExprChar is literal of character.
@@ -25,6 +26,8 @@ bnILExprChar* bnNewILExprChar(char value);
  */
 void bnDumpILExprChar(FILE* fp, struct bnStringPool* pool, bnILExprChar* self,
                       int depth);
+
+void bnGenerateILExprChar(bnILExprChar* self, struct bnEnviroment* env);
 
 /**
  * free a bnILExprChar.

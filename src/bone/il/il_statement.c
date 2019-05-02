@@ -1,5 +1,6 @@
 #include "il_statement.h"
 #include "../bone.h"
+#include "../runtime/enviroment.h"
 #include "il_lineno.h"
 #include "il_stmt_all.h"
 
@@ -55,4 +56,26 @@ void bnDeleteILStatement(bnILStatement* self) {
                         break;
         }
         BN_FREE(self);
+}
+
+void bnGenerateILStatement(bnILStatement* self, bnEnviroment* env) {
+        switch (self->type) {
+                case BN_IL_STMT_NONE:
+                        break;
+                case BN_IL_STMT_EXPRSTMT:
+                        bnGenerateILStmtExpr(self->u.vExprStmt, env);
+                        break;
+                case BN_IL_STMT_IF:
+                        bnGenerateILStmtIf(self->u.vIf, env);
+                        break;
+                case BN_IL_STMT_IF_ELSE:
+                        bnGenerateILStmtIfElse(self->u.vIfElse, env);
+                        break;
+                case BN_IL_STMT_WHILE:
+                        bnGenerateILStmtWhile(self->u.vWhile, env);
+                        break;
+                default:
+                        assert(false);
+                        break;
+        }
 }

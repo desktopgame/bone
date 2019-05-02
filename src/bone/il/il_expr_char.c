@@ -1,4 +1,5 @@
 #include "il_expr_char.h"
+#include "../runtime/enviroment.h"
 
 bnILExprChar* bnNewILExprChar(char value) {
         bnILExprChar* ret = BN_MALLOC(sizeof(bnILExprChar));
@@ -11,5 +12,7 @@ void bnDumpILExprChar(FILE* fp, struct bnStringPool* pool, bnILExprChar* self,
         bnFindent(fp, depth);
         fprintf(fp, "char %c\n", self->value);
 }
+
+void bnGenerateILExprChar(bnILExprChar* self, bnEnviroment* env) {}
 
 void bnDeleteILExprChar(bnILExprChar* self) { BN_FREE(self); }

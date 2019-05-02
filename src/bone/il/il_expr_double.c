@@ -1,4 +1,5 @@
 #include "il_expr_double.h"
+#include "../runtime/enviroment.h"
 
 bnILExprDouble* bnNewILExprDouble(double value) {
         bnILExprDouble* ret = BN_MALLOC(sizeof(bnILExprDouble));
@@ -11,5 +12,7 @@ void bnDumpILExprDouble(FILE* fp, struct bnStringPool* pool,
         bnFindent(fp, depth);
         fprintf(fp, "%lf\n", self->value);
 }
+
+void bnGenerateILExprDouble(bnILExprDouble* self, bnEnviroment* env) {}
 
 void bnDeleteILExprDouble(bnILExprDouble* self) { BN_FREE(self); }

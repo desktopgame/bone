@@ -1,4 +1,5 @@
 #include "il_toplevel.h"
+#include "../runtime/enviroment.h"
 #include "il_stmt_all.h"
 
 bnILToplevel* bnNewILTopLevel() {
@@ -20,6 +21,15 @@ void bnDumpILTopLevel(FILE* fp, struct bnStringPool* pool, bnILToplevel* self,
         while (iter != NULL) {
                 bnILStatement* ilstmt = iter->data;
                 bnDumpILStatement(fp, pool, ilstmt, depth + 1);
+                iter = iter->next;
+        }
+}
+
+void bnGenerateILTopLevel(bnILToplevel* self, bnEnviroment* env) {
+        GList* iter = self->statements;
+        while (iter != NULL) {
+                bnILStatement* ilstmt = iter->data;
+                bnGenerateILStatement(ilstmt, env);
                 iter = iter->next;
         }
 }

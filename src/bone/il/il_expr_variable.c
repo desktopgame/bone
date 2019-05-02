@@ -1,4 +1,5 @@
 #include "il_expr_variable.h"
+#include "../runtime/enviroment.h"
 #include "il_expression.h"
 
 bnILExprVariable* bnNewILExprVariable(bnStringView name) {
@@ -12,5 +13,7 @@ void bnDumpILExprVariable(FILE* fp, struct bnStringPool* pool,
         bnFindent(fp, depth);
         fprintf(fp, "%s\n", bnView2Str(pool, self->name));
 }
+
+void bnGenerateILExprVariable(bnILExprVariable* self, bnEnviroment* env) {}
 
 void bnDeleteILExprVariable(bnILExprVariable* self) { BN_FREE(self); }

@@ -1,5 +1,6 @@
 #include "il_expression.h"
 #include "../bone.h"
+#include "../runtime/enviroment.h"
 #include "il_expr_all.h"
 #include "il_lineno.h"
 
@@ -48,6 +49,46 @@ void bnDumpILExpression(FILE* fp, struct bnStringPool* pool,
                         break;
                 case BN_IL_EXPR_LAMBDA:
                         bnDumpILExprLambda(fp, pool, self->u.vLambda, depth);
+                        break;
+                default:
+                        assert(false);
+                        break;
+        }
+}
+
+void bnGenerateILExpression(bnILExpression* self, bnEnviroment* env) {
+        switch (self->type) {
+                case BN_IL_EXPR_NONE:
+                        break;
+                case BN_IL_EXPR_INT:
+                        bnGenerateILExprInt(self->u.vInt, env);
+                        break;
+                case BN_IL_EXPR_DOUBLE:
+                        bnGenerateILExprDouble(self->u.vDouble, env);
+                        break;
+                case BN_IL_EXPR_CHAR:
+                        bnGenerateILExprChar(self->u.vChar, env);
+                        break;
+                case BN_IL_EXPR_STRING:
+                        bnGenerateILExprString(self->u.vString, env);
+                        break;
+                case BN_IL_EXPR_BINOP:
+                        bnGenerateILExprBinOp(self->u.vBinOp, env);
+                        break;
+                case BN_IL_EXPR_UOP:
+                        bnGenerateILExprUOp(self->u.vUOp, env);
+                        break;
+                case BN_IL_EXPR_MEMBEROP:
+                        bnGenerateILExprMemberOp(self->u.vMemberOp, env);
+                        break;
+                case BN_IL_EXPR_FUNCCALLOP:
+                        bnGenerateILExprFuncCallOp(self->u.vFuncCallOp, env);
+                        break;
+                case BN_IL_EXPR_VARIABLE:
+                        bnGenerateILExprVariable(self->u.vVariable, env);
+                        break;
+                case BN_IL_EXPR_LAMBDA:
+                        bnGenerateILExprLambda(self->u.vLambda, env);
                         break;
                 default:
                         assert(false);

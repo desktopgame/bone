@@ -28,6 +28,8 @@ bnILStmtIf* bnNewILStmtIf(bnILExpression* cond);
 void bnDumpILStmtIf(FILE* fp, struct bnStringPool* pool, bnILStmtIf* self,
                     int depth);
 
+void bnGenerateILStmtIf(bnILStmtIf* self, struct bnEnviroment* env);
+
 /**
  * free a bnILStmtIf.
  * @param self
@@ -64,4 +66,6 @@ void bnDumpILStmtIfElse(FILE* fp, struct bnStringPool* pool,
  * @param self
  */
 void bnDeleteILStmtIfElse(bnILStmtIfElse* self);
+
+void bnGenerateILStmtIfElse(bnILStmtIfElse* self, struct bnEnviroment* env);
 #endif

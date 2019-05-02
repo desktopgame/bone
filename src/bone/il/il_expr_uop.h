@@ -37,6 +37,8 @@ bnILExprUOp* bnNewILExprUOp(bnILUOpType type);
 void bnDumpILExprUOp(FILE* fp, struct bnStringPool* pool, bnILExprUOp* self,
                      int depth);
 
+void bnGenerateILExprUOp(bnILExprUOp* self, struct bnEnviroment* env);
+
 /**
  * free a bnILExprUOp.
  * @param self

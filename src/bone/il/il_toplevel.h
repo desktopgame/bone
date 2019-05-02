@@ -1,6 +1,7 @@
 #ifndef BONE_IL_ILTOPLEVEL_H
 #define BONE_IL_ILTOPLEVEL_H
 #include "../bone.h"
+struct bnEnviroment;
 /**
  * bnILToplevel is structure of toplevel of source code.
  */
@@ -29,4 +30,10 @@ void bnDeleteILTopLevel(bnILToplevel* self);
  */
 void bnDumpILTopLevel(FILE* fp, struct bnStringPool* pool, bnILToplevel* self,
                       int depth);
+
+/**
+ * @param self
+ * @param env
+ */
+void bnGenerateILTopLevel(bnILToplevel* self, struct bnEnviroment* env);
 #endif

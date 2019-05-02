@@ -1,4 +1,5 @@
 #include "il_expr_binop.h"
+#include "../runtime/enviroment.h"
 
 bnILExprBinOp* bnNewILExprBinOp(bnILBinOpType type) {
         bnILExprBinOp* ret = BN_MALLOC(sizeof(bnILExprBinOp));
@@ -15,6 +16,8 @@ void bnDumpILExprBinOp(FILE* fp, struct bnStringPool* pool, bnILExprBinOp* self,
         bnDumpILExpression(fp, pool, self->left, depth + 1);
         bnDumpILExpression(fp, pool, self->right, depth + 1);
 }
+
+void bnGenerateILExprBinOp(bnILExprBinOp* self, bnEnviroment* env) {}
 
 void bnDeleteILExprBinOp(bnILExprBinOp* self) {
         bnDeleteILExpression(self->left);

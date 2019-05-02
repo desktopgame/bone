@@ -1,4 +1,5 @@
 #include "il_expr_string.h"
+#include "../runtime/enviroment.h"
 
 bnILExprString* bnNewILExprString(bnStringView value) {
         bnILExprString* ret = BN_MALLOC(sizeof(bnILExprString));
@@ -11,5 +12,7 @@ void bnDumpILExprString(FILE* fp, struct bnStringPool* pool,
         bnFindent(fp, depth);
         fprintf(fp, "string \"%s\"\n", bnView2Str(pool, self->value));
 }
+
+void bnGenerateILExprString(bnILExprString* self, bnEnviroment* env) {}
 
 void bnDeleteILExprString(bnILExprString* self) { BN_FREE(self); }

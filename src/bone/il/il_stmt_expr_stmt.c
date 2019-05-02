@@ -1,4 +1,5 @@
 #include "il_stmt_expr_stmt.h"
+#include "../runtime/enviroment.h"
 #include "il_expr_all.h"
 
 bnILStmtExpr* bnNewILStmtExpr(bnILExpression* expr) {
@@ -13,6 +14,8 @@ void bnDumpILStmtExpr(FILE* fp, struct bnStringPool* pool, bnILStmtExpr* self,
         fprintf(fp, "ExprStmt\n");
         bnDumpILExpression(fp, pool, self->expr, depth + 1);
 }
+
+void bnGenerateILStmtExpr(bnILStmtExpr* self, bnEnviroment* env) {}
 
 void bnDeleteILStmtExpr(bnILStmtExpr* self) {
         bnDeleteILExpression(self->expr);

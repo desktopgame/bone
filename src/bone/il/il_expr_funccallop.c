@@ -1,4 +1,5 @@
 #include "il_expr_funccallop.h"
+#include "../runtime/enviroment.h"
 
 bnILExprFuncCallOp* bnNewILExprFuncCallOp(bnILExpression* expr) {
         bnILExprFuncCallOp* ret = BN_MALLOC(sizeof(bnILExprFuncCallOp));
@@ -18,6 +19,8 @@ void bnDumpILExprFuncCallOp(FILE* fp, struct bnStringPool* pool,
                 iter = iter->next;
         }
 }
+
+void bnGenerateILExprFuncCallOp(bnILExprFuncCallOp* self, bnEnviroment* env) {}
 
 void bnDeleteILExprFuncCallOp(bnILExprFuncCallOp* self) {
         bnDeleteILExpression(self->expr);

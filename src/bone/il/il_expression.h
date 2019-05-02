@@ -17,6 +17,7 @@ typedef enum bnILExpressionType {
         BN_IL_EXPR_LAMBDA,
 } bnILExpressionType;
 
+struct bnEnviroment;
 struct bnILExprInt;
 struct bnILExprDouble;
 struct bnILExprChar;
@@ -49,6 +50,8 @@ bnILExpression* bnNewILExpression(bnILExpressionType type);
 
 void bnDumpILExpression(FILE* fp, struct bnStringPool* pool,
                         bnILExpression* self, int depth);
+
+void bnGenerateILExpression(bnILExpression* self, struct bnEnviroment* env);
 
 void bnDeleteILExpression(bnILExpression* self);
 #endif

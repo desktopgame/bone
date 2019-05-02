@@ -1,6 +1,7 @@
 #ifndef BONE_IL_ILEXPRINT_H
 #define BONE_IL_ILEXPRINT_H
 #include "../bone.h"
+struct bnEnviroment;
 
 /**
  * bnILExprInt is literal of integer.
@@ -25,6 +26,8 @@ bnILExprInt* bnNewILExprInt(int value);
  */
 void bnDumpILExprInt(FILE* fp, struct bnStringPool* pool, bnILExprInt* self,
                      int depth);
+
+void bnGenerateILExprInt(bnILExprInt* self, struct bnEnviroment* env);
 
 /**
  * free a bnILExprInt.

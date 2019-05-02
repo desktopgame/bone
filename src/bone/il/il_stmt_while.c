@@ -1,4 +1,5 @@
 #include "il_stmt_while.h"
+#include "../runtime/enviroment.h"
 #include "il_expression.h"
 #include "il_statement.h"
 
@@ -20,6 +21,8 @@ void bnDumpILStmtWhile(FILE* fp, struct bnStringPool* pool, bnILStmtWhile* self,
                 iter = iter->next;
         }
 }
+
+void bnGenerateILStmtWhile(bnILStmtWhile* self, bnEnviroment* env) {}
 
 void bnDeleteILStmtWhile(bnILStmtWhile* self) {
         bnDeleteILExpression(self->cond);

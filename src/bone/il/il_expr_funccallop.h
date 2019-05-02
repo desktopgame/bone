@@ -2,6 +2,7 @@
 #define BONE_IL_ILEXPRFUNCCALLOP_H
 #include "../bone.h"
 #include "il_expression.h"
+struct bnEnviroment;
 
 /**
  * bnILExprFuncCallOp is func call.
@@ -27,6 +28,9 @@ bnILExprFuncCallOp* bnNewILExprFuncCallOp(bnILExpression* expr);
  */
 void bnDumpILExprFuncCallOp(FILE* fp, struct bnStringPool* pool,
                             bnILExprFuncCallOp* self, int depth);
+
+void bnGenerateILExprFuncCallOp(bnILExprFuncCallOp* self,
+                                struct bnEnviroment* env);
 
 /**
  * free a bnILExprFuncCallOp.
