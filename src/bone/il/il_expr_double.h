@@ -2,6 +2,7 @@
 #define BONE_IL_ILEXPRDOUBLE_H
 #include "../bone.h"
 struct bnEnviroment;
+struct bnInterpreter;
 /**
  * bnILExprDouble is literal of double precision floating point type.
  */
@@ -26,7 +27,8 @@ bnILExprDouble* bnNewILExprDouble(double value);
 void bnDumpILExprDouble(FILE* fp, struct bnStringPool* pool,
                         bnILExprDouble* self, int depth);
 
-void bnGenerateILExprDouble(bnILExprDouble* self, struct bnEnviroment* env);
+void bnGenerateILExprDouble(struct bnInterpreter* bone, bnILExprDouble* self,
+                            struct bnEnviroment* env);
 
 /**
  * free a bnILExprDouble.

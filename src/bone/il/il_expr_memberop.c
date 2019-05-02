@@ -15,7 +15,8 @@ void bnDumpILExprMemberOp(FILE* fp, struct bnStringPool* pool,
         bnDumpILExpression(fp, pool, self->expr, depth + 1);
 }
 
-void bnGenerateILExprMemberOp(bnILExprMemberOp* self, bnEnviroment* env) {}
+void bnGenerateILExprMemberOp(struct bnInterpreter* bone,
+                              bnILExprMemberOp* self, bnEnviroment* env) {}
 
 void bnDeleteILExprMemberOp(bnILExprMemberOp* self) {
         bnDeleteILExpression(self->expr);

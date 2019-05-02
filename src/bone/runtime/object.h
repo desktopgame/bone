@@ -2,6 +2,9 @@
 #define BONE_RUNTIME_OBJECT_H
 #include "../bone.h"
 
+struct bnInterpreter;
+struct bnFrame;
+
 typedef enum bnObjectType {
         BN_OBJECT_PROTO,
         BN_OBJECT_INTEGER,
@@ -33,6 +36,9 @@ bnObject* bnNewObject();
  * @param value
  */
 void bnDefine(bnObject* self, bnStringView name, bnObject* value);
+
+void bnFuncCall(bnObject* self, struct bnInterpreter* bone,
+                struct bnFrame* frame, int argc);
 
 /**
  * return new instance of bnObject.

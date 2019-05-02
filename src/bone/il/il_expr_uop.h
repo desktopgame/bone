@@ -2,6 +2,7 @@
 #define BONE_IL_ILEXPRUOP_H
 #include "../bone.h"
 #include "il_expression.h"
+struct bnInterpreter;
 
 /**
  * bnILUOpType is type of binary operator.
@@ -37,7 +38,8 @@ bnILExprUOp* bnNewILExprUOp(bnILUOpType type);
 void bnDumpILExprUOp(FILE* fp, struct bnStringPool* pool, bnILExprUOp* self,
                      int depth);
 
-void bnGenerateILExprUOp(bnILExprUOp* self, struct bnEnviroment* env);
+void bnGenerateILExprUOp(struct bnInterpreter* bone, bnILExprUOp* self,
+                         struct bnEnviroment* env);
 
 /**
  * free a bnILExprUOp.

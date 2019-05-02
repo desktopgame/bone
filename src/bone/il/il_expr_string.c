@@ -13,6 +13,7 @@ void bnDumpILExprString(FILE* fp, struct bnStringPool* pool,
         fprintf(fp, "string \"%s\"\n", bnView2Str(pool, self->value));
 }
 
-void bnGenerateILExprString(bnILExprString* self, bnEnviroment* env) {}
+void bnGenerateILExprString(struct bnInterpreter* bone, bnILExprString* self,
+                            bnEnviroment* env) {}
 
 void bnDeleteILExprString(bnILExprString* self) { BN_FREE(self); }

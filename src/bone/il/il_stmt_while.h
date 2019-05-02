@@ -28,7 +28,8 @@ bnILStmtWhile* bnNewILStmtWhile(bnILExpression* cond);
 void bnDumpILStmtWhile(FILE* fp, struct bnStringPool* pool, bnILStmtWhile* self,
                        int depth);
 
-void bnGenerateILStmtWhile(bnILStmtWhile* self, struct bnEnviroment* env);
+void bnGenerateILStmtWhile(struct bnInterpreter* bone, bnILStmtWhile* self,
+                           struct bnEnviroment* env);
 
 /**
  * free a bnILStmtWhile.

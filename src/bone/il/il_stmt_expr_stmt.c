@@ -15,7 +15,10 @@ void bnDumpILStmtExpr(FILE* fp, struct bnStringPool* pool, bnILStmtExpr* self,
         bnDumpILExpression(fp, pool, self->expr, depth + 1);
 }
 
-void bnGenerateILStmtExpr(bnILStmtExpr* self, bnEnviroment* env) {}
+void bnGenerateILStmtExpr(struct bnInterpreter* bone, bnILStmtExpr* self,
+                          bnEnviroment* env) {
+        bnGenerateILExpression(bone, self->expr, env);
+}
 
 void bnDeleteILStmtExpr(bnILStmtExpr* self) {
         bnDeleteILExpression(self->expr);

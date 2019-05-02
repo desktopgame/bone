@@ -4,7 +4,8 @@
 #include "object.h"
 
 struct bnFrame;
-typedef void (*bnNativeFunc)(struct bnFrame* frame);
+struct bnInterpreter;
+typedef void (*bnNativeFunc)(struct bnInterpreter* bone, struct bnFrame* frame);
 
 typedef enum bnLambdaType {
         BN_LAMBDA_SCRIPT,

@@ -6,6 +6,8 @@ typedef struct bnFrame {
         int pc;
         GTrashStack* stack;
         GHashTable* variableTable;
+        struct bnFrame* prev;
+        struct bnFrame* next;
 } bnFrame;
 
 /**
@@ -14,6 +16,12 @@ typedef struct bnFrame {
  * @return
  */
 bnFrame* bnNewFrame();
+
+/**
+ * @param self
+ * @return
+ */
+bnFrame* bnSubFrame(bnFrame* self);
 
 /**
  * free a bnFrame.

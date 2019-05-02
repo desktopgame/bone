@@ -27,7 +27,8 @@ bnILStmtExpr* bnNewILStmtExpr(bnILExpression* expr);
 void bnDumpILStmtExpr(FILE* fp, struct bnStringPool* pool, bnILStmtExpr* self,
                       int depth);
 
-void bnGenerateILStmtExpr(bnILStmtExpr* self, struct bnEnviroment* env);
+void bnGenerateILStmtExpr(struct bnInterpreter* bone, bnILStmtExpr* self,
+                          struct bnEnviroment* env);
 
 /**
  * free a bnILStmtExpr.

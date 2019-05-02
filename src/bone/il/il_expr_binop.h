@@ -3,6 +3,7 @@
 #include "../bone.h"
 #include "il_expression.h"
 struct bnEnviroment;
+struct bnInterpreter;
 /**
  * bnILBinOpType is type of binary operator.
  */
@@ -46,7 +47,8 @@ bnILExprBinOp* bnNewILExprBinOp(bnILBinOpType type);
 void bnDumpILExprBinOp(FILE* fp, struct bnStringPool* pool, bnILExprBinOp* self,
                        int depth);
 
-void bnGenerateILExprBinOp(bnILExprBinOp* self, struct bnEnviroment* env);
+void bnGenerateILExprBinOp(struct bnInterpreter* bone, bnILExprBinOp* self,
+                           struct bnEnviroment* env);
 
 /**
  * free a bnILExprBinOp.

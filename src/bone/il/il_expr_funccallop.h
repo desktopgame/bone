@@ -3,6 +3,7 @@
 #include "../bone.h"
 #include "il_expression.h"
 struct bnEnviroment;
+struct bnInterpreter;
 
 /**
  * bnILExprFuncCallOp is func call.
@@ -29,7 +30,7 @@ bnILExprFuncCallOp* bnNewILExprFuncCallOp(bnILExpression* expr);
 void bnDumpILExprFuncCallOp(FILE* fp, struct bnStringPool* pool,
                             bnILExprFuncCallOp* self, int depth);
 
-void bnGenerateILExprFuncCallOp(bnILExprFuncCallOp* self,
+void bnGenerateILExprFuncCallOp(struct bnInterpreter* bone, bnILExprFuncCallOp* self,
                                 struct bnEnviroment* env);
 
 /**

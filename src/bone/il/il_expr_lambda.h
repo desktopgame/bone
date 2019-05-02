@@ -2,6 +2,7 @@
 #define $INCLUDE
 #include "../bone.h"
 struct bnEnviroment;
+struct bnInterpreter;
 
 /**
  * bnILExprLambda is lambda.
@@ -28,7 +29,8 @@ bnILExprLambda* bnNewILExprLambda();
 void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
                         bnILExprLambda* self, int depth);
 
-void bnGenerateILExprLambda(bnILExprLambda* self, struct bnEnviroment* env);
+void bnGenerateILExprLambda(struct bnInterpreter* bone, bnILExprLambda* self,
+                            struct bnEnviroment* env);
 
 /**
  * free a bnILExprLambda.

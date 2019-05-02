@@ -22,7 +22,8 @@ void bnDumpILStmtWhile(FILE* fp, struct bnStringPool* pool, bnILStmtWhile* self,
         }
 }
 
-void bnGenerateILStmtWhile(bnILStmtWhile* self, bnEnviroment* env) {}
+void bnGenerateILStmtWhile(struct bnInterpreter* bone, bnILStmtWhile* self,
+                           bnEnviroment* env) {}
 
 void bnDeleteILStmtWhile(bnILStmtWhile* self) {
         bnDeleteILExpression(self->cond);

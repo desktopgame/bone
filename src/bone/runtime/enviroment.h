@@ -1,6 +1,7 @@
 #ifndef BONE_RUNTIME_ENVIROMENT_H
 #define BONE_RUNTIME_ENVIROMENT_H
 #include "../bone.h"
+#include "opcode.h"
 
 typedef struct bnEnviroment {
         GList* binary;

@@ -45,7 +45,8 @@ void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
         }
 }
 
-void bnGenerateILExprLambda(bnILExprLambda* self, bnEnviroment* env) {}
+void bnGenerateILExprLambda(struct bnInterpreter* bone, bnILExprLambda* self,
+                            bnEnviroment* env) {}
 
 void bnDeleteILExprLambda(bnILExprLambda* self) {
         g_list_free(self->parameters);

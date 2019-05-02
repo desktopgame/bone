@@ -1,7 +1,8 @@
 #include "vm.h"
+#include "integer.h"
 #include "opcode.h"
 
-int bnExecute(bnEnviroment* env, bnFrame* frame) {
+int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
         GList* iter = env->binary;
         int PC = 0;
         while (iter != NULL) {
@@ -9,64 +10,59 @@ int bnExecute(bnEnviroment* env, bnFrame* frame) {
                 switch (code) {
                         case BN_OP_NOP:
                                 break;
-                        case BN_OP_GEN_INT:
+                        case BN_OP_DUP: {
+                                g_trash_stack_push(
+                                    &frame->stack,
+                                    g_trash_stack_peek(&frame->stack));
                                 break;
+                        }
+                        case BN_OP_SWAP: {
+                                gpointer a = g_trash_stack_pop(&frame->stack);
+                                gpointer b = g_trash_stack_pop(&frame->stack);
+                                g_trash_stack_push(&frame->stack, a);
+                                g_trash_stack_push(&frame->stack, b);
+                        }
+                        case BN_OP_GEN_INT: {
+                                iter = iter->next;
+                                PC++;
+                                int data = iter->data;
+                                g_trash_stack_push(&frame->stack,
+                                                   bnNewInteger(data));
+                                break;
+                        }
                         case BN_OP_GEN_DOUBLE:
                                 break;
                         case BN_OP_GEN_STRING:
                                 break;
-                        case BN_OP_STORE:
+                        case BN_OP_STORE: {
                                 break;
-                        case BN_OP_LOAD:
+                        }
+                        case BN_OP_LOAD: {
                                 break;
-                        case BN_OP_PUT:
+                        }
+                        case BN_OP_PUT: {
                                 break;
-                        case BN_OP_GET:
+                        }
+                        case BN_OP_GET: {
+                                bnObject* container =
+                                    g_trash_stack_pop(&frame->stack);
+                                iter = iter->next;
+                                PC++;
+                                bnStringView name = iter->data;
+                                gpointer data =
+                                    g_hash_table_lookup(container->table, name);
+                                g_trash_stack_push(&frame->stack, data);
                                 break;
-                        case BN_OP_FUNCCALL:
+                        }
+                        case BN_OP_FUNCCALL: {
+                                bnObject* lambda =
+                                    g_trash_stack_pop(&frame->stack);
+                                iter = iter->next;
+                                PC++;
+                                int argc = iter->data;
+                                bnFuncCall(lambda, bone, frame, argc);
                                 break;
-                        case BN_OP_POSITIVE:
-                                break;
-                        case BN_OP_NEGATIVE:
-                                break;
-                        case BN_OP_CHILDA:
-                                break;
-                        case BN_OP_NOT:
-                                break;
-                        case BN_OP_PLUS:
-                                break;
-                        case BN_OP_MINUS:
-                                break;
-                        case BN_OP_MULTIPLY:
-                                break;
-                        case BN_OP_DIVIDE:
-                                break;
-                        case BN_OP_MODULO:
-                                break;
-                        case BN_OP_BIT_AND:
-                                break;
-                        case BN_OP_BIT_OR:
-                                break;
-                        case BN_OP_LOGIC_AND:
-                                break;
-                        case BN_OP_LOGIC_OR:
-                                break;
-                        case BN_OP_EXC_OR:
-                                break;
-                        case BN_OP_LSHIFT:
-                                break;
-                        case BN_OP_RSHIFT:
-                                break;
-                        case BN_OP_GT:
-                                break;
-                        case BN_OP_GE:
-                                break;
-                        case BN_OP_LT:
-                                break;
-                        case BN_OP_EQUAL:
-                                break;
-                        case BN_OP_NOTEQUAL:
-                                break;
+                        }
                 }
                 // go to next code
                 iter = iter->next;

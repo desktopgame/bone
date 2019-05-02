@@ -13,6 +13,7 @@ void bnDumpILExprChar(FILE* fp, struct bnStringPool* pool, bnILExprChar* self,
         fprintf(fp, "char %c\n", self->value);
 }
 
-void bnGenerateILExprChar(bnILExprChar* self, bnEnviroment* env) {}
+void bnGenerateILExprChar(struct bnInterpreter* bone, bnILExprChar* self,
+                          bnEnviroment* env) {}
 
 void bnDeleteILExprChar(bnILExprChar* self) { BN_FREE(self); }

@@ -1,6 +1,7 @@
 #include "interpreter.h"
 #include "../parse/ast.h"
 #include "../parse/parser.h"
+#include "object.h"
 
 bnInterpreter* bnNewInterpreter(const char* filenameRef) {
         bnInterpreter* ret = BN_MALLOC(sizeof(bnInterpreter));
@@ -18,6 +19,11 @@ int bnEval(bnInterpreter* self) {
         bnDeleteAST(ret);
         return code;
         */
+}
+
+void bnPanic(bnInterpreter* self, bnObject* exception, int code) {
+        self->__exception = exception;
+        longjmp(self->__jmp, code);
 }
 
 void bnDeleteInterpreter(bnInterpreter* self) {

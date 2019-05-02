@@ -2,6 +2,7 @@
 #define BONE_IL_ILEXPRSTRING_H
 #include "../bone.h"
 struct bnEnviroment;
+struct bnInterpreter;
 
 /**
  * bnILExprString is literal of string.
@@ -27,7 +28,8 @@ bnILExprString* bnNewILExprString(bnStringView value);
 void bnDumpILExprString(FILE* fp, struct bnStringPool* pool,
                         bnILExprString* self, int depth);
 
-void bnGenerateILExprString(bnILExprString* self, struct bnEnviroment* env);
+void bnGenerateILExprString(struct bnInterpreter* bone, bnILExprString* self,
+                            struct bnEnviroment* env);
 
 /**
  * free a bnILExprString.

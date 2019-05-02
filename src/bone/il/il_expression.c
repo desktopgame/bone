@@ -56,39 +56,41 @@ void bnDumpILExpression(FILE* fp, struct bnStringPool* pool,
         }
 }
 
-void bnGenerateILExpression(bnILExpression* self, bnEnviroment* env) {
+void bnGenerateILExpression(struct bnInterpreter* bone, bnILExpression* self,
+                            bnEnviroment* env) {
         switch (self->type) {
                 case BN_IL_EXPR_NONE:
                         break;
                 case BN_IL_EXPR_INT:
-                        bnGenerateILExprInt(self->u.vInt, env);
+                        bnGenerateILExprInt(bone, self->u.vInt, env);
                         break;
                 case BN_IL_EXPR_DOUBLE:
-                        bnGenerateILExprDouble(self->u.vDouble, env);
+                        bnGenerateILExprDouble(bone, self->u.vDouble, env);
                         break;
                 case BN_IL_EXPR_CHAR:
-                        bnGenerateILExprChar(self->u.vChar, env);
+                        bnGenerateILExprChar(bone, self->u.vChar, env);
                         break;
                 case BN_IL_EXPR_STRING:
-                        bnGenerateILExprString(self->u.vString, env);
+                        bnGenerateILExprString(bone, self->u.vString, env);
                         break;
                 case BN_IL_EXPR_BINOP:
-                        bnGenerateILExprBinOp(self->u.vBinOp, env);
+                        bnGenerateILExprBinOp(bone, self->u.vBinOp, env);
                         break;
                 case BN_IL_EXPR_UOP:
-                        bnGenerateILExprUOp(self->u.vUOp, env);
+                        bnGenerateILExprUOp(bone, self->u.vUOp, env);
                         break;
                 case BN_IL_EXPR_MEMBEROP:
-                        bnGenerateILExprMemberOp(self->u.vMemberOp, env);
+                        bnGenerateILExprMemberOp(bone, self->u.vMemberOp, env);
                         break;
                 case BN_IL_EXPR_FUNCCALLOP:
-                        bnGenerateILExprFuncCallOp(self->u.vFuncCallOp, env);
+                        bnGenerateILExprFuncCallOp(bone, self->u.vFuncCallOp,
+                                                   env);
                         break;
                 case BN_IL_EXPR_VARIABLE:
-                        bnGenerateILExprVariable(self->u.vVariable, env);
+                        bnGenerateILExprVariable(bone, self->u.vVariable, env);
                         break;
                 case BN_IL_EXPR_LAMBDA:
-                        bnGenerateILExprLambda(self->u.vLambda, env);
+                        bnGenerateILExprLambda(bone, self->u.vLambda, env);
                         break;
                 default:
                         assert(false);

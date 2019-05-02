@@ -13,6 +13,10 @@ void bnDumpILExprInt(FILE* fp, struct bnStringPool* pool, bnILExprInt* self,
         fprintf(fp, "%d\n", self->value);
 }
 
-void bnGenerateILExprInt(bnILExprInt* self, bnEnviroment* env) {}
+void bnGenerateILExprInt(struct bnInterpreter* bone, bnILExprInt* self,
+                         bnEnviroment* env) {
+        env->binary = g_list_append(env->binary, BN_OP_GEN_INT);
+        env->binary = g_list_append(env->binary, GINT_TO_POINTER(self->value));
+}
 
 void bnDeleteILExprInt(bnILExprInt* self) { BN_FREE(self); }

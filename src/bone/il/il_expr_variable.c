@@ -14,6 +14,7 @@ void bnDumpILExprVariable(FILE* fp, struct bnStringPool* pool,
         fprintf(fp, "%s\n", bnView2Str(pool, self->name));
 }
 
-void bnGenerateILExprVariable(bnILExprVariable* self, bnEnviroment* env) {}
+void bnGenerateILExprVariable(struct bnInterpreter* bone,
+                              bnILExprVariable* self, bnEnviroment* env) {}
 
 void bnDeleteILExprVariable(bnILExprVariable* self) { BN_FREE(self); }

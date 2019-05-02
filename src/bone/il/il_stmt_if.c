@@ -1,7 +1,7 @@
 #include "il_stmt_if.h"
+#include "../runtime/enviroment.h"
 #include "il_expression.h"
 #include "il_statement.h"
-#include "../runtime/enviroment.h"
 
 bnILStmtIf* bnNewILStmtIf(bnILExpression* cond) {
         bnILStmtIf* ret = BN_MALLOC(sizeof(bnILStmtIf));
@@ -22,7 +22,8 @@ void bnDumpILStmtIf(FILE* fp, struct bnStringPool* pool, bnILStmtIf* self,
         }
 }
 
-void bnGenerateILStmtIf(bnILStmtIf* self, bnEnviroment* env) {}
+void bnGenerateILStmtIf(struct bnInterpreter* bone, bnILStmtIf* self,
+                        bnEnviroment* env) {}
 
 void bnDeleteILStmtIf(bnILStmtIf* self) {
         bnDeleteILExpression(self->cond);
@@ -49,7 +50,8 @@ void bnDumpILStmtIfElse(FILE* fp, struct bnStringPool* pool,
         }
 }
 
-void bnGenerateILStmtIfElse(bnILStmtIfElse* self, bnEnviroment* env) {}
+void bnGenerateILStmtIfElse(struct bnInterpreter* bone, bnILStmtIfElse* self,
+                            bnEnviroment* env) {}
 
 void bnDeleteILStmtIfElse(bnILStmtIfElse* self) {
         bnDeleteILStmtIf(self->trueCase);

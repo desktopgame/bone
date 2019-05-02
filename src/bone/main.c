@@ -11,6 +11,7 @@ static void runTest() {
         testSuite = CU_add_suite("boneTestSuite", NULL, NULL);
         CU_add_test(testSuite, "bnParseTest", bnParseTest);
         CU_add_test(testSuite, "bnStringPoolTest", bnStringPoolTest);
+        CU_add_test(testSuite, "bnVMTest", bnVMTest);
         CU_basic_set_mode(CU_BRM_VERBOSE);
         CU_basic_run_tests();
         CU_cleanup_registry();

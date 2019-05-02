@@ -16,6 +16,7 @@ struct bnILStmtIf;
 struct bnILStmtIfElse;
 struct bnILStmtWhile;
 struct bnEnviroment;
+struct bnInterpreter;
 
 typedef struct bnILStatement {
         bnILStatementType type;
@@ -35,5 +36,6 @@ void bnDumpILStatement(FILE* fp, struct bnStringPool* pool, bnILStatement* self,
 
 void bnDeleteILStatement(bnILStatement* self);
 
-void bnGenerateILStatement(bnILStatement* self, struct bnEnviroment* env);
+void bnGenerateILStatement(struct bnInterpreter* bone, bnILStatement* self,
+                           struct bnEnviroment* env);
 #endif

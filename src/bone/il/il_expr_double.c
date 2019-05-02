@@ -13,6 +13,7 @@ void bnDumpILExprDouble(FILE* fp, struct bnStringPool* pool,
         fprintf(fp, "%lf\n", self->value);
 }
 
-void bnGenerateILExprDouble(bnILExprDouble* self, bnEnviroment* env) {}
+void bnGenerateILExprDouble(struct bnInterpreter* bone, bnILExprDouble* self,
+                            bnEnviroment* env) {}
 
 void bnDeleteILExprDouble(bnILExprDouble* self) { BN_FREE(self); }

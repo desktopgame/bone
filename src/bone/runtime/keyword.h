@@ -13,6 +13,7 @@
 #define BN_KWD_MODULO ("opModulo")
 #define BN_KWD_BIT_AND ("opBitAnd")
 #define BN_KWD_BIT_OR ("opBitOr")
+#define BN_KWD_EXC_OR ("opExcOr")
 #define BN_KWD_LSHIFT ("opLeftShift")
 #define BN_KWD_RSHIFT ("opRightShift")
 #define BN_KWD_GT ("opGT")

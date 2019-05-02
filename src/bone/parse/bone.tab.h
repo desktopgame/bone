@@ -93,9 +93,9 @@ extern int yydebug;
     SEMICOLON = 303,
     WHILE = 304,
     DEF = 305,
-    NEGATIVE = 306,
-    POSITIVE = 307,
-    CHILDA = 308,
+    CHILDA = 306,
+    NEGATIVE = 307,
+    POSITIVE = 308,
     FUNCCALL = 309,
     ARRAY_SUBSCRIPT = 310
   };

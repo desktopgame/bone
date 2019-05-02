@@ -25,11 +25,12 @@ void bnDumpILTopLevel(FILE* fp, struct bnStringPool* pool, bnILToplevel* self,
         }
 }
 
-void bnGenerateILTopLevel(bnILToplevel* self, bnEnviroment* env) {
+void bnGenerateILTopLevel(struct bnInterpreter* bone, bnILToplevel* self,
+                          bnEnviroment* env) {
         GList* iter = self->statements;
         while (iter != NULL) {
                 bnILStatement* ilstmt = iter->data;
-                bnGenerateILStatement(ilstmt, env);
+                bnGenerateILStatement(bone, ilstmt, env);
                 iter = iter->next;
         }
 }

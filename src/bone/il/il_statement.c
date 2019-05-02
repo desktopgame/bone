@@ -58,21 +58,22 @@ void bnDeleteILStatement(bnILStatement* self) {
         BN_FREE(self);
 }
 
-void bnGenerateILStatement(bnILStatement* self, bnEnviroment* env) {
+void bnGenerateILStatement(struct bnInterpreter* bone, bnILStatement* self,
+                           bnEnviroment* env) {
         switch (self->type) {
                 case BN_IL_STMT_NONE:
                         break;
                 case BN_IL_STMT_EXPRSTMT:
-                        bnGenerateILStmtExpr(self->u.vExprStmt, env);
+                        bnGenerateILStmtExpr(bone, self->u.vExprStmt, env);
                         break;
                 case BN_IL_STMT_IF:
-                        bnGenerateILStmtIf(self->u.vIf, env);
+                        bnGenerateILStmtIf(bone, self->u.vIf, env);
                         break;
                 case BN_IL_STMT_IF_ELSE:
-                        bnGenerateILStmtIfElse(self->u.vIfElse, env);
+                        bnGenerateILStmtIfElse(bone, self->u.vIfElse, env);
                         break;
                 case BN_IL_STMT_WHILE:
-                        bnGenerateILStmtWhile(self->u.vWhile, env);
+                        bnGenerateILStmtWhile(bone, self->u.vWhile, env);
                         break;
                 default:
                         assert(false);

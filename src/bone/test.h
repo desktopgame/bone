@@ -4,4 +4,6 @@
 void bnParseTest();
 
 void bnStringPoolTest();
+
+void bnVMTest();
 #endif

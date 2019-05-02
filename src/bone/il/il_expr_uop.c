@@ -1,5 +1,6 @@
 #include "il_expr_uop.h"
 #include "../runtime/enviroment.h"
+#include "../runtime/keyword.h"
 
 bnILExprUOp* bnNewILExprUOp(bnILUOpType type) {
         bnILExprUOp* ret = BN_MALLOC(sizeof(bnILUOpType));
@@ -15,7 +16,8 @@ void bnDumpILExprUOp(FILE* fp, struct bnStringPool* pool, bnILExprUOp* self,
         bnDumpILExpression(fp, pool, self->a, depth + 1);
 }
 
-void bnGenerateILExprUOp(bnILExprUOp* self, bnEnviroment* env) {}
+void bnGenerateILExprUOp(struct bnInterpreter* bone, bnILExprUOp* self,
+                         bnEnviroment* env) {}
 
 void bnDeleteILExprUOp(bnILExprUOp* self) {
         bnDeleteILExpression(self->a);
