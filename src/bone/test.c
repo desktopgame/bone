@@ -198,4 +198,7 @@ void bnRunTest() {
 
         bone = bnNewInterpreter("./testdata/vm/suc/Injection2.in");
         bnEval(bone);
+
+        bone = bnNewInterpreter("./testdata/vm/suc/Injection3.in");
+        bnEval(bone);
 }

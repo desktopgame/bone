@@ -1,0 +1,5 @@
+inj := def() (value) {
+    value := "INJECTION DIRECT VALUE";
+};
+a := inj();
+println(a);

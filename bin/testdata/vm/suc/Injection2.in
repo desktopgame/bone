@@ -1,5 +1,5 @@
 inj := def() (value) {
-    value := "INJECTION";
+    value := "INJECTION OBJECT INJECTION";
 };
 a := object() <- inj();
 println(a.value);
