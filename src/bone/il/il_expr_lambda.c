@@ -54,7 +54,7 @@ void bnGenerateILExprLambda(bnInterpreter* bone, bnILExprLambda* self,
                 bnStringView name = iter->data;
                 env->binary = g_list_append(env->binary, BN_OP_STORE);
                 env->binary =
-                    g_list_append(env->binary, bnIntern(bone->pool, name));
+                    g_list_append(env->binary, name);
                 iter = iter->next;
         }
         iter = self->statements;
