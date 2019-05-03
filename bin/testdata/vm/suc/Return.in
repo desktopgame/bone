@@ -1,7 +1,3 @@
-a := def() {
-    return 0;
-};
-
 b := def() {
     return;
 };

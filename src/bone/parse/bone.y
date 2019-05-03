@@ -135,10 +135,6 @@ return_stmt
 	{
 		$$ = bnNewReturnAST(bnNewBlankAST());
 	}
-	| RETURN_T expression SEMICOLON
-	{
-		$$ = bnNewReturnAST($2);
-	}
 	;
 expression
 	: LP expression RP
