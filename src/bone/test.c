@@ -31,7 +31,7 @@ static void writeEnv(const gchar* out, struct bnStringPool* pool,
         }
         int pos = 0;
         int len = env->codeArray->len;
-        while (pos >= len) {
+        while (pos < len) {
                 pos = bnPrintOpcode(fp, pool, env->codeArray, pos);
                 fprintf(fp, "\n");
         }
