@@ -1,0 +1,8 @@
+injp := def() (value) {
+    value := "INJECTION WRAP VALUE";
+};
+inj := def() (value) {
+    {} <- injp();
+};
+a := inj();
+println(a);
