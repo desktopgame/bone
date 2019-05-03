@@ -31,6 +31,7 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
                         int returnLen = g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "gen lambda-begin(self=(%s), <-(%d))",
                                 isInstanceBase ? "true" : "false", returnLen);
+                        pos += returnLen;
                         break;
                 }
                 case BN_OP_GEN_LAMBDA_END:
@@ -47,6 +48,9 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
                         break;
                 case BN_OP_POP_SELF:
                         fprintf(fp, "pop");
+                        break;
+                case BN_OP_SCOPE_INJECTION:
+                        fprintf(fp, "scope injection");
                         break;
                 case BN_OP_STORE: {
                         bnStringView name = g_ptr_array_index(ary, ++pos);

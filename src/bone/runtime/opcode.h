@@ -26,6 +26,8 @@ typedef enum bnOpcode {
         BN_OP_PUSH_SELF,
         BN_OP_POP_SELF,
 
+        BN_OP_SCOPE_INJECTION,
+
         BN_OP_STORE,
         BN_OP_LOAD,
 

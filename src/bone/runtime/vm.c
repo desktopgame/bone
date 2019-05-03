@@ -109,6 +109,30 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnPopStack(frame->hierarcySelf);
                                 break;
                         }
+                        case BN_OP_SCOPE_INJECTION: {
+                                bnObject* obj = bnPopStack(frame->vStack);
+                                // collect all hidden variables
+                                GHashTableIter hashIter;
+                                g_hash_table_iter_init(&hashIter, obj->table);
+                                gpointer k, v;
+                                while (
+                                    g_hash_table_iter_next(&hashIter, &k, &v)) {
+                                        bnStringView kView = k;
+                                        const char* kStr =
+                                            bnView2Str(bone->pool, kView);
+                                        if (g_str_has_prefix(kStr, "$$_")) {
+                                                const char* origName = kStr + 3;
+                                                bnStringView origView =
+                                                    bnIntern(bone->pool,
+                                                             origName);
+                                                g_hash_table_insert(
+                                                    frame->variableTable,
+                                                    origView, v);
+                                        }
+                                        g_hash_table_iter_remove(&hashIter);
+                                }
+                                break;
+                        }
                         case BN_OP_STORE: {
                                 bnStringView name =
                                     g_ptr_array_index(env->codeArray, ++PC);
@@ -116,6 +140,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 g_hash_table_insert(frame->variableTable,
                                                     GINT_TO_POINTER((int)name),
                                                     value);
+                                assert(value != NULL);
                                 break;
                         }
                         case BN_OP_LOAD: {
@@ -124,6 +149,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnObject* value = g_hash_table_lookup(
                                     frame->variableTable,
                                     GINT_TO_POINTER((int)name));
+                                assert(value != NULL);
                                 bnPushStack(frame->vStack, value);
                                 break;
                         }

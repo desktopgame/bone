@@ -192,4 +192,7 @@ void bnRunTest() {
 
         bone = bnNewInterpreter("./testdata/vm/suc/IBLambda2.in");
         bnEval(bone);
+
+        bone = bnNewInterpreter("./testdata/vm/suc/Injection.in");
+        bnEval(bone);
 }

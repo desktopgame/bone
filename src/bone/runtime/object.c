@@ -66,7 +66,7 @@ void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
                         // create private member
                         char buf[100] = {0};
                         const char* retStr = bnView2Str(bone->pool, retName);
-                        sprintf(buf, "__%s", retStr);
+                        sprintf(buf, "$$_%s", retStr);
                         g_hash_table_insert(
                             body->table, bnIntern(bone->pool, buf),
                             g_hash_table_lookup(sub->variableTable,
