@@ -21,11 +21,21 @@ void bnPushStack(bnStack* self, void* data) {
 
 void* bnPopStack(bnStack* self) {
         assert(self->head != NULL);
+        bnStackElement* prev = self->head;
         bnStackElement* elem = self->head;
         while (1) {
                 if (elem->next == NULL) {
-                        return elem->value;
+                        void* ret = elem->value;
+                        if (elem == self->head) {
+                                BN_FREE(self->head);
+                                self->head = NULL;
+                        } else {
+                                BN_FREE(elem);
+                                prev->next = NULL;
+                        }
+                        return ret;
                 }
+                prev = elem;
                 elem = elem->next;
         }
 }
