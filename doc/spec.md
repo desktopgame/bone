@@ -179,9 +179,9 @@ however, not provide package for error like go)
 a := def readFile() (txt, error) {
     ...
 
-    error = false;
+    error := false;
     if( not opened file) {
-        error = true
+        error := true
         return;
     }
 };
