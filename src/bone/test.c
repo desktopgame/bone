@@ -65,16 +65,30 @@ static void writeAST(const gchar* out, struct bnStringPool* pool, bnAST* a) {
         fclose(fp);
 }
 
-static int bnParse(const char* dir, int flag) {
+static GList* bnGetFiles(const char* dir) {
         GError* err = NULL;
         GDir* dirp = g_dir_open(dir, 0, &err);
         gchar* file = ".";
         gchar* cwd = g_get_current_dir();
-        struct bnStringPool* pool = bnNewStringPool();
+        GList* ret = NULL;
         while ((file = g_dir_read_name(dirp)) != NULL) {
-                // do process only a suffix .in
                 gchar* path = g_build_filename(cwd, dir, file, NULL);
+                ret = g_list_append(ret, path);
+        }
+        g_dir_close(dirp);
+        g_free(cwd);
+        return ret;
+}
+
+static int bnParse(const char* dir, int flag) {
+        GList* list = bnGetFiles(dir);
+        GList* iter = list;
+        struct bnStringPool* pool = bnNewStringPool();
+        while (iter != NULL) {
+                // do process only a suffix .in
+                gchar* path = iter->data;
                 if (!g_str_has_suffix(path, ".in")) {
+                        iter = iter->next;
                         continue;
                 }
                 // clear parse result file
@@ -94,25 +108,23 @@ static int bnParse(const char* dir, int flag) {
                 } else if (flag == EXPECT_ERR) {
                         CU_ASSERT(a == NULL);
                 }
-                g_free(path);
                 g_free(out);
+                iter = iter->next;
         }
-        g_dir_close(dirp);
-        g_free(cwd);
+        g_list_free_full(list, free);
         bnDeleteStringPool(pool);
         return 0;
 }
 
 static int bnVM(const char* dir, int flag) {
-        GError* err = NULL;
-        GDir* dirp = g_dir_open(dir, 0, &err);
-        gchar* file = ".";
-        gchar* cwd = g_get_current_dir();
+        GList* list = bnGetFiles(dir);
+        GList* iter = list;
         bnInterpreter* bone = bnNewInterpreter("");
-        while ((file = g_dir_read_name(dirp)) != NULL) {
+        while (iter != NULL) {
                 // do process only a suffix .in
-                gchar* path = g_build_filename(cwd, dir, file, NULL);
+                gchar* path = iter->data;
                 if (!g_str_has_suffix(path, ".in")) {
+                        iter = iter->next;
                         continue;
                 }
                 // clear parse result file
@@ -135,11 +147,10 @@ static int bnVM(const char* dir, int flag) {
                 } else if (flag == EXPECT_ERR) {
                         CU_ASSERT(a == NULL);
                 }
-                g_free(path);
                 g_free(out);
+                iter = iter->next;
         }
-        g_dir_close(dirp);
-        g_free(cwd);
+        g_list_free_full(list, free);
         bnDeleteStringPool(bone->pool);
         return 0;
 }
