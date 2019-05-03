@@ -2,6 +2,7 @@
 #define BONE_RUNTIME_FRAME_H
 #include "../bone.h"
 #include "../util/stack.h"
+struct bnObject;
 
 typedef struct bnFrame {
         int pc;
@@ -23,6 +24,12 @@ bnFrame* bnNewFrame();
  * @return
  */
 bnFrame* bnSubFrame(bnFrame* self);
+
+/**
+ * @param self
+ * @return
+ */
+struct bnObject* bnReturnValue(bnFrame* self);
 
 /**
  * free a bnFrame.

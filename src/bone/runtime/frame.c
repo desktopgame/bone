@@ -1,4 +1,5 @@
 #include "frame.h"
+#include "object.h"
 
 bnFrame* bnNewFrame() {
         bnFrame* ret = BN_MALLOC(sizeof(bnFrame));
@@ -17,6 +18,13 @@ bnFrame* bnSubFrame(bnFrame* self) {
         self->next = ret;
         ret->prev = self;
         return ret;
+}
+
+bnObject* bnReturnValue(bnFrame* self) {
+        if (bnGetStackSize(self->vStack) == 0) {
+                return NULL;
+        }
+        return bnPopStack(self->vStack);
 }
 
 void bnDeleteFrame(bnFrame* self) {
