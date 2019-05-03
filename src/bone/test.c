@@ -65,6 +65,22 @@ static void writeAST(const gchar* out, struct bnStringPool* pool, bnAST* a) {
         fclose(fp);
 }
 
+static void writeFile(const gchar* out) {
+        FILE* fp = fopen(out, "r");
+        if (fp == NULL) {
+                perror("writeFile");
+                return;
+        }
+        char* line = NULL;
+        size_t len = 0;
+        ssize_t read;
+        while ((read = getline(&line, &len, fp)) != -1) {
+                printf("    %s", line);
+        }
+        free(line);
+        fclose(fp);
+}
+
 static GList* bnGetFiles(const char* dir) {
         GError* err = NULL;
         GDir* dirp = g_dir_open(dir, 0, &err);
@@ -166,16 +182,29 @@ static int bnRun(const char* dir, int flag) {
                         iter = iter->next;
                         continue;
                 }
+                printf("\n");
                 // clear parse result file
                 gchar* out = g_strconcat(path, ".out", NULL);
                 if (g_file_test(out,
                                 (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
                         g_remove(out);
                 }
+                // clear run result file
+                gchar* sout = g_strconcat(path, ".std.out", NULL);
+                if (g_file_test(sout,
+                                (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
+                        g_remove(sout);
+                }
+                printf("RUN %s\n", path);
+                FILE* soutfp = fopen(sout, "w");
+                FILE* _stdout = stdout;
+                stdout = soutfp;
                 // parse and test
                 bnInterpreter* bone = bnNewInterpreter(path);
                 int ret = bnEval(bone);
-                printf("RUN %s\n", path);
+                stdout = _stdout;
+                fclose(soutfp);
+                writeFile(sout);
                 if (flag == EXPECT_SUC) {
                         CU_ASSERT(ret == 0);
                 } else if (flag == EXPECT_ERR) {
