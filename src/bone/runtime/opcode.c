@@ -44,7 +44,9 @@ GList* bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GList* list) {
                         break;
                 }
                 case BN_OP_PUT:
-                        fprintf(fp, "put");
+                        list = list->next;
+                        bnStringView name = list->data;
+                        fprintf(fp, "put %s", bnView2Str(pool, name));
                         break;
                 case BN_OP_GET: {
                         list = list->next;

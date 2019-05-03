@@ -6,6 +6,10 @@
 #include "object.h"
 #include "string.h"
 
+void bnStdSystemObject(bnInterpreter* bone, bnFrame* frame) {
+        bnPushStack(frame->vStack, bnNewObject());
+}
+
 void bnStdSystemPrint(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING) {

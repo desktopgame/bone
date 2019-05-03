@@ -73,6 +73,9 @@ static void push_impl(bnStackElement* head, void* data) {
         push_impl(head->next, data);
 }
 static void free_impl(bnStackElement* head, bnStackElementDeleter deleter) {
+        if (head == NULL) {
+                return;
+        }
         if (head->next != NULL) {
                 free_impl(head->next, deleter);
         }

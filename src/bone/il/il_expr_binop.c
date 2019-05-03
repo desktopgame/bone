@@ -32,6 +32,11 @@ void bnGenerateILExprBinOp(bnInterpreter* bone, bnILExprBinOp* self,
                         env->binary = g_list_append(env->binary, BN_OP_STORE);
                         env->binary = g_list_append(env->binary, var->name);
                 } else if (L->type == BN_IL_EXPR_MEMBEROP) {
+                        bnGenerateILExpression(bone, self->right, env);
+                        bnILExprMemberOp* ilmem = L->u.vMemberOp;
+                        bnGenerateILExpression(bone, ilmem->expr, env);
+                        env->binary = g_list_append(env->binary, BN_OP_PUT);
+                        env->binary = g_list_append(env->binary, ilmem->name);
                 } else {
                         abort();
                 }

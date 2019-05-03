@@ -16,7 +16,11 @@ void bnDumpILExprMemberOp(FILE* fp, struct bnStringPool* pool,
 }
 
 void bnGenerateILExprMemberOp(struct bnInterpreter* bone,
-                              bnILExprMemberOp* self, bnEnviroment* env) {}
+                              bnILExprMemberOp* self, bnEnviroment* env) {
+        bnGenerateILExpression(bone, self->expr, env);
+        env->binary = g_list_append(env->binary, BN_OP_GET);
+        env->binary = g_list_append(env->binary, self->name);
+}
 
 void bnDeleteILExprMemberOp(bnILExprMemberOp* self) {
         bnDeleteILExpression(self->expr);

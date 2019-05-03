@@ -57,6 +57,7 @@ void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
         guint len = bnGetStackSize(sub->vStack);
         bnObject* ret = len == 0 ? NULL : bnPopStack(sub->vStack);
         bnPushStack(frame->vStack, ret);
+        bnDeleteFrame(sub);
 }
 
 void bnPrintObject(FILE* fp, bnObject* self) {

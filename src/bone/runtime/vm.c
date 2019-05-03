@@ -106,6 +106,13 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_PUT: {
+                                bnObject* container = bnPopStack(frame->vStack);
+                                bnObject* value = bnPopStack(frame->vStack);
+                                iter = iter->next;
+                                PC++;
+                                bnStringView name = iter->data;
+                                g_hash_table_insert(container->table, name,
+                                                    value);
                                 break;
                         }
                         case BN_OP_GET: {

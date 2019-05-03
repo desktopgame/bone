@@ -3,6 +3,8 @@
 struct bnFrame;
 struct bnInterpreter;
 
+void bnStdSystemObject(struct bnInterpreter* bone, struct bnFrame* frame);
+
 void bnStdSystemPrint(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdSystemPrintln(struct bnInterpreter* bone, struct bnFrame* frame);

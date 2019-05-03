@@ -1,0 +1,3 @@
+a := object();
+a.name := "xxx";
+print(a.name);
