@@ -142,7 +142,7 @@ return_stmt
 injection_stmt
 	: SCOPE INJECTION call_expr SEMICOLON
 	{
-		$$ = bnNewBlankAST();
+		$$ = bnNewScopeInjectionAST($3);
 	}
 	;
 expression
@@ -164,7 +164,7 @@ expression_nobrace
 	}
 	| expression INJECTION expression
 	{
-		$$ = bnNewBlankAST();
+		$$ = bnNewObjectInjectionAST($1, $3);
 	}
 	| expression ADD expression
 	{

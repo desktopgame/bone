@@ -50,6 +50,10 @@ void bnDumpILExpression(FILE* fp, struct bnStringPool* pool,
                 case BN_IL_EXPR_LAMBDA:
                         bnDumpILExprLambda(fp, pool, self->u.vLambda, depth);
                         break;
+                case BN_IL_EXPR_OBJECT_INJECTION:
+                        bnDumpILExprObjectInjection(fp, pool, self->u.vObjInj,
+                                                    depth);
+                        break;
                 default:
                         assert(false);
                         break;
@@ -91,6 +95,10 @@ void bnGenerateILExpression(struct bnInterpreter* bone, bnILExpression* self,
                         break;
                 case BN_IL_EXPR_LAMBDA:
                         bnGenerateILExprLambda(bone, self->u.vLambda, env);
+                        break;
+                case BN_IL_EXPR_OBJECT_INJECTION:
+                        bnGenerateILExprObjectInjection(bone, self->u.vObjInj,
+                                                        env);
                         break;
                 default:
                         assert(false);
@@ -134,6 +142,9 @@ void bnDeleteILExpression(bnILExpression* self) {
                         break;
                 case BN_IL_EXPR_LAMBDA:
                         bnDeleteILExprLambda(self->u.vLambda);
+                        break;
+                case BN_IL_EXPR_OBJECT_INJECTION:
+                        bnDeleteILExprObjectInjection(self->u.vObjInj);
                         break;
                 default:
                         assert(false);

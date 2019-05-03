@@ -16,6 +16,7 @@ typedef enum bnILExpressionType {
         BN_IL_EXPR_VARIABLE,
         BN_IL_EXPR_FUNCCALLOP,
         BN_IL_EXPR_LAMBDA,
+        BN_IL_EXPR_OBJECT_INJECTION,
 } bnILExpressionType;
 
 struct bnEnviroment;
@@ -29,6 +30,7 @@ struct bnILExprMemberOp;
 struct bnILExprVariable;
 struct bnILExprFuncCallOp;
 struct bnILExprLambda;
+struct bnILExprObjectInjection;
 
 typedef struct bnILExpression {
         bnILExpressionType type;
@@ -43,6 +45,7 @@ typedef struct bnILExpression {
                 struct bnILExprVariable* vVariable;
                 struct bnILExprFuncCallOp* vFuncCallOp;
                 struct bnILExprLambda* vLambda;
+                struct bnILExprObjectInjection* vObjInj;
         } u;
         int line;
 } bnILExpression;

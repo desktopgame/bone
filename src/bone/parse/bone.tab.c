@@ -1706,7 +1706,7 @@ yyreduce:
   case 21:
 #line 144 "bone.y" /* yacc.c:1663  */
     {
-		(yyval.ast_value) = bnNewBlankAST();
+		(yyval.ast_value) = bnNewScopeInjectionAST((yyvsp[-1].ast_value));
 	}
 #line 1712 "bone.tab.c" /* yacc.c:1663  */
     break;
@@ -1738,7 +1738,7 @@ yyreduce:
   case 27:
 #line 166 "bone.y" /* yacc.c:1663  */
     {
-		(yyval.ast_value) = bnNewBlankAST();
+		(yyval.ast_value) = bnNewObjectInjectionAST((yyvsp[-2].ast_value), (yyvsp[0].ast_value));
 	}
 #line 1744 "bone.tab.c" /* yacc.c:1663  */
     break;

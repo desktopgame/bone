@@ -22,6 +22,19 @@ bnAST* bnNewBlankAST() {
         return ret;
 }
 
+bnAST* bnNewScopeInjectionAST(bnAST* aexpr) {
+        bnAST* ret = bnNewAST(BN_AST_SCOPE_INJECTION);
+        bnPushAST(ret, aexpr);
+        return ret;
+}
+
+bnAST* bnNewObjectInjectionAST(bnAST* aleft, bnAST* aright) {
+        bnAST* ret = bnNewAST(BN_AST_OBJECT_INJECTION);
+        bnPushAST(ret, aleft);
+        bnPushAST(ret, aright);
+        return ret;
+}
+
 bnAST* bnNewReturnAST(bnAST* expr) {
         bnAST* ret = bnNewAST(BN_AST_RETURN);
         bnPushAST(ret, expr);

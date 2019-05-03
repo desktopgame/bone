@@ -112,6 +112,10 @@ static bnILExpression* ast2expr(bnAST* a) {
                 illambda->returns = ast2params(areturns, illambda->returns);
                 illambda->statements = ast2stmts(astmt, illambda->statements);
                 ret->u.vLambda = illambda;
+        } else if (a->tag == BN_AST_OBJECT_INJECTION) {
+                ret->type = BN_IL_EXPR_OBJECT_INJECTION;
+                ret->u.vObjInj = bnNewILExprObjectInjection(
+                    ast2expr(bnFirstAST(a)), ast2expr(bnSecondAST(a)));
         } else {
                 assert(false);
         }
