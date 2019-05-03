@@ -155,6 +155,41 @@ static int bnVM(const char* dir, int flag) {
         return 0;
 }
 
+static int bnRun(const char* dir, int flag) {
+        GList* list = bnGetFiles(dir);
+        GList* iter = list;
+        bnInterpreter* bone = bnNewInterpreter("");
+        while (iter != NULL) {
+                // do process only a suffix .in
+                gchar* path = iter->data;
+                if (!g_str_has_suffix(path, ".in") || !strstr(path, "_R")) {
+                        iter = iter->next;
+                        continue;
+                }
+                // clear parse result file
+                gchar* out = g_strconcat(path, ".out", NULL);
+                if (g_file_test(out,
+                                (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
+                        g_remove(out);
+                }
+                // parse and test
+                bnInterpreter* bone = bnNewInterpreter(path);
+                int ret = bnEval(bone);
+                printf("RUN %s\n", path);
+                if (flag == EXPECT_SUC) {
+                        CU_ASSERT(ret == 0);
+                } else if (flag == EXPECT_ERR) {
+                        CU_ASSERT(ret != 0);
+                }
+                bnDeleteInteger(bone);
+                g_free(out);
+                iter = iter->next;
+        }
+        g_list_free_full(list, free);
+        bnDeleteStringPool(bone->pool);
+        return 0;
+}
+
 void bnParseTest() {
         bnParse("./testdata/parse/err", EXPECT_ERR);
         bnParse("./testdata/parse/suc", EXPECT_SUC);
@@ -178,38 +213,6 @@ void bnVMTest() {
 }
 
 void bnRunTest() {
-        bnInterpreter* bone = bnNewInterpreter("./testdata/vm/suc/Assign.in");
-        bnEval(bone);
-        bnInteger* v = bone->__return;
-        CU_ASSERT(v->value == 3);
-
-        bone = bnNewInterpreter("./testdata/vm/suc/Print.in");
-        bnEval(bone);
-
-        bone = bnNewInterpreter("./testdata/vm/suc/Println.in");
-        bnEval(bone);
-
-        bone = bnNewInterpreter("./testdata/vm/suc/Lambda.in");
-        bnEval(bone);
-
-        bone = bnNewInterpreter("./testdata/vm/suc/Lambda2.in");
-        bnEval(bone);
-
-        bone = bnNewInterpreter("./testdata/vm/suc/Proto.in");
-        bnEval(bone);
-
-        bone = bnNewInterpreter("./testdata/vm/suc/IBLambda.in");
-        bnEval(bone);
-
-        bone = bnNewInterpreter("./testdata/vm/suc/IBLambda2.in");
-        bnEval(bone);
-
-        bone = bnNewInterpreter("./testdata/vm/suc/Injection.in");
-        bnEval(bone);
-
-        bone = bnNewInterpreter("./testdata/vm/suc/Injection2.in");
-        bnEval(bone);
-
-        bone = bnNewInterpreter("./testdata/vm/suc/Injection3.in");
-        bnEval(bone);
+        bnRun("./testdata/vm/err", EXPECT_ERR);
+        bnRun("./testdata/vm/suc", EXPECT_SUC);
 }
