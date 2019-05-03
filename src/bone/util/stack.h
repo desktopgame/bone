@@ -43,6 +43,13 @@ void bnPushStack(bnStack* self, void* data);
 void* bnPopStack(bnStack* self);
 
 /**
+ * peek from stack.
+ * @param self
+ * @return
+ */
+void* bnPeekStack(bnStack* self);
+
+/**
  * return size of stack.
  * @param self
  * @return

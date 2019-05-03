@@ -40,6 +40,17 @@ void* bnPopStack(bnStack* self) {
         }
 }
 
+void* bnPeekStack(bnStack* self) {
+        bnStackElement* iter = self->head;
+        assert(iter != NULL);
+        while (iter != NULL) {
+                if (iter->next == NULL) {
+                        return iter->value;
+                }
+                iter = iter->next;
+        }
+}
+
 int bnGetStackSize(bnStack* self) {
         if (self->head == NULL) {
                 return 0;
