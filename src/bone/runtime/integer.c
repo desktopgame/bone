@@ -8,7 +8,7 @@ bnInteger* bnNewInteger(bnInterpreter* bone, int value) {
         bnInitObject(&ret->base, BN_OBJECT_INTEGER);
         ret->value = value;
         bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_PLUS),
-                 bnNewLambdaFromCFunc(bnIntegerPlus));
+                 bnNewLambdaFromCFunc(bnStdIntegerPlus));
         return ret;
 }
 
