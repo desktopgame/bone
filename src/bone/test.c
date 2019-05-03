@@ -173,4 +173,7 @@ void bnRunTest() {
 
         bone = bnNewInterpreter("./testdata/vm/suc/Print.in");
         bnEval(bone);
+
+        bone = bnNewInterpreter("./testdata/vm/suc/Println.in");
+        bnEval(bone);
 }

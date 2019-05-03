@@ -17,7 +17,10 @@ void bnStdSystemPrint(bnInterpreter* bone, bnFrame* frame) {
         fflush(stdout);
 }
 
-void bnStdSystemPrintln(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdSystemPrintln(bnInterpreter* bone, bnFrame* frame) {
+        bnStdSystemPrint(bone, frame);
+        printf("\n");
+}
 
 void bnStdIntegerFuncCall(bnInterpreter* bone, bnFrame* frame) {
         bnPanic(bone->__jmp, NULL, BN_JMP_CODE_EXCEPTION);

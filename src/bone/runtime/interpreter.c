@@ -36,6 +36,9 @@ int bnEval(bnInterpreter* self) {
         bnFrame* frame = bnNewFrame();
         g_hash_table_insert(frame->variableTable, bnIntern(self->pool, "print"),
                             bnNewLambdaFromCFunc(bnStdSystemPrint));
+        g_hash_table_insert(frame->variableTable,
+                            bnIntern(self->pool, "println"),
+                            bnNewLambdaFromCFunc(bnStdSystemPrintln));
         bnGenerateILTopLevel(self, iltop, env);
         bnDeleteAST(ret);
         bnExecute(self, env, frame);
