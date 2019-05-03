@@ -1,0 +1,5 @@
+inj := def() (value) {
+    value := "INJECTION";
+};
+{} <- inj();
+println(value);
