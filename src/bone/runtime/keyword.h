@@ -22,4 +22,5 @@
 #define BN_KWD_LE ("opLE")
 #define BN_KWD_EQUAL ("opEqual")
 #define BN_KWD_NOTEQUAL ("opNotEqual")
+#define BN_KWD_SELF ("self")
 #endif
