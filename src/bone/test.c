@@ -91,6 +91,7 @@ static GList* bnGetFiles(const char* dir) {
                 gchar* path = g_build_filename(cwd, dir, file, NULL);
                 ret = g_list_append(ret, path);
         }
+        g_list_sort(ret, strcmp);
         g_dir_close(dirp);
         g_free(cwd);
         return ret;
