@@ -29,6 +29,7 @@
 	argument_list
 	parameter_list
 	statement_list
+	statement_list_opt
 	statement
 	comp_stmt
 	expression
@@ -92,6 +93,16 @@ statement_list
 		$$ = bnNewStatementListAST($2, $1);
 	}
 	;
+statement_list_opt
+	: /* empty */
+	{
+		$$ = bnNewBlankAST();
+	}
+	| statement_list
+	{
+		$$ = $1;
+	}
+	;
 statement
 	: expression SEMICOLON
 	{
@@ -112,7 +123,7 @@ statement
 	}
 	;
 comp_stmt
-	: LB statement_list RB
+	: LB statement_list_opt RB
 	{
 		$$ = $2;
 	}
