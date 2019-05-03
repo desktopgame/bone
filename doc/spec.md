@@ -99,11 +99,11 @@ b := def() (return1, return2) {
 //
 // 複数の名前つき戻り値を持つ関数が呼ばれた時、その最初の要素を返すからです。
 // (return of first value when has multiple "named return")
-// この仕様は、主要なデータを第一の名前つき引数にして、
-// エラー情報やそのたオプショナルな情報を第二以降の名前つき引数にするといった使い方ができます。
+// この仕様は、主要なデータを第一の名前つき戻り値にして、
+// エラー情報やそのたオプショナルな情報を第二以降の名前つき戻り値にするといった使い方ができます。
 // (this rule is can useable to return of optional data)
 // 上記の例では戻り値が一つだけでしたが、あれもこの仕様が適用された結果です。
-// 名前つき引数が一つの時のみの特例ではありません。
+// 名前つき戻り値が一つの時のみの特例ではありません。
 // (also when example on above "named return" count is one,
 // it is the result of applyed this rule.
 // NOT special specification)
