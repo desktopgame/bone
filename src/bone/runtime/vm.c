@@ -59,6 +59,15 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bool isInstanceBase =
                                     g_ptr_array_index(env->codeArray, ++PC);
                                 lmb->instanceBase = isInstanceBase;
+                                // length of named return
+                                int namedReturnLen =
+                                    g_ptr_array_index(env->codeArray, ++PC);
+                                for (int i = 0; i < namedReturnLen; i++) {
+                                        lmb->returns = g_list_append(
+                                            lmb->returns,
+                                            g_ptr_array_index(env->codeArray,
+                                                              ++PC));
+                                }
                                 // collect all variables
                                 GHashTableIter hashIter;
                                 g_hash_table_iter_init(&hashIter,

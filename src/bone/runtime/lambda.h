@@ -17,6 +17,7 @@ typedef struct bnLambda {
         bnObject base;
         bnLambdaType type;
         GHashTable* outer;
+        GList* returns;
         bool instanceBase;
         union {
                 bnEnviroment* vEnv;

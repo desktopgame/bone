@@ -28,8 +28,9 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
                 }
                 case BN_OP_GEN_LAMBDA_BEGIN: {
                         bool isInstanceBase = g_ptr_array_index(ary, ++pos);
-                        fprintf(fp, "gen lambda-begin(%s)",
-                                isInstanceBase ? "true" : "false");
+                        int returnLen = g_ptr_array_index(ary, ++pos);
+                        fprintf(fp, "gen lambda-begin(self=(%s), <-(%d))",
+                                isInstanceBase ? "true" : "false", returnLen);
                         break;
                 }
                 case BN_OP_GEN_LAMBDA_END:

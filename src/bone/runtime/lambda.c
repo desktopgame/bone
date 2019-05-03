@@ -5,6 +5,7 @@ bnLambda* bnNewLambda(bnLambdaType type) {
         bnInitObject(&ret->base, BN_OBJECT_LAMBDA);
         ret->type = type;
         ret->instanceBase = false;
+        ret->returns = NULL;
         ret->outer =
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         return ret;
