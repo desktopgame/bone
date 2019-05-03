@@ -84,7 +84,6 @@ static int bnParse(const char* dir, int flag) {
                 }
                 // parse and test
                 bnAST* a = bnParseFile(pool, path);
-                printf("%s\n", path);
                 if (flag == EXPECT_SUC) {
                         bnILToplevel* iltop = bnAST2IL(a);
                         writeIL(out, pool, iltop);
@@ -123,7 +122,6 @@ static int bnVM(const char* dir, int flag) {
                 }
                 // parse and test
                 bnAST* a = bnParseFile(bone->pool, path);
-                printf("%s\n", path);
                 if (flag == EXPECT_SUC) {
                         bnILToplevel* iltop = bnAST2IL(a);
                         bnEnviroment* env = bnNewEnviroment();
@@ -165,4 +163,11 @@ void bnStringPoolTest() {
 void bnVMTest() {
         bnVM("./testdata/vm/err", EXPECT_ERR);
         bnVM("./testdata/vm/suc", EXPECT_SUC);
+}
+
+void bnRunTest() {
+        bnInterpreter* bone = bnNewInterpreter("./testdata/vm/suc/Assign.in");
+        bnEval(bone);
+        bnInteger* v = bone->__return;
+        CU_ASSERT(v->value == 3);
 }

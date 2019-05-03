@@ -1,6 +1,17 @@
 #include "vm.h"
+#include "../glib.h"
 #include "integer.h"
 #include "opcode.h"
+
+void bnDebugStack(FILE* fp, bnStack* stack, const char* name) {
+        fprintf(fp, "--- %s ---\n", name == NULL ? "" : name);
+        bnStackElement* iter = stack->head;
+        while (iter != NULL) {
+                bnPrintObject(fp, (bnObject*)iter->value);
+                fprintf(fp, "\n");
+                iter = iter->next;
+        }
+}
 
 int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
         GList* iter = env->binary;
@@ -17,10 +28,12 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_SWAP: {
+                                bnDebugStack(stdout, frame->vStack, "preSwap");
                                 void* a = bnPopStack(frame->vStack);
                                 void* b = bnPopStack(frame->vStack);
                                 bnPushStack(frame->vStack, a);
                                 bnPushStack(frame->vStack, b);
+                                bnDebugStack(stdout, frame->vStack, "postSwap");
                                 break;
                         }
                         case BN_OP_GEN_INT: {
@@ -65,6 +78,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnStringView name = iter->data;
                                 gpointer data =
                                     g_hash_table_lookup(container->table, name);
+                                bnObject* obj = data;
                                 assert(data != NULL);
                                 bnPushStack(frame->vStack, data);
                                 break;

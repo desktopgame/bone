@@ -10,6 +10,7 @@ struct bnObject;
 typedef struct bnInterpreter {
         const char* filenameRef;
         struct bnStringPool* pool;
+        struct bnObject* __return;
         struct bnObject* __exception;
         jmp_buf __jmp;
 } bnInterpreter;

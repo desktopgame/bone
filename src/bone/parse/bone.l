@@ -16,6 +16,8 @@
 #pragma warning(disable:4996)
 #endif
 
+#define YY_NO_UNISTD_H
+
 static char* yaccSourceBuffer;
 static int yaccSourceOffset;
 static char* yaccErrorBuf;

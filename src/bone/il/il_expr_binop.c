@@ -44,6 +44,7 @@ void bnGenerateILExprBinOp(bnInterpreter* bone, bnILExprBinOp* self,
                 bnGenerateILExpression(bone, self->right, env);
                 env->binary = g_list_append(env->binary, BN_OP_SWAP);
                 env->binary = g_list_append(env->binary, BN_OP_FUNCCALL);
+                env->binary = g_list_append(env->binary, 2);
         }
 }
 

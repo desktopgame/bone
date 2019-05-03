@@ -5,6 +5,13 @@
 #include "interpreter.h"
 
 /**
+ * @param fp
+ * @param stack
+ * @param name
+ */
+void bnDebugStack(FILE* fp, bnStack* stack, const char* name);
+
+/**
  * bnExecute be run a bone.
  * return other than zero if breaked bone vm.
  * @param bone

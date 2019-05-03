@@ -1,5 +1,6 @@
 #ifndef BONE_RUNTIME_INTEGER_H
 #define BONE_RUNTIME_INTEGER_H
+#include "interpreter.h"
 #include "object.h"
 
 /**
@@ -12,10 +13,11 @@ typedef struct bnInteger {
 
 /**
  * return new instance of bnInteger.
+ * @param bone
  * @param name
  * @return
  */
-bnInteger* bnNewInteger(int value);
+bnInteger* bnNewInteger(bnInterpreter* bone, int value);
 
 /**
  * return new instance of bnInteger.
