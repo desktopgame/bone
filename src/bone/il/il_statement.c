@@ -29,6 +29,9 @@ void bnDumpILStatement(FILE* fp, struct bnStringPool* pool, bnILStatement* self,
                 case BN_IL_STMT_WHILE:
                         bnDumpILStmtWhile(fp, pool, self->u.vWhile, depth);
                         break;
+                case BN_IL_STMT_RETURN:
+                        bnDumpILStmtReturn(fp, pool, self->u.vReturn, depth);
+                        break;
                 default:
                         assert(false);
                         break;
@@ -36,6 +39,9 @@ void bnDumpILStatement(FILE* fp, struct bnStringPool* pool, bnILStatement* self,
 }
 
 void bnDeleteILStatement(bnILStatement* self) {
+        if (self == NULL) {
+                return;
+        }
         switch (self->type) {
                 case BN_IL_STMT_NONE:
                         break;
@@ -50,6 +56,9 @@ void bnDeleteILStatement(bnILStatement* self) {
                         break;
                 case BN_IL_STMT_WHILE:
                         bnDeleteILStmtWhile(self->u.vWhile);
+                        break;
+                case BN_IL_STMT_RETURN:
+                        bnDeleteILStmtReturn(self->u.vReturn);
                         break;
                 default:
                         assert(false);
@@ -74,6 +83,9 @@ void bnGenerateILStatement(struct bnInterpreter* bone, bnILStatement* self,
                         break;
                 case BN_IL_STMT_WHILE:
                         bnGenerateILStmtWhile(bone, self->u.vWhile, env);
+                        break;
+                case BN_IL_STMT_RETURN:
+                        bnGenerateILStmtReturn(bone, self->u.vReturn, env);
                         break;
                 default:
                         assert(false);

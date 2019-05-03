@@ -22,6 +22,12 @@ bnAST* bnNewBlankAST() {
         return ret;
 }
 
+bnAST* bnNewReturnAST(bnAST* expr) {
+        bnAST* ret = bnNewAST(BN_AST_RETURN);
+        bnPushAST(ret, expr);
+        return ret;
+}
+
 bnAST* bnNewExprStmtAST(bnAST* aexpr) {
         bnAST* ret = bnNewAST(BN_AST_EXPRSTMT);
         bnPushAST(ret, aexpr);

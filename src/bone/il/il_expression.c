@@ -99,6 +99,9 @@ void bnGenerateILExpression(struct bnInterpreter* bone, bnILExpression* self,
 }
 
 void bnDeleteILExpression(bnILExpression* self) {
+        if (self == NULL) {
+                return;
+        }
         switch (self->type) {
                 case BN_IL_EXPR_NONE:
                         break;

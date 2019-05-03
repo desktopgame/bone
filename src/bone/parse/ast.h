@@ -24,6 +24,7 @@ typedef enum bnASTTag {
         BN_AST_MEMBER_ACCESS,
         BN_AST_FUNCCALL,
         BN_AST_IDENT,
+        BN_AST_RETURN,
 
         BN_AST_POSITIVE,
         BN_AST_NEGATIVE,
@@ -83,6 +84,8 @@ typedef struct bnAST {
 bnAST* bnNewAST(bnASTTag tag);
 
 bnAST* bnNewBlankAST();
+
+bnAST* bnNewReturnAST(bnAST* expr);
 
 bnAST* bnNewExprStmtAST(bnAST* aexpr);
 

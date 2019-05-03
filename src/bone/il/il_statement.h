@@ -9,12 +9,14 @@ typedef enum bnILStatementType {
         BN_IL_STMT_IF,
         BN_IL_STMT_IF_ELSE,
         BN_IL_STMT_WHILE,
+        BN_IL_STMT_RETURN,
 } bnILStatementType;
 
 struct bnILStmtExprStmt;
 struct bnILStmtIf;
 struct bnILStmtIfElse;
 struct bnILStmtWhile;
+struct bnILStmtReturn;
 struct bnEnviroment;
 struct bnInterpreter;
 
@@ -25,6 +27,7 @@ typedef struct bnILStatement {
                 struct bnILStmtIf* vIf;
                 struct bnILStmtIfElse* vIfElse;
                 struct bnILStmtWhile* vWhile;
+                struct bnILStmtReturn* vReturn;
         } u;
         int line;
 } bnILStatement;

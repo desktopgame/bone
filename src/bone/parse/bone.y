@@ -24,7 +24,7 @@
 		GT GE LT LE LSHIFT RSHIFT
 		NOT BIT_AND BIT_OR LOGIC_AND LOGIC_OR LP RP LB RB IF ELSE
 		EXC_OR
-		DOT COMMA SEMICOLON WHILE DEF
+		DOT COMMA SEMICOLON WHILE DEF RETURN_T
 %type <ast_value>
 	argument_list
 	parameter_list
@@ -32,6 +32,7 @@
 	statement_list_opt
 	statement
 	comp_stmt
+	return_stmt
 	expression
 	expression_nobrace
 	lambda_expr
@@ -121,11 +122,22 @@ statement
 	{
 		$$ = bnNewWhileAST($3, $5);
 	}
+	| return_stmt
 	;
 comp_stmt
 	: LB statement_list_opt RB
 	{
 		$$ = $2;
+	}
+	;
+return_stmt
+	: RETURN_T SEMICOLON
+	{
+		$$ = bnNewReturnAST(bnNewBlankAST());
+	}
+	| RETURN_T expression SEMICOLON
+	{
+		$$ = bnNewReturnAST($2);
 	}
 	;
 expression
