@@ -24,7 +24,7 @@
 		GT GE LT LE LSHIFT RSHIFT
 		NOT BIT_AND BIT_OR LOGIC_AND LOGIC_OR LP RP LB RB IF ELSE
 		EXC_OR
-		DOT COMMA SEMICOLON WHILE DEF RETURN_T
+		DOT COMMA SEMICOLON WHILE DEF RETURN_T SCOPE INJECTION
 %type <ast_value>
 	argument_list
 	parameter_list
@@ -33,8 +33,10 @@
 	statement
 	comp_stmt
 	return_stmt
+	injection_stmt
 	expression
 	expression_nobrace
+	call_expr
 	lambda_expr
 	lhs
 	primary
@@ -47,7 +49,7 @@
 %left EQUAL NOTEQUAL
 %left GT GE LT LE
 %left LSHIFT RSHIFT
-%left ADD SUB
+%left ADD SUB INJECTION
 %left MUL DIV MOD
 %right CHILDA NOT NEGATIVE POSITIVE
 %left DOT FUNCCALL ARRAY_SUBSCRIPT
@@ -123,6 +125,7 @@ statement
 		$$ = bnNewWhileAST($3, $5);
 	}
 	| return_stmt
+	| injection_stmt
 	;
 comp_stmt
 	: LB statement_list_opt RB
@@ -134,6 +137,12 @@ return_stmt
 	: RETURN_T SEMICOLON
 	{
 		$$ = bnNewReturnAST(bnNewBlankAST());
+	}
+	;
+injection_stmt
+	: SCOPE INJECTION call_expr SEMICOLON
+	{
+		$$ = bnNewBlankAST();
 	}
 	;
 expression
@@ -152,6 +161,10 @@ expression_nobrace
 	| SUB expression %prec NEGATIVE
 	{
 		$$ = bnNewUnaryAST(BN_AST_NEGATIVE, $2);
+	}
+	| expression INJECTION expression
+	{
+		$$ = bnNewBlankAST();
 	}
 	| expression ADD expression
 	{
@@ -276,7 +289,10 @@ expression_nobrace
 		$$ = bnNewUnaryAST(BN_AST_NOT, $2);
 	}
 	| lhs
-	| expression LP argument_list RP %prec FUNCCALL
+	| call_expr
+	;
+call_expr
+	: expression LP argument_list RP %prec FUNCCALL
 	{
 		$$ = bnNewFuncCall($1, $3);
 	}

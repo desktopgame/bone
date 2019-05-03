@@ -152,6 +152,8 @@ static void update_loc() {
 %%
 
 <INITIAL>";"				{ return (SEMICOLON); }
+<INITIAL>"{}"				{ return (SCOPE); }
+<INITIAL>"<-"				{ return (INJECTION); }
 <INITIAL>"return"				{ return (RETURN_T); }
 <INITIAL>"if"				{ return (IF); }
 <INITIAL>"def"				{ return (DEF); }
