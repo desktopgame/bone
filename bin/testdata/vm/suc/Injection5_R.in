@@ -1,0 +1,7 @@
+injp := def() (a, b) {
+    a := "INJECTION WRAP VALUE";
+    b := "INJECTION XXXX VALUE";
+};
+{} <- injp();
+println(a);
+println(b);
