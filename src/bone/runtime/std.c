@@ -4,6 +4,20 @@
 #include "integer.h"
 #include "interpreter.h"
 #include "object.h"
+#include "string.h"
+
+void bnStdSystemPrint(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_STRING) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        bnString* str = a;
+        const char* cstr = bnView2Str(bone->pool, str->value);
+        printf(cstr);
+        fflush(stdout);
+}
+
+void bnStdSystemPrintln(bnInterpreter* bone, bnFrame* frame) {}
 
 void bnStdIntegerFuncCall(bnInterpreter* bone, bnFrame* frame) {
         bnPanic(bone->__jmp, NULL, BN_JMP_CODE_EXCEPTION);

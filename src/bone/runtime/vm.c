@@ -2,6 +2,7 @@
 #include "../glib.h"
 #include "integer.h"
 #include "opcode.h"
+#include "string.h"
 
 void bnDebugStack(FILE* fp, bnStack* stack, const char* name) {
         fprintf(fp, "--- %s ---\n", name == NULL ? "" : name);
@@ -46,8 +47,14 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         }
                         case BN_OP_GEN_DOUBLE:
                                 break;
-                        case BN_OP_GEN_STRING:
+                        case BN_OP_GEN_STRING: {
+                                iter = iter->next;
+                                PC++;
+                                bnStringView name = iter->data;
+                                bnPushStack(frame->vStack,
+                                            bnNewString(bone, name));
                                 break;
+                        }
                         case BN_OP_STORE: {
                                 iter = iter->next;
                                 PC++;

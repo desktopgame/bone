@@ -6,7 +6,9 @@
 #include "enviroment.h"
 #include "frame.h"
 #include "integer.h"
+#include "lambda.h"
 #include "object.h"
+#include "std.h"
 #include "vm.h"
 
 bnInterpreter* bnNewInterpreter(const char* filenameRef) {
@@ -32,6 +34,8 @@ int bnEval(bnInterpreter* self) {
         // generate instructions
         bnEnviroment* env = bnNewEnviroment();
         bnFrame* frame = bnNewFrame();
+        g_hash_table_insert(frame->variableTable, bnIntern(self->pool, "print"),
+                            bnNewLambdaFromCFunc(bnStdSystemPrint));
         bnGenerateILTopLevel(self, iltop, env);
         bnDeleteAST(ret);
         bnExecute(self, env, frame);

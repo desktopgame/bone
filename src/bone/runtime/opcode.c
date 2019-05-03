@@ -21,7 +21,9 @@ GList* bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GList* list) {
                         fprintf(fp, "gen double");
                         break;
                 case BN_OP_GEN_STRING:
-                        fprintf(fp, "gen string");
+                        list = list->next;
+                        bnStringView str = list->data;
+                        fprintf(fp, "gen string(%s)", bnView2Str(pool, str));
                         break;
                 case BN_OP_STORE: {
                         list = list->next;
@@ -45,7 +47,9 @@ GList* bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GList* list) {
                         break;
                 }
                 case BN_OP_FUNCCALL:
-                        fprintf(fp, "funccall");
+                        list = list->next;
+                        int argc = list->data;
+                        fprintf(fp, "funccall %d", argc);
                         break;
         }
         if (list == NULL) {

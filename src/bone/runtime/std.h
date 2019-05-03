@@ -3,6 +3,10 @@
 struct bnFrame;
 struct bnInterpreter;
 
+void bnStdSystemPrint(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdSystemPrintln(struct bnInterpreter* bone, struct bnFrame* frame);
+
 void bnStdIntegerFuncCall(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdIntegerPositive(struct bnInterpreter* bone, struct bnFrame* frame);

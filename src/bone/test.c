@@ -170,4 +170,7 @@ void bnRunTest() {
         bnEval(bone);
         bnInteger* v = bone->__return;
         CU_ASSERT(v->value == 3);
+
+        bone = bnNewInterpreter("./testdata/vm/suc/Print.in");
+        bnEval(bone);
 }

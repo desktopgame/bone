@@ -22,7 +22,18 @@ void bnDumpILExprFuncCallOp(FILE* fp, struct bnStringPool* pool,
 }
 
 void bnGenerateILExprFuncCallOp(struct bnInterpreter* bone,
-                                bnILExprFuncCallOp* self, bnEnviroment* env) {}
+                                bnILExprFuncCallOp* self, bnEnviroment* env) {
+        int count = 0;
+        GList* iter = self->arguments;
+        while (iter != NULL) {
+                count++;
+                bnGenerateILExpression(bone, iter->data, env);
+                iter = iter->next;
+        }
+        bnGenerateILExpression(bone, self->expr, env);
+        env->binary = g_list_append(env->binary, BN_OP_FUNCCALL);
+        env->binary = g_list_append(env->binary, count);
+}
 
 void bnDeleteILExprFuncCallOp(bnILExprFuncCallOp* self) {
         bnDeleteILExpression(self->expr);
