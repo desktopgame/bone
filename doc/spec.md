@@ -79,6 +79,11 @@ a := def() (value) {
 // "aaa" assigned into val
 val := a();
 
+// val へインジェクションを行います。
+// injection to val
+val <- a();
+println(val.value);
+
 // 現在のスコープで "value" という名前の変数が定義されます。
 // declared a value at current scope
 {} <- a();
