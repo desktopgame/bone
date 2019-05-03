@@ -176,7 +176,7 @@ Goに習った例外処理であれば今すぐにでも可能ですが、
 however, not provide package for error like go)  
   
 ````
-a := def readFile() (txt, error) {
+readFile := def() (txt, error) {
     ...
 
     error := false;
@@ -185,7 +185,7 @@ a := def readFile() (txt, error) {
         return;
     }
 };
-val <- a()
+val <- readFile()
 if(val.error) {
     ...
 }

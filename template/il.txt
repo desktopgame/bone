@@ -1,0 +1,31 @@
+#ifndef $INCLUDE
+#define $INCLUDE
+#include "../bone.h"
+
+/**
+ * bn!TYPE is !DOC_STRUCT.
+ */
+typedef struct bn!TYPE {
+} bn!TYPE;
+
+/**
+ * return new instance of bn!TYPE.
+ * @param value
+ * @return
+ */
+bn!TYPE* bnNew!TYPE(char value);
+
+/**
+ * print a information of bn!TYPE.
+ * @param fp
+ * @param self
+ * @param depth
+ */
+void bnDump!TYPE(FILE* fp, bn!TYPE* self, int depth);
+
+/**
+ * free a bn!TYPE.
+ * @param self
+ */
+void bnDelete!TYPE(bn!TYPE* self);
+#endif

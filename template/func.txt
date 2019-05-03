@@ -1,0 +1,46 @@
+
+void bn!TYPEFuncCall(struct bnFrame* frame);
+
+void bn!TYPEPositive(struct bnFrame* frame);
+
+void bn!TYPENegative(struct bnFrame* frame);
+
+void bn!TYPEChilda(struct bnFrame* frame);
+
+void bn!TYPENot(struct bnFrame* frame);
+
+void bn!TYPEPlus(struct bnFrame* frame);
+
+void bn!TYPEMinus(struct bnFrame* frame);
+
+void bn!TYPEMultiply(struct bnFrame* frame);
+
+void bn!TYPEDivide(struct bnFrame* frame);
+
+void bn!TYPEModulo(struct bnFrame* frame);
+
+void bn!TYPEBitAnd(struct bnFrame* frame);
+
+void bn!TYPEBitOr(struct bnFrame* frame);
+
+// void bn!TYPELogicAnd(struct bnFrame* frame);
+
+// void bn!TYPELogicOr(struct bnFrame* frame);
+
+void bn!TYPEExcOr(struct bnFrame* frame);
+
+void bn!TYPELShift(struct bnFrame* frame);
+
+void bn!TYPERShift(struct bnFrame* frame);
+
+void bn!TYPEGT(struct bnFrame* frame);
+
+void bn!TYPEGE(struct bnFrame* frame);
+
+void bn!TYPELT(struct bnFrame* frame);
+
+void bn!TYPELE(struct bnFrame* frame);
+
+void bn!TYPEEqual(struct bnFrame* frame);
+
+void bn!TYPENotEqual(struct bnFrame* frame);
