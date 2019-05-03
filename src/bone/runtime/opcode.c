@@ -1,7 +1,8 @@
 #include "opcode.h"
 
-GList* bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GList* list) {
-        bnOpcode data = list->data;
+int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
+                  int pos) {
+        bnOpcode data = g_ptr_array_index(ary, pos);
         switch (data) {
                 case BN_OP_NOP:
                         fprintf(fp, "nop");
@@ -12,25 +13,25 @@ GList* bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GList* list) {
                 case BN_OP_SWAP:
                         fprintf(fp, "swap");
                         break;
-                case BN_OP_GEN_INT:
-                        list = list->next;
-                        int num = list->data;
+                case BN_OP_GEN_INT: {
+                        int num = g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "gen int(%d)", num);
                         break;
+                }
                 case BN_OP_GEN_DOUBLE:
                         fprintf(fp, "gen double");
                         break;
-                case BN_OP_GEN_STRING:
-                        list = list->next;
-                        bnStringView str = list->data;
+                case BN_OP_GEN_STRING: {
+                        bnStringView str = g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "gen string(%s)", bnView2Str(pool, str));
                         break;
-                case BN_OP_GEN_LAMBDA_BEGIN:
-                        list = list->next;
-                        bool isInstanceBase = list->data;
+                }
+                case BN_OP_GEN_LAMBDA_BEGIN: {
+                        bool isInstanceBase = g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "gen lambda-begin(%s)",
                                 isInstanceBase ? "true" : "false");
                         break;
+                }
                 case BN_OP_GEN_LAMBDA_END:
                         fprintf(fp, "gen lambda-end");
                         break;
@@ -47,36 +48,30 @@ GList* bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GList* list) {
                         fprintf(fp, "pop");
                         break;
                 case BN_OP_STORE: {
-                        list = list->next;
-                        bnStringView name = list->data;
+                        bnStringView name = g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "store %s", bnView2Str(pool, name));
                         break;
                 }
                 case BN_OP_LOAD: {
-                        list = list->next;
-                        bnStringView name = list->data;
+                        bnStringView name = g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "load %s", bnView2Str(pool, name));
                         break;
                 }
-                case BN_OP_PUT:
-                        list = list->next;
-                        bnStringView name = list->data;
+                case BN_OP_PUT: {
+                        bnStringView name = g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "put %s", bnView2Str(pool, name));
                         break;
+                }
                 case BN_OP_GET: {
-                        list = list->next;
-                        bnStringView name = list->data;
+                        bnStringView name = g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "get %s", bnView2Str(pool, name));
                         break;
                 }
-                case BN_OP_FUNCCALL:
-                        list = list->next;
-                        int argc = list->data;
+                case BN_OP_FUNCCALL: {
+                        int argc = (int)g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "funccall %d", argc);
                         break;
+                }
         }
-        if (list == NULL) {
-                return list;
-        }
-        return list->next;
+        return pos + 1;
 }

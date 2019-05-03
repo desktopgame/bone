@@ -2,11 +2,11 @@
 
 bnEnviroment* bnNewEnviroment() {
         bnEnviroment* ret = BN_MALLOC(sizeof(bnEnviroment));
-        ret->binary = NULL;
+        ret->codeArray = g_ptr_array_new();
         return ret;
 }
 
 void bnDeleteEnviroment(bnEnviroment* self) {
-        g_list_free(self->binary);
+        g_ptr_array_unref(self->codeArray);
         BN_FREE(self);
 }

@@ -15,8 +15,8 @@ void bnDumpILExprString(FILE* fp, struct bnStringPool* pool,
 
 void bnGenerateILExprString(struct bnInterpreter* bone, bnILExprString* self,
                             bnEnviroment* env) {
-        env->binary = g_list_append(env->binary, BN_OP_GEN_STRING);
-        env->binary = g_list_append(env->binary, self->value);
+        g_ptr_array_add(env->codeArray, BN_OP_GEN_STRING);
+        g_ptr_array_add(env->codeArray, self->value);
 }
 
 void bnDeleteILExprString(bnILExprString* self) { BN_FREE(self); }

@@ -29,9 +29,10 @@ static void writeEnv(const gchar* out, struct bnStringPool* pool,
                 perror("writeEnv");
                 return;
         }
-        GList* iter = env->binary;
-        while (iter != NULL) {
-                iter = bnPrintOpcode(fp, pool, iter);
+        int pos = 0;
+        int len = env->codeArray->len;
+        while (pos >= len) {
+                pos = bnPrintOpcode(fp, pool, env->codeArray, pos);
                 fprintf(fp, "\n");
         }
         fclose(fp);

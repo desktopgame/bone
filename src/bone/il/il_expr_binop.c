@@ -29,27 +29,26 @@ void bnGenerateILExprBinOp(bnInterpreter* bone, bnILExprBinOp* self,
                 if (L->type == BN_IL_EXPR_VARIABLE) {
                         bnILExprVariable* var = L->u.vVariable;
                         bnGenerateILExpression(bone, self->right, env);
-                        env->binary = g_list_append(env->binary, BN_OP_STORE);
-                        env->binary = g_list_append(env->binary, var->name);
+                        g_ptr_array_add(env->codeArray, BN_OP_STORE);
+                        g_ptr_array_add(env->codeArray, var->name);
                 } else if (L->type == BN_IL_EXPR_MEMBEROP) {
                         bnGenerateILExpression(bone, self->right, env);
                         bnILExprMemberOp* ilmem = L->u.vMemberOp;
                         bnGenerateILExpression(bone, ilmem->expr, env);
-                        env->binary = g_list_append(env->binary, BN_OP_PUT);
-                        env->binary = g_list_append(env->binary, ilmem->name);
+                        g_ptr_array_add(env->codeArray, BN_OP_PUT);
+                        g_ptr_array_add(env->codeArray, ilmem->name);
                 } else {
                         abort();
                 }
         } else {
                 bnGenerateILExpression(bone, self->left, env);
-                env->binary = g_list_append(env->binary, BN_OP_DUP);
-                env->binary = g_list_append(env->binary, BN_OP_GET);
-                env->binary =
-                    g_list_append(env->binary, opToView(bone->pool, self));
+                g_ptr_array_add(env->codeArray, BN_OP_DUP);
+                g_ptr_array_add(env->codeArray, BN_OP_GET);
+                g_ptr_array_add(env->codeArray, opToView(bone->pool, self));
                 bnGenerateILExpression(bone, self->right, env);
-                env->binary = g_list_append(env->binary, BN_OP_SWAP);
-                env->binary = g_list_append(env->binary, BN_OP_FUNCCALL);
-                env->binary = g_list_append(env->binary, 2);
+                g_ptr_array_add(env->codeArray, BN_OP_SWAP);
+                g_ptr_array_add(env->codeArray, BN_OP_FUNCCALL);
+                g_ptr_array_add(env->codeArray, 2);
         }
 }
 

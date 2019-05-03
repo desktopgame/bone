@@ -32,8 +32,11 @@ typedef enum bnOpcode {
         BN_OP_PUT,
         BN_OP_GET,
 
+        BN_OP_GOTO,
+        BN_OP_GOTO_IF,
+
         BN_OP_FUNCCALL,
 } bnOpcode;
 
-GList* bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GList* list);
+int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary, int pos);
 #endif

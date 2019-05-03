@@ -20,10 +20,10 @@ void bnGenerateILExprMemberOp(struct bnInterpreter* bone,
         bnGenerateILExpression(bone, self->expr, env);
         // for instance based closure
         // see: il_expr_funccallop.c
-        env->binary = g_list_append(env->binary, BN_OP_DUP);
-        env->binary = g_list_append(env->binary, BN_OP_SET_REGISTER_0);
-        env->binary = g_list_append(env->binary, BN_OP_GET);
-        env->binary = g_list_append(env->binary, self->name);
+        g_ptr_array_add(env->codeArray, BN_OP_DUP);
+        g_ptr_array_add(env->codeArray, BN_OP_SET_REGISTER_0);
+        g_ptr_array_add(env->codeArray, BN_OP_GET);
+        g_ptr_array_add(env->codeArray, self->name);
 }
 
 void bnDeleteILExprMemberOp(bnILExprMemberOp* self) {

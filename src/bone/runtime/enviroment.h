@@ -4,7 +4,7 @@
 #include "opcode.h"
 
 typedef struct bnEnviroment {
-        GList* binary;
+        GPtrArray* codeArray;
 } bnEnviroment;
 
 /**

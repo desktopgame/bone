@@ -16,10 +16,8 @@ void bnDebugStack(FILE* fp, bnStack* stack, const char* name) {
 }
 
 int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
-        GList* iter = env->binary;
-        int PC = 0;
-        while (iter != NULL) {
-                bnOpcode code = (bnOpcode)iter->data;
+        for (int PC = 0; PC < env->codeArray->len; PC++) {
+                bnOpcode code = g_ptr_array_index(env->codeArray, PC);
                 switch (code) {
                         case BN_OP_NOP:
                                 break;
@@ -39,9 +37,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_GEN_INT: {
-                                iter = iter->next;
-                                PC++;
-                                int data = iter->data;
+                                int data =
+                                    g_ptr_array_index(env->codeArray, ++PC);
                                 bnPushStack(frame->vStack,
                                             bnNewInteger(bone, data));
                                 break;
@@ -49,9 +46,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         case BN_OP_GEN_DOUBLE:
                                 break;
                         case BN_OP_GEN_STRING: {
-                                iter = iter->next;
-                                PC++;
-                                bnStringView name = iter->data;
+                                bnStringView name =
+                                    g_ptr_array_index(env->codeArray, ++PC);
                                 bnPushStack(frame->vStack,
                                             bnNewString(bone, name));
                                 break;
@@ -60,9 +56,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnLambda* lmb = bnNewLambda(BN_LAMBDA_SCRIPT);
                                 lmb->u.vEnv = bnNewEnviroment();
                                 // is instance base?
-                                iter = iter->next;
-                                PC++;
-                                bool isInstanceBase = iter->data;
+                                bool isInstanceBase =
+                                    g_ptr_array_index(env->codeArray, ++PC);
                                 lmb->instanceBase = isInstanceBase;
                                 // collect all variables
                                 GHashTableIter hashIter;
@@ -75,14 +70,13 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 }
                                 // generate code
                                 while (1) {
-                                        iter = iter->next;
-                                        PC++;
-                                        gpointer data = iter->data;
+                                        gpointer data = g_ptr_array_index(
+                                            env->codeArray, ++PC);
                                         if (data == BN_OP_GEN_LAMBDA_END) {
                                                 break;
                                         }
-                                        lmb->u.vEnv->binary = g_list_append(
-                                            lmb->u.vEnv->binary, data);
+                                        g_ptr_array_add(lmb->u.vEnv->codeArray,
+                                                        data);
                                 }
                                 bnPushStack(frame->vStack, lmb);
                                 break;
@@ -107,9 +101,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_STORE: {
-                                iter = iter->next;
-                                PC++;
-                                bnStringView name = iter->data;
+                                bnStringView name =
+                                    g_ptr_array_index(env->codeArray, ++PC);
                                 bnObject* value = bnPopStack(frame->vStack);
                                 g_hash_table_insert(frame->variableTable,
                                                     GINT_TO_POINTER((int)name),
@@ -117,9 +110,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_LOAD: {
-                                iter = iter->next;
-                                PC++;
-                                bnStringView name = iter->data;
+                                bnStringView name =
+                                    g_ptr_array_index(env->codeArray, ++PC);
                                 bnObject* value = g_hash_table_lookup(
                                     frame->variableTable,
                                     GINT_TO_POINTER((int)name));
@@ -129,18 +121,16 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         case BN_OP_PUT: {
                                 bnObject* container = bnPopStack(frame->vStack);
                                 bnObject* value = bnPopStack(frame->vStack);
-                                iter = iter->next;
-                                PC++;
-                                bnStringView name = iter->data;
+                                bnStringView name =
+                                    g_ptr_array_index(env->codeArray, ++PC);
                                 g_hash_table_insert(container->table, name,
                                                     value);
                                 break;
                         }
                         case BN_OP_GET: {
                                 bnObject* container = bnPopStack(frame->vStack);
-                                iter = iter->next;
-                                PC++;
-                                bnStringView name = iter->data;
+                                bnStringView name =
+                                    g_ptr_array_index(env->codeArray, ++PC);
                                 gpointer data =
                                     g_hash_table_lookup(container->table, name);
                                 bnObject* obj = data;
@@ -150,16 +140,12 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         }
                         case BN_OP_FUNCCALL: {
                                 bnObject* lambda = bnPopStack(frame->vStack);
-                                iter = iter->next;
-                                PC++;
-                                int argc = iter->data;
+                                int argc =
+                                    g_ptr_array_index(env->codeArray, ++PC);
                                 bnFuncCall(lambda, bone, frame, argc);
                                 break;
                         }
                 }
-                // go to next code
-                iter = iter->next;
-                PC++;
         }
         return 0;
 }
