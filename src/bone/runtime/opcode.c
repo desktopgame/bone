@@ -52,6 +52,9 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
                 case BN_OP_SCOPE_INJECTION:
                         fprintf(fp, "scope injection");
                         break;
+                case BN_OP_OBJECT_INJECTION:
+                        fprintf(fp, "object injection");
+                        break;
                 case BN_OP_STORE: {
                         bnStringView name = g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "store %s", bnView2Str(pool, name));

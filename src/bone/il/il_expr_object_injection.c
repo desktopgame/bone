@@ -1,4 +1,5 @@
 #include "il_expr_object_injection.h"
+#include "../runtime/enviroment.h"
 
 bnILExprObjectInjection* bnNewILExprObjectInjection(bnILExpression* leftExpr,
                                                     bnILExpression* rightExpr) {
@@ -19,7 +20,11 @@ void bnDumpILExprObjectInjection(FILE* fp, struct bnStringPool* pool,
 
 void bnGenerateILExprObjectInjection(struct bnInterpreter* bone,
                                      bnILExprObjectInjection* self,
-                                     struct bnEnviroment* env) {}
+                                     struct bnEnviroment* env) {
+        bnGenerateILExpression(bone, self->leftExpr, env);
+        bnGenerateILExpression(bone, self->rightExpr, env);
+        g_ptr_array_add(env->codeArray, BN_OP_OBJECT_INJECTION);
+}
 
 void bnDeleteILExprObjectInjection(bnILExprObjectInjection* self) {
         bnDeleteILExpression(self->leftExpr);
