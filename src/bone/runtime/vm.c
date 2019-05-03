@@ -59,6 +59,11 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         case BN_OP_GEN_LAMBDA_BEGIN: {
                                 bnLambda* lmb = bnNewLambda(BN_LAMBDA_SCRIPT);
                                 lmb->u.vEnv = bnNewEnviroment();
+                                // is instance base?
+                                iter = iter->next;
+                                PC++;
+                                bool isInstanceBase = iter->data;
+                                lmb->instanceBase = isInstanceBase;
                                 // collect all variables
                                 GHashTableIter hashIter;
                                 g_hash_table_iter_init(&hashIter,
@@ -83,6 +88,22 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_GEN_LAMBDA_END: {
+                                break;
+                        }
+                        case BN_OP_SET_REGISTER_0:
+                                frame->register0 = bnPopStack(frame->vStack);
+                                break;
+                        case BN_OP_GET_REGISTER_0:
+                                bnPushStack(frame->vStack, frame->register0);
+                                frame->register0 = NULL;
+                                break;
+                        case BN_OP_PUSH_SELF: {
+                                bnPushStack(frame->hierarcySelf,
+                                            bnPopStack(frame->vStack));
+                                break;
+                        }
+                        case BN_OP_POP_SELF: {
+                                bnPopStack(frame->hierarcySelf);
                                 break;
                         }
                         case BN_OP_STORE: {

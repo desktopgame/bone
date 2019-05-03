@@ -50,6 +50,8 @@ void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
 void bnGenerateILExprLambda(bnInterpreter* bone, bnILExprLambda* self,
                             bnEnviroment* env) {
         env->binary = g_list_append(env->binary, BN_OP_GEN_LAMBDA_BEGIN);
+        env->binary =
+            g_list_append(env->binary, bnIsInstanceBase(bone->pool, self));
         GList* iter = self->parameters;
         while (iter != NULL) {
                 bnStringView name = iter->data;
@@ -67,7 +69,7 @@ void bnGenerateILExprLambda(bnInterpreter* bone, bnILExprLambda* self,
 }
 
 bool bnIsInstanceBase(struct bnStringPool* pool, bnILExprLambda* self) {
-        guint len = g_list_length(self);
+        guint len = g_list_length(self->parameters);
         if (len == 0) {
                 return false;
         }
@@ -76,7 +78,7 @@ bool bnIsInstanceBase(struct bnStringPool* pool, bnILExprLambda* self) {
 }
 
 bool bnIsNamedReturn(bnILExprLambda* self) {
-        guint len = g_list_length(self);
+        guint len = g_list_length(self->returns);
         return len > 0;
 }
 

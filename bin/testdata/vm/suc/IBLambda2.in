@@ -1,0 +1,9 @@
+a := def(self, a) {
+    println(self);
+    println(a);
+};
+a("word-aaa", "word-bbb");
+
+ba_dha_dha := "str1";
+ba_dha_dha.method := a;
+ba_dha_dha.method("str2");

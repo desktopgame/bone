@@ -18,6 +18,10 @@ void bnDumpILExprMemberOp(FILE* fp, struct bnStringPool* pool,
 void bnGenerateILExprMemberOp(struct bnInterpreter* bone,
                               bnILExprMemberOp* self, bnEnviroment* env) {
         bnGenerateILExpression(bone, self->expr, env);
+        // for instance based closure
+        // see: il_expr_funccallop.c
+        env->binary = g_list_append(env->binary, BN_OP_DUP);
+        env->binary = g_list_append(env->binary, BN_OP_SET_REGISTER_0);
         env->binary = g_list_append(env->binary, BN_OP_GET);
         env->binary = g_list_append(env->binary, self->name);
 }

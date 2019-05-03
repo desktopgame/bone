@@ -49,6 +49,7 @@ void* bnPeekStack(bnStack* self) {
                 }
                 iter = iter->next;
         }
+        assert(false);
 }
 
 int bnGetStackSize(bnStack* self) {

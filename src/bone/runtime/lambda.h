@@ -1,5 +1,6 @@
 #ifndef BONE_RUNTIME_LAMBDA_H
 #define BONE_RUNTIME_LAMBDA_H
+#include <stdbool.h>
 #include "enviroment.h"
 #include "object.h"
 
@@ -16,6 +17,7 @@ typedef struct bnLambda {
         bnObject base;
         bnLambdaType type;
         GHashTable* outer;
+        bool instanceBase;
         union {
                 bnEnviroment* vEnv;
                 bnNativeFunc vFunc;

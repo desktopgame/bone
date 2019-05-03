@@ -7,7 +7,9 @@ struct bnObject;
 typedef struct bnFrame {
         int pc;
         bnStack* vStack;
+        bnStack* hierarcySelf;
         GHashTable* variableTable;
+        struct bnObject* register0;
         struct bnFrame* prev;
         struct bnFrame* next;
 } bnFrame;

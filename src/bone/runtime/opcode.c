@@ -26,10 +26,25 @@ GList* bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GList* list) {
                         fprintf(fp, "gen string(%s)", bnView2Str(pool, str));
                         break;
                 case BN_OP_GEN_LAMBDA_BEGIN:
-                        fprintf(fp, "gen lambda-begin");
+                        list = list->next;
+                        bool isInstanceBase = list->data;
+                        fprintf(fp, "gen lambda-begin(%s)",
+                                isInstanceBase ? "true" : "false");
                         break;
                 case BN_OP_GEN_LAMBDA_END:
                         fprintf(fp, "gen lambda-end");
+                        break;
+                case BN_OP_SET_REGISTER_0:
+                        fprintf(fp, "set register[0]");
+                        break;
+                case BN_OP_GET_REGISTER_0:
+                        fprintf(fp, "get register[0]");
+                        break;
+                case BN_OP_PUSH_SELF:
+                        fprintf(fp, "push");
+                        break;
+                case BN_OP_POP_SELF:
+                        fprintf(fp, "pop");
                         break;
                 case BN_OP_STORE: {
                         list = list->next;

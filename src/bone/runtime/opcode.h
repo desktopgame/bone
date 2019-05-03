@@ -21,6 +21,11 @@ typedef enum bnOpcode {
         BN_OP_GEN_LAMBDA_BEGIN,
         BN_OP_GEN_LAMBDA_END,
 
+        BN_OP_SET_REGISTER_0,
+        BN_OP_GET_REGISTER_0,
+        BN_OP_PUSH_SELF,
+        BN_OP_POP_SELF,
+
         BN_OP_STORE,
         BN_OP_LOAD,
 
