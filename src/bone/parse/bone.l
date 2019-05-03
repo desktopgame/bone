@@ -215,6 +215,11 @@ static void update_loc() {
 	bnSetParseLine(yaccLineno);
 }
 
+<INITIAL>[ \t] {
+	// it will be done space or tab output to stdout if no this rule
+	// it is pollute my terminal
+}
+
 <INITIAL>[1-9][0-9]* {
 	yylval.ast_value = bnNewIntAST(atoi(yytext));
 	return INT;
