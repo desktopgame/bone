@@ -10,6 +10,7 @@ typedef enum bnILStatementType {
         BN_IL_STMT_IF_ELSE,
         BN_IL_STMT_WHILE,
         BN_IL_STMT_RETURN,
+        BN_IL_STMT_SCOPE_INJECTION,
 } bnILStatementType;
 
 struct bnILStmtExprStmt;
@@ -17,6 +18,7 @@ struct bnILStmtIf;
 struct bnILStmtIfElse;
 struct bnILStmtWhile;
 struct bnILStmtReturn;
+struct bnILStmtScopeInjection;
 struct bnEnviroment;
 struct bnInterpreter;
 
@@ -28,6 +30,7 @@ typedef struct bnILStatement {
                 struct bnILStmtIfElse* vIfElse;
                 struct bnILStmtWhile* vWhile;
                 struct bnILStmtReturn* vReturn;
+                struct bnILStmtScopeInjection* vScopeInj;
         } u;
         int line;
 } bnILStatement;

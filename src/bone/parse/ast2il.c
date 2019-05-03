@@ -158,6 +158,10 @@ static bnILStatement* ast2stmt(bnAST* a) {
                 } else {
                         ret->u.vReturn = bnNewILStmtReturn(ast2expr(aExpr));
                 }
+        } else if (a->tag == BN_AST_SCOPE_INJECTION) {
+                ret->type = BN_IL_STMT_SCOPE_INJECTION;
+                ret->u.vScopeInj =
+                    bnNewILStmtScopeInjection(ast2expr(bnFirstAST(a)));
         }
         ret->line = a->line;
         return ret;

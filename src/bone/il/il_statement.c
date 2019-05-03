@@ -32,6 +32,10 @@ void bnDumpILStatement(FILE* fp, struct bnStringPool* pool, bnILStatement* self,
                 case BN_IL_STMT_RETURN:
                         bnDumpILStmtReturn(fp, pool, self->u.vReturn, depth);
                         break;
+                case BN_IL_STMT_SCOPE_INJECTION:
+                        bnDumpILStmtScopeInjection(fp, pool, self->u.vScopeInj,
+                                                   depth);
+                        break;
                 default:
                         assert(false);
                         break;
@@ -60,6 +64,9 @@ void bnDeleteILStatement(bnILStatement* self) {
                 case BN_IL_STMT_RETURN:
                         bnDeleteILStmtReturn(self->u.vReturn);
                         break;
+                case BN_IL_STMT_SCOPE_INJECTION:
+                        bnDeleteILStmtScopeInjection(self->u.vScopeInj);
+                        break;
                 default:
                         assert(false);
                         break;
@@ -86,6 +93,10 @@ void bnGenerateILStatement(struct bnInterpreter* bone, bnILStatement* self,
                         break;
                 case BN_IL_STMT_RETURN:
                         bnGenerateILStmtReturn(bone, self->u.vReturn, env);
+                        break;
+                case BN_IL_STMT_SCOPE_INJECTION:
+                        bnGenerateILStmtScopeInjection(bone, self->u.vScopeInj,
+                                                       env);
                         break;
                 default:
                         assert(false);
