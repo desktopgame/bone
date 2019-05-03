@@ -1,6 +1,7 @@
 #include "vm.h"
 #include "../glib.h"
 #include "integer.h"
+#include "lambda.h"
 #include "opcode.h"
 #include "string.h"
 
@@ -53,6 +54,35 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnStringView name = iter->data;
                                 bnPushStack(frame->vStack,
                                             bnNewString(bone, name));
+                                break;
+                        }
+                        case BN_OP_GEN_LAMBDA_BEGIN: {
+                                bnLambda* lmb = bnNewLambda(BN_LAMBDA_SCRIPT);
+                                lmb->u.vEnv = bnNewEnviroment();
+                                // collect all variables
+                                GHashTableIter hashIter;
+                                g_hash_table_iter_init(&hashIter,
+                                                       frame->variableTable);
+                                gpointer k, v;
+                                while (
+                                    g_hash_table_iter_next(&hashIter, &k, &v)) {
+                                        g_hash_table_insert(lmb->outer, k, v);
+                                }
+                                // generate code
+                                while (1) {
+                                        iter = iter->next;
+                                        PC++;
+                                        gpointer data = iter->data;
+                                        if (data == BN_OP_GEN_LAMBDA_END) {
+                                                break;
+                                        }
+                                        lmb->u.vEnv->binary = g_list_append(
+                                            lmb->u.vEnv->binary, data);
+                                }
+                                bnPushStack(frame->vStack, lmb);
+                                break;
+                        }
+                        case BN_OP_GEN_LAMBDA_END: {
                                 break;
                         }
                         case BN_OP_STORE: {

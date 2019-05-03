@@ -1,5 +1,6 @@
 #include "il_expr_lambda.h"
 #include "../runtime/enviroment.h"
+#include "../runtime/interpreter.h"
 #include "il_statement.h"
 
 bnILExprLambda* bnNewILExprLambda() {
@@ -45,8 +46,25 @@ void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
         }
 }
 
-void bnGenerateILExprLambda(struct bnInterpreter* bone, bnILExprLambda* self,
-                            bnEnviroment* env) {}
+void bnGenerateILExprLambda(bnInterpreter* bone, bnILExprLambda* self,
+                            bnEnviroment* env) {
+        env->binary = g_list_append(env->binary, BN_OP_GEN_LAMBDA_BEGIN);
+        GList* iter = self->parameters;
+        while (iter != NULL) {
+                bnStringView name = iter->data;
+                env->binary = g_list_append(env->binary, BN_OP_STORE);
+                env->binary =
+                    g_list_append(env->binary, bnIntern(bone->pool, name));
+                iter = iter->next;
+        }
+        iter = self->statements;
+        while (iter != NULL) {
+                bnILStatement* ilstmt = iter->data;
+                bnGenerateILStatement(bone, ilstmt, env);
+                iter = iter->next;
+        }
+        env->binary = g_list_append(env->binary, BN_OP_GEN_LAMBDA_END);
+}
 
 void bnDeleteILExprLambda(bnILExprLambda* self) {
         g_list_free(self->parameters);

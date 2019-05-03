@@ -25,6 +25,12 @@ GList* bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GList* list) {
                         bnStringView str = list->data;
                         fprintf(fp, "gen string(%s)", bnView2Str(pool, str));
                         break;
+                case BN_OP_GEN_LAMBDA_BEGIN:
+                        fprintf(fp, "gen lambda-begin");
+                        break;
+                case BN_OP_GEN_LAMBDA_END:
+                        fprintf(fp, "gen lambda-end");
+                        break;
                 case BN_OP_STORE: {
                         list = list->next;
                         bnStringView name = list->data;

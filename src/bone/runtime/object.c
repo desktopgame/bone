@@ -9,6 +9,7 @@
 #include "keyword.h"
 #include "lambda.h"
 #include "object.h"
+#include "vm.h"
 
 void bnInitObject(bnObject* self, bnObjectType type) {
         self->table =
@@ -29,9 +30,7 @@ void bnDefine(bnObject* self, bnStringView name, bnObject* value) {
 }
 
 void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
-        if (self == NULL || self->type != BN_OBJECT_LAMBDA) {
-                return;
-        }
+        assert(self != NULL && self->type == BN_OBJECT_LAMBDA);
         // create new frame
         bnFrame* sub = bnSubFrame(frame);
         for (int i = 0; i < argc; i++) {
@@ -46,7 +45,14 @@ void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
                         assert(code == BN_JMP_CODE_EXCEPTION);
                 }
         } else {
-                g_abort();
+                // write captured vatiable
+                GHashTableIter iter;
+                gpointer k, v;
+                g_hash_table_iter_init(&iter, lambda->outer);
+                while (g_hash_table_iter_next(&iter, &k, &v)) {
+                        g_hash_table_insert(sub->variableTable, k, v);
+                }
+                bnExecute(bone, lambda->u.vEnv, sub);
         }
         guint len = bnGetStackSize(sub->vStack);
         bnObject* ret = len == 0 ? NULL : bnPopStack(sub->vStack);

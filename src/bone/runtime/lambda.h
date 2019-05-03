@@ -15,6 +15,7 @@ typedef enum bnLambdaType {
 typedef struct bnLambda {
         bnObject base;
         bnLambdaType type;
+        GHashTable* outer;
         union {
                 bnEnviroment* vEnv;
                 bnNativeFunc vFunc;

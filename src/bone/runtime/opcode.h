@@ -18,6 +18,8 @@ typedef enum bnOpcode {
         BN_OP_GEN_INT,
         BN_OP_GEN_DOUBLE,
         BN_OP_GEN_STRING,
+        BN_OP_GEN_LAMBDA_BEGIN,
+        BN_OP_GEN_LAMBDA_END,
 
         BN_OP_STORE,
         BN_OP_LOAD,
