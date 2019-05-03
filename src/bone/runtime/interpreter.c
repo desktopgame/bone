@@ -34,14 +34,15 @@ int bnEval(bnInterpreter* self) {
         // generate instructions
         bnEnviroment* env = bnNewEnviroment();
         bnFrame* frame = bnNewFrame();
-        g_hash_table_insert(frame->variableTable, bnIntern(self->pool, "print"),
-                            bnNewLambdaFromCFunc(bnStdSystemPrint));
-        g_hash_table_insert(frame->variableTable,
-                            bnIntern(self->pool, "println"),
-                            bnNewLambdaFromCFunc(bnStdSystemPrintln));
-        g_hash_table_insert(frame->variableTable,
-                            bnIntern(self->pool, "object"),
-                            bnNewLambdaFromCFunc(bnStdSystemObject));
+        g_hash_table_insert(
+            frame->variableTable, bnIntern(self->pool, "print"),
+            bnNewLambdaFromCFunc(bnStdSystemPrint, self->pool, NULL));
+        g_hash_table_insert(
+            frame->variableTable, bnIntern(self->pool, "println"),
+            bnNewLambdaFromCFunc(bnStdSystemPrintln, self->pool, NULL));
+        g_hash_table_insert(
+            frame->variableTable, bnIntern(self->pool, "object"),
+            bnNewLambdaFromCFunc(bnStdSystemObject, self->pool, "ret", NULL));
         bnGenerateILTopLevel(self, iltop, env);
         bnDeleteAST(ret);
         bnExecute(self, env, frame);

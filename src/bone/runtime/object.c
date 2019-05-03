@@ -57,9 +57,24 @@ void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
                 }
                 bnExecute(bone, lambda->u.vEnv, sub);
         }
-        guint len = bnGetStackSize(sub->vStack);
-        bnObject* ret = len == 0 ? NULL : bnPopStack(sub->vStack);
-        bnPushStack(frame->vStack, ret);
+        if (g_list_length(lambda->returns) > 0) {
+                bnObject* body = g_hash_table_lookup(sub->variableTable,
+                                                     lambda->returns->data);
+                GList* iter = lambda->returns;
+                while (iter != NULL) {
+                        bnStringView retName = iter->data;
+                        // create private member
+                        char buf[100] = {0};
+                        const char* retStr = bnView2Str(bone->pool, retName);
+                        sprintf(buf, "__%s", retStr);
+                        g_hash_table_insert(
+                            body->table, bnIntern(bone->pool, buf),
+                            g_hash_table_lookup(sub->variableTable,
+                                                iter->data));
+                        iter = iter->next;
+                }
+                bnPushStack(frame->vStack, body);
+        }
         bnDeleteFrame(sub);
 }
 

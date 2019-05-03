@@ -1,5 +1,6 @@
 #ifndef BONE_RUNTIME_LAMBDA_H
 #define BONE_RUNTIME_LAMBDA_H
+#include <stdarg.h>
 #include <stdbool.h>
 #include "enviroment.h"
 #include "object.h"
@@ -35,9 +36,12 @@ bnLambda* bnNewLambda(bnLambdaType type);
 /**
  * return new instance of bnLambda, from C function.
  * @param func
+ * @param pool
+ * @param ... (named returns)
  * @return
  */
-bnLambda* bnNewLambdaFromCFunc(bnNativeFunc func);
+bnLambda* bnNewLambdaFromCFunc(bnNativeFunc func, struct bnStringPool* pool,
+                               ...);
 
 /**
  * return new instance of bnLambda.

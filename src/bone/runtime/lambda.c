@@ -11,9 +11,21 @@ bnLambda* bnNewLambda(bnLambdaType type) {
         return ret;
 }
 
-bnLambda* bnNewLambdaFromCFunc(bnNativeFunc func) {
+bnLambda* bnNewLambdaFromCFunc(bnNativeFunc func, struct bnStringPool* pool,
+                               ...) {
+        va_list ap;
+        va_start(ap, func);
         bnLambda* ret = bnNewLambda(BN_LAMBDA_NATIVE);
         ret->u.vFunc = func;
+        while (1) {
+                const char* name = va_arg(ap, const char*);
+                if (name == NULL) {
+                        break;
+                }
+                bnStringView view = bnIntern(pool, name);
+                ret->returns = g_list_append(ret->returns, view);
+        }
+        va_end(ap);
         return ret;
 }
 

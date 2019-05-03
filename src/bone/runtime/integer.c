@@ -7,8 +7,9 @@ bnInteger* bnNewInteger(bnInterpreter* bone, int value) {
         bnInteger* ret = BN_MALLOC(sizeof(bnInteger));
         bnInitObject(&ret->base, BN_OBJECT_INTEGER);
         ret->value = value;
-        bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_PLUS),
-                 bnNewLambdaFromCFunc(bnStdIntegerPlus));
+        bnDefine(
+            &ret->base, bnIntern(bone->pool, BN_KWD_PLUS),
+            bnNewLambdaFromCFunc(bnStdIntegerPlus, bone->pool, "ret", NULL));
         return ret;
 }
 

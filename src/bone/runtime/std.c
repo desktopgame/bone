@@ -7,7 +7,8 @@
 #include "string.h"
 
 void bnStdSystemObject(bnInterpreter* bone, bnFrame* frame) {
-        bnPushStack(frame->vStack, bnNewObject());
+        g_hash_table_insert(frame->variableTable, bnIntern(bone->pool, "ret"),
+                            bnNewObject());
 }
 
 void bnStdSystemPrint(bnInterpreter* bone, bnFrame* frame) {
@@ -54,7 +55,9 @@ void bnStdIntegerPlus(bnInterpreter* bone, bnFrame* frame) {
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
-        bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
+        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
+        g_hash_table_insert(frame->variableTable, bnIntern(bone->pool, "ret"),
+                            bnNewInteger(bone, ai + bi));
 }
 
 void bnStdIntegerMinus(bnInterpreter* bone, bnFrame* frame) {}
