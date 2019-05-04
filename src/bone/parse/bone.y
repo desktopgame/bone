@@ -23,7 +23,7 @@
 		EQUAL NOTEQUAL INC DEC
 		GT GE LT LE LSHIFT RSHIFT
 		NOT BIT_AND BIT_OR LOGIC_AND LOGIC_OR LP RP LB RB IF ELSE
-		EXC_OR
+		EXC_OR DOTDOTDOT
 		DOT COMMA SEMICOLON WHILE DEF RETURN_T SCOPE INJECTION
 %type <ast_value>
 	argument_list
@@ -302,21 +302,21 @@ call_expr
 	}
 	;
 lambda_expr
-	: DEF LP parameter_list RP comp_stmt
-	{
-		$$ = bnNewLambdaAST($3, bnNewBlankAST(), $5);
-	}
-	| DEF LP RP comp_stmt
-	{
-		$$ = bnNewLambdaAST(bnNewBlankAST(), bnNewBlankAST(), $4);
-	}
-	| DEF LP parameter_list RP LP parameter_list RP comp_stmt
+	: DEF LP parameter_list RP LP parameter_list RP comp_stmt
 	{
 		$$ = bnNewLambdaAST($3, $6, $8);
 	}
 	| DEF LP RP LP parameter_list RP comp_stmt
 	{
 		$$ = bnNewLambdaAST(bnNewBlankAST(), $5, $7);
+	}
+	| DEF LP parameter_list RP LP RP comp_stmt
+	{
+		$$ = bnNewLambdaAST($3, bnNewBlankAST(), $7);
+	}
+	| DEF LP RP LP RP comp_stmt
+	{
+		$$ = bnNewLambdaAST(bnNewBlankAST(), bnNewBlankAST(), $6);
 	}
 	;
 lhs

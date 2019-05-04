@@ -160,6 +160,7 @@ static void update_loc() {
 <INITIAL>"else"			{ return (ELSE); }
 <INITIAL>"while"		{ return (WHILE); }
 <INITIAL>"."				{ return (DOT); }
+<INITIAL>"..."				{ return (DOTDOTDOT); }
 <INITIAL>","				{ return (COMMA); }
 <INITIAL>"+"				{ return (ADD); }
 <INITIAL>"-"				{ return (SUB); }

@@ -1,4 +1,4 @@
-a := def(self, a) {
+a := def(self, a) () {
     println(self);
     println(a);
 };

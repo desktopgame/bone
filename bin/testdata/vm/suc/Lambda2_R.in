@@ -1,4 +1,4 @@
-a := def(word) {
+a := def(word) () {
     print(word);
 };
 a("word");
