@@ -1,0 +1,46 @@
+
+void bnStd!TYPEFuncCall(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPEPositive(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPENegative(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPEChilda(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPENot(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPEPlus(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPEMinus(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPEMultiply(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPEDivide(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPEModulo(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPEBitAnd(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPEBitOr(bnInterpreter* bone, bnFrame* frame){}
+
+// void bnStd!TYPELogicAnd(bnInterpreter* bone, bnFrame* frame){}
+
+// void bnStd!TYPELogicOr(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPEExcOr(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPELShift(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPERShift(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPEGT(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPEGE(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPELT(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPELE(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPEEqual(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStd!TYPENotEqual(bnInterpreter* bone, bnFrame* frame){}
