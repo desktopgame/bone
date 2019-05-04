@@ -1,0 +1,3 @@
+P := def()() {
+    println("HELLO WORLD");
+};

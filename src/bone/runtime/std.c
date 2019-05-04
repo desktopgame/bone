@@ -1,11 +1,15 @@
 #include "std.h"
 #include "../bone.h"
+#include "../parse/ast2il.h"
+#include "../parse/parser.h"
 #include "bool.h"
+#include "enviroment.h"
 #include "frame.h"
 #include "integer.h"
 #include "interpreter.h"
 #include "object.h"
 #include "string.h"
+#include "vm.h"
 
 // only in debug build
 #if DEBUG
@@ -41,6 +45,34 @@ void bnStdDebugPrintln(bnInterpreter* bone, bnFrame* frame) {
 #endif
 
 // Built-in
+
+void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_STRING) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        bnStringView pathView = ((bnString*)a)->value;
+        const char* pathStr = bnView2Str(bone->pool, pathView);
+        // parse file
+        bnAST* ast = bnParseFile(bone->pool, pathStr);
+        if (ast == NULL) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        bnILToplevel* iltop = bnAST2IL(ast);
+        if (iltop == NULL) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        // gen code
+        bnFrame* sub = bnNewFrame();
+        bnEnviroment* env = bnNewEnviroment();
+        bnGenerateILTopLevel(bone, iltop, env);
+        bnInjectFrame(frame->variableTable, sub);
+        bnExecute(bone, env, sub);
+        bnInjectFrame(sub->variableTable, frame);
+        bnDeleteAST(ast);
+        bnDeleteILTopLevel(iltop);
+        bnDeleteEnviroment(env);
+}
 
 void bnStdSystemObject(bnInterpreter* bone, bnFrame* frame) {
         g_hash_table_insert(frame->variableTable, bnIntern(bone->pool, "ret"),
