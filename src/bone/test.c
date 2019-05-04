@@ -196,15 +196,19 @@ static int bnRun(const char* dir, int flag) {
                         g_remove(sout);
                 }
                 printf("RUN %s\n", path);
-                FILE* soutfp = fopen(sout, "w");
-                FILE* _stdout = stdout;
-                stdout = soutfp;
+#if !defined(_WIN32)
+				FILE* soutfp = fopen(sout, "w");
+				FILE* _stdout = stdout;
+				stdout = soutfp;
+#endif
                 // parse and test
                 bnInterpreter* bone = bnNewInterpreter(path);
                 int ret = bnEval(bone);
+#if !defined(_WIN32)
                 stdout = _stdout;
                 fclose(soutfp);
                 writeFile(sout);
+#endif
                 if (flag == EXPECT_SUC) {
                         CU_ASSERT(ret == 0);
                 } else if (flag == EXPECT_ERR) {
