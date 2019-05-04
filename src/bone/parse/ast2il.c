@@ -116,6 +116,24 @@ static bnILExpression* ast2expr(bnAST* a) {
                 ret->type = BN_IL_EXPR_OBJECT_INJECTION;
                 ret->u.vObjInj = bnNewILExprObjectInjection(
                     ast2expr(bnFirstAST(a)), ast2expr(bnSecondAST(a)));
+        } else if (a->tag == BN_AST_LT) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_LT);
+        } else if (a->tag == BN_AST_LE) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_LE);
+        } else if (a->tag == BN_AST_GT) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_GT);
+        } else if (a->tag == BN_AST_GE) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_GE);
+        } else if (a->tag == BN_AST_EQUAL) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_EQUAL);
+        } else if (a->tag == BN_AST_NOTEQUAL) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_NOTEQUAL);
         } else {
                 assert(false);
         }

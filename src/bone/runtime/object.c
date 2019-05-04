@@ -41,6 +41,14 @@ void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
                 bnPushStack(sub->vStack, bnPeekStack(frame->hierarcySelf));
         }
         if (lambda->type == BN_LAMBDA_NATIVE) {
+                // write captured vatiable
+                GHashTableIter iter;
+                gpointer k, v;
+                g_hash_table_iter_init(&iter, frame->variableTable);
+                while (g_hash_table_iter_next(&iter, &k, &v)) {
+                        g_hash_table_insert(sub->variableTable, k, v);
+                }
+
                 int code = setjmp(bone->__jmp);
                 if (code == 0) {
                         lambda->u.vFunc(bone, sub);
@@ -60,6 +68,7 @@ void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
         if (g_list_length(lambda->returns) > 0) {
                 bnObject* body = g_hash_table_lookup(sub->variableTable,
                                                      lambda->returns->data);
+                assert(body != NULL);
                 GList* iter = lambda->returns;
                 while (iter != NULL) {
                         bnStringView retName = iter->data;

@@ -10,6 +10,8 @@ bnInteger* bnNewInteger(bnInterpreter* bone, int value) {
         bnDefine(
             &ret->base, bnIntern(bone->pool, BN_KWD_PLUS),
             bnNewLambdaFromCFunc(bnStdIntegerPlus, bone->pool, "ret", NULL));
+        bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_LT),
+                 bnNewLambdaFromCFunc(bnStdIntegerLT, bone->pool, "ret", NULL));
         return ret;
 }
 

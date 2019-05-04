@@ -56,8 +56,8 @@ void bnStdIntegerPlus(bnInterpreter* bone, bnFrame* frame) {
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
         // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
-        g_hash_table_insert(frame->variableTable, bnIntern(bone->pool, "ret"),
-                            bnNewInteger(bone, ai + bi));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnNewInteger(bone, ai + bi));
 }
 
 void bnStdIntegerMinus(bnInterpreter* bone, bnFrame* frame) {}
@@ -86,7 +86,18 @@ void bnStdIntegerGT(bnInterpreter* bone, bnFrame* frame) {}
 
 void bnStdIntegerGE(bnInterpreter* bone, bnFrame* frame) {}
 
-void bnStdIntegerLT(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdIntegerLT(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        int ai = ((bnInteger*)a)->value;
+        int bi = ((bnInteger*)b)->value;
+        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnGetBool(bone->pool, frame, ai < bi));
+}
 
 void bnStdIntegerLE(bnInterpreter* bone, bnFrame* frame) {}
 

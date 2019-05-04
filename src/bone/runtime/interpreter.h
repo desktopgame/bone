@@ -1,11 +1,13 @@
 #ifndef BONE_RUNTIME_INTERPRETER_H
 #define BONE_RUNTIME_INTERPRETER_H
 #include <setjmp.h>
+#include <stdbool.h>
 #include "../util/string_pool.h"
 
 #define BN_JMP_CODE_EXCEPTION (1)
 
 struct bnObject;
+struct bnFrame;
 
 typedef struct bnInterpreter {
         const char* filenameRef;
@@ -27,6 +29,29 @@ int bnEval(bnInterpreter* self);
  * @param code
  */
 void bnPanic(bnInterpreter* self, struct bnObject* exception, int code);
+
+/**
+ * @param pool
+ * @param frame
+ * @param cond
+ * @return
+ */
+struct bnObject* bnGetBool(struct bnStringPool* pool, struct bnFrame* frame,
+                           bool cond);
+
+/**
+ * @param pool
+ * @param frame
+ * @return
+ */
+struct bnObject* bnGetTrue(struct bnStringPool* pool, struct bnFrame* frame);
+
+/**
+ * @param pool
+ * @param frame
+ * @return
+ */
+struct bnObject* bnGetFalse(struct bnStringPool* pool, struct bnFrame* frame);
 
 void bnDeleteInterpreter(bnInterpreter* self);
 #endif

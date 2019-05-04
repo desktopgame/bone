@@ -19,6 +19,12 @@ typedef enum bnILBinOpType {
         BN_IL_BINOP_LOGIC_AND,
         BN_IL_BINOP_EXC_OR,
         BN_IL_BINOP_ASSIGN,
+        BN_IL_BINOP_LT,
+        BN_IL_BINOP_LE,
+        BN_IL_BINOP_GT,
+        BN_IL_BINOP_GE,
+        BN_IL_BINOP_EQUAL,
+        BN_IL_BINOP_NOTEQUAL,
 } bnILBinOpType;
 
 /**

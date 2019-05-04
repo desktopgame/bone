@@ -39,7 +39,7 @@ int bnEval(bnInterpreter* self) {
         g_hash_table_insert(frame->variableTable, bnIntern(self->pool, "true"),
                             bnNewBool(self, true));
         g_hash_table_insert(frame->variableTable, bnIntern(self->pool, "false"),
-                            bnNewBool(self, true));
+                            bnNewBool(self, false));
         g_hash_table_insert(
             frame->variableTable, bnIntern(self->pool, "print"),
             bnNewLambdaFromCFunc(bnStdSystemPrint, self->pool, NULL));
@@ -60,6 +60,22 @@ int bnEval(bnInterpreter* self) {
 void bnPanic(bnInterpreter* self, bnObject* exception, int code) {
         self->__exception = exception;
         longjmp(self->__jmp, code);
+}
+
+bnObject* bnGetBool(struct bnStringPool* pool, bnFrame* frame, bool cond) {
+        bnObject* ret = cond ? bnGetTrue(pool, frame) : bnGetFalse(pool, frame);
+        assert(ret != NULL);
+        return ret;
+}
+
+bnObject* bnGetTrue(struct bnStringPool* pool, bnFrame* frame) {
+        return g_hash_table_lookup(frame->variableTable,
+                                   bnIntern(pool, "true"));
+}
+
+bnObject* bnGetFalse(struct bnStringPool* pool, bnFrame* frame) {
+        return g_hash_table_lookup(frame->variableTable,
+                                   bnIntern(pool, "false"));
 }
 
 void bnDeleteInterpreter(bnInterpreter* self) {

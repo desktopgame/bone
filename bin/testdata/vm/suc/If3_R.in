@@ -1,0 +1,5 @@
+if(10 < 5) {
+    println("TRUE");
+} else {
+    println("ELSE");
+}
