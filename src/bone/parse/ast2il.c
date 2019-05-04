@@ -7,6 +7,7 @@
 static GList* ast2params(bnAST* a, GList* dest);
 static GList* ast2args(bnAST* a, GList* dest);
 static bnILExprBinOp* ast2ilbinop(bnAST* a, bnILBinOpType type);
+static void ast2assign(bnILExpression* expr, bnAST* a, bnILBinOpType type);
 static bnILExpression* ast2expr(bnAST* a);
 static bnILStatement* ast2stmt(bnAST* a);
 static GList* ast2stmts(bnAST* a, GList* dest);
@@ -54,6 +55,23 @@ static bnILExprBinOp* ast2ilbinop(bnAST* a, bnILBinOpType type) {
         return ret;
 }
 
+static void ast2assign(bnILExpression* expr, bnAST* a, bnILBinOpType type) {
+        // a += 1;
+        expr->type = BN_IL_EXPR_BINOP;
+        // a
+        bnAST* aleft = bnFirstAST(a);
+        // 1
+        bnAST* aright = bnSecondAST(a);
+        // a = a + 1
+        expr->u.vBinOp = bnNewILExprBinOp(BN_IL_BINOP_ASSIGN);
+        expr->u.vBinOp->left = ast2expr(aleft);
+        bnILExpression* ilRightExpr = bnNewILExpression(BN_IL_EXPR_BINOP);
+        ilRightExpr->u.vBinOp = bnNewILExprBinOp(BN_IL_BINOP_PLUS);
+        ilRightExpr->u.vBinOp->left = ast2expr(aleft);
+        ilRightExpr->u.vBinOp->right = ast2expr(aright);
+        expr->u.vBinOp->right = ilRightExpr;
+}
+
 static bnILExpression* ast2expr(bnAST* a) {
         bnILExpression* ret = bnNewILExpression(BN_IL_EXPR_NONE);
         if (a->tag == BN_AST_INT_LIT) {
@@ -86,6 +104,27 @@ static bnILExpression* ast2expr(bnAST* a) {
         } else if (a->tag == BN_AST_ASSIGN) {
                 ret->type = BN_IL_EXPR_BINOP;
                 ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_ASSIGN);
+        } else if (a->tag == BN_AST_BIT_OR) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_BIT_OR);
+        } else if (a->tag == BN_AST_BIT_AND) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_BIT_AND);
+        } else if (a->tag == BN_AST_LOGIC_OR) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_LOGIC_OR);
+        } else if (a->tag == BN_AST_LOGIC_AND) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_LOGIC_AND);
+        } else if (a->tag == BN_AST_EXC_OR) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_EXC_OR);
+        } else if (a->tag == BN_AST_LSHIFT) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_LSHIFT);
+        } else if (a->tag == BN_AST_RSHIFT) {
+                ret->type = BN_IL_EXPR_BINOP;
+                ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_RSHIFT);
         } else if (a->tag == BN_AST_MEMBER_ACCESS) {
                 ret->type = BN_IL_EXPR_MEMBEROP;
                 bnAST* aexpr = bnFirstAST(a);
@@ -134,6 +173,26 @@ static bnILExpression* ast2expr(bnAST* a) {
         } else if (a->tag == BN_AST_NOTEQUAL) {
                 ret->type = BN_IL_EXPR_BINOP;
                 ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_NOTEQUAL);
+        } else if (a->tag == BN_AST_PLUS_ASSIGN) {
+                ast2assign(ret, a, BN_IL_BINOP_PLUS);
+        } else if (a->tag == BN_AST_MINUS_ASSIGN) {
+                ast2assign(ret, a, BN_IL_BINOP_MINUS);
+        } else if (a->tag == BN_AST_MULTIPLY_ASSIGN) {
+                ast2assign(ret, a, BN_IL_BINOP_MULTIPLY);
+        } else if (a->tag == BN_AST_DIVIDE_ASSIGN) {
+                ast2assign(ret, a, BN_IL_BINOP_DIVIDE);
+        } else if (a->tag == BN_AST_MODULO_ASSIGN) {
+                ast2assign(ret, a, BN_IL_BINOP_MODULO);
+        } else if (a->tag == BN_AST_OR_ASSIGN) {
+                ast2assign(ret, a, BN_IL_BINOP_BIT_OR);
+        } else if (a->tag == BN_AST_AND_ASSIGN) {
+                ast2assign(ret, a, BN_IL_BINOP_BIT_AND);
+        } else if (a->tag == BN_AST_EXC_OR_ASSIGN) {
+                ast2assign(ret, a, BN_IL_BINOP_EXC_OR);
+        } else if (a->tag == BN_AST_LSHIFT_ASSIGN) {
+                ast2assign(ret, a, BN_IL_BINOP_LSHIFT);
+        } else if (a->tag == BN_AST_RSHIFT_ASSIGN) {
+                ast2assign(ret, a, BN_IL_BINOP_RSHIFT);
         } else {
                 assert(false);
         }
