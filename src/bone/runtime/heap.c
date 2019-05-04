@@ -52,6 +52,9 @@ static void gc_clear(bnHeap* self, bnFrame* frame) {
 }
 
 static void gc_mark(bnHeap* self, bnFrame* frame) {
+        if (frame == NULL) {
+                return;
+        }
         if (frame->next != NULL) {
                 gc_mark(self, frame->next);
         }

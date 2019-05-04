@@ -15,7 +15,6 @@ typedef struct bnInterpreter {
         struct bnStringPool* pool;
         struct bnFrame* frame;
         struct bnHeap* heap;
-        struct bnObject* __return;
         struct bnObject* __exception;
         jmp_buf __jmp;
 } bnInterpreter;

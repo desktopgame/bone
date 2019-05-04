@@ -19,7 +19,6 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef) {
         ret->pool = bnNewStringPool();
         ret->heap = bnNewHeap();
         ret->frame = NULL;
-        ret->__return = NULL;
         ret->__exception = NULL;
         return ret;
 }
@@ -78,7 +77,10 @@ int bnEval(bnInterpreter* self) {
         bnExecute(self, env, self->frame);
         bnDeleteILTopLevel(iltop);
         bnDeleteEnviroment(env);
-        self->__return = bnReturnValue(self->frame);
+        bnGC(self->heap, self->frame);
+        bnDeleteFrame(self->frame);
+        bnGC(self->heap, NULL);
+        self->frame = NULL;
         return 0;
 }
 
