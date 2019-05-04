@@ -40,6 +40,14 @@ int bnEval(bnInterpreter* self) {
                             bnNewBool(self, true));
         g_hash_table_insert(frame->variableTable, bnIntern(self->pool, "false"),
                             bnNewBool(self, false));
+#if DEBUG
+        g_hash_table_insert(
+            frame->variableTable, bnIntern(self->pool, "assert"),
+            bnNewLambdaFromCFunc(bnStdDebugAssert, self->pool, NULL));
+        g_hash_table_insert(
+            frame->variableTable, bnIntern(self->pool, "die"),
+            bnNewLambdaFromCFunc(bnStdDebugDie, self->pool, NULL));
+#endif
         g_hash_table_insert(
             frame->variableTable, bnIntern(self->pool, "print"),
             bnNewLambdaFromCFunc(bnStdSystemPrint, self->pool, NULL));

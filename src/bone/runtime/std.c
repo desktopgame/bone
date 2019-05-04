@@ -1,10 +1,29 @@
 #include "std.h"
 #include "../bone.h"
+#include "bool.h"
 #include "frame.h"
 #include "integer.h"
 #include "interpreter.h"
 #include "object.h"
 #include "string.h"
+
+// only in debug build
+#if DEBUG
+void bnStdDebugAssert(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_BOOL) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        bnBool* cond = a;
+        if (!cond->value) {
+                abort();
+        }
+}
+
+void bnStdDebugDie(bnInterpreter* bone, bnFrame* frame) { abort(); }
+#endif
+
+// Built-in
 
 void bnStdSystemObject(bnInterpreter* bone, bnFrame* frame) {
         g_hash_table_insert(frame->variableTable, bnIntern(bone->pool, "ret"),
@@ -26,6 +45,8 @@ void bnStdSystemPrintln(bnInterpreter* bone, bnFrame* frame) {
         bnStdSystemPrint(bone, frame);
         printf("\n");
 }
+
+// Integer
 
 void bnStdIntegerFuncCall(bnInterpreter* bone, bnFrame* frame) {
         bnPanic(bone->__jmp, NULL, BN_JMP_CODE_EXCEPTION);

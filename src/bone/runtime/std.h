@@ -3,6 +3,15 @@
 struct bnFrame;
 struct bnInterpreter;
 
+// only in debug build
+#if DEBUG
+void bnStdDebugAssert(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdDebugDie(struct bnInterpreter* bone, struct bnFrame* frame);
+#endif
+
+// Built-in
+
 void bnStdSystemObject(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdSystemPrint(struct bnInterpreter* bone, struct bnFrame* frame);
