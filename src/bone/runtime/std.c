@@ -21,6 +21,23 @@ void bnStdDebugAssert(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnStdDebugDie(bnInterpreter* bone, bnFrame* frame) { abort(); }
+
+void bnStdDebugPrint(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_STRING) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        bnString* str = a;
+        const char* cstr = bnView2Str(bone->pool, str->value);
+        printf("  [%s]", cstr);
+        fflush(stdout);
+}
+
+void bnStdDebugPrintln(bnInterpreter* bone, bnFrame* frame) {
+        bnStdDebugPrint(bone, frame);
+        printf("\n");
+}
+
 #endif
 
 // Built-in
@@ -28,22 +45,6 @@ void bnStdDebugDie(bnInterpreter* bone, bnFrame* frame) { abort(); }
 void bnStdSystemObject(bnInterpreter* bone, bnFrame* frame) {
         g_hash_table_insert(frame->variableTable, bnIntern(bone->pool, "ret"),
                             bnNewObject());
-}
-
-void bnStdSystemPrint(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        if (a->type != BN_OBJECT_STRING) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
-        }
-        bnString* str = a;
-        const char* cstr = bnView2Str(bone->pool, str->value);
-        printf(cstr);
-        fflush(stdout);
-}
-
-void bnStdSystemPrintln(bnInterpreter* bone, bnFrame* frame) {
-        bnStdSystemPrint(bone, frame);
-        printf("\n");
 }
 
 // Bool

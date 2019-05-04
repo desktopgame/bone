@@ -8,15 +8,15 @@ struct bnInterpreter;
 void bnStdDebugAssert(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdDebugDie(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdDebugPrint(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdDebugPrintln(struct bnInterpreter* bone, struct bnFrame* frame);
 #endif
 
 // Built-in
 
 void bnStdSystemObject(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdSystemPrint(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdSystemPrintln(struct bnInterpreter* bone, struct bnFrame* frame);
 
 // Bool
 
