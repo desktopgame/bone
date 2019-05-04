@@ -182,6 +182,25 @@ b := def() (val, val2, val3) {
 }
 ````
 
+# 可変長名前つき戻り値(translate is comming later)
+そのスコープで定義された全ての変数を返す場合は、
+次の構文を使用します。  
+(translate is comming later)
+````
+varret := def ()(...) {
+    a := "aaa";
+    b := "ccc";
+    c := "ddd";
+};
+{} <- varret();
+println(a);
+println(b);
+println(c);
+````
+
+loadは内部的にこれを使用しています。  
+(translate is comming later)
+
 # クロージャーのオーバーロード(overload of closure)
 できません。
 (can't)
@@ -220,4 +239,42 @@ val <- readFile()
 if(val.error) {
     ...
 }
+````
+
+# 実装が保留されているもの(pending function)
+実装が難しいか、言語を汚くする可能性があるために保留されているもの。  
+もしくは必要性が疑わしいもの。  
+(translate is comming later)
+
+## パターンマッチ(pattern match)
+インジェクションする要素を選択する  
+(translate is comming later)
+````
+windowから始まる名前で、かつscreenが含まれる名前だけをインジェクションする。
+(translate is comming later)
+
+{} <- injection() match (elem) a && b {
+    case a:
+        return elem.startWith("window");
+    case b:
+        return elem.contains("screen");
+}
+
+{} <- injection() match (インジェクションされる名前をキャプチャする変数名) ケースを使用してtrueを返す式を記述 {
+    case ケースの名前:
+        bool を返す式
+    case ケースの名前:
+        bool を返す式
+}
+````
+
+## パターンマッチ2(pattern match2)
+よりシンプルなもの。
+(translate is comming later)
+
+````
+fullName, hogeのみをインジェクションする。
+(translate is comming later)
+
+{} <- injection() match ["fullName", "hoge"]
 ````
