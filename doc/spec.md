@@ -182,6 +182,10 @@ b := def() (val, val2, val3) {
 }
 ````
 
+# クロージャーのオーバーロード(overload of closure)
+できません。
+(can't)
+
 # 例外処理(exception handling)
 現在boneには例外処理のための特別な構文が存在しません。  
 (not exists exception handling syntax)  
