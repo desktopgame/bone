@@ -11,7 +11,7 @@ typedef void (*bnStackElementDeleter)(void*);
  */
 typedef struct bnStackElement {
         void* value;
-        struct bnStack* next;
+        struct bnStackElement* next;
 } bnStackElement;
 
 /**
