@@ -87,6 +87,8 @@ bnAST* bnNewAST(bnASTTag tag);
 
 bnAST* bnNewBlankAST();
 
+bnAST* bnNewDotDotDotAST();
+
 bnAST* bnNewScopeInjectionAST(bnAST* aexpr);
 
 bnAST* bnNewObjectInjectionAST(bnAST* aleft, bnAST* aright);

@@ -318,6 +318,14 @@ lambda_expr
 	{
 		$$ = bnNewLambdaAST(bnNewBlankAST(), bnNewBlankAST(), $6);
 	}
+	| DEF LP RP LP DOTDOTDOT RP comp_stmt
+	{
+		$$ = bnNewLambdaAST(bnNewBlankAST(), bnNewDotDotDotAST(), $7);
+	}
+	| DEF LP parameter_list RP LP DOTDOTDOT RP comp_stmt
+	{
+		$$ = bnNewLambdaAST(bnNewBlankAST(), bnNewDotDotDotAST(), $8);
+	}
 	;
 lhs
 	: IDENT

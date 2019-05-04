@@ -22,6 +22,12 @@ bnAST* bnNewBlankAST() {
         return ret;
 }
 
+bnAST* bnNewDotDotDotAST() {
+        bnAST* ret = bnNewAST(BN_AST_PARAMETER);
+        ret->u.svvalue = bnInternIdentifier("...");
+        return ret;
+}
+
 bnAST* bnNewScopeInjectionAST(bnAST* aexpr) {
         bnAST* ret = bnNewAST(BN_AST_SCOPE_INJECTION);
         bnPushAST(ret, aexpr);
