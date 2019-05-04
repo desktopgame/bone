@@ -52,7 +52,7 @@ bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnLambda* self);
 bool bnIsVariadicReturn(struct bnStringPool* pool, bnLambda* self);
 
 /**
- * return new instance of bnLambda.
+ * free a bnLambda.
  * @param name
  * @return
  */

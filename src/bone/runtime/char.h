@@ -18,7 +18,7 @@ typedef struct bnChar {
 bnChar* bnNewChar(char value);
 
 /**
- * return new instance of bnChar.
+ * free a bnChar.
  * @param name
  * @return
  */

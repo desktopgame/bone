@@ -19,7 +19,7 @@ typedef struct bnBool {
 bnBool* bnNewBool(struct bnInterpreter* bone, bool value);
 
 /**
- * return new instance of bnBool.
+ * free a bnBool.
  * @param name
  * @return
  */

@@ -20,7 +20,7 @@ typedef struct bnString {
 bnString* bnNewString(bnInterpreter* bone, bnStringView value);
 
 /**
- * return new instance of bnString.
+ * free a bnString.
  * @param name
  * @return
  */

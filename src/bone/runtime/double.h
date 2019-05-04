@@ -18,7 +18,7 @@ typedef struct bnDouble {
 bnDouble* bnNewDouble(double value);
 
 /**
- * return new instance of bnDouble.
+ * free a bnDouble.
  * @param name
  * @return
  */

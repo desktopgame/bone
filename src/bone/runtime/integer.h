@@ -20,7 +20,7 @@ typedef struct bnInteger {
 bnInteger* bnNewInteger(bnInterpreter* bone, int value);
 
 /**
- * return new instance of bnInteger.
+ * free a bnInteger.
  * @param name
  * @return
  */
