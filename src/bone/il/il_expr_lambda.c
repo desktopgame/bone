@@ -4,6 +4,8 @@
 #include "../runtime/keyword.h"
 #include "il_statement.h"
 
+static bool is_instance_base(struct bnStringPool* pool, bnILExprLambda* self);
+
 bnILExprLambda* bnNewILExprLambda() {
         bnILExprLambda* ret = BN_MALLOC(sizeof(bnILExprLambda));
         ret->parameters = NULL;
@@ -50,7 +52,7 @@ void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
 void bnGenerateILExprLambda(bnInterpreter* bone, bnILExprLambda* self,
                             bnEnviroment* env) {
         g_ptr_array_add(env->codeArray, BN_OP_GEN_LAMBDA_BEGIN);
-        g_ptr_array_add(env->codeArray, bnIsInstanceBase(bone->pool, self));
+        g_ptr_array_add(env->codeArray, is_instance_base(bone->pool, self));
         g_ptr_array_add(env->codeArray, g_list_length(self->returns));
         GList* iter = self->returns;
         while (iter != NULL) {
@@ -74,22 +76,17 @@ void bnGenerateILExprLambda(bnInterpreter* bone, bnILExprLambda* self,
         g_ptr_array_add(env->codeArray, BN_OP_GEN_LAMBDA_END);
 }
 
-bool bnIsInstanceBase(struct bnStringPool* pool, bnILExprLambda* self) {
+void bnDeleteILExprLambda(bnILExprLambda* self) {
+        g_list_free(self->parameters);
+        g_list_free(self->returns);
+        g_list_free_full(self->statements, bnDeleteILStatement);
+}
+
+static bool is_instance_base(struct bnStringPool* pool, bnILExprLambda* self) {
         guint len = g_list_length(self->parameters);
         if (len == 0) {
                 return false;
         }
         bnStringView name = self->parameters->data;
         return name == bnIntern(pool, BN_KWD_SELF);
-}
-
-bool bnIsNamedReturn(bnILExprLambda* self) {
-        guint len = g_list_length(self->returns);
-        return len > 0;
-}
-
-void bnDeleteILExprLambda(bnILExprLambda* self) {
-        g_list_free(self->parameters);
-        g_list_free(self->returns);
-        g_list_free_full(self->statements, bnDeleteILStatement);
 }

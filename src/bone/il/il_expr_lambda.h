@@ -32,9 +32,6 @@ void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
 void bnGenerateILExprLambda(struct bnInterpreter* bone, bnILExprLambda* self,
                             struct bnEnviroment* env);
 
-bool bnIsInstanceBase(struct bnStringPool* pool, bnILExprLambda* self);
-
-bool bnIsNamedReturn(bnILExprLambda* self);
 
 /**
  * free a bnILExprLambda.
