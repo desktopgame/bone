@@ -3,7 +3,7 @@ project(bone C)
 
 set(CMAKE_CXX_COMPILER clang)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
-set(CMAKE_C_FLAGS_DEBUG "-g -fsanitize=address -O0 -DDEBUG -MMD -Wall")
+set(CMAKE_C_FLAGS_DEBUG "-g -fsanitize=address -O0 -DDEBUG -DVMDEBUG -MMD -Wall")
 set(CMAKE_C_FLAGS_RELEASE "-g -O2 -MMD -w -DNDEBUG")
 set(BONE_EXECUTABLE "bone" CACHE STRING "executable file name")
 set(BONE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/bone CACHE PATH "Path to install")
