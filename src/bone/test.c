@@ -91,7 +91,7 @@ static GList* bnGetFiles(const char* dir) {
                 gchar* path = g_build_filename(cwd, dir, file, NULL);
                 ret = g_list_append(ret, path);
         }
-        g_list_sort(ret, strcmp);
+        ret = g_list_sort(ret, strcmp);
         g_dir_close(dirp);
         g_free(cwd);
         return ret;
@@ -175,7 +175,6 @@ static int bnVM(const char* dir, int flag) {
 static int bnRun(const char* dir, int flag) {
         GList* list = bnGetFiles(dir);
         GList* iter = list;
-        bnInterpreter* bone = bnNewInterpreter("");
         while (iter != NULL) {
                 // do process only a suffix .in
                 gchar* path = iter->data;
@@ -184,12 +183,6 @@ static int bnRun(const char* dir, int flag) {
                         continue;
                 }
                 printf("\n");
-                // clear parse result file
-                gchar* out = g_strconcat(path, ".out", NULL);
-                if (g_file_test(out,
-                                (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
-                        g_remove(out);
-                }
                 // clear run result file
                 gchar* sout = g_strconcat(path, ".std.out", NULL);
                 if (g_file_test(sout,
@@ -211,12 +204,10 @@ static int bnRun(const char* dir, int flag) {
                 } else if (flag == EXPECT_ERR) {
                         CU_ASSERT(ret != 0);
                 }
-                bnDeleteInteger(bone);
-                g_free(out);
+                bnDeleteInterpreter(bone);
                 iter = iter->next;
         }
         g_list_free_full(list, free);
-        bnDeleteStringPool(bone->pool);
         return 0;
 }
 
