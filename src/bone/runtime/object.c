@@ -68,23 +68,7 @@ void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
                 bnExecute(bone, lambda->u.vEnv, sub);
         }
         if (bnIsVariadicReturn(bone->pool, lambda)) {
-                bnArray* arr =
-                    bnNewArray(bone, g_hash_table_size(sub->variableTable));
-                GHashTableIter iter;
-                g_hash_table_iter_init(&iter, sub->variableTable);
-                gpointer k, v;
-                int arrI = 0;
-                while (g_hash_table_iter_next(&iter, &k, &v)) {
-                        bnStringView retName = k;
-                        // create private member
-                        char buf[100] = {0};
-                        const char* retStr = bnView2Str(bone->pool, retName);
-                        sprintf(buf, "$$_%s", retStr);
-                        g_hash_table_insert(arr->base.table,
-                                            bnIntern(bone->pool, buf), v);
-                        g_ptr_array_index(arr->arr, arrI) = v;
-                        arrI++;
-                }
+                bnObject* arr = bnExportAllVariable(bone, sub);
                 bnPushStack(frame->vStack, arr);
         } else if (g_list_length(lambda->returns) > 0) {
                 bnObject* body = g_hash_table_lookup(sub->variableTable,

@@ -1,4 +1,6 @@
 #include "frame.h"
+#include "array.h"
+#include "interpreter.h"
 #include "object.h"
 
 bnFrame* bnNewFrame() {
@@ -26,6 +28,35 @@ bnObject* bnReturnValue(bnFrame* self) {
                 return NULL;
         }
         return bnPopStack(self->vStack);
+}
+
+void bnInjectFrame(GHashTable* src, bnFrame* dst) {
+        GHashTableIter iter;
+        gpointer k, v;
+        g_hash_table_iter_init(&iter, src);
+        while (g_hash_table_iter_next(&iter, &k, &v)) {
+                g_hash_table_insert(dst->variableTable, k, v);
+        }
+}
+
+bnObject* bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
+        bnArray* arr = bnNewArray(bone, g_hash_table_size(self->variableTable));
+        GHashTableIter iter;
+        g_hash_table_iter_init(&iter, self->variableTable);
+        gpointer k, v;
+        int arrI = 0;
+        while (g_hash_table_iter_next(&iter, &k, &v)) {
+                bnStringView retName = k;
+                // create private member
+                char buf[100] = {0};
+                const char* retStr = bnView2Str(bone->pool, retName);
+                sprintf(buf, "$$_%s", retStr);
+                g_hash_table_insert(arr->base.table, bnIntern(bone->pool, buf),
+                                    v);
+                g_ptr_array_index(arr->arr, arrI) = v;
+                arrI++;
+        }
+        return arr;
 }
 
 void bnDeleteFrame(bnFrame* self) {
