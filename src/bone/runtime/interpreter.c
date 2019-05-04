@@ -66,6 +66,7 @@ int bnEval(bnInterpreter* self) {
         bnDeleteAST(ret);
         bnExecute(self, env, frame);
         bnDeleteILTopLevel(iltop);
+        bnDeleteEnviroment(env);
         self->__return = bnReturnValue(frame);
         return 0;
 }
