@@ -8,6 +8,7 @@
 typedef struct bnHeap {
         GList* objects;
         int limit;
+        int all;
 } bnHeap;
 
 static void gc_clear(bnHeap* self, bnFrame* frame);
@@ -15,21 +16,25 @@ static void gc_mark(bnHeap* self, bnFrame* frame);
 static void gc_mark_rec(bnObject* obj);
 static void gc_mark_array(bnArray* array);
 static void gc_mark_lambda(bnLambda* lambda);
+static void gc_sweep(bnHeap* self, bnFrame* frame);
 
 bnHeap* bnNewHeap() {
         bnHeap* ret = BN_MALLOC(sizeof(bnHeap));
         ret->objects = NULL;
         ret->limit = 100;
+        ret->all = 0;
         return ret;
 }
 
 void bnAddToHeap(bnHeap* self, bnObject* obj) {
         self->objects = g_list_append(self->objects, obj);
+        self->all++;
 }
 
 void bnGC(bnHeap* self, bnFrame* frame) {
         gc_clear(self, frame);
         gc_mark(self, frame);
+        gc_sweep(self, frame);
 }
 
 void bnDeleteHeap(bnHeap* self) {
@@ -97,4 +102,28 @@ static void gc_mark_lambda(bnLambda* lambda) {
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
                 gc_mark_rec(v);
         }
+}
+
+static void gc_sweep(bnHeap* self, bnFrame* frame) {
+        GList* ret = NULL;
+        GList* iter = self->objects;
+        int sweep = 0;
+        while (iter != NULL) {
+                bnObject* a = iter->data;
+                if (a->mark) {
+                        ret = g_list_append(ret, a);
+                } else {
+                        sweep++;
+                        BN_FREE(a);
+                }
+                iter->data = NULL;
+                iter = iter->next;
+        }
+        g_list_free(self->objects);
+        self->objects = ret;
+        self->all -= sweep;
+#if DEBUG
+        printf("sweep %d\n", sweep);
+        printf("all %d\n", self->all);
+#endif
 }
