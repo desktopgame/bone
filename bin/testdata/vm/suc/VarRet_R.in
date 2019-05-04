@@ -1,0 +1,7 @@
+a := def() (...) {
+    val := "aaa";
+    val2 := "bbb";
+};
+{} <- a();
+println(val);
+println(val2);

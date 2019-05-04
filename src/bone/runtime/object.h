@@ -13,6 +13,7 @@ typedef enum bnObjectType {
         BN_OBJECT_STRING,
         BN_OBJECT_BOOL,
         BN_OBJECT_LAMBDA,
+        BN_OBJECT_ARRAY,
 } bnObjectType;
 
 typedef struct bnObject {
