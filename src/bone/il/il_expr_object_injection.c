@@ -29,4 +29,5 @@ void bnGenerateILExprObjectInjection(struct bnInterpreter* bone,
 void bnDeleteILExprObjectInjection(bnILExprObjectInjection* self) {
         bnDeleteILExpression(self->leftExpr);
         bnDeleteILExpression(self->rightExpr);
+        BN_FREE(self);
 }
