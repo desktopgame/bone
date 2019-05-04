@@ -1,0 +1,10 @@
+injp := def() (a) {
+    a := "INJECTION WRAP VALUE";
+};
+inj := def() (a, b) {
+    {} <- injp();
+    b := "FOO";
+};
+x := object() <- inj();
+println(x.a);
+println(x.b);

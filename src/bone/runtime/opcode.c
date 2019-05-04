@@ -3,6 +3,7 @@
 int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
                   int pos) {
         bnOpcode data = g_ptr_array_index(ary, pos);
+        fprintf(fp, "<%d>", pos);
         switch (data) {
                 case BN_OP_NOP:
                         fprintf(fp, "nop");
