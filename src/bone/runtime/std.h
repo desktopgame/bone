@@ -114,4 +114,53 @@ void bnStdIntegerEqual(struct bnInterpreter* bone, struct bnFrame* frame);
 void bnStdIntegerNotEqual(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdIntegerToString(struct bnInterpreter* bone, struct bnFrame* frame);
+
+// String
+
+void bnStdStringFuncCall(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringPositive(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringNegative(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringChilda(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringNot(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringPlus(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringMinus(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringMultiply(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringDivide(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringModulo(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringBitAnd(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringBitOr(struct bnInterpreter* bone, struct bnFrame* frame);
+
+// void bnStdStringLogicAnd(struct bnInterpreter* bone, struct bnFrame* frame);
+
+// void bnStdStringLogicOr(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringExcOr(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringLShift(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringRShift(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringGT(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringGE(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringLT(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringLE(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringEqual(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdStringNotEqual(struct bnInterpreter* bone, struct bnFrame* frame);
+
 #endif

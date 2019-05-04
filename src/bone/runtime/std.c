@@ -306,3 +306,62 @@ void bnStdIntegerToString(bnInterpreter* bone, bnFrame* frame) {
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              bnNewString(bone, bnIntern(bone->pool, buf)));
 }
+
+// String
+
+void bnStdStringFuncCall(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringPositive(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringNegative(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringChilda(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringNot(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringPlus(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringMinus(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringMultiply(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringDivide(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringModulo(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringBitAnd(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringBitOr(bnInterpreter* bone, bnFrame* frame) {}
+
+// void bnStdStringLogicAnd(bnInterpreter* bone, bnFrame* frame){}
+
+// void bnStdStringLogicOr(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStdStringExcOr(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringLShift(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringRShift(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringGT(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringGE(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringLT(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringLE(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdStringEqual(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_STRING || b->type != BN_OBJECT_STRING) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        bnStringView ai = ((bnString*)a)->value;
+        bnStringView bi = ((bnString*)b)->value;
+        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnGetBool(bone->pool, frame, ai == bi));
+}
+
+void bnStdStringNotEqual(bnInterpreter* bone, bnFrame* frame) {}
