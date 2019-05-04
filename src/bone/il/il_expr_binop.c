@@ -17,7 +17,7 @@ bnILExprBinOp* bnNewILExprBinOp(bnILBinOpType type) {
 void bnDumpILExprBinOp(FILE* fp, struct bnStringPool* pool, bnILExprBinOp* self,
                        int depth) {
         bnFindent(fp, depth);
-        fprintf(fp, "binop\n");
+        fprintf(fp, "binop %s\n", bnView2Str(pool, opToView(pool, self)));
         bnDumpILExpression(fp, pool, self->left, depth + 1);
         bnDumpILExpression(fp, pool, self->right, depth + 1);
 }
@@ -88,6 +88,8 @@ static bnStringView opToView(struct bnStringPool* pool, bnILExprBinOp* self) {
                         return bnIntern(pool, BN_KWD_GT);
                 case BN_IL_BINOP_GE:
                         return bnIntern(pool, BN_KWD_GE);
+                case BN_IL_BINOP_ASSIGN:
+                        return bnIntern(pool, ":=");
                 case BN_IL_BINOP_EQUAL:
                         return bnIntern(pool, BN_KWD_EQUAL);
                 case BN_IL_BINOP_NOTEQUAL:
