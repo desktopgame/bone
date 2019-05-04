@@ -75,8 +75,8 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnStdSystemObject(bnInterpreter* bone, bnFrame* frame) {
-        g_hash_table_insert(frame->variableTable, bnIntern(bone->pool, "ret"),
-                            bnNewObject(bone->heap));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnNewObject(bone->heap));
 }
 
 // Bool

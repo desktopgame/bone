@@ -89,7 +89,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 gpointer k, v;
                                 while (
                                     g_hash_table_iter_next(&hashIter, &k, &v)) {
-                                        g_hash_table_insert(lmb->outer, k, v);
+                                        g_hash_table_replace(lmb->outer, k, v);
                                 }
                                 // generate code
                                 while (1) {
@@ -195,9 +195,9 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnStringView name =
                                     g_ptr_array_index(env->codeArray, ++PC);
                                 bnObject* value = bnPopStack(frame->vStack);
-                                g_hash_table_insert(frame->variableTable,
-                                                    GINT_TO_POINTER((int)name),
-                                                    value);
+                                g_hash_table_replace(frame->variableTable,
+                                                     GINT_TO_POINTER((int)name),
+                                                     value);
                                 assert(value != NULL);
                                 break;
                         }
@@ -216,8 +216,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnObject* value = bnPopStack(frame->vStack);
                                 bnStringView name =
                                     g_ptr_array_index(env->codeArray, ++PC);
-                                g_hash_table_insert(container->table, name,
-                                                    value);
+                                g_hash_table_replace(container->table, name,
+                                                     value);
                                 break;
                         }
                         case BN_OP_GET: {

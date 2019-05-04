@@ -4,10 +4,13 @@
 
 struct bnHeap;
 struct bnObject;
+struct bnFrame;
 
 struct bnHeap* bnNewHeap();
 
 void bnAddToHeap(struct bnHeap* self, struct bnObject* obj);
+
+void bnGC(struct bnHeap* self, struct bnFrame* frame);
 
 void bnDeleteHeap(struct bnHeap* self);
 #endif

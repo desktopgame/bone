@@ -29,7 +29,7 @@ bnObject* bnNewObject(struct bnHeap* heap) {
 
 void bnDefine(bnObject* self, bnStringView name, bnObject* value) {
         int v = (int)name;
-        g_hash_table_insert(self->table, GINT_TO_POINTER(v), value);
+        g_hash_table_replace(self->table, GINT_TO_POINTER(v), value);
 }
 
 void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
@@ -50,22 +50,22 @@ void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
                 gpointer k, v;
                 g_hash_table_iter_init(&iter, frame->variableTable);
                 while (g_hash_table_iter_next(&iter, &k, &v)) {
-                        g_hash_table_insert(sub->variableTable, k, v);
+                        g_hash_table_replace(sub->variableTable, k, v);
                 }
 
-                int code = setjmp(bone->__jmp);
-                if (code == 0) {
-                        lambda->u.vFunc(bone, sub);
-                } else {
-                        assert(code == BN_JMP_CODE_EXCEPTION);
-                }
+                // int code = setjmp(bone->__jmp);
+                // if (code == 0) {
+                lambda->u.vFunc(bone, sub);
+                //} else {
+                //        assert(code == BN_JMP_CODE_EXCEPTION);
+                //}
         } else {
                 // write captured vatiable
                 GHashTableIter iter;
                 gpointer k, v;
                 g_hash_table_iter_init(&iter, lambda->outer);
                 while (g_hash_table_iter_next(&iter, &k, &v)) {
-                        g_hash_table_insert(sub->variableTable, k, v);
+                        g_hash_table_replace(sub->variableTable, k, v);
                 }
                 bnExecute(bone, lambda->u.vEnv, sub);
         }
@@ -83,7 +83,7 @@ void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
                         char buf[100] = {0};
                         const char* retStr = bnView2Str(bone->pool, retName);
                         sprintf(buf, "$$_%s", retStr);
-                        g_hash_table_insert(
+                        g_hash_table_replace(
                             body->table, bnIntern(bone->pool, buf),
                             g_hash_table_lookup(sub->variableTable,
                                                 iter->data));
@@ -92,6 +92,7 @@ void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
                 bnPushStack(frame->vStack, body);
         }
         bnDeleteFrame(sub);
+        bnGC(bone->heap, bone->frame);
 }
 
 void bnPrintObject(FILE* fp, bnObject* self) {

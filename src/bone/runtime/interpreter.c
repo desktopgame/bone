@@ -39,36 +39,36 @@ int bnEval(bnInterpreter* self) {
         bnEnviroment* env = bnNewEnviroment();
         self->frame = bnNewFrame();
         // declare true, false
-        g_hash_table_insert(self->frame->variableTable,
-                            bnIntern(self->pool, "true"),
-                            bnNewBool(self, true));
-        g_hash_table_insert(self->frame->variableTable,
-                            bnIntern(self->pool, "false"),
-                            bnNewBool(self, false));
+        g_hash_table_replace(self->frame->variableTable,
+                             bnIntern(self->pool, "true"),
+                             bnNewBool(self, true));
+        g_hash_table_replace(self->frame->variableTable,
+                             bnIntern(self->pool, "false"),
+                             bnNewBool(self, false));
 #if DEBUG
-        g_hash_table_insert(
+        g_hash_table_replace(
             self->frame->variableTable, bnIntern(self->pool, "assert"),
             bnNewLambdaFromCFunc(self, bnStdDebugAssert, self->pool,
                                  BN_C_ADD_PARAM, "cond", BN_C_ADD_EXIT));
-        g_hash_table_insert(self->frame->variableTable,
-                            bnIntern(self->pool, "die"),
-                            bnNewLambdaFromCFunc(self, bnStdDebugDie,
-                                                 self->pool, BN_C_ADD_EXIT));
+        g_hash_table_replace(self->frame->variableTable,
+                             bnIntern(self->pool, "die"),
+                             bnNewLambdaFromCFunc(self, bnStdDebugDie,
+                                                  self->pool, BN_C_ADD_EXIT));
 
-        g_hash_table_insert(
+        g_hash_table_replace(
             self->frame->variableTable, bnIntern(self->pool, "print"),
             bnNewLambdaFromCFunc(self, bnStdDebugPrint, self->pool,
                                  BN_C_ADD_PARAM, "str", BN_C_ADD_EXIT));
-        g_hash_table_insert(
+        g_hash_table_replace(
             self->frame->variableTable, bnIntern(self->pool, "println"),
             bnNewLambdaFromCFunc(self, bnStdDebugPrintln, self->pool,
                                  BN_C_ADD_PARAM, "str", BN_C_ADD_EXIT));
 #endif
-        g_hash_table_insert(
+        g_hash_table_replace(
             self->frame->variableTable, bnIntern(self->pool, "object"),
             bnNewLambdaFromCFunc(self, bnStdSystemObject, self->pool,
                                  BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
-        g_hash_table_insert(
+        g_hash_table_replace(
             self->frame->variableTable, bnIntern(self->pool, "load"),
             bnNewLambdaFromCFunc(self, bnStdSystemLoad, self->pool,
                                  BN_C_ADD_PARAM, "path", BN_C_ADD_RETURN, "...",

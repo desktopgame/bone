@@ -35,7 +35,7 @@ void bnInjectFrame(GHashTable* src, bnFrame* dst) {
         gpointer k, v;
         g_hash_table_iter_init(&iter, src);
         while (g_hash_table_iter_next(&iter, &k, &v)) {
-                g_hash_table_insert(dst->variableTable, k, v);
+                g_hash_table_replace(dst->variableTable, k, v);
         }
 }
 
@@ -51,8 +51,8 @@ bnObject* bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
                 char buf[100] = {0};
                 const char* retStr = bnView2Str(bone->pool, retName);
                 sprintf(buf, "$$_%s", retStr);
-                g_hash_table_insert(arr->base.table, bnIntern(bone->pool, buf),
-                                    v);
+                g_hash_table_replace(arr->base.table, bnIntern(bone->pool, buf),
+                                     v);
                 g_ptr_array_index(arr->arr, arrI) = v;
                 arrI++;
         }
