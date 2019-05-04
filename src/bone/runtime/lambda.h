@@ -24,7 +24,6 @@ typedef struct bnLambda {
         GHashTable* outer;
         GList* parameters;
         GList* returns;
-        bool instanceBase;
         union {
                 bnEnviroment* vEnv;
                 bnNativeFunc vFunc;
@@ -47,6 +46,10 @@ bnLambda* bnNewLambda(bnLambdaType type);
  */
 bnLambda* bnNewLambdaFromCFunc(bnNativeFunc func, struct bnStringPool* pool,
                                ...);
+
+bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnLambda* self);
+
+bool bnIsVariadicReturn(struct bnStringPool* pool, bnLambda* self);
 
 /**
  * return new instance of bnLambda.

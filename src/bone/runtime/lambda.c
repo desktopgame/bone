@@ -4,7 +4,6 @@ bnLambda* bnNewLambda(bnLambdaType type) {
         bnLambda* ret = BN_MALLOC(sizeof(bnLambda));
         bnInitObject(&ret->base, BN_OBJECT_LAMBDA);
         ret->type = type;
-        ret->instanceBase = false;
         ret->parameters = NULL;
         ret->returns = NULL;
         ret->outer =
@@ -33,12 +32,25 @@ bnLambda* bnNewLambdaFromCFunc(bnNativeFunc func, struct bnStringPool* pool,
                         ret->returns = g_list_append(ret->returns, view);
                 }
         }
-        if (g_list_length(ret->parameters) > 0 &&
-            ret->parameters->data == bnIntern(pool, "self")) {
-                ret->instanceBase = true;
-        }
+
         va_end(ap);
         return ret;
+}
+
+bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnLambda* self) {
+        if (g_list_length(self->parameters) > 0 &&
+            self->parameters->data == bnIntern(pool, "self")) {
+                return true;
+        }
+        return false;
+}
+
+bool bnIsVariadicReturn(struct bnStringPool* pool, bnLambda* self) {
+        if (g_list_length(self->returns) > 0 &&
+            self->returns->data == bnIntern(pool, "...")) {
+                return true;
+        }
+        return false;
 }
 
 void bnDeleteLambda(bnLambda* self) {}

@@ -52,9 +52,15 @@ void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
 void bnGenerateILExprLambda(bnInterpreter* bone, bnILExprLambda* self,
                             bnEnviroment* env) {
         g_ptr_array_add(env->codeArray, BN_OP_GEN_LAMBDA_BEGIN);
-        g_ptr_array_add(env->codeArray, is_instance_base(bone->pool, self));
+        g_ptr_array_add(env->codeArray, g_list_length(self->parameters));
+        GList* iter = self->parameters;
+        while (iter != NULL) {
+                bnStringView name = iter->data;
+                g_ptr_array_add(env->codeArray, name);
+                iter = iter->next;
+        }
         g_ptr_array_add(env->codeArray, g_list_length(self->returns));
-        GList* iter = self->returns;
+        iter = self->returns;
         while (iter != NULL) {
                 bnStringView name = iter->data;
                 g_ptr_array_add(env->codeArray, name);

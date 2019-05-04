@@ -37,7 +37,8 @@ void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
                 bnPushStack(sub->vStack, bnPopStack(frame->vStack));
         }
         bnLambda* lambda = self;
-        if (lambda->instanceBase && bnGetStackSize(frame->hierarcySelf) > 0) {
+        if (bnIsInstanceBaseLambda(bone->pool, lambda) &&
+            bnGetStackSize(frame->hierarcySelf) > 0) {
                 bnPushStack(sub->vStack, bnPeekStack(frame->hierarcySelf));
         }
         if (lambda->type == BN_LAMBDA_NATIVE) {

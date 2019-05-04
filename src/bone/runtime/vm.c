@@ -64,9 +64,14 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnLambda* lmb = bnNewLambda(BN_LAMBDA_SCRIPT);
                                 lmb->u.vEnv = bnNewEnviroment();
                                 // is instance base?
-                                bool isInstanceBase =
+                                int parameterLen =
                                     g_ptr_array_index(env->codeArray, ++PC);
-                                lmb->instanceBase = isInstanceBase;
+                                for (int i = 0; i < parameterLen; i++) {
+                                        lmb->parameters = g_list_append(
+                                            lmb->parameters,
+                                            g_ptr_array_index(env->codeArray,
+                                                              ++PC));
+                                }
                                 // length of named return
                                 int namedReturnLen =
                                     g_ptr_array_index(env->codeArray, ++PC);
