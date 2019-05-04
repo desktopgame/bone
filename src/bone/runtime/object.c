@@ -5,6 +5,7 @@
 #include "char.h"
 #include "double.h"
 #include "frame.h"
+#include "heap.h"
 #include "integer.h"
 #include "interpreter.h"
 #include "keyword.h"
@@ -12,16 +13,17 @@
 #include "object.h"
 #include "vm.h"
 
-void bnInitObject(bnObject* self, bnObjectType type) {
+void bnInitObject(struct bnHeap* heap, bnObject* self, bnObjectType type) {
         self->table =
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         self->mark = false;
         self->type = type;
+        bnAddToHeap(heap, self);
 }
 
-bnObject* bnNewObject() {
+bnObject* bnNewObject(struct bnHeap* heap) {
         bnObject* ret = BN_MALLOC(sizeof(bnObject));
-        bnInitObject(ret, BN_OBJECT_PROTO);
+        bnInitObject(heap, ret, BN_OBJECT_PROTO);
         return ret;
 }
 

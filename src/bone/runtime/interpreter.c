@@ -6,6 +6,7 @@
 #include "bool.h"
 #include "enviroment.h"
 #include "frame.h"
+#include "heap.h"
 #include "integer.h"
 #include "lambda.h"
 #include "object.h"
@@ -16,6 +17,7 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef) {
         bnInterpreter* ret = BN_MALLOC(sizeof(bnInterpreter));
         ret->filenameRef = filenameRef;
         ret->pool = bnNewStringPool();
+        ret->heap = bnNewHeap();
         ret->frame = NULL;
         ret->__return = NULL;
         ret->__exception = NULL;
@@ -46,29 +48,30 @@ int bnEval(bnInterpreter* self) {
 #if DEBUG
         g_hash_table_insert(
             self->frame->variableTable, bnIntern(self->pool, "assert"),
-            bnNewLambdaFromCFunc(bnStdDebugAssert, self->pool, BN_C_ADD_PARAM,
-                                 "cond", BN_C_ADD_EXIT));
-        g_hash_table_insert(
-            self->frame->variableTable, bnIntern(self->pool, "die"),
-            bnNewLambdaFromCFunc(bnStdDebugDie, self->pool, BN_C_ADD_EXIT));
+            bnNewLambdaFromCFunc(self, bnStdDebugAssert, self->pool,
+                                 BN_C_ADD_PARAM, "cond", BN_C_ADD_EXIT));
+        g_hash_table_insert(self->frame->variableTable,
+                            bnIntern(self->pool, "die"),
+                            bnNewLambdaFromCFunc(self, bnStdDebugDie,
+                                                 self->pool, BN_C_ADD_EXIT));
 
         g_hash_table_insert(
             self->frame->variableTable, bnIntern(self->pool, "print"),
-            bnNewLambdaFromCFunc(bnStdDebugPrint, self->pool, BN_C_ADD_PARAM,
-                                 "str", BN_C_ADD_EXIT));
+            bnNewLambdaFromCFunc(self, bnStdDebugPrint, self->pool,
+                                 BN_C_ADD_PARAM, "str", BN_C_ADD_EXIT));
         g_hash_table_insert(
             self->frame->variableTable, bnIntern(self->pool, "println"),
-            bnNewLambdaFromCFunc(bnStdDebugPrintln, self->pool, BN_C_ADD_PARAM,
-                                 "str", BN_C_ADD_EXIT));
+            bnNewLambdaFromCFunc(self, bnStdDebugPrintln, self->pool,
+                                 BN_C_ADD_PARAM, "str", BN_C_ADD_EXIT));
 #endif
         g_hash_table_insert(
             self->frame->variableTable, bnIntern(self->pool, "object"),
-            bnNewLambdaFromCFunc(bnStdSystemObject, self->pool, BN_C_ADD_RETURN,
-                                 "ret", BN_C_ADD_EXIT));
+            bnNewLambdaFromCFunc(self, bnStdSystemObject, self->pool,
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
         g_hash_table_insert(
             self->frame->variableTable, bnIntern(self->pool, "load"),
-            bnNewLambdaFromCFunc(bnStdSystemLoad, self->pool, BN_C_ADD_PARAM,
-                                 "path", BN_C_ADD_RETURN, "...",
+            bnNewLambdaFromCFunc(self, bnStdSystemLoad, self->pool,
+                                 BN_C_ADD_PARAM, "path", BN_C_ADD_RETURN, "...",
                                  BN_C_ADD_EXIT));
         bnGenerateILTopLevel(self, iltop, env);
         bnDeleteAST(ret);
@@ -102,5 +105,6 @@ bnObject* bnGetFalse(struct bnStringPool* pool, bnFrame* frame) {
 
 void bnDeleteInterpreter(bnInterpreter* self) {
         bnDeleteStringPool(self->pool);
+        bnDeleteHeap(self->heap);
         BN_FREE(self);
 }

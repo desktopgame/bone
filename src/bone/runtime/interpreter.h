@@ -8,11 +8,13 @@
 
 struct bnObject;
 struct bnFrame;
+struct bnHeap;
 
 typedef struct bnInterpreter {
         const char* filenameRef;
         struct bnStringPool* pool;
         struct bnFrame* frame;
+        struct bnHeap* heap;
         struct bnObject* __return;
         struct bnObject* __exception;
         jmp_buf __jmp;

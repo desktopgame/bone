@@ -12,10 +12,11 @@ typedef struct bnDouble {
 
 /**
  * return new instance of bnDouble.
+ * @param bone
  * @param name
  * @return
  */
-bnDouble* bnNewDouble(double value);
+bnDouble* bnNewDouble(struct bnInterpreter* bone, double value);
 
 /**
  * free a bnDouble.

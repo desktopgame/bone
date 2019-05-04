@@ -32,20 +32,22 @@ typedef struct bnLambda {
 
 /**
  * return new instance of bnLambda.
+ * @param bone
  * @param type
  * @return
  */
-bnLambda* bnNewLambda(bnLambdaType type);
+bnLambda* bnNewLambda(struct bnInterpreter* bone, bnLambdaType type);
 
 /**
  * return new instance of bnLambda, from C function.
+ * @param bone
  * @param func
  * @param pool
  * @param ... (parameter, named returns)
  * @return
  */
-bnLambda* bnNewLambdaFromCFunc(bnNativeFunc func, struct bnStringPool* pool,
-                               ...);
+bnLambda* bnNewLambdaFromCFunc(struct bnInterpreter* bone, bnNativeFunc func,
+                               struct bnStringPool* pool, ...);
 
 bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnLambda* self);
 

@@ -12,10 +12,11 @@ typedef struct bnChar {
 
 /**
  * return new instance of bnChar.
+ * @param bone
  * @param name
  * @return
  */
-bnChar* bnNewChar(char value);
+bnChar* bnNewChar(struct bnInterpreter* bone, char value);
 
 /**
  * free a bnChar.

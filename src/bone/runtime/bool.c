@@ -3,7 +3,7 @@
 
 bnBool* bnNewBool(bnInterpreter* bone, bool value) {
         bnBool* ret = BN_MALLOC(sizeof(bnBool));
-        bnInitObject(&ret->base, BN_OBJECT_BOOL);
+        bnInitObject(bone->heap, &ret->base, BN_OBJECT_BOOL);
         ret->value = value;
         return ret;
 }

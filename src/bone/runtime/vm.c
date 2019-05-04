@@ -61,7 +61,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_GEN_LAMBDA_BEGIN: {
-                                bnLambda* lmb = bnNewLambda(BN_LAMBDA_SCRIPT);
+                                bnLambda* lmb =
+                                    bnNewLambda(bone, BN_LAMBDA_SCRIPT);
                                 lmb->u.vEnv = bnNewEnviroment();
                                 // is instance base?
                                 int parameterLen =

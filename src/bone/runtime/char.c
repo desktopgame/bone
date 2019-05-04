@@ -1,8 +1,9 @@
 #include "char.h"
+#include "interpreter.h"
 
-bnChar* bnNewChar(char value) {
+bnChar* bnNewChar(bnInterpreter* bone, char value) {
         bnChar* ret = BN_MALLOC(sizeof(bnChar));
-        bnInitObject(&ret->base, BN_OBJECT_CHAR);
+        bnInitObject(bone->heap, &ret->base, BN_OBJECT_CHAR);
         ret->value = value;
         return ret;
 }

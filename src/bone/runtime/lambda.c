@@ -1,8 +1,9 @@
 #include "lambda.h"
+#include "interpreter.h"
 
-bnLambda* bnNewLambda(bnLambdaType type) {
+bnLambda* bnNewLambda(bnInterpreter* bone, bnLambdaType type) {
         bnLambda* ret = BN_MALLOC(sizeof(bnLambda));
-        bnInitObject(&ret->base, BN_OBJECT_LAMBDA);
+        bnInitObject(bone->heap, &ret->base, BN_OBJECT_LAMBDA);
         ret->type = type;
         ret->parameters = NULL;
         ret->returns = NULL;
@@ -11,11 +12,11 @@ bnLambda* bnNewLambda(bnLambdaType type) {
         return ret;
 }
 
-bnLambda* bnNewLambdaFromCFunc(bnNativeFunc func, struct bnStringPool* pool,
-                               ...) {
+bnLambda* bnNewLambdaFromCFunc(struct bnInterpreter* bone, bnNativeFunc func,
+                               struct bnStringPool* pool, ...) {
         va_list ap;
         va_start(ap, func);
-        bnLambda* ret = bnNewLambda(BN_LAMBDA_NATIVE);
+        bnLambda* ret = bnNewLambda(bone, BN_LAMBDA_NATIVE);
         ret->u.vFunc = func;
         while (1) {
                 int val = va_arg(ap, int);

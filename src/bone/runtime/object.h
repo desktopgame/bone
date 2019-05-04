@@ -4,6 +4,7 @@
 
 struct bnInterpreter;
 struct bnFrame;
+struct bnHeap;
 
 typedef enum bnObjectType {
         BN_OBJECT_PROTO,
@@ -22,14 +23,14 @@ typedef struct bnObject {
         bnObjectType type;
 } bnObject;
 
-void bnInitObject(bnObject* self, bnObjectType type);
+void bnInitObject(struct bnHeap* heap, bnObject* self, bnObjectType type);
 
 /**
  * return new instance of bnObject.
- * @param name
+ * @param heap
  * @return
  */
-bnObject* bnNewObject();
+bnObject* bnNewObject(struct bnHeap* heap);
 
 /**
  * @param self
