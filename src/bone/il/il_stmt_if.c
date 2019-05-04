@@ -23,7 +23,18 @@ void bnDumpILStmtIf(FILE* fp, struct bnStringPool* pool, bnILStmtIf* self,
 }
 
 void bnGenerateILStmtIf(struct bnInterpreter* bone, bnILStmtIf* self,
-                        bnEnviroment* env) {}
+                        bnEnviroment* env) {
+        // generate condition
+        bnGenerateILExpression(bone, self->cond, env);
+        g_ptr_array_add(env->codeArray, BN_OP_GOTO_ELSE);
+        bnLabel* ifFalse = bnGenerateLabel(env, -1);
+        GList* iter = self->statements;
+        while (iter != NULL) {
+                bnGenerateILStatement(bone, iter->data, env);
+                iter = iter->next;
+        }
+        ifFalse->pos = bnGenerateNOP(env);
+}
 
 void bnDeleteILStmtIf(bnILStmtIf* self) {
         bnDeleteILExpression(self->cond);
@@ -51,7 +62,27 @@ void bnDumpILStmtIfElse(FILE* fp, struct bnStringPool* pool,
 }
 
 void bnGenerateILStmtIfElse(struct bnInterpreter* bone, bnILStmtIfElse* self,
-                            bnEnviroment* env) {}
+                            bnEnviroment* env) {
+        // if(cond) { ... }
+        bnGenerateILExpression(bone, self->trueCase->cond, env);
+        g_ptr_array_add(env->codeArray, BN_OP_GOTO_ELSE);
+        bnLabel* ifFalse = bnGenerateLabel(env, -1);
+        GList* iter = self->trueCase->statements;
+        while (iter != NULL) {
+                bnGenerateILStatement(bone, iter->data, env);
+                iter = iter->next;
+        }
+        g_ptr_array_add(env->codeArray, BN_OP_GOTO);
+        bnLabel* ifTrue = bnGenerateLabel(env, -1);
+        // if(cond) { ... } else { ... }
+        ifFalse->pos = bnGenerateNOP(env);
+        iter = self->statements;
+        while (iter != NULL) {
+                bnGenerateILStatement(bone, iter->data, env);
+                iter = iter->next;
+        }
+        ifTrue->pos = bnGenerateNOP(env);
+}
 
 void bnDeleteILStmtIfElse(bnILStmtIfElse* self) {
         bnDeleteILStmtIf(self->trueCase);

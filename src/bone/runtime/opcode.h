@@ -37,6 +37,7 @@ typedef enum bnOpcode {
 
         BN_OP_GOTO,
         BN_OP_GOTO_IF,
+        BN_OP_GOTO_ELSE,
 
         BN_OP_FUNCCALL,
 } bnOpcode;

@@ -3,6 +3,7 @@
 #include "../parse/ast.h"
 #include "../parse/ast2il.h"
 #include "../parse/parser.h"
+#include "bool.h"
 #include "enviroment.h"
 #include "frame.h"
 #include "integer.h"
@@ -34,6 +35,11 @@ int bnEval(bnInterpreter* self) {
         // generate instructions
         bnEnviroment* env = bnNewEnviroment();
         bnFrame* frame = bnNewFrame();
+        // declare true, false
+        g_hash_table_insert(frame->variableTable, bnIntern(self->pool, "true"),
+                            bnNewBool(self, true));
+        g_hash_table_insert(frame->variableTable, bnIntern(self->pool, "false"),
+                            bnNewBool(self, true));
         g_hash_table_insert(
             frame->variableTable, bnIntern(self->pool, "print"),
             bnNewLambdaFromCFunc(bnStdSystemPrint, self->pool, NULL));

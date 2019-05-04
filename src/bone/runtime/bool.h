@@ -12,10 +12,11 @@ typedef struct bnBool {
 
 /**
  * return new instance of bnBool.
+ * @param bone
  * @param name
  * @return
  */
-bnBool* bnNewBool(bool value);
+bnBool* bnNewBool(struct bnInterpreter* bone, bool value);
 
 /**
  * return new instance of bnBool.

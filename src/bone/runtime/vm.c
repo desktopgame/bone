@@ -16,6 +16,10 @@ void bnDebugStack(FILE* fp, bnStack* stack, const char* name) {
 }
 
 int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
+        bnObject* BN_TRUE = g_hash_table_lookup(frame->variableTable,
+                                                bnIntern(bone->pool, "true"));
+        bnObject* BN_FALSE = g_hash_table_lookup(frame->variableTable,
+                                                 bnIntern(bone->pool, "false"));
         for (int PC = 0; PC < env->codeArray->len; PC++) {
                 bnOpcode code = g_ptr_array_index(env->codeArray, PC);
 #if VMDEBUG
@@ -90,7 +94,9 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                         if (data == BN_OP_STORE ||
                                             data == BN_OP_LOAD ||
                                             data == BN_OP_GEN_INT ||
-                                            data == BN_OP_GEN_STRING) {
+                                            data == BN_OP_GEN_STRING ||
+                                            data == BN_OP_GOTO ||
+                                            data == BN_OP_GOTO_IF) {
                                                 g_ptr_array_add(
                                                     lmb->u.vEnv->codeArray,
                                                     data);
@@ -217,6 +223,30 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnObject* obj = data;
                                 assert(data != NULL);
                                 bnPushStack(frame->vStack, data);
+                                break;
+                        }
+                        case BN_OP_GOTO: {
+                                bnLabel* jmp =
+                                    g_ptr_array_index(env->codeArray, ++PC);
+                                PC = jmp->pos;
+                                break;
+                        }
+                        case BN_OP_GOTO_IF: {
+                                bnLabel* jmp =
+                                    g_ptr_array_index(env->codeArray, ++PC);
+                                bnObject* cond = bnPopStack(frame->vStack);
+                                if (cond == BN_TRUE) {
+                                        PC = jmp->pos;
+                                }
+                                break;
+                        }
+                        case BN_OP_GOTO_ELSE: {
+                                bnLabel* jmp =
+                                    g_ptr_array_index(env->codeArray, ++PC);
+                                bnObject* cond = bnPopStack(frame->vStack);
+                                if (cond == BN_FALSE) {
+                                        PC = jmp->pos;
+                                }
                                 break;
                         }
                         case BN_OP_FUNCCALL: {

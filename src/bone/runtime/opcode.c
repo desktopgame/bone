@@ -1,4 +1,5 @@
 #include "opcode.h"
+#include "label.h"
 
 int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
                   int pos) {
@@ -74,6 +75,21 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
                 case BN_OP_GET: {
                         bnStringView name = g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "get %s", bnView2Str(pool, name));
+                        break;
+                }
+                case BN_OP_GOTO: {
+                        bnLabel* jmp = g_ptr_array_index(ary, ++pos);
+                        fprintf(fp, "goto %d", jmp->pos);
+                        break;
+                }
+                case BN_OP_GOTO_IF: {
+                        bnLabel* jmp = g_ptr_array_index(ary, ++pos);
+                        fprintf(fp, "goto if %d", jmp->pos);
+                        break;
+                }
+                case BN_OP_GOTO_ELSE: {
+                        bnLabel* jmp = g_ptr_array_index(ary, ++pos);
+                        fprintf(fp, "goto else %d", jmp->pos);
                         break;
                 }
                 case BN_OP_FUNCCALL: {
