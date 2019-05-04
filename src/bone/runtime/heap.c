@@ -5,6 +5,8 @@
 #include "lambda.h"
 #include "object.h"
 
+static GRecMutex gHeapMtx;
+
 typedef struct bnHeap {
         GList* objects;
         int limit;
@@ -27,19 +29,25 @@ bnHeap* bnNewHeap() {
 }
 
 void bnAddToHeap(bnHeap* self, bnObject* obj) {
+        g_rec_mutex_lock(&gHeapMtx);
         self->objects = g_list_append(self->objects, obj);
         self->all++;
+        g_rec_mutex_unlock(&gHeapMtx);
 }
 
 void bnGC(bnHeap* self, bnFrame* frame) {
+        g_rec_mutex_lock(&gHeapMtx);
         gc_clear(self, frame);
         gc_mark(self, frame);
         gc_sweep(self, frame);
+        g_rec_mutex_unlock(&gHeapMtx);
 }
 
 void bnDeleteHeap(bnHeap* self) {
+        g_rec_mutex_lock(&gHeapMtx);
         g_list_free(self->objects);
         BN_FREE(self);
+        g_rec_mutex_unlock(&gHeapMtx);
 }
 
 static void gc_clear(bnHeap* self, bnFrame* frame) {
