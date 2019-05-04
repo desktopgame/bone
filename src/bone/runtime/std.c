@@ -46,6 +46,54 @@ void bnStdSystemPrintln(bnInterpreter* bone, bnFrame* frame) {
         printf("\n");
 }
 
+// Bool
+
+void bnStdBoolFuncCall(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolPositive(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolNegative(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolChilda(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolPlus(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolMinus(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolMultiply(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolDivide(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolModulo(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame);
+
+// void bnStdBoolLogicAnd(struct bnInterpreter* bone, struct bnFrame* frame);
+
+// void bnStdBoolLogicOr(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdBoolExcOr(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolLShift(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolRShift(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolGT(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolGE(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolLT(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolLE(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolEqual(bnInterpreter* bone, bnFrame* frame);
+
+void bnStdBoolNotEqual(bnInterpreter* bone, bnFrame* frame);
+
 // Integer
 
 void bnStdIntegerFuncCall(bnInterpreter* bone, bnFrame* frame) {
@@ -81,17 +129,83 @@ void bnStdIntegerPlus(bnInterpreter* bone, bnFrame* frame) {
                              bnNewInteger(bone, ai + bi));
 }
 
-void bnStdIntegerMinus(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdIntegerMinus(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        int ai = ((bnInteger*)a)->value;
+        int bi = ((bnInteger*)b)->value;
+        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnNewInteger(bone, ai - bi));
+}
 
-void bnStdIntegerMultiply(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdIntegerMultiply(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        int ai = ((bnInteger*)a)->value;
+        int bi = ((bnInteger*)b)->value;
+        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnNewInteger(bone, ai * bi));
+}
 
-void bnStdIntegerDivide(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdIntegerDivide(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        int ai = ((bnInteger*)a)->value;
+        int bi = ((bnInteger*)b)->value;
+        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnNewInteger(bone, ai / bi));
+}
 
-void bnStdIntegerModulo(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdIntegerModulo(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        int ai = ((bnInteger*)a)->value;
+        int bi = ((bnInteger*)b)->value;
+        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnNewInteger(bone, ai % bi));
+}
 
-void bnStdIntegerBitAnd(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdIntegerBitAnd(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        int ai = ((bnInteger*)a)->value;
+        int bi = ((bnInteger*)b)->value;
+        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnNewInteger(bone, ai & bi));
+}
 
-void bnStdIntegerBitOr(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdIntegerBitOr(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        int ai = ((bnInteger*)a)->value;
+        int bi = ((bnInteger*)b)->value;
+        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnNewInteger(bone, ai | bi));
+}
 
 // void bnStdIntegerLogicAnd(bnInterpreter* bone, bnFrame* frame){}
 
@@ -103,9 +217,31 @@ void bnStdIntegerLShift(bnInterpreter* bone, bnFrame* frame) {}
 
 void bnStdIntegerRShift(bnInterpreter* bone, bnFrame* frame) {}
 
-void bnStdIntegerGT(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdIntegerGT(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        int ai = ((bnInteger*)a)->value;
+        int bi = ((bnInteger*)b)->value;
+        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnGetBool(bone->pool, frame, ai > bi));
+}
 
-void bnStdIntegerGE(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdIntegerGE(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        int ai = ((bnInteger*)a)->value;
+        int bi = ((bnInteger*)b)->value;
+        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnGetBool(bone->pool, frame, ai >= bi));
+}
 
 void bnStdIntegerLT(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
@@ -120,8 +256,52 @@ void bnStdIntegerLT(bnInterpreter* bone, bnFrame* frame) {
                              bnGetBool(bone->pool, frame, ai < bi));
 }
 
-void bnStdIntegerLE(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdIntegerLE(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        int ai = ((bnInteger*)a)->value;
+        int bi = ((bnInteger*)b)->value;
+        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnGetBool(bone->pool, frame, ai <= bi));
+}
 
-void bnStdIntegerEqual(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdIntegerEqual(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        int ai = ((bnInteger*)a)->value;
+        int bi = ((bnInteger*)b)->value;
+        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnGetBool(bone->pool, frame, ai == bi));
+}
 
-void bnStdIntegerNotEqual(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdIntegerNotEqual(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        int ai = ((bnInteger*)a)->value;
+        int bi = ((bnInteger*)b)->value;
+        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnGetBool(bone->pool, frame, ai != bi));
+}
+
+void bnStdIntegerToString(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        char buf[100];
+        sprintf(buf, "%d", ((bnInteger*)a)->value);
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnNewString(bone, bnIntern(bone->pool, buf)));
+}

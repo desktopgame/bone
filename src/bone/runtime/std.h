@@ -113,4 +113,5 @@ void bnStdIntegerEqual(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdIntegerNotEqual(struct bnInterpreter* bone, struct bnFrame* frame);
 
+void bnStdIntegerToString(struct bnInterpreter* bone, struct bnFrame* frame);
 #endif
