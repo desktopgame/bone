@@ -21,7 +21,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
         bnObject* BN_FALSE = g_hash_table_lookup(frame->variableTable,
                                                  bnIntern(bone->pool, "false"));
         for (int PC = 0; PC < env->codeArray->len; PC++) {
-                bnOpcode code = g_ptr_array_index(env->codeArray, PC);
+                bnOpcode code = (bnOpcode)g_ptr_array_index(env->codeArray, PC);
 #if VMDEBUG
                 bnPrintOpcode(stdout, bone->pool, env->codeArray, PC);
                 printf("\n");
