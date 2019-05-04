@@ -16,6 +16,12 @@
 #include "runtime/vm.h"
 #include "util/string_pool.h"
 
+#if defined(_MSC_VER)
+	#include <BaseTsd.h>
+	//see: https://stackoverflow.com/questions/22265610/why-ssize-t-in-visual-studio-2010-is-defined-as-unsigned
+	typedef SSIZE_T ssize_t;
+#endif
+
 #define EXPECT_ERR (0)
 #define EXPECT_SUC (1)
 
