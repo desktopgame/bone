@@ -186,6 +186,17 @@ b := def() (val, val2, val3) {
 できません。
 (can't)
 
+# 組み込み変数(built-in variable)
+VALUE:
+* true
+* false
+* null
+
+CLOSURE:
+* load
+* object
+* array
+
 # 例外処理(exception handling)
 現在boneには例外処理のための特別な構文が存在しません。  
 (not exists exception handling syntax)  
