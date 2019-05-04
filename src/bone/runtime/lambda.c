@@ -5,6 +5,7 @@ bnLambda* bnNewLambda(bnLambdaType type) {
         bnInitObject(&ret->base, BN_OBJECT_LAMBDA);
         ret->type = type;
         ret->instanceBase = false;
+        ret->parameters = NULL;
         ret->returns = NULL;
         ret->outer =
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
@@ -18,12 +19,23 @@ bnLambda* bnNewLambdaFromCFunc(bnNativeFunc func, struct bnStringPool* pool,
         bnLambda* ret = bnNewLambda(BN_LAMBDA_NATIVE);
         ret->u.vFunc = func;
         while (1) {
-                const char* name = va_arg(ap, const char*);
-                if (name == NULL) {
+                int val = va_arg(ap, int);
+                if (val == BN_C_ADD_EXIT) {
                         break;
                 }
-                bnStringView view = bnIntern(pool, name);
-                ret->returns = g_list_append(ret->returns, view);
+                if (val == BN_C_ADD_PARAM) {
+                        const char* name = va_arg(ap, const char*);
+                        bnStringView view = bnIntern(pool, name);
+                        ret->parameters = g_list_append(ret->parameters, view);
+                } else if (val == BN_C_ADD_RETURN) {
+                        const char* name = va_arg(ap, const char*);
+                        bnStringView view = bnIntern(pool, name);
+                        ret->returns = g_list_append(ret->returns, view);
+                }
+        }
+        if (g_list_length(ret->parameters) > 0 &&
+            ret->parameters->data == bnIntern(pool, "self")) {
+                ret->instanceBase = true;
         }
         va_end(ap);
         return ret;

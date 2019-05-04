@@ -9,36 +9,64 @@ bnInteger* bnNewInteger(bnInterpreter* bone, int value) {
         ret->value = value;
         bnDefine(
             &ret->base, bnIntern(bone->pool, BN_KWD_PLUS),
-            bnNewLambdaFromCFunc(bnStdIntegerPlus, bone->pool, "ret", NULL));
+            bnNewLambdaFromCFunc(bnStdIntegerPlus, bone->pool, BN_C_ADD_PARAM,
+                                 "self", BN_C_ADD_PARAM, "other",
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
         bnDefine(
             &ret->base, bnIntern(bone->pool, BN_KWD_MINUS),
-            bnNewLambdaFromCFunc(bnStdIntegerMinus, bone->pool, "ret", NULL));
+            bnNewLambdaFromCFunc(bnStdIntegerMinus, bone->pool, BN_C_ADD_PARAM,
+                                 "self", BN_C_ADD_PARAM, "other",
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
         bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_MULTIPLY),
-                 bnNewLambdaFromCFunc(bnStdIntegerMultiply, bone->pool, "ret",
-                                      NULL));
+                 bnNewLambdaFromCFunc(bnStdIntegerMultiply, bone->pool,
+                                      BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
+                                      "other", BN_C_ADD_RETURN, "ret",
+                                      BN_C_ADD_EXIT));
         bnDefine(
             &ret->base, bnIntern(bone->pool, BN_KWD_DIVIDE),
-            bnNewLambdaFromCFunc(bnStdIntegerDivide, bone->pool, "ret", NULL));
+            bnNewLambdaFromCFunc(bnStdIntegerDivide, bone->pool, BN_C_ADD_PARAM,
+                                 "self", BN_C_ADD_PARAM, "other",
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
         bnDefine(
             &ret->base, bnIntern(bone->pool, BN_KWD_MODULO),
-            bnNewLambdaFromCFunc(bnStdIntegerModulo, bone->pool, "ret", NULL));
-        bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_LT),
-                 bnNewLambdaFromCFunc(bnStdIntegerLT, bone->pool, "ret", NULL));
-        bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_LE),
-                 bnNewLambdaFromCFunc(bnStdIntegerLE, bone->pool, "ret", NULL));
-        bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_GT),
-                 bnNewLambdaFromCFunc(bnStdIntegerGT, bone->pool, "ret", NULL));
-        bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_GE),
-                 bnNewLambdaFromCFunc(bnStdIntegerGE, bone->pool, "ret", NULL));
+            bnNewLambdaFromCFunc(bnStdIntegerModulo, bone->pool, BN_C_ADD_PARAM,
+                                 "self", BN_C_ADD_PARAM, "other",
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
+        bnDefine(
+            &ret->base, bnIntern(bone->pool, BN_KWD_LT),
+            bnNewLambdaFromCFunc(bnStdIntegerLT, bone->pool, BN_C_ADD_PARAM,
+                                 "self", BN_C_ADD_PARAM, "other",
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
+        bnDefine(
+            &ret->base, bnIntern(bone->pool, BN_KWD_LE),
+            bnNewLambdaFromCFunc(bnStdIntegerLE, bone->pool, BN_C_ADD_PARAM,
+                                 "self", BN_C_ADD_PARAM, "other",
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
+        bnDefine(
+            &ret->base, bnIntern(bone->pool, BN_KWD_GT),
+            bnNewLambdaFromCFunc(bnStdIntegerGT, bone->pool, BN_C_ADD_PARAM,
+                                 "self", BN_C_ADD_PARAM, "other",
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
+        bnDefine(
+            &ret->base, bnIntern(bone->pool, BN_KWD_GE),
+            bnNewLambdaFromCFunc(bnStdIntegerGE, bone->pool, BN_C_ADD_PARAM,
+                                 "self", BN_C_ADD_PARAM, "other",
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
         bnDefine(
             &ret->base, bnIntern(bone->pool, BN_KWD_EQUAL),
-            bnNewLambdaFromCFunc(bnStdIntegerEqual, bone->pool, "ret", NULL));
+            bnNewLambdaFromCFunc(bnStdIntegerEqual, bone->pool, BN_C_ADD_PARAM,
+                                 "self", BN_C_ADD_PARAM, "other",
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
         bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_NOTEQUAL),
-                 bnNewLambdaFromCFunc(bnStdIntegerNotEqual, bone->pool, "ret",
-                                      NULL));
+                 bnNewLambdaFromCFunc(bnStdIntegerNotEqual, bone->pool,
+                                      BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
+                                      "other", BN_C_ADD_RETURN, "ret",
+                                      BN_C_ADD_EXIT));
         bnDefine(&ret->base, bnIntern(bone->pool, "toString"),
-                 bnNewLambdaFromCFunc(bnStdIntegerToString, bone->pool, "ret",
-                                      NULL));
+                 bnNewLambdaFromCFunc(bnStdIntegerToString, bone->pool,
+                                      BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
+                                      "other", BN_C_ADD_RETURN, "ret",
+                                      BN_C_ADD_EXIT));
         return ret;
 }
 

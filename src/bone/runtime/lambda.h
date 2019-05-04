@@ -9,6 +9,10 @@ struct bnFrame;
 struct bnInterpreter;
 typedef void (*bnNativeFunc)(struct bnInterpreter* bone, struct bnFrame* frame);
 
+#define BN_C_ADD_PARAM (0)
+#define BN_C_ADD_RETURN (1)
+#define BN_C_ADD_EXIT (2)
+
 typedef enum bnLambdaType {
         BN_LAMBDA_SCRIPT,
         BN_LAMBDA_NATIVE,
@@ -18,6 +22,7 @@ typedef struct bnLambda {
         bnObject base;
         bnLambdaType type;
         GHashTable* outer;
+        GList* parameters;
         GList* returns;
         bool instanceBase;
         union {
@@ -37,7 +42,7 @@ bnLambda* bnNewLambda(bnLambdaType type);
  * return new instance of bnLambda, from C function.
  * @param func
  * @param pool
- * @param ... (named returns)
+ * @param ... (parameter, named returns)
  * @return
  */
 bnLambda* bnNewLambdaFromCFunc(bnNativeFunc func, struct bnStringPool* pool,
