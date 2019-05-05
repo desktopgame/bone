@@ -30,10 +30,10 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
                 }
                 case BN_OP_GEN_LAMBDA_BEGIN: {
                         int parameterLen = g_ptr_array_index(ary, ++pos);
+                        pos += parameterLen;
                         int returnLen = g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "gen lambda-begin((%d) <-(%d))",
                                 parameterLen, returnLen);
-                        pos += parameterLen;
                         pos += returnLen;
                         break;
                 }
