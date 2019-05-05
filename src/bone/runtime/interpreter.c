@@ -37,7 +37,7 @@ int bnEval(bnInterpreter* self) {
         // generate instructions
         bnEnviroment* env = bnNewEnviroment();
         self->frame = bnNewFrame();
-        bnWriteDefaults(self);
+        bnWriteDefaults(self, self->frame, self->pool);
         bnGenerateILTopLevel(self, iltop, env);
         bnDeleteAST(ret);
         bnExecute(self, env, self->frame);
@@ -50,41 +50,44 @@ int bnEval(bnInterpreter* self) {
         return 0;
 }
 
-void bnWriteDefaults(bnInterpreter* self) {
+void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
+                     struct bnStringPool* pool) {
         // declare true, false
-        g_hash_table_replace(self->frame->variableTable,
-                             bnIntern(self->pool, "true"),
+        g_hash_table_replace(frame->variableTable, bnIntern(pool, "true"),
                              bnNewBool(self, true));
-        g_hash_table_replace(self->frame->variableTable,
-                             bnIntern(self->pool, "false"),
+        g_hash_table_replace(frame->variableTable, bnIntern(pool, "false"),
                              bnNewBool(self, false));
 #if DEBUG
         g_hash_table_replace(
-            self->frame->variableTable, bnIntern(self->pool, "assert"),
-            bnNewLambdaFromCFunc(self, bnStdDebugAssert, self->pool,
-                                 BN_C_ADD_PARAM, "cond", BN_C_ADD_EXIT));
-        g_hash_table_replace(self->frame->variableTable,
-                             bnIntern(self->pool, "die"),
-                             bnNewLambdaFromCFunc(self, bnStdDebugDie,
-                                                  self->pool, BN_C_ADD_EXIT));
+            frame->variableTable, bnIntern(pool, "assert"),
+            bnNewLambdaFromCFunc(self, bnStdDebugAssert, pool, BN_C_ADD_PARAM,
+                                 "cond", BN_C_ADD_EXIT));
+        g_hash_table_replace(
+            frame->variableTable, bnIntern(pool, "die"),
+            bnNewLambdaFromCFunc(self, bnStdDebugDie, pool, BN_C_ADD_EXIT));
 
         g_hash_table_replace(
-            self->frame->variableTable, bnIntern(self->pool, "print"),
-            bnNewLambdaFromCFunc(self, bnStdDebugPrint, self->pool,
-                                 BN_C_ADD_PARAM, "str", BN_C_ADD_EXIT));
+            frame->variableTable, bnIntern(pool, "print"),
+            bnNewLambdaFromCFunc(self, bnStdDebugPrint, pool, BN_C_ADD_PARAM,
+                                 "str", BN_C_ADD_EXIT));
         g_hash_table_replace(
-            self->frame->variableTable, bnIntern(self->pool, "println"),
-            bnNewLambdaFromCFunc(self, bnStdDebugPrintln, self->pool,
-                                 BN_C_ADD_PARAM, "str", BN_C_ADD_EXIT));
+            frame->variableTable, bnIntern(pool, "println"),
+            bnNewLambdaFromCFunc(self, bnStdDebugPrintln, pool, BN_C_ADD_PARAM,
+                                 "str", BN_C_ADD_EXIT));
 #endif
         g_hash_table_replace(
-            self->frame->variableTable, bnIntern(self->pool, "object"),
-            bnNewLambdaFromCFunc(self, bnStdSystemObject, self->pool,
-                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
+            frame->variableTable, bnIntern(pool, "object"),
+            bnNewLambdaFromCFunc(self, bnStdSystemObject, pool, BN_C_ADD_RETURN,
+                                 "ret", BN_C_ADD_EXIT));
         g_hash_table_replace(
-            self->frame->variableTable, bnIntern(self->pool, "include"),
-            bnNewLambdaFromCFunc(self, bnStdSystemInclude, self->pool,
-                                 BN_C_ADD_PARAM, "path", BN_C_ADD_RETURN, "...",
+            frame->variableTable, bnIntern(pool, "include"),
+            bnNewLambdaFromCFunc(self, bnStdSystemInclude, pool, BN_C_ADD_PARAM,
+                                 "path", BN_C_ADD_RETURN, "...",
+                                 BN_C_ADD_EXIT));
+        g_hash_table_replace(
+            frame->variableTable, bnIntern(pool, "load"),
+            bnNewLambdaFromCFunc(self, bnStdSystemLoad, pool, BN_C_ADD_PARAM,
+                                 "path", BN_C_ADD_RETURN, "...",
                                  BN_C_ADD_EXIT));
 }
 

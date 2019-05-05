@@ -1,0 +1,2 @@
+a := object() <- load("./testdata/lib/lib.in");
+a.P();

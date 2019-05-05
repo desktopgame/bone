@@ -25,8 +25,11 @@ int bnEval(bnInterpreter* self);
 
 /**
  * @param self
+ * @param frame
+ * @param pool
  */
-void bnWriteDefaults(bnInterpreter* self);
+void bnWriteDefaults(bnInterpreter* self, struct bnFrame* frame,
+                     struct bnStringPool* pool);
 
 /**
  * bnPanic is call longjmp().

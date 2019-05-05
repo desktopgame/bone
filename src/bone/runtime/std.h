@@ -18,6 +18,8 @@ void bnStdDebugPrintln(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdSystemInclude(struct bnInterpreter* bone, struct bnFrame* frame);
 
+void bnStdSystemLoad(struct bnInterpreter* bone, struct bnFrame* frame);
+
 void bnStdSystemObject(struct bnInterpreter* bone, struct bnFrame* frame);
 
 // Bool

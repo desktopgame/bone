@@ -74,6 +74,49 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
         bnDeleteEnviroment(env);
 }
 
+void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_STRING) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        bnStringView pathView = ((bnString*)a)->value;
+        const char* pathStr = bnView2Str(bone->pool, pathView);
+        // parse file
+        bnAST* ast = bnParseFile(bone->pool, pathStr);
+        if (ast == NULL) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        bnILToplevel* iltop = bnAST2IL(ast);
+        if (iltop == NULL) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        // gen code
+        bnFrame* sub = bnNewFrame();
+        bnEnviroment* env = bnNewEnviroment();
+        bnGenerateILTopLevel(bone, iltop, env);
+        bnWriteDefaults(bone, sub, bone->pool);
+        // get default hash
+        GList* keys = NULL;
+        GHashTableIter hashIter;
+        gpointer k, v;
+        g_hash_table_iter_init(&hashIter, sub->variableTable);
+        while (g_hash_table_iter_next(&hashIter, &k, &v)) {
+                keys = g_list_append(keys, v);
+        }
+        bnExecute(bone, env, sub);
+        // remove default
+        GList* listIter = keys;
+        while (listIter != NULL) {
+                g_hash_table_remove(sub->variableTable, listIter->data);
+                listIter = listIter->next;
+        }
+        g_list_free(keys);
+        bnInjectFrame(sub->variableTable, frame);
+        bnDeleteAST(ast);
+        bnDeleteILTopLevel(iltop);
+        bnDeleteEnviroment(env);
+}
+
 void bnStdSystemObject(bnInterpreter* bone, bnFrame* frame) {
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              bnNewObject(bone->heap));
