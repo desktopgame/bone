@@ -1,0 +1,3 @@
+{} <- include("./testdata/lib/overwrite.in");
+{} <- load("./testdata/lib/lib.in");
+P();
