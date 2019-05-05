@@ -324,7 +324,7 @@ lambda_expr
 	}
 	| DEF LP parameter_list RP LP DOTDOTDOT RP comp_stmt
 	{
-		$$ = bnNewLambdaAST(bnNewBlankAST(), bnNewDotDotDotAST(), $8);
+		$$ = bnNewLambdaAST($3, bnNewDotDotDotAST(), $8);
 	}
 	;
 lhs

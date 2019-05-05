@@ -1,0 +1,11 @@
+// include if this file, overwrite load() function
+// not it if load() function
+// example: Include3_R.in
+
+orig_load := load;
+
+load := def(path)(...) {
+    dumpTable();
+    {} <- orig_load(path);
+    println(path);
+};

@@ -2055,7 +2055,7 @@ yyreduce:
   case 68:
 #line 326 "bone.y" /* yacc.c:1663  */
     {
-		(yyval.ast_value) = bnNewLambdaAST(bnNewBlankAST(), bnNewDotDotDotAST(), (yyvsp[0].ast_value));
+		(yyval.ast_value) = bnNewLambdaAST((yyvsp[-5].ast_value), bnNewDotDotDotAST(), (yyvsp[0].ast_value));
 	}
 #line 2061 "bone.tab.c" /* yacc.c:1663  */
     break;
