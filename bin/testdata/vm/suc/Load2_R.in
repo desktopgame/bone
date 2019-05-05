@@ -1,2 +1,0 @@
-{} <- load("./testdata/lib/lib.in");
-P();

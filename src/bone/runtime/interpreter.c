@@ -68,8 +68,8 @@ int bnEval(bnInterpreter* self) {
             bnNewLambdaFromCFunc(self, bnStdSystemObject, self->pool,
                                  BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
         g_hash_table_replace(
-            self->frame->variableTable, bnIntern(self->pool, "load"),
-            bnNewLambdaFromCFunc(self, bnStdSystemLoad, self->pool,
+            self->frame->variableTable, bnIntern(self->pool, "include"),
+            bnNewLambdaFromCFunc(self, bnStdSystemInclude, self->pool,
                                  BN_C_ADD_PARAM, "path", BN_C_ADD_RETURN, "...",
                                  BN_C_ADD_EXIT));
         bnGenerateILTopLevel(self, iltop, env);

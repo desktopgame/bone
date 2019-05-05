@@ -46,7 +46,7 @@ void bnStdDebugPrintln(bnInterpreter* bone, bnFrame* frame) {
 
 // Built-in
 
-void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
+void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING) {
                 bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);

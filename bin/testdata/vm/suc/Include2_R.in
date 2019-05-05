@@ -1,0 +1,2 @@
+{} <- include("./testdata/lib/lib.in");
+P();

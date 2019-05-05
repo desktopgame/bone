@@ -1,0 +1,2 @@
+a := object() <- include("./testdata/lib/lib.in");
+a.P();
