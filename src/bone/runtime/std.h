@@ -12,6 +12,8 @@ void bnStdDebugDie(struct bnInterpreter* bone, struct bnFrame* frame);
 void bnStdDebugPrint(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdDebugPrintln(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdDebugBreak(struct bnInterpreter* bone, struct bnFrame* frame);
 #endif
 
 // Built-in

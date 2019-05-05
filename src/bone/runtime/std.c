@@ -1,4 +1,10 @@
 #include "std.h"
+
+#ifdef __APPLE__
+#include <signal.h>
+#define CAN_BREAK (1)
+#endif
+
 #include "../bone.h"
 #include "../parse/ast2il.h"
 #include "../parse/parser.h"
@@ -42,6 +48,14 @@ void bnStdDebugPrintln(bnInterpreter* bone, bnFrame* frame) {
         printf("\n");
 }
 
+void bnStdDebugBreak(bnInterpreter* bone, bnFrame* frame) {
+#if CAN_BREAK
+        raise(SIGINT);
+#else
+        // please set break point at here
+        abort();
+#endif
+}
 #endif
 
 // Built-in
