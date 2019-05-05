@@ -24,6 +24,11 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef);
 int bnEval(bnInterpreter* self);
 
 /**
+ * @param self
+ */
+void bnWriteDefaults(bnInterpreter* self);
+
+/**
  * bnPanic is call longjmp().
  * shoud be invoke only in can panicable function.
  * @param self

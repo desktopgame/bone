@@ -37,6 +37,20 @@ int bnEval(bnInterpreter* self) {
         // generate instructions
         bnEnviroment* env = bnNewEnviroment();
         self->frame = bnNewFrame();
+        bnWriteDefaults(self);
+        bnGenerateILTopLevel(self, iltop, env);
+        bnDeleteAST(ret);
+        bnExecute(self, env, self->frame);
+        bnDeleteILTopLevel(iltop);
+        bnDeleteEnviroment(env);
+        bnGC(self->heap, self->frame);
+        bnDeleteFrame(self->frame);
+        bnGC(self->heap, NULL);
+        self->frame = NULL;
+        return 0;
+}
+
+void bnWriteDefaults(bnInterpreter* self) {
         // declare true, false
         g_hash_table_replace(self->frame->variableTable,
                              bnIntern(self->pool, "true"),
@@ -72,16 +86,6 @@ int bnEval(bnInterpreter* self) {
             bnNewLambdaFromCFunc(self, bnStdSystemInclude, self->pool,
                                  BN_C_ADD_PARAM, "path", BN_C_ADD_RETURN, "...",
                                  BN_C_ADD_EXIT));
-        bnGenerateILTopLevel(self, iltop, env);
-        bnDeleteAST(ret);
-        bnExecute(self, env, self->frame);
-        bnDeleteILTopLevel(iltop);
-        bnDeleteEnviroment(env);
-        bnGC(self->heap, self->frame);
-        bnDeleteFrame(self->frame);
-        bnGC(self->heap, NULL);
-        self->frame = NULL;
-        return 0;
 }
 
 void bnPanic(bnInterpreter* self, bnObject* exception, int code) {
