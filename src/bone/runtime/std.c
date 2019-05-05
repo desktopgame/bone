@@ -56,6 +56,18 @@ void bnStdDebugBreak(bnInterpreter* bone, bnFrame* frame) {
         abort();
 #endif
 }
+
+void bnStdDebugDumpTable(bnInterpreter* bone, bnFrame* frame) {
+        GHashTableIter hashIter;
+        g_hash_table_iter_init(&hashIter, frame->variableTable);
+        gpointer k, v;
+        while (g_hash_table_iter_next(&hashIter, &k, &v)) {
+                const char* kStr = (const char*)bnView2Str(bone->pool, k);
+                fprintf(stdout, "%s:", kStr);
+                bnPrintObject(stdout, v);
+                fprintf(stdout, "\n");
+        }
+}
 #endif
 
 // Built-in
