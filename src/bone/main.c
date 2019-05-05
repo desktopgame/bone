@@ -1,10 +1,14 @@
-#include <CUnit/Basic.h>
-#include <CUnit/CUnit.h>
-#include <CUnit/Console.h>
+
+#if !defined(_WIN32)
+	#include <CUnit/Basic.h>
+	#include <CUnit/CUnit.h>
+	#include <CUnit/Console.h>
+#endif
 #include <stdio.h>
 #include "test.h"
 
 static void runTest() {
+#if !defined(_WIN32)
         CU_pSuite testSuite;
 
         CU_initialize_registry();
@@ -16,6 +20,12 @@ static void runTest() {
         CU_basic_set_mode(CU_BRM_VERBOSE);
         CU_basic_run_tests();
         CU_cleanup_registry();
+#else
+	bnParseTest();
+	bnStringPoolTest();
+	bnVMTest();
+	bnRunTest();
+#endif
 }
 
 int main(int argc, char* argv[]) {

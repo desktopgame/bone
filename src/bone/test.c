@@ -1,7 +1,12 @@
 #include "test.h"
-#include <CUnit/Basic.h>
-#include <CUnit/CUnit.h>
-#include <CUnit/Console.h>
+#if !defined(_WIN32)
+	#include <CUnit/Basic.h>
+	#include <CUnit/CUnit.h>
+	#include <CUnit/Console.h>
+#else
+	#define CU_ASSERT(cond) assert(cond)
+#endif
+#include <assert.h>
 #include <string.h>
 #include "bone.h"
 #include "il/il_toplevel.h"
