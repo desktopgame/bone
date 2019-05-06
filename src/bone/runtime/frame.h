@@ -10,6 +10,8 @@ typedef struct bnFrame {
         bnStack* vStack;
         bnStack* hierarcySelf;
         GHashTable* variableTable;
+        bnStringView panicName;
+        struct bnObject* panic;
         struct bnObject* register0;
         struct bnFrame* prev;
         struct bnFrame* next;

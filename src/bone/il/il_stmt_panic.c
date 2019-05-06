@@ -23,6 +23,7 @@ void bnDumpILStmtPanic(FILE* fp, struct bnStringPool* pool, bnILStmtPanic* self,
 void bnGenerateILStmtPanic(bnInterpreter* bone, bnILStmtPanic* self,
                            bnEnviroment* env) {
         bnGenerateILExpression(bone, self->expr, env);
+        g_ptr_array_add(env->codeArray, BN_OP_DUP);
         g_ptr_array_add(env->codeArray, BN_OP_STORE);
         g_ptr_array_add(env->codeArray, self->name);
         g_ptr_array_add(env->codeArray, BN_OP_PANIC);

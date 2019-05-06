@@ -12,6 +12,8 @@ bnFrame* bnNewFrame() {
         ret->variableTable =
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         ret->pc = 0;
+        ret->panicName = 0;
+        ret->panic = NULL;
         return ret;
 }
 

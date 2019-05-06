@@ -41,13 +41,15 @@ int bnEval(bnInterpreter* self) {
         bnGenerateILTopLevel(self, iltop, env);
         bnDeleteAST(ret);
         bnExecute(self, env, self->frame);
+        int status = self->frame->panic ? 1 : 0;
+        self->frame->panic = NULL;
         bnDeleteILTopLevel(iltop);
         bnDeleteEnviroment(env);
         bnGC(self->heap, self->frame);
         bnDeleteFrame(self->frame);
         bnGC(self->heap, NULL);
         self->frame = NULL;
-        return 0;
+        return status;
 }
 
 void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,

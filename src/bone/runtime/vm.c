@@ -27,6 +27,13 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                 bnPrintOpcode(stdout, bone->pool, env->codeArray, PC);
                 printf("[%d]\n", stackCount);
 #endif
+                if (frame->panic) {
+                        if (frame->prev) {
+                                frame->prev->panic = frame->panic;
+                                frame->prev->panicName = frame->panicName;
+                        }
+                        break;
+                }
                 switch (code) {
                         case BN_OP_NOP:
                                 break;
@@ -281,6 +288,9 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         case BN_OP_PANIC: {
                                 bnStringView name =
                                     g_ptr_array_index(env->codeArray, ++PC);
+                                bnObject* panic = bnPopStack(frame->vStack);
+                                frame->panicName = name;
+                                frame->panic = panic;
                                 break;
                         }
                         case BN_OP_FUNCCALL: {

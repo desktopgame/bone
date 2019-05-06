@@ -1,10 +1,10 @@
 #include "test.h"
 #if !defined(_WIN32)
-	#include <CUnit/Basic.h>
-	#include <CUnit/CUnit.h>
-	#include <CUnit/Console.h>
+#include <CUnit/Basic.h>
+#include <CUnit/CUnit.h>
+#include <CUnit/Console.h>
 #else
-	#define CU_ASSERT(cond) assert(cond)
+#define CU_ASSERT(cond) assert(cond)
 #endif
 #include <assert.h>
 #include <string.h>
@@ -22,9 +22,10 @@
 #include "util/string_pool.h"
 
 #if defined(_MSC_VER)
-	#include <BaseTsd.h>
-	//see: https://stackoverflow.com/questions/22265610/why-ssize-t-in-visual-studio-2010-is-defined-as-unsigned
-	typedef SSIZE_T ssize_t;
+#include <BaseTsd.h>
+// see:
+// https://stackoverflow.com/questions/22265610/why-ssize-t-in-visual-studio-2010-is-defined-as-unsigned
+typedef SSIZE_T ssize_t;
 #endif
 
 #define EXPECT_ERR (0)
@@ -193,6 +194,7 @@ static int bnRun(const char* dir, int flag) {
                         iter = iter->next;
                         continue;
                 }
+                bool panicTest = strstr(path, "_P");
                 printf("\n");
                 // clear run result file
                 gchar* sout = g_strconcat(path, ".std.out", NULL);
@@ -202,9 +204,9 @@ static int bnRun(const char* dir, int flag) {
                 }
                 printf("RUN %s\n", path);
 #if !defined(_WIN32)
-				FILE* soutfp = fopen(sout, "w");
-				FILE* _stdout = stdout;
-				stdout = soutfp;
+                FILE* soutfp = fopen(sout, "w");
+                FILE* _stdout = stdout;
+                stdout = soutfp;
 #endif
                 // parse and test
                 bnInterpreter* bone = bnNewInterpreter(path);
@@ -215,7 +217,7 @@ static int bnRun(const char* dir, int flag) {
                 writeFile(sout);
 #endif
                 if (flag == EXPECT_SUC) {
-                        CU_ASSERT(ret == 0);
+                        CU_ASSERT(ret == 0 || panicTest);
                 } else if (flag == EXPECT_ERR) {
                         CU_ASSERT(ret != 0);
                 }
