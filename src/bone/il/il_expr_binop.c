@@ -37,6 +37,19 @@ void bnGenerateILExprBinOp(bnInterpreter* bone, bnILExprBinOp* self,
                         bnGenerateILExpression(bone, ilmem->expr, env);
                         g_ptr_array_add(env->codeArray, BN_OP_PUT);
                         g_ptr_array_add(env->codeArray, ilmem->name);
+                } else if (L->type == BN_IL_EXPR_ARRAY_SUBSCRIPT) {
+                        bnILExprArraySubscript* arr = L->u.vArraySub;
+                        bnGenerateILExpression(bone, arr->arrayExpr, env);
+                        g_ptr_array_add(env->codeArray, BN_OP_DUP);
+                        g_ptr_array_add(env->codeArray, BN_OP_GET);
+                        g_ptr_array_add(env->codeArray,
+                                        bnIntern(bone->pool, BN_KWD_ARRAY_SET));
+                        bnGenerateILExpression(bone, arr->indexExpr, env);
+                        g_ptr_array_add(env->codeArray, BN_OP_SWAP);
+                        bnGenerateILExpression(bone, self->right, env);
+                        g_ptr_array_add(env->codeArray, BN_OP_SWAP);
+                        g_ptr_array_add(env->codeArray, BN_OP_FUNCCALL);
+                        g_ptr_array_add(env->codeArray, 3);
                 } else {
                         abort();
                 }
