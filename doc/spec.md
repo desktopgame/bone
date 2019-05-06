@@ -250,6 +250,25 @@ if(val.error) {
 }
 ````
 
+## パニックとリカバー(panic and recover)
+パニックとリカバーは試験的に導入されている機能です。  
+(panic and recover is experimental function)
+
+````
+panicはステートメントです。以下の書式をとります。
+(panic is statement. syntax is next)
+
+panic 名前 <- オブジェクト
+
+次の様に使います。
+指定の名前で変数を宣言して関数を抜けます。
+(how to use is next.)
+
+result := object() <- recover(def ()(){
+    panic exception <- newError();
+});
+````
+
 # 実装が保留されているもの(pending function)
 実装が難しいか、言語を汚くする可能性があるために保留されているもの。  
 もしくは必要性が疑わしいもの。  
