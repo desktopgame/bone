@@ -105,6 +105,8 @@ void bnGenerateILExpression(struct bnInterpreter* bone, bnILExpression* self,
                                                         env);
                         break;
                 case BN_IL_EXPR_ARRAY_SUBSCRIPT:
+                        bnGenerateILExprArraySubscript(bone, self->u.vArraySub,
+                                                       env);
                         break;
                 default:
                         assert(false);

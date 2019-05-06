@@ -8,6 +8,7 @@
 #include "../bone.h"
 #include "../parse/ast2il.h"
 #include "../parse/parser.h"
+#include "array.h"
 #include "bool.h"
 #include "enviroment.h"
 #include "frame.h"
@@ -146,6 +147,15 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
 void bnStdSystemObject(bnInterpreter* bone, bnFrame* frame) {
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              bnNewObject(bone->heap));
+}
+
+void bnStdSystemArray(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnNewArray(bone, ((bnInteger*)a)->value));
 }
 
 // Bool
@@ -466,3 +476,29 @@ void bnStdStringEqual(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnStdStringNotEqual(bnInterpreter* bone, bnFrame* frame) {}
+
+// Array
+void bnStdArrayArraySet(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* c = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_ARRAY || b->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        bnArray* arr = a;
+        bnInteger* idx = b;
+        bnInteger* val = c;
+        g_ptr_array_index(arr->arr, idx->value) = c;
+}
+
+void bnStdArrayArrayGet(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_ARRAY || b->type != BN_OBJECT_INTEGER) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        bnArray* arr = a;
+        bnInteger* idx = b;
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             g_ptr_array_index(arr->arr, idx->value));
+}

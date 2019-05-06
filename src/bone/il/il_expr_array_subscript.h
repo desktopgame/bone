@@ -30,6 +30,10 @@ bnILExprArraySubscript* bnNewILExprArraySubscript(bnILExpression* arrayExpr,
 void bnDumpILExprArraySubscript(FILE* fp, struct bnStringPool* pool,
                                 bnILExprArraySubscript* self, int depth);
 
+void bnGenerateILExprArraySubscript(struct bnInterpreter* bone,
+                                    bnILExprArraySubscript* self,
+                                    struct bnEnviroment* env);
+
 /**
  * free a bnILExprArraySubscript.
  * @param self

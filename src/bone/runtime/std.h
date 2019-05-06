@@ -26,6 +26,8 @@ void bnStdSystemLoad(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdSystemObject(struct bnInterpreter* bone, struct bnFrame* frame);
 
+void bnStdSystemArray(struct bnInterpreter* bone, struct bnFrame* frame);
+
 // Bool
 
 void bnStdBoolFuncCall(struct bnInterpreter* bone, struct bnFrame* frame);
@@ -171,4 +173,9 @@ void bnStdStringEqual(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdStringNotEqual(struct bnInterpreter* bone, struct bnFrame* frame);
 
+// Array
+
+void bnStdArrayArraySet(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdArrayArrayGet(struct bnInterpreter* bone, struct bnFrame* frame);
 #endif

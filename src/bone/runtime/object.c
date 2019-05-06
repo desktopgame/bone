@@ -34,12 +34,14 @@ void bnDefine(bnObject* self, bnStringView name, bnObject* value) {
 
 void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
         assert(self != NULL && self->type == BN_OBJECT_LAMBDA);
+        bnLambda* lambda = self;
+        // int paramLen = g_list_length(lambda->parameters);
+        // assert(paramLen == argc);
         // create new frame
         bnFrame* sub = bnSubFrame(frame);
         for (int i = 0; i < argc; i++) {
                 bnPushStack(sub->vStack, bnPopStack(frame->vStack));
         }
-        bnLambda* lambda = self;
         if (bnIsInstanceBaseLambda(bone->pool, lambda) &&
             bnGetStackSize(frame->hierarcySelf) > 0) {
                 bnPushStack(sub->vStack, bnPeekStack(frame->hierarcySelf));

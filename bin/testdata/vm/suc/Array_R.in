@@ -1,0 +1,4 @@
+arr := array(3);
+//arr[0] := "hello";
+arr.opArraySet(0, "hello");
+println(arr[0]);
