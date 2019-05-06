@@ -10,7 +10,6 @@
 orig_load := load;
 
 load := def(path)(...) {
-    dumpTable();
     {} <- orig_load(path);
     println(path);
 };
