@@ -208,8 +208,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                              origName);
                                                 g_hash_table_replace(
                                                     dst->table, origView, v);
+                                                g_hash_table_iter_remove(&hashIter);
                                         }
-                                        g_hash_table_iter_remove(&hashIter);
                                 }
                                 bnPushStack(frame->vStack, dst);
                                 break;
