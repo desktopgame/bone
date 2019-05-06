@@ -225,6 +225,31 @@ CLOSURE:
 * object
 * array
 
+# 真偽値型(boolean type)
+boneにはif文, while文が存在しており、
+その仕様はCを踏襲しています。  
+(bone have if and while statement.
+it specification is like C)  
+  
+if文, while文で "true" として扱われるのは
+* true
+* 0以外の数字
+* false, 0以外のオブジェクト全て
+
+if文, while文で "false" として扱われるのは
+* false
+* 0
+
+例えば、次のコードは完全に合法です。  
+(in example, next code is just completly no problem)
+````
+count := 10;
+while(count) {
+    println(count.toString());
+    count -= 1;
+}
+````
+
 # 例外処理(exception handling)
 現在boneには例外処理のための特別な構文が存在しません。  
 (not exists exception handling syntax)  
