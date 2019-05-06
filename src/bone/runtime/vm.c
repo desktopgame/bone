@@ -278,6 +278,11 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 }
                                 break;
                         }
+                        case BN_OP_PANIC: {
+                                bnStringView name =
+                                    g_ptr_array_index(env->codeArray, ++PC);
+                                break;
+                        }
                         case BN_OP_FUNCCALL: {
                                 bnObject* lambda = bnPopStack(frame->vStack);
                                 int argc =

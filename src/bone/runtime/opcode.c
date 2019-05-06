@@ -93,6 +93,12 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
                         fprintf(fp, "goto else %d", jmp->pos);
                         break;
                 }
+                case BN_OP_PANIC: {
+                        bnStringView name =
+                            (bnStringView)g_ptr_array_index(ary, ++pos);
+                        fprintf(fp, "panic %s", bnView2Str(pool, name));
+                        break;
+                }
                 case BN_OP_FUNCCALL: {
                         int argc = (int)g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "funccall %d", argc);

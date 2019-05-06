@@ -243,6 +243,10 @@ static bnILStatement* ast2stmt(bnAST* a) {
                 ret->type = BN_IL_STMT_SCOPE_INJECTION;
                 ret->u.vScopeInj =
                     bnNewILStmtScopeInjection(ast2expr(bnFirstAST(a)));
+        } else if (a->tag == BN_AST_PANIC) {
+                ret->type = BN_IL_STMT_PANIC;
+                ret->u.vPanic =
+                    bnNewILStmtPanic(a->u.svvalue, ast2expr(bnFirstAST(a)));
         }
         ret->line = a->line;
         return ret;

@@ -11,6 +11,7 @@ typedef enum bnILStatementType {
         BN_IL_STMT_WHILE,
         BN_IL_STMT_RETURN,
         BN_IL_STMT_SCOPE_INJECTION,
+        BN_IL_STMT_PANIC,
 } bnILStatementType;
 
 struct bnILStmtExprStmt;
@@ -21,6 +22,7 @@ struct bnILStmtReturn;
 struct bnILStmtScopeInjection;
 struct bnEnviroment;
 struct bnInterpreter;
+struct bnILStmtPanic;
 
 typedef struct bnILStatement {
         bnILStatementType type;
@@ -31,6 +33,7 @@ typedef struct bnILStatement {
                 struct bnILStmtWhile* vWhile;
                 struct bnILStmtReturn* vReturn;
                 struct bnILStmtScopeInjection* vScopeInj;
+                struct bnILStmtPanic* vPanic;
         } u;
         int line;
 } bnILStatement;

@@ -22,6 +22,13 @@ bnAST* bnNewBlankAST() {
         return ret;
 }
 
+bnAST* bnNewPanicAST(bnStringView name, bnAST* aexpr) {
+        bnAST* ret = bnNewAST(BN_AST_PANIC);
+        ret->u.svvalue = name;
+        bnPushAST(ret, aexpr);
+        return ret;
+}
+
 bnAST* bnNewArraySubscriptAST(bnAST* aexpr, bnAST* aindex) {
         bnAST* ret = bnNewAST(BN_AST_ARRAY_SUBSCRIPT);
         bnPushAST(ret, aexpr);
