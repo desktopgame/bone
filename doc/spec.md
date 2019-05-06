@@ -19,7 +19,7 @@ boneではメソッドという概念が存在しません。
 however, exists closure object.
 by doing assigned to member is useable like method)
 
-## クロージャとオペレータ(closure and operator)
+## クロージャ(closure)
 通常、クロージャーはインスタンスではなくスコープに依存するオブジェクトです。  
 この点は他の多くの言語と同様です。  
 (in normal, closure is not depend on instance,
