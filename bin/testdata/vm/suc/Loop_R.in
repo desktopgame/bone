@@ -1,0 +1,5 @@
+count := 10;
+while(count) {
+    println(count.toString());
+    count -= 1;
+}

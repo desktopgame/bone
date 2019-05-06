@@ -130,6 +130,15 @@ void bnPrintObject(FILE* fp, bnObject* self) {
         }
 }
 
+bool bnObject2CBool(bnObject* self) {
+        if (self->type == BN_OBJECT_BOOL) {
+                return ((bnBool*)self)->value;
+        } else if (self->type == BN_OBJECT_INTEGER) {
+                return ((bnInteger*)self)->value != 0;
+        }
+        return true;
+}
+
 bnStringView bnGetExportVariableName(struct bnStringPool* pool,
                                      bnStringView view) {
         const char* str = bnView2Str(pool, view);

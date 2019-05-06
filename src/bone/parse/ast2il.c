@@ -66,7 +66,7 @@ static void ast2assign(bnILExpression* expr, bnAST* a, bnILBinOpType type) {
         expr->u.vBinOp = bnNewILExprBinOp(BN_IL_BINOP_ASSIGN);
         expr->u.vBinOp->left = ast2expr(aleft);
         bnILExpression* ilRightExpr = bnNewILExpression(BN_IL_EXPR_BINOP);
-        ilRightExpr->u.vBinOp = bnNewILExprBinOp(BN_IL_BINOP_PLUS);
+        ilRightExpr->u.vBinOp = bnNewILExprBinOp(type);
         ilRightExpr->u.vBinOp->left = ast2expr(aleft);
         ilRightExpr->u.vBinOp->right = ast2expr(aright);
         expr->u.vBinOp->right = ilRightExpr;

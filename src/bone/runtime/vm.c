@@ -184,7 +184,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                 g_hash_table_replace(
                                                     frame->variableTable,
                                                     origView, v);
-                                                g_hash_table_iter_remove(&hashIter);
+                                                g_hash_table_iter_remove(
+                                                    &hashIter);
                                         }
                                 }
                                 break;
@@ -208,7 +209,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                              origName);
                                                 g_hash_table_replace(
                                                     dst->table, origView, v);
-                                                g_hash_table_iter_remove(&hashIter);
+                                                g_hash_table_iter_remove(
+                                                    &hashIter);
                                         }
                                 }
                                 bnPushStack(frame->vStack, dst);
@@ -268,7 +270,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnLabel* jmp =
                                     g_ptr_array_index(env->codeArray, ++PC);
                                 bnObject* cond = bnPopStack(frame->vStack);
-                                if (cond == BN_TRUE) {
+                                if (bnObject2CBool(cond)) {
                                         PC = jmp->pos;
                                 }
                                 break;
@@ -277,7 +279,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnLabel* jmp =
                                     g_ptr_array_index(env->codeArray, ++PC);
                                 bnObject* cond = bnPopStack(frame->vStack);
-                                if (cond == BN_FALSE) {
+                                if (!bnObject2CBool(cond)) {
                                         PC = jmp->pos;
                                 }
                                 break;
