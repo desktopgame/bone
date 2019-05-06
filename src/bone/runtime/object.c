@@ -44,6 +44,13 @@ void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
             bnGetStackSize(frame->hierarcySelf) > 0) {
                 bnPushStack(sub->vStack, bnPeekStack(frame->hierarcySelf));
         }
+        // set default return value
+        GList* retIter = lambda->returns;
+        while (retIter != NULL) {
+                g_hash_table_replace(sub->variableTable, retIter->data,
+                                     bnNewObject(bone->heap));
+                retIter = retIter->next;
+        }
         if (lambda->type == BN_LAMBDA_NATIVE) {
                 // write captured vatiable
                 GHashTableIter iter;
