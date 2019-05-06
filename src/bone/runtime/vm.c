@@ -23,8 +23,9 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
         for (int PC = 0; PC < env->codeArray->len; PC++) {
                 bnOpcode code = (bnOpcode)g_ptr_array_index(env->codeArray, PC);
 #if VMDEBUG
+                int stackCount = bnGetStackSize(frame->vStack);
                 bnPrintOpcode(stdout, bone->pool, env->codeArray, PC);
-                printf("\n");
+                printf("[%d]\n", stackCount);
 #endif
                 switch (code) {
                         case BN_OP_NOP:
@@ -38,6 +39,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         case BN_OP_SWAP: {
                                 bnDebugStack(stdout, frame->vStack, "preSwap");
                                 void* a = bnPopStack(frame->vStack);
+                                bnObject* obj = a;
                                 void* b = bnPopStack(frame->vStack);
                                 bnPushStack(frame->vStack, a);
                                 bnPushStack(frame->vStack, b);
@@ -76,6 +78,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 // length of named return
                                 int namedReturnLen =
                                     g_ptr_array_index(env->codeArray, ++PC);
+                                g_ptr_array_add(lmb->u.vEnv->codeArray,
+                                                BN_OP_NOP);
                                 for (int i = 0; i < namedReturnLen; i++) {
                                         lmb->returns = g_list_append(
                                             lmb->returns,
@@ -99,10 +103,14 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                         // BN_OP_GEN_LAMBDA_END
                                         if (data == BN_OP_STORE ||
                                             data == BN_OP_LOAD ||
+                                            data == BN_OP_PUT ||
+                                            data == BN_OP_GET ||
                                             data == BN_OP_GEN_INT ||
                                             data == BN_OP_GEN_STRING ||
                                             data == BN_OP_GOTO ||
-                                            data == BN_OP_GOTO_IF) {
+                                            data == BN_OP_GOTO_IF ||
+                                            data == BN_OP_GOTO_ELSE ||
+                                            data == BN_OP_FUNCCALL) {
                                                 g_ptr_array_add(
                                                     lmb->u.vEnv->codeArray,
                                                     data);

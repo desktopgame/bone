@@ -1,12 +1,14 @@
 #ifndef BONE_RUNTIME_ENVIROMENT_H
 #define BONE_RUNTIME_ENVIROMENT_H
 #include "../bone.h"
+#include "../util/stack.h"
 #include "label.h"
 #include "opcode.h"
 
 typedef struct bnEnviroment {
         GPtrArray* codeArray;
         GPtrArray* labels;
+        bnStack* labelFixStack;
 } bnEnviroment;
 
 /**
@@ -17,17 +19,33 @@ typedef struct bnEnviroment {
 bnEnviroment* bnNewEnviroment();
 
 /**
- * @param env
+ * @param self
  * @param pos
  * @return
  */
-bnLabel* bnGenerateLabel(bnEnviroment* env, int pos);
+bnLabel* bnGenerateLabel(bnEnviroment* self, int pos);
 
 /**
- * @param env
+ * @param self
  * @return
  */
-int bnGenerateNOP(bnEnviroment* env);
+int bnGenerateNOP(bnEnviroment* self);
+
+/**
+ * @param self
+ * @param count
+ */
+void bnGenerateFillNOP(bnEnviroment* self, int count);
+
+/**
+ * @param self
+ */
+void bnGenerateEnterLambda(bnEnviroment* self);
+
+/**
+ * @param self
+ */
+void bnGenerateExitLambda(bnEnviroment* self);
 
 /**
  * free a bnEnviroment.

@@ -66,6 +66,7 @@ void bnGenerateILExprLambda(bnInterpreter* bone, bnILExprLambda* self,
                 g_ptr_array_add(env->codeArray, name);
                 iter = iter->next;
         }
+        bnGenerateEnterLambda(env);
         iter = self->parameters;
         while (iter != NULL) {
                 bnStringView name = iter->data;
@@ -79,6 +80,7 @@ void bnGenerateILExprLambda(bnInterpreter* bone, bnILExprLambda* self,
                 bnGenerateILStatement(bone, ilstmt, env);
                 iter = iter->next;
         }
+        bnGenerateExitLambda(env);
         g_ptr_array_add(env->codeArray, BN_OP_GEN_LAMBDA_END);
 }
 

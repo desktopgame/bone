@@ -12,6 +12,7 @@ bnStack* bnNewStack() {
 }
 
 void bnPushStack(bnStack* self, void* data) {
+        assert(data != NULL);
         if (self->head == NULL) {
                 self->head = new_elem(data);
         } else {

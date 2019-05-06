@@ -1,0 +1,7 @@
+foreach := def(self, f)() {
+    i := 0;
+    while(i < self.length) {
+        f(self[i]);
+        i += 1;
+    }
+};
