@@ -6,6 +6,7 @@
 #endif
 
 #include "../bone.h"
+#include "../util/fmt.h"
 #include "../parse/ast2il.h"
 #include "../parse/parser.h"
 #include "array.h"
@@ -69,6 +70,33 @@ void bnStdDebugDumpTable(bnInterpreter* bone, bnFrame* frame) {
                 bnPrintObject(stdout, v);
                 fprintf(stdout, "\n");
         }
+}
+
+static void showInfo(bnInterpreter* bone, bnObject* a, int depth) {
+        if(depth > 4) {
+                return;
+        }
+        GHashTableIter hashIter;
+        gpointer k, v;
+        g_hash_table_iter_init(&hashIter, a->table);
+        while (g_hash_table_iter_next(&hashIter, &k, &v)) {
+                const char* strk = bnView2Str(bone->pool, k);
+                for(int i=0; i<depth; i++) fprintf(BN_STDOUT, "    ");
+                //bnFindent(BN_STDOUT, depth);
+                fprintf(BN_STDOUT, "%s", strk);
+                fprintf(BN_STDOUT, "[");
+                bnPrintObject(BN_STDOUT, v);
+                fprintf(BN_STDOUT, "]");
+                fprintf(BN_STDOUT, "\n");
+                if(a != v) {
+                        showInfo(bone, v, depth  + 1);
+                }
+        }
+}
+
+void bnStdDebugShowInfo(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        showInfo(bone, a, 0);
 }
 #endif
 

@@ -184,8 +184,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                 g_hash_table_replace(
                                                     frame->variableTable,
                                                     origView, v);
+                                                g_hash_table_iter_remove(&hashIter);
                                         }
-                                        g_hash_table_iter_remove(&hashIter);
                                 }
                                 break;
                         }

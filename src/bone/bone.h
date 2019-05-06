@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "glib.h"
 #include "util/fmt.h"
+#include "util/io.h"
 #include "util/memory.h"
 #include "util/string_pool.h"
 #endif

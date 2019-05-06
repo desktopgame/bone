@@ -1,0 +1,7 @@
+b := def()(a) {
+    println("foo");
+    a := 10;
+};
+
+a := object() <- b();
+println(a.a.toString());

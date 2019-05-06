@@ -1,11 +1,12 @@
 
 #if !defined(_WIN32)
-	#include <CUnit/Basic.h>
-	#include <CUnit/CUnit.h>
-	#include <CUnit/Console.h>
+#include <CUnit/Basic.h>
+#include <CUnit/CUnit.h>
+#include <CUnit/Console.h>
 #endif
 #include <stdio.h>
 #include "test.h"
+#include "util/io.h"
 
 static void runTest() {
 #if !defined(_WIN32)
@@ -21,14 +22,15 @@ static void runTest() {
         CU_basic_run_tests();
         CU_cleanup_registry();
 #else
-	bnParseTest();
-	bnStringPoolTest();
-	bnVMTest();
-	bnRunTest();
+        bnParseTest();
+        bnStringPoolTest();
+        bnVMTest();
+        bnRunTest();
 #endif
 }
 
 int main(int argc, char* argv[]) {
+        bnInitIO();
         runTest();
         return 0;
 }

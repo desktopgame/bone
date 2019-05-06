@@ -92,6 +92,7 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                         // create private member
                         bnStringView exportName =
                             bnGetExportVariableName(bone->pool, retName);
+                        const char* expstr = bnView2Str(bone->pool, exportName);
                         g_hash_table_replace(
                             body->table, exportName,
                             g_hash_table_lookup(sub->variableTable,
@@ -106,20 +107,22 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
 void bnPrintObject(FILE* fp, bnObject* self) {
         switch (self->type) {
                 case BN_OBJECT_PROTO:
-                        fprintf(fp, "%p", (void*)self);
+                        fprintf(fp, "proto %p", (void*)self);
                         break;
                 case BN_OBJECT_INTEGER:
-                        fprintf(fp, "%d", ((bnInteger*)self)->value);
+                        fprintf(fp, "int %d", ((bnInteger*)self)->value);
                         break;
                 case BN_OBJECT_DOUBLE:
-                        fprintf(fp, "%lf", ((bnDouble*)self)->value);
+                        fprintf(fp, "double %lf", ((bnDouble*)self)->value);
                         break;
                 case BN_OBJECT_CHAR:
-                        fprintf(fp, "%c", ((bnChar*)self)->value);
+                        fprintf(fp, "char %c", ((bnChar*)self)->value);
                         break;
                 case BN_OBJECT_STRING:
+                        fprintf(fp, "string");
                         break;
                 case BN_OBJECT_BOOL:
+                        fprintf(fp, "bool");
                         break;
                 case BN_OBJECT_LAMBDA:
                         fprintf(fp, "lambda");

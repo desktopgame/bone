@@ -83,6 +83,10 @@ void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
         g_hash_table_replace(frame->variableTable, bnIntern(pool, "dumpTable"),
                              bnNewLambdaFromCFunc(self, bnStdDebugDumpTable,
                                                   pool, BN_C_ADD_EXIT));
+        g_hash_table_replace(
+            frame->variableTable, bnIntern(pool, "showInfo"),
+            bnNewLambdaFromCFunc(self, bnStdDebugShowInfo, pool, BN_C_ADD_PARAM,
+                                 "obj", BN_C_ADD_EXIT));
 #endif
         g_hash_table_replace(
             frame->variableTable, bnIntern(pool, "object"),
