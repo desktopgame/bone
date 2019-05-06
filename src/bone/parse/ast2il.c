@@ -193,6 +193,10 @@ static bnILExpression* ast2expr(bnAST* a) {
                 ast2assign(ret, a, BN_IL_BINOP_LSHIFT);
         } else if (a->tag == BN_AST_RSHIFT_ASSIGN) {
                 ast2assign(ret, a, BN_IL_BINOP_RSHIFT);
+        } else if (a->tag == BN_AST_ARRAY_SUBSCRIPT) {
+                ret->type = BN_IL_EXPR_ARRAY_SUBSCRIPT;
+                ret->u.vArraySub = bnNewILExprArraySubscript(
+                    ast2expr(bnFirstAST(a)), ast2expr(bnSecondAST(a)));
         } else {
                 assert(false);
         }

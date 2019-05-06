@@ -89,19 +89,20 @@ extern int yydebug;
     ELSE = 299,
     EXC_OR = 300,
     DOTDOTDOT = 301,
-    DOT = 302,
-    COMMA = 303,
-    SEMICOLON = 304,
-    WHILE = 305,
-    DEF = 306,
-    RETURN_T = 307,
-    SCOPE = 308,
-    INJECTION = 309,
-    CHILDA = 310,
-    NEGATIVE = 311,
-    POSITIVE = 312,
-    FUNCCALL = 313,
-    ARRAY_SUBSCRIPT = 314
+    LSB = 302,
+    RSB = 303,
+    DOT = 304,
+    COMMA = 305,
+    SEMICOLON = 306,
+    WHILE = 307,
+    DEF = 308,
+    RETURN_T = 309,
+    SCOPE = 310,
+    INJECTION = 311,
+    CHILDA = 312,
+    NEGATIVE = 313,
+    POSITIVE = 314,
+    FUNCCALL = 315
   };
 #endif
 
@@ -115,7 +116,7 @@ union YYSTYPE
 	bnAST* ast_value;
 	bnStringView svvalue;
 
-#line 119 "bone.tab.h" /* yacc.c:1916  */
+#line 120 "bone.tab.h" /* yacc.c:1916  */
 };
 
 typedef union YYSTYPE YYSTYPE;

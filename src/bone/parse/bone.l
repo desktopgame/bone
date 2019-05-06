@@ -209,6 +209,9 @@ static void update_loc() {
 <INITIAL>"{"				{ return (LB); }
 <INITIAL>"}"			{ return (RB); }
 
+<INITIAL>"["				{ return (LSB); }
+<INITIAL>"]"			{ return (RSB); }
+
 <INITIAL>"0" {
 	yylval.ast_value = bnNewIntAST(0);
 	return INT;

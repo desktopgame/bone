@@ -1,6 +1,7 @@
 #ifndef BONE_IL_ILEXPRALL_H
 #define BONE_IL_ILEXPRALL_H
 
+#include "il_expr_array_subscript.h"
 #include "il_expr_binop.h"
 #include "il_expr_char.h"
 #include "il_expr_double.h"

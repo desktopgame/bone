@@ -22,6 +22,13 @@ bnAST* bnNewBlankAST() {
         return ret;
 }
 
+bnAST* bnNewArraySubscriptAST(bnAST* aexpr, bnAST* aindex) {
+        bnAST* ret = bnNewAST(BN_AST_ARRAY_SUBSCRIPT);
+        bnPushAST(ret, aexpr);
+        bnPushAST(ret, aindex);
+        return ret;
+}
+
 bnAST* bnNewDotDotDotAST() {
         bnAST* ret = bnNewAST(BN_AST_PARAMETER);
         ret->u.svvalue = bnInternIdentifier("...");

@@ -54,6 +54,10 @@ void bnDumpILExpression(FILE* fp, struct bnStringPool* pool,
                         bnDumpILExprObjectInjection(fp, pool, self->u.vObjInj,
                                                     depth);
                         break;
+                case BN_IL_EXPR_ARRAY_SUBSCRIPT:
+                        bnDumpILExprArraySubscript(fp, pool, self->u.vArraySub,
+                                                   depth);
+                        break;
                 default:
                         assert(false);
                         break;
@@ -100,6 +104,8 @@ void bnGenerateILExpression(struct bnInterpreter* bone, bnILExpression* self,
                         bnGenerateILExprObjectInjection(bone, self->u.vObjInj,
                                                         env);
                         break;
+                case BN_IL_EXPR_ARRAY_SUBSCRIPT:
+                        break;
                 default:
                         assert(false);
                         break;
@@ -145,6 +151,9 @@ void bnDeleteILExpression(bnILExpression* self) {
                         break;
                 case BN_IL_EXPR_OBJECT_INJECTION:
                         bnDeleteILExprObjectInjection(self->u.vObjInj);
+                        break;
+                case BN_IL_EXPR_ARRAY_SUBSCRIPT:
+                        bnDeleteILExprArraySubscript(self->u.vArraySub);
                         break;
                 default:
                         assert(false);

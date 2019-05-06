@@ -23,7 +23,7 @@
 		EQUAL NOTEQUAL INC DEC
 		GT GE LT LE LSHIFT RSHIFT
 		NOT BIT_AND BIT_OR LOGIC_AND LOGIC_OR LP RP LB RB IF ELSE
-		EXC_OR DOTDOTDOT
+		EXC_OR DOTDOTDOT LSB RSB
 		DOT COMMA SEMICOLON WHILE DEF RETURN_T SCOPE INJECTION
 %type <ast_value>
 	argument_list
@@ -52,7 +52,7 @@
 %left ADD SUB INJECTION
 %left MUL DIV MOD
 %right CHILDA NOT NEGATIVE POSITIVE
-%left DOT FUNCCALL ARRAY_SUBSCRIPT
+%left DOT FUNCCALL LSB
 %nonassoc LP
 %%
 program
@@ -335,6 +335,10 @@ lhs
 	| expression DOT IDENT
 	{
 		$$ = bnNewMemberAccessAST($1, $3);
+	}
+	| expression LSB expression RSB
+	{
+		$$ = bnNewArraySubscriptAST($1, $3);
 	}
 	;
 primary
