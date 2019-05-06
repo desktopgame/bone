@@ -1,0 +1,12 @@
+orig_array := array;
+new := def(len)(ret) {
+    ret := orig_array(len);
+    ret <- load("./testdata/lib/foreach.in");
+    ret.fill := def(self, value)() {
+        i := 0;
+        while(i < self.length) {
+            self[i] := value;
+            i += 1;
+        }
+    };
+};

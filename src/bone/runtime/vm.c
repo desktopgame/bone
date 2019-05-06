@@ -95,6 +95,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                     g_hash_table_iter_next(&hashIter, &k, &v)) {
                                         g_hash_table_replace(lmb->outer, k, v);
                                 }
+                                int lambdaNest = 1;
                                 // generate code
                                 while (1) {
                                         gpointer data = g_ptr_array_index(
@@ -120,11 +121,24 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                         env->codeArray, ++PC));
                                                 continue;
                                         }
-                                        if (data == BN_OP_GEN_LAMBDA_END) {
-                                                break;
+                                        if (data == BN_OP_GEN_LAMBDA_BEGIN) {
+                                                g_ptr_array_add(
+                                                    lmb->u.vEnv->codeArray,
+                                                    data);
+                                                lambdaNest++;
+                                        } else if (data ==
+                                                   BN_OP_GEN_LAMBDA_END) {
+                                                if (--lambdaNest == 0) {
+                                                        break;
+                                                }
+                                                g_ptr_array_add(
+                                                    lmb->u.vEnv->codeArray,
+                                                    data);
+                                        } else {
+                                                g_ptr_array_add(
+                                                    lmb->u.vEnv->codeArray,
+                                                    data);
                                         }
-                                        g_ptr_array_add(lmb->u.vEnv->codeArray,
-                                                        data);
                                 }
                                 bnPushStack(frame->vStack, lmb);
                                 bnDebugStack(stdout, frame->vStack,
@@ -215,6 +229,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnObject* value = g_hash_table_lookup(
                                     frame->variableTable,
                                     GINT_TO_POINTER((int)name));
+                                const char* str = bnView2Str(bone->pool, name);
                                 assert(value != NULL);
                                 bnPushStack(frame->vStack, value);
                                 break;

@@ -2,7 +2,6 @@ arr := array(2);
 arr[0] := "hello";
 arr[1] := "world";
 arr <- load("./testdata/lib/foreach.in");
-debugBreak();
 arr.foreach(def(value)() {
     println(value);
 });
