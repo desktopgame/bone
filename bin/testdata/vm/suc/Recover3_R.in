@@ -1,0 +1,10 @@
+b := def()(a) {
+    println("foo");
+    a := 10;
+    panic e <- "error";
+};
+
+a := object() <- recover(def()(a) {
+    {} <- b();
+});
+println(a.e);

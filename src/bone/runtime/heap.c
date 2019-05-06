@@ -2,6 +2,7 @@
 #include "../bone.h"
 #include "array.h"
 #include "frame.h"
+#include "interpreter.h"
 #include "lambda.h"
 #include "object.h"
 
@@ -15,6 +16,7 @@ typedef struct bnHeap {
 
 static void gc_clear(bnHeap* self, bnFrame* frame);
 static void gc_mark(bnHeap* self, bnFrame* frame);
+static void gc_mark_native(bnInterpreter* bone);
 static void gc_mark_rec(bnObject* obj);
 static void gc_mark_array(bnArray* array);
 static void gc_mark_lambda(bnLambda* lambda);
@@ -35,10 +37,13 @@ void bnAddToHeap(bnHeap* self, bnObject* obj) {
         g_rec_mutex_unlock(&gHeapMtx);
 }
 
-void bnGC(bnHeap* self, bnFrame* frame) {
+void bnGC(bnInterpreter* bone) {
+        bnHeap* self = bone->heap;
+        bnFrame* frame = bone->frame;
         g_rec_mutex_lock(&gHeapMtx);
         gc_clear(self, frame);
         gc_mark(self, frame);
+        gc_mark_native(bone);
         gc_sweep(self, frame);
         g_rec_mutex_unlock(&gHeapMtx);
 }
@@ -79,6 +84,14 @@ static void gc_mark(bnHeap* self, bnFrame* frame) {
         }
         if (frame->panic) {
                 gc_mark_rec(frame->panic);
+        }
+}
+
+static void gc_mark_native(bnInterpreter* bone) {
+        GList* iter = bone->nativeAlloc;
+        while (iter != NULL) {
+                gc_mark_rec(iter->data);
+                iter = iter->next;
         }
 }
 

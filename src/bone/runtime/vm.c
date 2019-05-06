@@ -251,6 +251,9 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 gpointer data =
                                     g_hash_table_lookup(container->table, name);
                                 bnObject* obj = data;
+#if DEBUG
+                                const char* str = bnView2Str(bone->pool, name);
+#endif
                                 assert(data != NULL);
                                 bnPushStack(frame->vStack, data);
                                 break;
@@ -295,7 +298,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                     bnFuncCall(lambda, bone, frame, argc);
 
                                 bnDeleteFrame(sub);
-                                bnGC(bone->heap, bone->frame);
+                                bnGC(bone);
                                 break;
                         }
                 }
@@ -303,6 +306,9 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         if (frame->prev) {
                                 frame->prev->panic = frame->panic;
                                 frame->prev->panicName = frame->panicName;
+                                g_hash_table_replace(frame->prev->variableTable,
+                                                     frame->panicName,
+                                                     frame->panic);
                         }
                         break;
                 }

@@ -20,6 +20,7 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef) {
         ret->heap = bnNewHeap();
         ret->frame = NULL;
         ret->__exception = NULL;
+        ret->nativeAlloc = NULL;
         return ret;
 }
 
@@ -45,10 +46,10 @@ int bnEval(bnInterpreter* self) {
         self->frame->panic = NULL;
         bnDeleteILTopLevel(iltop);
         bnDeleteEnviroment(env);
-        bnGC(self->heap, self->frame);
+        bnGC(self);
         bnDeleteFrame(self->frame);
-        bnGC(self->heap, NULL);
         self->frame = NULL;
+        bnGC(self);
         return status;
 }
 

@@ -168,14 +168,16 @@ void bnStdSystemRecover(bnInterpreter* bone, bnFrame* frame) {
         if (g_list_length(lambda->parameters) > 0) {
                 bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
         }
+        bone->nativeAlloc = g_list_append(bone->nativeAlloc, a);
         bnFrame* sub = bnFuncCall(lambda, bone, frame, 0);
         bnInjectFrame(sub->variableTable, frame);
         if (frame->panic) {
                 frame->panic = NULL;
                 frame->panicName = 0;
         }
+        bone->nativeAlloc = g_list_remove(bone->nativeAlloc, a);
         bnDeleteFrame(sub);
-        bnGC(bone->heap, bone->frame);
+        bnGC(bone);
 }
 // Bool
 
