@@ -267,6 +267,9 @@ panic 名前 <- オブジェクト
 result := object() <- recover(def ()(){
     panic exception <- newError();
 });
+if(result.exception) {
+    ...
+}
 ````
 
 # 実装が保留されているもの(pending function)
