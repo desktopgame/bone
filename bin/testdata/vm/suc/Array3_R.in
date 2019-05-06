@@ -1,0 +1,2 @@
+arr := array(3);
+println(arr.length.toString());

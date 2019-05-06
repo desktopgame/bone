@@ -1,4 +1,5 @@
 #include "array.h"
+#include "integer.h"
 #include "interpreter.h"
 #include "keyword.h"
 #include "lambda.h"
@@ -12,6 +13,8 @@ bnArray* bnNewArray(bnInterpreter* bone, int size) {
         for (int i = 0; i < size; i++) {
                 g_ptr_array_add(ret->arr, bnNewObject(bone->heap));
         }
+        bnDefine(&ret->base, bnIntern(bone->pool, "length"),
+                 bnNewInteger(bone, size));
         bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_ARRAY_SET),
                  bnNewLambdaFromCFunc(bone, bnStdArrayArraySet, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
