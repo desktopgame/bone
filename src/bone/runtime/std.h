@@ -28,6 +28,8 @@ void bnStdSystemObject(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdSystemArray(struct bnInterpreter* bone, struct bnFrame* frame);
 
+void bnStdSystemRecover(struct bnInterpreter* bone, struct bnFrame* frame);
+
 // Bool
 
 void bnStdBoolFuncCall(struct bnInterpreter* bone, struct bnFrame* frame);

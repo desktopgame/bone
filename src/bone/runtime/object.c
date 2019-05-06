@@ -32,7 +32,8 @@ void bnDefine(bnObject* self, bnStringView name, bnObject* value) {
         g_hash_table_replace(self->table, GINT_TO_POINTER(v), value);
 }
 
-void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
+bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
+                    int argc) {
         assert(self != NULL && self->type == BN_OBJECT_LAMBDA);
         bnLambda* lambda = self;
         // int paramLen = g_list_length(lambda->parameters);
@@ -99,8 +100,7 @@ void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
                 }
                 bnPushStack(frame->vStack, body);
         }
-        bnDeleteFrame(sub);
-        bnGC(bone->heap, bone->frame);
+        return sub;
 }
 
 void bnPrintObject(FILE* fp, bnObject* self) {

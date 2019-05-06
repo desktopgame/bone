@@ -27,13 +27,6 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                 bnPrintOpcode(stdout, bone->pool, env->codeArray, PC);
                 printf("[%d]\n", stackCount);
 #endif
-                if (frame->panic) {
-                        if (frame->prev) {
-                                frame->prev->panic = frame->panic;
-                                frame->prev->panicName = frame->panicName;
-                        }
-                        break;
-                }
                 switch (code) {
                         case BN_OP_NOP:
                                 break;
@@ -118,7 +111,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                             data == BN_OP_GOTO ||
                                             data == BN_OP_GOTO_IF ||
                                             data == BN_OP_GOTO_ELSE ||
-                                            data == BN_OP_FUNCCALL) {
+                                            data == BN_OP_FUNCCALL ||
+                                            data == BN_OP_PANIC) {
                                                 g_ptr_array_add(
                                                     lmb->u.vEnv->codeArray,
                                                     data);
@@ -297,9 +291,20 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnObject* lambda = bnPopStack(frame->vStack);
                                 int argc =
                                     g_ptr_array_index(env->codeArray, ++PC);
-                                bnFuncCall(lambda, bone, frame, argc);
+                                bnFrame* sub =
+                                    bnFuncCall(lambda, bone, frame, argc);
+
+                                bnDeleteFrame(sub);
+                                bnGC(bone->heap, bone->frame);
                                 break;
                         }
+                }
+                if (frame->panic) {
+                        if (frame->prev) {
+                                frame->prev->panic = frame->panic;
+                                frame->prev->panicName = frame->panicName;
+                        }
+                        break;
                 }
         }
         return 0;

@@ -14,6 +14,7 @@
 #include "frame.h"
 #include "integer.h"
 #include "interpreter.h"
+#include "lambda.h"
 #include "object.h"
 #include "string.h"
 #include "vm.h"
@@ -158,6 +159,24 @@ void bnStdSystemArray(bnInterpreter* bone, bnFrame* frame) {
                              bnNewArray(bone, ((bnInteger*)a)->value));
 }
 
+void bnStdSystemRecover(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_LAMBDA) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        bnLambda* lambda = a;
+        if (g_list_length(lambda->parameters) > 0) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        bnFrame* sub = bnFuncCall(lambda, bone, frame, 0);
+        bnInjectFrame(sub->variableTable, frame);
+        if (frame->panic) {
+                frame->panic = NULL;
+                frame->panicName = 0;
+        }
+        bnDeleteFrame(sub);
+        bnGC(bone->heap, bone->frame);
+}
 // Bool
 
 void bnStdBoolFuncCall(bnInterpreter* bone, bnFrame* frame);

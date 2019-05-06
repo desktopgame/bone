@@ -39,8 +39,8 @@ bnObject* bnNewObject(struct bnHeap* heap);
  */
 void bnDefine(bnObject* self, bnStringView name, bnObject* value);
 
-void bnFuncCall(bnObject* self, struct bnInterpreter* bone,
-                struct bnFrame* frame, int argc);
+struct bnFrame* bnFuncCall(bnObject* self, struct bnInterpreter* bone,
+                           struct bnFrame* frame, int argc);
 
 void bnPrintObject(FILE* fp, bnObject* self);
 

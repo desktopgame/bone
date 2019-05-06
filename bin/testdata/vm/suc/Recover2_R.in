@@ -1,0 +1,8 @@
+a := object() <- recover(def()(a, b) {
+    a := 0;
+    b := 1;
+    panic e <- "error";
+});
+println(a.a.toString());
+println(a.b.toString());
+println(a.e);
