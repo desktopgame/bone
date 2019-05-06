@@ -47,12 +47,10 @@ bnObject* bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
         int arrI = 0;
         while (g_hash_table_iter_next(&iter, &k, &v)) {
                 bnStringView retName = k;
+                bnStringView exportName =
+                    bnGetExportVariableName(bone->pool, retName);
                 // create private member
-                char buf[100] = {0};
-                const char* retStr = bnView2Str(bone->pool, retName);
-                sprintf(buf, "$$_%s", retStr);
-                g_hash_table_replace(arr->base.table, bnIntern(bone->pool, buf),
-                                     v);
+                g_hash_table_replace(arr->base.table, exportName, v);
                 g_ptr_array_index(arr->arr, arrI) = v;
                 arrI++;
         }

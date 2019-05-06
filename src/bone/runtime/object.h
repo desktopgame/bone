@@ -45,6 +45,14 @@ void bnFuncCall(bnObject* self, struct bnInterpreter* bone,
 void bnPrintObject(FILE* fp, bnObject* self);
 
 /**
+ * @param pool
+ * @param view
+ * @return
+ */
+bnStringView bnGetExportVariableName(struct bnStringPool* pool,
+                                     bnStringView view);
+
+/**
  * return new instance of bnObject.
  * @param name
  * @return

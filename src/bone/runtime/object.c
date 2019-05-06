@@ -80,11 +80,10 @@ void bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame, int argc) {
                 while (iter != NULL) {
                         bnStringView retName = iter->data;
                         // create private member
-                        char buf[100] = {0};
-                        const char* retStr = bnView2Str(bone->pool, retName);
-                        sprintf(buf, "$$_%s", retStr);
+                        bnStringView exportName =
+                            bnGetExportVariableName(bone->pool, retName);
                         g_hash_table_replace(
-                            body->table, bnIntern(bone->pool, buf),
+                            body->table, exportName,
                             g_hash_table_lookup(sub->variableTable,
                                                 iter->data));
                         iter = iter->next;
@@ -117,6 +116,14 @@ void bnPrintObject(FILE* fp, bnObject* self) {
                         fprintf(fp, "lambda");
                         break;
         }
+}
+
+bnStringView bnGetExportVariableName(struct bnStringPool* pool,
+                                     bnStringView view) {
+        const char* str = bnView2Str(pool, view);
+        char buf[100];
+        sprintf(buf, "$$_%s", str);
+        return bnIntern(pool, buf);
 }
 
 void bnDeleteObject(bnObject* self) {}
