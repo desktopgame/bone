@@ -255,18 +255,26 @@ while(count) {
 ありません。(bone is'nt have a null)  
 代わりに存在しない要素が参照された時にはpanicします。  
 ````
-a := object();
-println(a.key); // ここでpanic(panic on here)
+example A:
+    a := object();
+    println(a.key); // ここでpanic(panic on here)
 
-a := def()(x, y) {
-    x := 10;
-    // yにはデフォルトオブジェクトが入ります。
-    // つまり次のコードと等価です。
-    // (y is default object.
-    // equality to next code.)
-    // y := object();
-    return;
-}
+exampleB:
+    a := def()(x, y) {
+        x := 10;
+        // yにはデフォルトオブジェクトが入ります。
+        // つまり次のコードと等価です。
+        // (y is default object.
+        // equality to next code.)
+        // y := object();
+        return;
+    }
+
+exampleC:
+    a := def()() {
+
+    };
+    b := a(); // ここでpanic(panic on here)
 ````
 
 # Cとのバインディング(binding with c)
