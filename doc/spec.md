@@ -218,12 +218,13 @@ loadは内部的にこれを使用しています。
 VALUE:
 * true
 * false
-* null
 
 CLOSURE:
 * load
 * object
 * array
+* extern_var
+* extern_def
 
 # 真偽値型(boolean type)
 boneにはif文, while文が存在しており、
@@ -248,6 +249,14 @@ while(count) {
     println(count.toString());
     count -= 1;
 }
+````
+
+# Cとのバインディング(binding with c)
+boneからCの変数、関数を参照するには次の関数を使用します。  
+(use next function for reference to function in C from bone)
+````
+stdout := extern_var("stdout");
+fopen := extern_def("fopen", {"path", "mode"}, {"file", "exists"});
 ````
 
 # 例外処理(exception handling)
