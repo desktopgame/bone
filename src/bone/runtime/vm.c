@@ -284,6 +284,10 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 }
                                 break;
                         }
+                        case BN_OP_RETURN: {
+                                PC = env->codeArray->len;
+                                break;
+                        }
                         case BN_OP_PANIC: {
                                 bnStringView name =
                                     g_ptr_array_index(env->codeArray, ++PC);

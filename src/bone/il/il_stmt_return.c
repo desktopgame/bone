@@ -1,4 +1,5 @@
 #include "il_stmt_return.h"
+#include "../runtime/enviroment.h"
 
 bnILStmtReturn* bnNewILStmtReturn(bnILExpression* expr) {
         bnILStmtReturn* ret = BN_MALLOC(sizeof(bnILStmtReturn));
@@ -16,7 +17,9 @@ void bnDumpILStmtReturn(FILE* fp, struct bnStringPool* pool,
 }
 
 void bnGenerateILStmtReturn(struct bnInterpreter* bone, bnILStmtReturn* self,
-                            struct bnEnviroment* env) {}
+                            bnEnviroment* env) {
+        g_ptr_array_add(env->codeArray, BN_OP_RETURN);
+}
 
 void bnDeleteILStmtReturn(bnILStmtReturn* self) {
         bnDeleteILExpression(self->expr);

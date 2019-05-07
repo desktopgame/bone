@@ -1,0 +1,7 @@
+f := def()() {
+    println("return a");
+    return;
+    println("return b");
+    panic e <- "panic";
+};
+f();

@@ -40,6 +40,7 @@ typedef enum bnOpcode {
         BN_OP_GOTO_ELSE,
 
         BN_OP_PANIC,
+        BN_OP_RETURN,
 
         BN_OP_FUNCCALL,
 } bnOpcode;
