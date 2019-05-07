@@ -1,0 +1,8 @@
+// see: Bool_R.in
+true.when := def(self, f)() {
+    if(self) {
+        f();
+    }
+};
+false.when := def(self, f)() {
+};

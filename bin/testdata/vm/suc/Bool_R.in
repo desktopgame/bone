@@ -1,0 +1,9 @@
+include("./testdata/lib/bool.in");
+val := true;
+val.when(def()() {
+    println("aaa");
+});
+val := false;
+val.when(def()() {
+    println("aaa");
+});
