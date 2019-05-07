@@ -251,6 +251,24 @@ while(count) {
 }
 ````
 
+# null
+ありません。(bone is'nt have a null)  
+代わりに存在しない要素が参照された時にはpanicします。  
+````
+a := object();
+println(a.key); // ここでpanic(panic on here)
+
+a := def()(x, y) {
+    x := 10;
+    // yにはデフォルトオブジェクトが入ります。
+    // つまり次のコードと等価です。
+    // (y is default object.
+    // equality to next code.)
+    // y := object();
+    return;
+}
+````
+
 # Cとのバインディング(binding with c)
 boneからCの変数、関数を参照するには次の関数を使用します。  
 (use next function for reference to function in C from bone)
