@@ -1,4 +1,4 @@
-a := { 0, 1, 2 };
+a := [ 0, 1, 2 ];
 a <- load("./testdata/lib/foreach.in");
 a.foreach(def(e)() {
     println(e.toString());

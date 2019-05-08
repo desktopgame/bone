@@ -1,2 +1,2 @@
-exit := extern_def("exit", "", "");
-abort := extern_def("abort", "", "");
+exit := extern_def("exit", [], []);
+abort := extern_def("abort", [], []);

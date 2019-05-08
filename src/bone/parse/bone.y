@@ -337,9 +337,13 @@ lambda_expr
 	}
 	;
 array_lit_expr
-	: LB argument_list RB
+	: LSB argument_list RSB
 	{
 		$$ = bnNewArrayLit($2);
+	}
+	| LSB RSB
+	{
+		$$ = bnNewArrayLit(bnNewBlankAST());
 	}
 	;
 lhs
