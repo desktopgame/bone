@@ -1,4 +1,5 @@
 a := { 0, 1, 2 };
-println(a[0].toString());
-println(a[1].toString());
-println(a[2].toString());
+a <- load("./testdata/lib/foreach.in");
+a.foreach(def(e)() {
+    println(e.toString());
+});

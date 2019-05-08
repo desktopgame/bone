@@ -79,7 +79,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 }
                                 bnArray* ary = bnPopStack(frame->vStack);
                                 for (int i = 0; i < size; i++) {
-                                        g_ptr_array_index(ary->arr, i) =
+                                        g_ptr_array_index(ary->arr,
+                                                          size - (i + 1)) =
                                             bnPopStack(frame->vStack);
                                 }
                                 bnDeleteFrame(sub);
