@@ -282,7 +282,13 @@ boneからCの変数、関数を参照するには次の関数を使用します
 (use next function for reference to function in C from bone)
 ````
 stdout := extern_var("stdout");
-fopen := extern_def("fopen", {"path", "mode"}, {"file", "exists"});
+fopen := extern_def("fopen", ["path", "mode"], ["file", "exists"]);
+````
+
+extern_defの代わりにextern_varを使うこともできます。  
+extern_defを使うことの利点は関数の引数,戻り値をソースコードで表明できる点です。
+````
+fopen := extern_var("fopen");
 ````
 
 # 例外処理(exception handling)
