@@ -1,0 +1,18 @@
+_open := extern_def("fopen", ["path", "mode"], ["file", "error"]);
+putc := extern_def("fputc", ["self", "c"], ["error"]);
+getc := extern_def("fgetc", ["self"], ["c", "error"]);
+close := extern_def("fclose", ["self"], []);
+printf := extern_def("printf", ["self", "fmt", "vargs"], []);
+stdout := extern_var("stdout");
+stderr := extern_var("stderr");
+stdin := extern_var("stdin");
+
+open := def(path, mode)(file, error) {
+    {} <- _open(path, mode);
+    if(error) {
+        return;
+    }
+    file.putc := putc;
+    file.getc := getc;
+    file.close := close;
+};

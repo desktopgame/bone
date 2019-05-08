@@ -1,6 +1,7 @@
 #include "vm.h"
 #include "../glib.h"
 #include "array.h"
+#include "char.h"
 #include "heap.h"
 #include "integer.h"
 #include "lambda.h"
@@ -55,6 +56,12 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         }
                         case BN_OP_GEN_DOUBLE:
                                 break;
+                        case BN_OP_GEN_CHAR: {
+                                char c =
+                                    g_ptr_array_index(env->codeArray, ++PC);
+                                bnPushStack(frame->vStack, bnNewChar(bone, c));
+                                break;
+                        }
                         case BN_OP_GEN_STRING: {
                                 bnStringView name =
                                     g_ptr_array_index(env->codeArray, ++PC);
@@ -138,7 +145,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                             data == BN_OP_GOTO_IF ||
                                             data == BN_OP_GOTO_ELSE ||
                                             data == BN_OP_FUNCCALL ||
-                                            data == BN_OP_PANIC) {
+                                            data == BN_OP_PANIC ||
+                                            data == BN_OP_GEN_CHAR) {
                                                 g_ptr_array_add(
                                                     lmb->u.vEnv->codeArray,
                                                     data);

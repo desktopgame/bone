@@ -17,6 +17,7 @@ typedef enum bnOpcode {
 
         BN_OP_GEN_INT,
         BN_OP_GEN_DOUBLE,
+        BN_OP_GEN_CHAR,
         BN_OP_GEN_STRING,
         BN_OP_GEN_ARRAY,
         BN_OP_GEN_LAMBDA_BEGIN,

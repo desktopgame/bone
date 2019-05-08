@@ -23,6 +23,11 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
                 case BN_OP_GEN_DOUBLE:
                         fprintf(fp, "gen double");
                         break;
+                case BN_OP_GEN_CHAR: {
+                        char c = g_ptr_array_index(ary, ++pos);
+                        fprintf(fp, "gen char(%c)", c);
+                        break;
+                }
                 case BN_OP_GEN_STRING: {
                         bnStringView str = g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "gen string(%s)", bnView2Str(pool, str));
