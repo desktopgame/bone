@@ -18,10 +18,15 @@ bn!TYPE* bnNew!TYPE(char value);
 /**
  * print a information of bn!TYPE.
  * @param fp
+ * @param pool
  * @param self
  * @param depth
  */
-void bnDump!TYPE(FILE* fp, bn!TYPE* self, int depth);
+void bnDump!TYPE(FILE* fp, struct bnStringPool* pool, bn!TYPE* self, int depth);
+
+void bnGenerate!TYPE(struct bnInterpreter* bone,
+                                    bn!TYPE* self,
+                                    struct bnEnviroment* env);
 
 /**
  * free a bn!TYPE.
