@@ -39,13 +39,11 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_SWAP: {
-                                bnDebugStack(stdout, frame->vStack, "preSwap");
                                 void* a = bnPopStack(frame->vStack);
                                 bnObject* obj = a;
                                 void* b = bnPopStack(frame->vStack);
                                 bnPushStack(frame->vStack, a);
                                 bnPushStack(frame->vStack, b);
-                                bnDebugStack(stdout, frame->vStack, "postSwap");
                                 break;
                         }
                         case BN_OP_GEN_INT: {
@@ -169,8 +167,6 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                         }
                                 }
                                 bnPushStack(frame->vStack, lmb);
-                                bnDebugStack(stdout, frame->vStack,
-                                             "postGenLambda");
                                 break;
                         }
                         case BN_OP_GEN_LAMBDA_END: {
