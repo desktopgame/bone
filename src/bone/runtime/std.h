@@ -32,6 +32,10 @@ void bnStdSystemArray(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdSystemRecover(struct bnInterpreter* bone, struct bnFrame* frame);
 
+void bnStdSystemExternVar(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdSystemExternDef(struct bnInterpreter* bone, struct bnFrame* frame);
+
 // Bool
 
 void bnStdBoolFuncCall(struct bnInterpreter* bone, struct bnFrame* frame);

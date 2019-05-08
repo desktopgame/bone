@@ -1,0 +1,2 @@
+exit := extern_def("exit", "", "");
+abort := extern_def("abort", "", "");

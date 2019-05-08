@@ -5,10 +5,11 @@
 #define CAN_BREAK (1)
 #endif
 
+#include <assert.h>
 #include "../bone.h"
-#include "../util/fmt.h"
 #include "../parse/ast2il.h"
 #include "../parse/parser.h"
+#include "../util/fmt.h"
 #include "array.h"
 #include "bool.h"
 #include "enviroment.h"
@@ -73,7 +74,7 @@ void bnStdDebugDumpTable(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void showInfo(bnInterpreter* bone, bnObject* a, int depth) {
-        if(depth > 4) {
+        if (depth > 4) {
                 return;
         }
         GHashTableIter hashIter;
@@ -81,15 +82,15 @@ static void showInfo(bnInterpreter* bone, bnObject* a, int depth) {
         g_hash_table_iter_init(&hashIter, a->table);
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
                 const char* strk = bnView2Str(bone->pool, k);
-                for(int i=0; i<depth; i++) fprintf(BN_STDOUT, "    ");
-                //bnFindent(BN_STDOUT, depth);
+                for (int i = 0; i < depth; i++) fprintf(BN_STDOUT, "    ");
+                // bnFindent(BN_STDOUT, depth);
                 fprintf(BN_STDOUT, "%s", strk);
                 fprintf(BN_STDOUT, "[");
                 bnPrintObject(BN_STDOUT, v);
                 fprintf(BN_STDOUT, "]");
                 fprintf(BN_STDOUT, "\n");
-                if(a != v) {
-                        showInfo(bone, v, depth  + 1);
+                if (a != v) {
+                        showInfo(bone, v, depth + 1);
                 }
         }
 }
@@ -119,7 +120,7 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
                 bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
         }
         // gen code
-        bnFrame* sub = bnNewFrame();
+        bnFrame* sub = bnSubFrame(frame);
         bnEnviroment* env = bnNewEnviroment();
         bnGenerateILTopLevel(bone, iltop, env);
         bnInjectFrame(frame->variableTable, sub);
@@ -128,6 +129,7 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
         bnDeleteAST(ast);
         bnDeleteILTopLevel(iltop);
         bnDeleteEnviroment(env);
+        bnDeleteFrame(sub);
 }
 
 void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
@@ -147,7 +149,7 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
                 bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
         }
         // gen code
-        bnFrame* sub = bnNewFrame();
+        bnFrame* sub = bnSubFrame(frame);
         bnEnviroment* env = bnNewEnviroment();
         bnGenerateILTopLevel(bone, iltop, env);
         bnWriteDefaults(bone, sub, bone->pool);
@@ -160,6 +162,7 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
                 keys = g_list_append(keys, v);
         }
         bnExecute(bone, env, sub);
+        assert(frame->panic == NULL);
         // remove default
         GList* listIter = keys;
         while (listIter != NULL) {
@@ -171,6 +174,7 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
         bnDeleteAST(ast);
         bnDeleteILTopLevel(iltop);
         bnDeleteEnviroment(env);
+        bnDeleteFrame(sub);
 }
 
 void bnStdSystemObject(bnInterpreter* bone, bnFrame* frame) {
@@ -206,6 +210,32 @@ void bnStdSystemRecover(bnInterpreter* bone, bnFrame* frame) {
         bone->nativeAlloc = g_list_remove(bone->nativeAlloc, a);
         bnDeleteFrame(sub);
         bnGC(bone);
+}
+
+void bnStdSystemExternVar(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* name = bnPopStack(frame->vStack);
+        if (name->type != BN_OBJECT_STRING) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        gpointer v =
+            g_hash_table_lookup(bone->externTable, ((bnString*)name)->value);
+        bnObject* obj = v;
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             obj);
+}
+
+void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* name = bnPopStack(frame->vStack);
+        bnObject* params = bnPopStack(frame->vStack);
+        bnObject* returns = bnPopStack(frame->vStack);
+        if (name->type != BN_OBJECT_STRING) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        gpointer v =
+            g_hash_table_lookup(bone->externTable, ((bnString*)name)->value);
+        bnObject* obj = v;
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             obj);
 }
 // Bool
 

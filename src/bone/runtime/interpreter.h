@@ -2,8 +2,8 @@
 #define BONE_RUNTIME_INTERPRETER_H
 #include <setjmp.h>
 #include <stdbool.h>
-#include "../util/string_pool.h"
 #include "../glib.h"
+#include "../util/string_pool.h"
 
 #define BN_JMP_CODE_EXCEPTION (1)
 
@@ -14,6 +14,7 @@ struct bnHeap;
 typedef struct bnInterpreter {
         const char* filenameRef;
         GList* nativeAlloc;
+        GHashTable* externTable;
         struct bnStringPool* pool;
         struct bnFrame* frame;
         struct bnHeap* heap;

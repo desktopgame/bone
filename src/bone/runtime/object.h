@@ -6,6 +6,8 @@ struct bnInterpreter;
 struct bnFrame;
 struct bnHeap;
 
+typedef void (*bnFreeObjectFunc)(struct bnObject* self);
+
 typedef enum bnObjectType {
         BN_OBJECT_PROTO,
         BN_OBJECT_INTEGER,
@@ -21,6 +23,9 @@ typedef struct bnObject {
         GHashTable* table;
         bool mark;
         bnObjectType type;
+#if DEBUG
+        int dbg;
+#endif
 } bnObject;
 
 void bnInitObject(struct bnHeap* heap, bnObject* self, bnObjectType type);

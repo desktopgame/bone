@@ -19,8 +19,17 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef) {
         ret->pool = bnNewStringPool();
         ret->heap = bnNewHeap();
         ret->frame = NULL;
+        ret->externTable =
+            g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         ret->__exception = NULL;
         ret->nativeAlloc = NULL;
+        bnObject* dbga = bnNewInteger(ret, 0);
+        bnObject* dbgb = bnNewInteger(ret, 0);
+        dbga->dbg = dbgb->dbg = 1;
+        g_hash_table_replace(ret->externTable, bnIntern(ret->pool, "exit"),
+                             dbga);
+        g_hash_table_replace(ret->externTable, bnIntern(ret->pool, "abort"),
+                             dbgb);
         return ret;
 }
 
@@ -46,6 +55,7 @@ int bnEval(bnInterpreter* self) {
         self->frame->panic = NULL;
         bnDeleteILTopLevel(iltop);
         bnDeleteEnviroment(env);
+        // g_hash_table_remove_all(self->externTable);
         bnGC(self);
         bnDeleteFrame(self->frame);
         self->frame = NULL;
@@ -112,6 +122,17 @@ void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
             bnNewLambdaFromCFunc(self, bnStdSystemRecover, pool, BN_C_ADD_PARAM,
                                  "lambda", BN_C_ADD_RETURN, "...",
                                  BN_C_ADD_EXIT));
+        g_hash_table_replace(
+            frame->variableTable, bnIntern(pool, "extern_var"),
+            bnNewLambdaFromCFunc(self, bnStdSystemExternVar, pool,
+                                 BN_C_ADD_PARAM, "name", BN_C_ADD_RETURN, "ret",
+                                 BN_C_ADD_EXIT));
+        g_hash_table_replace(
+            frame->variableTable, bnIntern(pool, "extern_def"),
+            bnNewLambdaFromCFunc(self, bnStdSystemExternDef, pool,
+                                 BN_C_ADD_PARAM, "name", BN_C_ADD_PARAM,
+                                 "params", BN_C_ADD_PARAM, "returns",
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
 }
 
 void bnPanic(bnInterpreter* self, bnObject* exception, int code) {
@@ -138,5 +159,6 @@ bnObject* bnGetFalse(struct bnStringPool* pool, bnFrame* frame) {
 void bnDeleteInterpreter(bnInterpreter* self) {
         bnDeleteStringPool(self->pool);
         bnDeleteHeap(self->heap);
+        g_hash_table_destroy(self->externTable);
         BN_FREE(self);
 }

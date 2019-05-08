@@ -18,6 +18,7 @@ void bnInitObject(struct bnHeap* heap, bnObject* self, bnObjectType type) {
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         self->mark = false;
         self->type = type;
+        self->dbg = 0;
         bnAddToHeap(heap, self);
 }
 

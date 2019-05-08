@@ -16,6 +16,7 @@ typedef struct bnHeap {
 
 static void gc_clear(bnHeap* self, bnFrame* frame);
 static void gc_mark(bnHeap* self, bnFrame* frame);
+static void gc_mark_extern(bnInterpreter* bone);
 static void gc_mark_native(bnInterpreter* bone);
 static void gc_mark_rec(bnObject* obj);
 static void gc_mark_array(bnArray* array);
@@ -43,6 +44,7 @@ void bnGC(bnInterpreter* bone) {
         g_rec_mutex_lock(&gHeapMtx);
         gc_clear(self, frame);
         gc_mark(self, frame);
+        gc_mark_extern(bone);
         gc_mark_native(bone);
         gc_sweep(self, frame);
         g_rec_mutex_unlock(&gHeapMtx);
@@ -84,6 +86,17 @@ static void gc_mark(bnHeap* self, bnFrame* frame) {
         }
         if (frame->panic) {
                 gc_mark_rec(frame->panic);
+        }
+}
+
+static void gc_mark_extern(bnInterpreter* bone) {
+        GHashTableIter hashIter;
+        gpointer k, v;
+        g_hash_table_iter_init(&hashIter, bone->externTable);
+        while (g_hash_table_iter_next(&hashIter, &k, &v)) {
+                const char* str = bnView2Str(bone->pool, k);
+                bnObject* obj = v;
+                gc_mark_rec(v);
         }
 }
 
@@ -140,6 +153,7 @@ static void gc_sweep(bnHeap* self, bnFrame* frame) {
                 if (a->mark) {
                         ret = g_list_append(ret, a);
                 } else {
+                        assert(a->dbg == 0);
                         sweep++;
                         BN_FREE(a);
                 }
