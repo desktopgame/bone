@@ -2,7 +2,9 @@
 
 
 ## MacOSの場合(when on MacOS)
-* まず、cmake, glibをインストールします。(in first, install the cmake and glib)
+* まず、homebrewをインストールします。(in first, install homebrew)
+    * [homebrew](https://brew.sh/index_ja.html)
+* 次に、cmake, glibをインストールします。(in next, install the cmake and glib)
 ````
 brew install glib
 brew install cmake
