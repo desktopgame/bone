@@ -22,6 +22,12 @@ bnAST* bnNewBlankAST() {
         return ret;
 }
 
+bnAST* bnNewArrayLit(bnAST* aargs) {
+        bnAST* ret = bnNewAST(BN_AST_ARRAY_LITERAL);
+        bnPushAST(ret, aargs);
+        return ret;
+}
+
 bnAST* bnNewPanicAST(bnStringView name, bnAST* aexpr) {
         bnAST* ret = bnNewAST(BN_AST_PANIC);
         ret->u.svvalue = name;

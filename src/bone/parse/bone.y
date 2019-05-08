@@ -39,6 +39,7 @@
 	expression_nobrace
 	call_expr
 	lambda_expr
+	array_lit_expr
 	lhs
 	primary
 %right ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN AND_ASSIGN OR_ASSIGN LSHIFT_ASSIGN RSHIFT_ASSIGN EXC_OR_ASSIGN
@@ -335,6 +336,12 @@ lambda_expr
 		$$ = bnNewLambdaAST($3, bnNewDotDotDotAST(), $8);
 	}
 	;
+array_lit_expr
+	: LB argument_list RB
+	{
+		$$ = bnNewArrayLit($2);
+	}
+	;
 lhs
 	: IDENT
 	{
@@ -355,5 +362,6 @@ primary
 	| STRING_LITERAL
 	| CHAR_LITERAL
 	| lambda_expr
+	| array_lit_expr
 	;
 %%

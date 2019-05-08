@@ -197,6 +197,11 @@ static bnILExpression* ast2expr(bnAST* a) {
                 ret->type = BN_IL_EXPR_ARRAY_SUBSCRIPT;
                 ret->u.vArraySub = bnNewILExprArraySubscript(
                     ast2expr(bnFirstAST(a)), ast2expr(bnSecondAST(a)));
+        } else if (a->tag == BN_AST_ARRAY_LITERAL) {
+                ret->type = BN_IL_EXPR_ARRAY_LIT;
+                ret->u.vArrayLit = bnNewILExprArrayLit();
+                ret->u.vArrayLit->expressions =
+                    ast2args(bnFirstAST(a), ret->u.vArrayLit->expressions);
         } else {
                 assert(false);
         }

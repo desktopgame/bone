@@ -58,6 +58,10 @@ void bnDumpILExpression(FILE* fp, struct bnStringPool* pool,
                         bnDumpILExprArraySubscript(fp, pool, self->u.vArraySub,
                                                    depth);
                         break;
+                case BN_IL_EXPR_ARRAY_LIT:
+                        bnDumpILExprArrayLit(fp, pool, self->u.vArrayLit,
+                                             depth);
+                        break;
                 default:
                         assert(false);
                         break;
@@ -108,6 +112,9 @@ void bnGenerateILExpression(struct bnInterpreter* bone, bnILExpression* self,
                         bnGenerateILExprArraySubscript(bone, self->u.vArraySub,
                                                        env);
                         break;
+                case BN_IL_EXPR_ARRAY_LIT:
+                        bnGenerateILExprArrayLit(bone, self->u.vArrayLit, env);
+                        break;
                 default:
                         assert(false);
                         break;
@@ -156,6 +163,9 @@ void bnDeleteILExpression(bnILExpression* self) {
                         break;
                 case BN_IL_EXPR_ARRAY_SUBSCRIPT:
                         bnDeleteILExprArraySubscript(self->u.vArraySub);
+                        break;
+                case BN_IL_EXPR_ARRAY_LIT:
+                        bnDeleteILExprArrayLit(self->u.vArrayLit);
                         break;
                 default:
                         assert(false);
