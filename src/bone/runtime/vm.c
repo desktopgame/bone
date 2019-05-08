@@ -1,5 +1,7 @@
 #include "vm.h"
 #include "../glib.h"
+#include "array.h"
+#include "heap.h"
 #include "integer.h"
 #include "lambda.h"
 #include "opcode.h"
@@ -60,6 +62,31 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                     g_ptr_array_index(env->codeArray, ++PC);
                                 bnPushStack(frame->vStack,
                                             bnNewString(bone, name));
+                                break;
+                        }
+                        case BN_OP_GEN_ARRAY: {
+                                int size =
+                                    g_ptr_array_index(env->codeArray, ++PC);
+                                bnPushStack(frame->vStack,
+                                            bnNewInteger(bone, size));
+                                bnFrame* sub = bnFuncCall(
+                                    g_hash_table_lookup(
+                                        frame->variableTable,
+                                        bnIntern(bone->pool, "array")),
+                                    bone, frame, 1);
+                                if (sub->panic) {
+                                        frame->panic = sub->panic;
+                                        frame->panicName = sub->panicName;
+                                        break;
+                                }
+                                bnArray* ary = bnPopStack(frame->vStack);
+                                for (int i = 0; i < size; i++) {
+                                        g_ptr_array_index(ary->arr, i) =
+                                            bnPopStack(frame->vStack);
+                                }
+                                bnDeleteFrame(sub);
+                                bnPushStack(frame->vStack, ary);
+                                bnGC(bone);
                                 break;
                         }
                         case BN_OP_GEN_LAMBDA_BEGIN: {

@@ -28,6 +28,11 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
                         fprintf(fp, "gen string(%s)", bnView2Str(pool, str));
                         break;
                 }
+                case BN_OP_GEN_ARRAY: {
+                        int size = g_ptr_array_index(ary, ++pos);
+                        fprintf(fp, "gen array(%d)", size);
+                        break;
+                }
                 case BN_OP_GEN_LAMBDA_BEGIN: {
                         int parameterLen = g_ptr_array_index(ary, ++pos);
                         pos += parameterLen;
