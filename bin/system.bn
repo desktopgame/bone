@@ -1,2 +1,2 @@
-exit := extern_def("exit", [], []);
+exit := extern_def("exit", ["status"], []);
 abort := extern_def("abort", [], []);

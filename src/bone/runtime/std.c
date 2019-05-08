@@ -231,9 +231,24 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
         if (name->type != BN_OBJECT_STRING) {
                 bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
         }
+        // find from extern table
         gpointer v =
             g_hash_table_lookup(bone->externTable, ((bnString*)name)->value);
         bnObject* obj = v;
+        if (obj->type != BN_OBJECT_LAMBDA) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        // check parameters
+        bnLambda* lambda = obj;
+        bnArray* paraArr = params;
+        if (paraArr->arr->len != g_list_length(lambda->parameters)) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        // check returns
+        bnArray* retuArr = returns;
+        if (retuArr->arr->len != g_list_length(lambda->returns)) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              obj);
 }

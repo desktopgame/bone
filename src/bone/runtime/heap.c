@@ -153,7 +153,6 @@ static void gc_sweep(bnHeap* self, bnFrame* frame) {
                 if (a->mark) {
                         ret = g_list_append(ret, a);
                 } else {
-                        assert(a->dbg == 0);
                         sweep++;
                         BN_FREE(a);
                 }

@@ -5,6 +5,7 @@
 #include "../parse/parser.h"
 #include "bool.h"
 #include "enviroment.h"
+#include "extern.h"
 #include "frame.h"
 #include "heap.h"
 #include "integer.h"
@@ -23,13 +24,13 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef) {
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         ret->__exception = NULL;
         ret->nativeAlloc = NULL;
-        bnObject* dbga = bnNewInteger(ret, 0);
-        bnObject* dbgb = bnNewInteger(ret, 0);
-        dbga->dbg = dbgb->dbg = 1;
-        g_hash_table_replace(ret->externTable, bnIntern(ret->pool, "exit"),
-                             dbga);
-        g_hash_table_replace(ret->externTable, bnIntern(ret->pool, "abort"),
-                             dbgb);
+        g_hash_table_replace(
+            ret->externTable, bnIntern(ret->pool, "exit"),
+            bnNewLambdaFromCFunc(ret, bnExtExit, ret->pool, BN_C_ADD_PARAM,
+                                 "status", BN_C_ADD_EXIT));
+        g_hash_table_replace(
+            ret->externTable, bnIntern(ret->pool, "abort"),
+            bnNewLambdaFromCFunc(ret, bnExtAbort, ret->pool, BN_C_ADD_EXIT));
         return ret;
 }
 

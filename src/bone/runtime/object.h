@@ -23,9 +23,6 @@ typedef struct bnObject {
         GHashTable* table;
         bool mark;
         bnObjectType type;
-#if DEBUG
-        int dbg;
-#endif
 } bnObject;
 
 void bnInitObject(struct bnHeap* heap, bnObject* self, bnObjectType type);
