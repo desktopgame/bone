@@ -7,5 +7,3 @@ bnChar* bnNewChar(bnInterpreter* bone, char value) {
         ret->value = value;
         return ret;
 }
-
-void bnDeleteChar(bnChar* self) { bnDeleteObject(self); }

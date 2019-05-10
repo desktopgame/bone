@@ -18,10 +18,4 @@ typedef struct bnChar {
  */
 bnChar* bnNewChar(struct bnInterpreter* bone, char value);
 
-/**
- * free a bnChar.
- * @param name
- * @return
- */
-void bnDeleteChar(bnChar* self);
 #endif

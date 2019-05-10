@@ -18,11 +18,4 @@ typedef struct bnArray {
  * @return
  */
 bnArray* bnNewArray(struct bnInterpreter* bone, int size);
-
-/**
- * free a bnArray.
- * @param name
- * @return
- */
-void bnDeleteArray(bnArray* self);
 #endif

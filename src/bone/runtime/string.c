@@ -14,5 +14,3 @@ bnString* bnNewString(bnInterpreter* bone, bnStringView value) {
                                       BN_C_ADD_EXIT));
         return ret;
 }
-
-void bnDeleteString(bnString* self) {}

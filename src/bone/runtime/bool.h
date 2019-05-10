@@ -18,11 +18,4 @@ typedef struct bnBool {
  * @return
  */
 bnBool* bnNewBool(struct bnInterpreter* bone, bool value);
-
-/**
- * free a bnBool.
- * @param name
- * @return
- */
-void bnDeleteBool(bnBool* self);
 #endif

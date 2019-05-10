@@ -7,5 +7,3 @@ bnDouble* bnNewDouble(bnInterpreter* bone, double value) {
         ret->value = value;
         return ret;
 }
-
-void bnDeleteDouble(bnDouble* self) { bnDeleteObject(self); }

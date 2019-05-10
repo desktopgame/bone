@@ -15,5 +15,3 @@ bnBool* bnNewBool(bnInterpreter* bone, bool value) {
                                       "ret", BN_C_ADD_EXIT));
         return ret;
 }
-
-void bnDeleteBool(bnBool* self) { bnDeleteObject(self); }

@@ -69,5 +69,3 @@ bnInteger* bnNewInteger(bnInterpreter* bone, int value) {
                                       BN_C_ADD_EXIT));
         return ret;
 }
-
-void bnDeleteInteger(bnInteger* self) { bnDeleteObject(self); }

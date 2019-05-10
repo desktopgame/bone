@@ -18,10 +18,4 @@ typedef struct bnDouble {
  */
 bnDouble* bnNewDouble(struct bnInterpreter* bone, double value);
 
-/**
- * free a bnDouble.
- * @param name
- * @return
- */
-void bnDeleteDouble(bnDouble* self);
 #endif

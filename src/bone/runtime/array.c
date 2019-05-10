@@ -27,5 +27,3 @@ bnArray* bnNewArray(bnInterpreter* bone, int size) {
                                       BN_C_ADD_EXIT));
         return ret;
 }
-
-void bnDeleteArray(bnArray* self) {}

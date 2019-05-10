@@ -19,10 +19,4 @@ typedef struct bnString {
  */
 bnString* bnNewString(bnInterpreter* bone, bnStringView value);
 
-/**
- * free a bnString.
- * @param name
- * @return
- */
-void bnDeleteString(bnString* self);
 #endif

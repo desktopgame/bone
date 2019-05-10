@@ -19,10 +19,4 @@ typedef struct bnInteger {
  */
 bnInteger* bnNewInteger(bnInterpreter* bone, int value);
 
-/**
- * free a bnInteger.
- * @param name
- * @return
- */
-void bnDeleteInteger(bnInteger* self);
 #endif
