@@ -1,9 +1,12 @@
 #include "lambda.h"
 #include "interpreter.h"
 
+static void free_lambda(bnObject* obj);
+
 bnLambda* bnNewLambda(bnInterpreter* bone, bnLambdaType type) {
         bnLambda* ret = BN_MALLOC(sizeof(bnLambda));
         bnInitObject(bone->heap, &ret->base, BN_OBJECT_LAMBDA);
+        ret->base.freeFunc = free_lambda;
         ret->type = type;
         ret->parameters = NULL;
         ret->returns = NULL;
@@ -52,4 +55,13 @@ bool bnIsVariadicReturn(struct bnStringPool* pool, bnLambda* self) {
                 return true;
         }
         return false;
+}
+
+static void free_lambda(bnObject* obj) {
+        obj->freeFunc = NULL;
+        bnLambda* lmb = obj;
+        g_hash_table_destroy(lmb->outer);
+        g_list_free(lmb->parameters);
+        g_list_free(lmb->returns);
+        bnDeleteObject(obj);
 }
