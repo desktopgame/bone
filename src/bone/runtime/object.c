@@ -147,4 +147,7 @@ bnStringView bnGetExportVariableName(struct bnStringPool* pool,
         return bnIntern(pool, buf);
 }
 
-void bnDeleteObject(bnObject* self) {}
+void bnDeleteObject(bnObject* self) {
+        g_hash_table_destroy(self->table);
+        BN_FREE(self);
+}

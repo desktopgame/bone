@@ -154,7 +154,7 @@ static void gc_sweep(bnHeap* self, bnFrame* frame) {
                         ret = g_list_append(ret, a);
                 } else {
                         sweep++;
-                        BN_FREE(a);
+                        bnDeleteObject(a);
                 }
                 iter->data = NULL;
                 iter = iter->next;
