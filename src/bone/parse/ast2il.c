@@ -7,6 +7,7 @@
 static GList* ast2params(bnAST* a, GList* dest);
 static GList* ast2args(bnAST* a, GList* dest);
 static bnILExprBinOp* ast2ilbinop(bnAST* a, bnILBinOpType type);
+static bnILExprUOp* ast2iluop(bnAST* a, bnILUOpType type);
 static void ast2assign(bnILExpression* expr, bnAST* a, bnILBinOpType type);
 static bnILExpression* ast2expr(bnAST* a);
 static bnILStatement* ast2stmt(bnAST* a);
@@ -52,6 +53,12 @@ static bnILExprBinOp* ast2ilbinop(bnAST* a, bnILBinOpType type) {
         bnAST* right = bnSecondAST(a);
         ret->left = ast2expr(left);
         ret->right = ast2expr(right);
+        return ret;
+}
+
+static bnILExprUOp* ast2iluop(bnAST* a, bnILUOpType type) {
+        bnILExprUOp* ret = bnNewILExprUOp(type);
+        ret->a = ast2expr(bnFirstAST(a));
         return ret;
 }
 
@@ -170,6 +177,9 @@ static bnILExpression* ast2expr(bnAST* a) {
         } else if (a->tag == BN_AST_EQUAL) {
                 ret->type = BN_IL_EXPR_BINOP;
                 ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_EQUAL);
+        } else if(a->tag == BN_AST_NOT) {
+                ret->type = BN_IL_EXPR_UOP;
+                ret->u.vUOp = ast2iluop(a, BN_IL_UNOP_NOT);
         } else if (a->tag == BN_AST_NOTEQUAL) {
                 ret->type = BN_IL_EXPR_BINOP;
                 ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_NOTEQUAL);
