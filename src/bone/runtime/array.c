@@ -5,11 +5,15 @@
 #include "lambda.h"
 #include "std.h"
 
+static void free_array(bnObject* obj);
+
 bnArray* bnNewArray(bnInterpreter* bone, int size) {
         bnArray* ret = BN_MALLOC(sizeof(bnArray));
         bnInitObject(bone->heap, &ret->base, BN_OBJECT_ARRAY);
+        ret->base.freeFunc = free_array;
         ret->arr = g_ptr_array_new();
         ret->size = size;
+        g_ptr_array_set_free_func(ret->arr, NULL);
         for (int i = 0; i < size; i++) {
                 g_ptr_array_add(ret->arr, bnNewObject(bone->heap));
         }
@@ -26,4 +30,11 @@ bnArray* bnNewArray(bnInterpreter* bone, int size) {
                                       "index", BN_C_ADD_RETURN, "ret",
                                       BN_C_ADD_EXIT));
         return ret;
+}
+
+static void free_array(bnObject* obj) {
+        obj->freeFunc = NULL;
+        bnArray* arr = obj;
+        g_ptr_array_unref(arr->arr);
+        bnDeleteObject(obj);
 }
