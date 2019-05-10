@@ -6,11 +6,26 @@
 #define BN_STDERR (bnStderr())
 #define BN_STDIN (bnStdin())
 
+/**
+ * save a instance of stdout, stderr and stdin.
+ */
 void bnInitIO();
 
+/**
+ * return a saved instance of stdout.
+ * @return
+ */
 FILE* bnStdout();
 
+/**
+ * return a saved instance of stderr.
+ * @return
+ */
 FILE* bnStderr();
 
+/**
+ * return a saved instance of stdin
+ * @return
+ */
 FILE* bnStdin();
 #endif
