@@ -8,6 +8,7 @@
 typedef struct bnBool {
         bnObject base;
         bool value;
+        struct bnBool* r;
 } bnBool;
 
 /**

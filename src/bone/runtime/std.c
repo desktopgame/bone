@@ -262,7 +262,15 @@ void bnStdBoolNegative(bnInterpreter* bone, bnFrame* frame);
 
 void bnStdBoolChilda(bnInterpreter* bone, bnFrame* frame);
 
-void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame);
+void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_BOOL) {
+                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+        }
+        bnBool* b = a;
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             b->r);
+}
 
 void bnStdBoolPlus(bnInterpreter* bone, bnFrame* frame);
 
