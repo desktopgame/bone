@@ -180,6 +180,17 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                             g_list_append(
                                                                 lmb->returns,
                                                                 name);
+                                                } else {
+                                                        g_ptr_array_add(
+                                                            lmb->u.vEnv
+                                                                ->codeArray,
+                                                            data);
+                                                        g_ptr_array_add(
+                                                            lmb->u.vEnv
+                                                                ->codeArray,
+                                                            g_ptr_array_index(
+                                                                env->codeArray,
+                                                                ++PC));
                                                 }
                                         } else {
                                                 g_ptr_array_add(
