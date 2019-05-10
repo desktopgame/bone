@@ -53,10 +53,4 @@ bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnLambda* self);
 
 bool bnIsVariadicReturn(struct bnStringPool* pool, bnLambda* self);
 
-/**
- * free a bnLambda.
- * @param name
- * @return
- */
-void bnDeleteLambda(bnLambda* self);
 #endif

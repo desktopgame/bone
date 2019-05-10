@@ -53,5 +53,3 @@ bool bnIsVariadicReturn(struct bnStringPool* pool, bnLambda* self) {
         }
         return false;
 }
-
-void bnDeleteLambda(bnLambda* self) {}
