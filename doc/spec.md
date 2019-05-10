@@ -320,6 +320,10 @@ if(val.error) {
 パニックとリカバーは試験的に導入されている機能です。  
 (panic and recover is experimental function)
 
+クロージャの中でパニックが宣言されると、暗黙のうちに戻り値が追加されます。  
+その値はデフォルトで false になります。  
+(add return value on implicit, if declared panic on closure expression.  
+it value initialized by false)
 ````
 panicはステートメントです。以下の書式をとります。
 (panic is statement. syntax is next)

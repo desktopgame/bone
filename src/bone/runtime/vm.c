@@ -169,6 +169,18 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                 g_ptr_array_add(
                                                     lmb->u.vEnv->codeArray,
                                                     data);
+                                        } else if (data ==
+                                                   BN_OP_PANIC_PREPARE) {
+                                                if (lambdaNest == 1) {
+                                                        bnStringView name =
+                                                            g_ptr_array_index(
+                                                                env->codeArray,
+                                                                ++PC);
+                                                        lmb->returns =
+                                                            g_list_append(
+                                                                lmb->returns,
+                                                                name);
+                                                }
                                         } else {
                                                 g_ptr_array_add(
                                                     lmb->u.vEnv->codeArray,
@@ -337,6 +349,10 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
 
                                 bnDeleteFrame(sub);
                                 bnGC(bone);
+                                break;
+                        }
+                        case BN_OP_PANIC_PREPARE: {
+                                PC++;
                                 break;
                         }
                 }

@@ -5,6 +5,8 @@
 #include "label.h"
 #include "opcode.h"
 
+struct bnLambda;
+
 typedef struct bnEnviroment {
         GPtrArray* codeArray;
         GPtrArray* labels;
@@ -46,6 +48,12 @@ void bnGenerateEnterLambda(bnEnviroment* self);
  * @param self
  */
 void bnGenerateExitLambda(bnEnviroment* self);
+
+/**
+ * @param self
+ * @return
+ */
+int bnGetPrependPos(bnEnviroment* self);
 
 /**
  * free a bnEnviroment.

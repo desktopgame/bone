@@ -67,10 +67,12 @@ int bnEval(bnInterpreter* self) {
 void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
                      struct bnStringPool* pool) {
         // declare true, false
-        g_hash_table_replace(frame->variableTable, bnIntern(pool, "true"),
-                             bnNewBool(self, true));
-        g_hash_table_replace(frame->variableTable, bnIntern(pool, "false"),
-                             bnNewBool(self, false));
+        bnBool* t = bnNewBool(self, true);
+        bnBool* f = bnNewBool(self, false);
+        t->r = f;
+        f->r = t;
+        g_hash_table_replace(frame->variableTable, bnIntern(pool, "true"), t);
+        g_hash_table_replace(frame->variableTable, bnIntern(pool, "false"), f);
 #if DEBUG
         g_hash_table_replace(
             frame->variableTable, bnIntern(pool, "assert"),

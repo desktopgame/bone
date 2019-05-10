@@ -1,4 +1,5 @@
 #include "enviroment.h"
+#include "lambda.h"
 
 bnEnviroment* bnNewEnviroment() {
         bnEnviroment* ret = BN_MALLOC(sizeof(bnEnviroment));
@@ -30,6 +31,13 @@ void bnGenerateEnterLambda(bnEnviroment* self) {
 
 void bnGenerateExitLambda(bnEnviroment* self) {
         bnPopStack(self->labelFixStack);
+}
+
+int bnGetPrependPos(bnEnviroment* self) {
+        if (bnGetStackSize(self->labelFixStack) == 0) {
+                return 0;
+        }
+        return bnPeekStack(self->labelFixStack);
 }
 
 void bnGenerateFillNOP(bnEnviroment* self, int count) {

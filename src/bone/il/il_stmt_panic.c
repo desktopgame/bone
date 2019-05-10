@@ -2,6 +2,7 @@
 #include "../runtime/enviroment.h"
 #include "../runtime/interpreter.h"
 #include "../runtime/keyword.h"
+#include "../runtime/lambda.h"
 #include "il_expression.h"
 
 bnILStmtPanic* bnNewILStmtPanic(bnStringView name, bnILExpression* expr) {
@@ -28,6 +29,18 @@ void bnGenerateILStmtPanic(bnInterpreter* bone, bnILStmtPanic* self,
         g_ptr_array_add(env->codeArray, self->name);
         g_ptr_array_add(env->codeArray, BN_OP_PANIC);
         g_ptr_array_add(env->codeArray, self->name);
+        g_ptr_array_insert(env->codeArray, bnGetPrependPos(env) + 0,
+                           BN_OP_PANIC_PREPARE);
+        g_ptr_array_insert(env->codeArray, bnGetPrependPos(env) + 1,
+                           self->name);
+        g_ptr_array_insert(env->codeArray, bnGetPrependPos(env) + 2,
+                           BN_OP_LOAD);
+        g_ptr_array_insert(env->codeArray, bnGetPrependPos(env) + 3,
+                           bnIntern(bone->pool, "false"));
+        g_ptr_array_insert(env->codeArray, bnGetPrependPos(env) + 4,
+                           BN_OP_STORE);
+        g_ptr_array_insert(env->codeArray, bnGetPrependPos(env) + 5,
+                           self->name);
 }
 
 void bnDeleteILStmtPanic(bnILStmtPanic* self) {}

@@ -118,6 +118,12 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
                         fprintf(fp, "funccall %d", argc);
                         break;
                 }
+                case BN_OP_PANIC_PREPARE: {
+                        bnStringView name =
+                            (bnStringView)g_ptr_array_index(ary, ++pos);
+                        fprintf(fp, "panic prepare %s", bnView2Str(pool, name));
+                        break;
+                }
         }
         return pos + 1;
 }
