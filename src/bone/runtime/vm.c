@@ -131,6 +131,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 int lambdaNest = 1;
                                 // generate code
                                 while (1) {
+                                        assert(PC < env->codeArray->len);
                                         gpointer data = g_ptr_array_index(
                                             env->codeArray, ++PC);
                                         // bug if index of string view equal
@@ -145,7 +146,6 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                             data == BN_OP_GOTO_IF ||
                                             data == BN_OP_GOTO_ELSE ||
                                             data == BN_OP_FUNCCALL ||
-                                            data == BN_OP_PANIC ||
                                             data == BN_OP_GEN_CHAR) {
                                                 g_ptr_array_add(
                                                     lmb->u.vEnv->codeArray,
@@ -169,29 +169,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                 g_ptr_array_add(
                                                     lmb->u.vEnv->codeArray,
                                                     data);
-                                        } else if (data ==
-                                                   BN_OP_PANIC_PREPARE) {
-                                                if (lambdaNest == 1) {
-                                                        bnStringView name =
-                                                            g_ptr_array_index(
-                                                                env->codeArray,
-                                                                ++PC);
-                                                        lmb->returns =
-                                                            g_list_append(
-                                                                lmb->returns,
-                                                                name);
-                                                } else {
-                                                        g_ptr_array_add(
-                                                            lmb->u.vEnv
-                                                                ->codeArray,
-                                                            data);
-                                                        g_ptr_array_add(
-                                                            lmb->u.vEnv
-                                                                ->codeArray,
-                                                            g_ptr_array_index(
-                                                                env->codeArray,
-                                                                ++PC));
-                                                }
+
                                         } else {
                                                 g_ptr_array_add(
                                                     lmb->u.vEnv->codeArray,
@@ -343,14 +321,6 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 PC = env->codeArray->len;
                                 break;
                         }
-                        case BN_OP_PANIC: {
-                                bnStringView name =
-                                    g_ptr_array_index(env->codeArray, ++PC);
-                                bnObject* panic = bnPopStack(frame->vStack);
-                                frame->panicName = name;
-                                frame->panic = panic;
-                                break;
-                        }
                         case BN_OP_FUNCCALL: {
                                 bnObject* lambda = bnPopStack(frame->vStack);
                                 int argc =
@@ -360,10 +330,6 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
 
                                 bnDeleteFrame(sub);
                                 bnGC(bone);
-                                break;
-                        }
-                        case BN_OP_PANIC_PREPARE: {
-                                PC++;
                                 break;
                         }
                 }

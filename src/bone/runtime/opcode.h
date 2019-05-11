@@ -40,12 +40,10 @@ typedef enum bnOpcode {
         BN_OP_GOTO_IF,
         BN_OP_GOTO_ELSE,
 
-        BN_OP_PANIC,
         BN_OP_RETURN,
 
         BN_OP_FUNCCALL,
         BN_OP_GEN_CHAR,
-        BN_OP_PANIC_PREPARE,
 } bnOpcode;
 
 int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary, int pos);
