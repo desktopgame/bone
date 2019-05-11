@@ -115,3 +115,14 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
         }
         return pos + 1;
 }
+
+int bnOperands(bnOpcode data) {
+        if (data == BN_OP_STORE || data == BN_OP_LOAD || data == BN_OP_PUT ||
+            data == BN_OP_GET || data == BN_OP_GEN_INT ||
+            data == BN_OP_GEN_STRING || data == BN_OP_GOTO ||
+            data == BN_OP_GOTO_IF || data == BN_OP_GOTO_ELSE ||
+            data == BN_OP_FUNCCALL || data == BN_OP_GEN_CHAR) {
+                return 1;
+        }
+        return 0;
+}

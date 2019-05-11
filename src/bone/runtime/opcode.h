@@ -47,4 +47,6 @@ typedef enum bnOpcode {
 } bnOpcode;
 
 int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary, int pos);
+
+int bnOperands(bnOpcode data);
 #endif
