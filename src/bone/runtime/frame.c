@@ -9,6 +9,7 @@ bnFrame* bnNewFrame() {
         ret->next = NULL;
         ret->hierarcySelf = bnNewStack();
         ret->vStack = bnNewStack();
+        ret->currentCall = NULL;
         ret->variableTable =
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         ret->pc = 0;

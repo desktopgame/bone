@@ -18,7 +18,7 @@
 void bnExtExit(bnInterpreter* bone, bnFrame* frame) {
         bnObject* statusObj = bnPopStack(frame->vStack);
         if (statusObj->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                bnThrow(bone, bnIntern(bone->pool, "error"), NULL, 1);
         }
         bnInteger* statusInt = statusObj;
         exit(statusInt->value);

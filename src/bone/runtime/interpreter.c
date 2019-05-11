@@ -12,6 +12,7 @@
 #include "lambda.h"
 #include "object.h"
 #include "std.h"
+#include "string.h"
 #include "vm.h"
 
 bnInterpreter* bnNewInterpreter(const char* filenameRef) {
@@ -22,8 +23,8 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef) {
         ret->frame = NULL;
         ret->externTable =
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
-        ret->__exception = NULL;
         ret->nativeAlloc = NULL;
+        ret->__jstack = bnNewJStack();
         g_hash_table_replace(
             ret->externTable, bnIntern(ret->pool, "exit"),
             bnNewLambdaFromCFunc(ret, bnExtExit, ret->pool, BN_C_ADD_PARAM,
@@ -138,9 +139,43 @@ void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
                                  BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
 }
 
-void bnPanic(bnInterpreter* self, bnObject* exception, int code) {
-        self->__exception = exception;
-        longjmp(self->__jmp, code);
+void bnFormatThrow(bnInterpreter* self, bnStringView name, const char* fmt,
+                   ...) {
+        va_list ap;
+        va_start(ap, fmt);
+        bnVFormatThrow(self, name, fmt, ap);
+        va_end(ap);
+}
+
+void bnVFormatThrow(bnInterpreter* self, bnStringView name, const char* fmt,
+                    va_list ap) {
+        char buf[100];
+        vsprintf(buf, fmt, ap);
+        bnObject* obj = bnNewString(self, bnIntern(self->pool, buf));
+        bnThrow(self, name, obj, BN_JMP_CODE_EXCEPTION);
+}
+
+void bnThrow(bnInterpreter* self, bnStringView name, bnObject* exception,
+             int code) {
+        bnPanic(self, name, exception);
+        BN_JMP_DO(self->__jstack, code);
+}
+
+void bnPanic(bnInterpreter* self, bnStringView name, bnObject* exception) {
+        bnFrame* iter = self->frame;
+        while (1) {
+                if (iter->next == NULL) {
+                        break;
+                }
+                iter = iter->next;
+        }
+        iter->panic = exception;
+        iter->panicName = name;
+        if (iter->currentCall != NULL) {
+                iter->currentCall->returns =
+                    g_list_append(iter->currentCall->returns, name);
+        }
+        g_hash_table_replace(iter->variableTable, name, exception);
 }
 
 bnObject* bnGetBool(struct bnStringPool* pool, bnFrame* frame, bool cond) {
@@ -162,6 +197,7 @@ bnObject* bnGetFalse(struct bnStringPool* pool, bnFrame* frame) {
 void bnDeleteInterpreter(bnInterpreter* self) {
         bnDeleteStringPool(self->pool);
         bnDeleteHeap(self->heap);
+        bnDeleteJStack(self->__jstack);
         g_hash_table_destroy(self->externTable);
         BN_FREE(self);
 }

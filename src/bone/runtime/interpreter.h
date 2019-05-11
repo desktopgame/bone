@@ -3,6 +3,7 @@
 #include <setjmp.h>
 #include <stdbool.h>
 #include "../glib.h"
+#include "../util/jump_stack.h"
 #include "../util/string_pool.h"
 
 #define BN_JMP_CODE_EXCEPTION (1)
@@ -18,8 +19,7 @@ typedef struct bnInterpreter {
         struct bnStringPool* pool;
         struct bnFrame* frame;
         struct bnHeap* heap;
-        struct bnObject* __exception;
-        jmp_buf __jmp;
+        bnJStack* __jstack;
 } bnInterpreter;
 
 bnInterpreter* bnNewInterpreter(const char* filenameRef);
@@ -35,13 +35,43 @@ void bnWriteDefaults(bnInterpreter* self, struct bnFrame* frame,
                      struct bnStringPool* pool);
 
 /**
- * bnPanic is call longjmp().
- * shoud be invoke only in can panicable function.
  * @param self
+ * @param fmt
+ * @param ...
+ */
+void bnFormatThrow(bnInterpreter* self, bnStringView name, const char* fmt,
+                   ...);
+
+/**
+ * @param self
+ * @param name
+ * @param fmt
+ * @param ...
+ */
+void bnVFormatThrow(bnInterpreter* self, bnStringView name, const char* fmt,
+                    va_list ap);
+
+/**
+ * bnThrow is call longjmp().
+ * shoud be invoke only in can native function.
+ * call bnPanic in internal.
+ * @param self
+ * @param name
  * @param exception
  * @param code
  */
-void bnPanic(bnInterpreter* self, struct bnObject* exception, int code);
+void bnThrow(bnInterpreter* self, bnStringView name, struct bnObject* exception,
+             int code);
+
+/**
+ * do a panic in current frame.
+ * in almost, this function use by wrapper function.
+ * @param self
+ * @param name
+ * @param exception
+ */
+void bnPanic(bnInterpreter* self, bnStringView name,
+             struct bnObject* exception);
 
 /**
  * @param pool

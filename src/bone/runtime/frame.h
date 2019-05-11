@@ -3,6 +3,7 @@
 #include "../bone.h"
 #include "../util/stack.h"
 struct bnObject;
+struct bnLambda;
 struct bnInterpreter;
 
 typedef struct bnFrame {
@@ -11,6 +12,7 @@ typedef struct bnFrame {
         bnStack* hierarcySelf;
         GHashTable* variableTable;
         bnStringView panicName;
+        struct bnLambda* currentCall;
         struct bnObject* panic;
         struct bnObject* register0;
         struct bnFrame* prev;

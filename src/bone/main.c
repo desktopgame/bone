@@ -31,6 +31,7 @@ static void runTest() {
 
 int main(int argc, char* argv[]) {
         bnInitIO();
+        printf("%d\n", sizeof(jmp_buf));
         runTest();
         return 0;
 }

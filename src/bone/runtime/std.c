@@ -21,12 +21,14 @@
 #include "string.h"
 #include "vm.h"
 
+static void _throw(bnInterpreter* bone, bnFrame* frame, const char* str);
+
 // only in debug build
 #if DEBUG
 void bnStdDebugAssert(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_BOOL) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         bnBool* cond = a;
         if (!cond->value) {
@@ -39,7 +41,7 @@ void bnStdDebugDie(bnInterpreter* bone, bnFrame* frame) { abort(); }
 void bnStdDebugPrint(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         bnString* str = a;
         const char* cstr = bnView2Str(bone->pool, str->value);
@@ -106,18 +108,18 @@ void bnStdDebugShowInfo(bnInterpreter* bone, bnFrame* frame) {
 void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         bnStringView pathView = ((bnString*)a)->value;
         const char* pathStr = bnView2Str(bone->pool, pathView);
         // parse file
         bnAST* ast = bnParseFile(bone->pool, pathStr);
         if (ast == NULL) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         bnILToplevel* iltop = bnAST2IL(ast);
         if (iltop == NULL) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         // gen code
         bnFrame* sub = bnSubFrame(frame);
@@ -135,18 +137,18 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
 void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         bnStringView pathView = ((bnString*)a)->value;
         const char* pathStr = bnView2Str(bone->pool, pathView);
         // parse file
         bnAST* ast = bnParseFile(bone->pool, pathStr);
         if (ast == NULL) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         bnILToplevel* iltop = bnAST2IL(ast);
         if (iltop == NULL) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         // gen code
         bnFrame* sub = bnSubFrame(frame);
@@ -185,7 +187,7 @@ void bnStdSystemObject(bnInterpreter* bone, bnFrame* frame) {
 void bnStdSystemArray(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              bnNewArray(bone, ((bnInteger*)a)->value));
@@ -194,11 +196,11 @@ void bnStdSystemArray(bnInterpreter* bone, bnFrame* frame) {
 void bnStdSystemRecover(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_LAMBDA) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         bnLambda* lambda = a;
         if (g_list_length(lambda->parameters) > 0) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         bone->nativeAlloc = g_list_append(bone->nativeAlloc, a);
         bnFrame* sub = bnFuncCall(lambda, bone, frame, 0);
@@ -215,7 +217,7 @@ void bnStdSystemRecover(bnInterpreter* bone, bnFrame* frame) {
 void bnStdSystemExternVar(bnInterpreter* bone, bnFrame* frame) {
         bnObject* name = bnPopStack(frame->vStack);
         if (name->type != BN_OBJECT_STRING) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         gpointer v =
             g_hash_table_lookup(bone->externTable, ((bnString*)name)->value);
@@ -229,25 +231,25 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
         bnObject* params = bnPopStack(frame->vStack);
         bnObject* returns = bnPopStack(frame->vStack);
         if (name->type != BN_OBJECT_STRING) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         // find from extern table
         gpointer v =
             g_hash_table_lookup(bone->externTable, ((bnString*)name)->value);
         bnObject* obj = v;
         if (obj->type != BN_OBJECT_LAMBDA) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         // check parameters
         bnLambda* lambda = obj;
         bnArray* paraArr = params;
         if (paraArr->arr->len != g_list_length(lambda->parameters)) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         // check returns
         bnArray* retuArr = returns;
         if (retuArr->arr->len != g_list_length(lambda->returns)) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              obj);
@@ -265,7 +267,7 @@ void bnStdBoolChilda(bnInterpreter* bone, bnFrame* frame);
 void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_BOOL) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         bnBool* b = a;
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
@@ -311,30 +313,30 @@ void bnStdBoolNotEqual(bnInterpreter* bone, bnFrame* frame);
 // Integer
 
 void bnStdIntegerFuncCall(bnInterpreter* bone, bnFrame* frame) {
-        bnPanic(bone->__jmp, NULL, BN_JMP_CODE_EXCEPTION);
+        _throw(bone, frame, "internal error");
 }
 
 void bnStdIntegerPositive(bnInterpreter* bone, bnFrame* frame) {
-        bnPanic(bone->__jmp, NULL, BN_JMP_CODE_EXCEPTION);
+        _throw(bone, frame, "internal error");
 }
 
 void bnStdIntegerNegative(bnInterpreter* bone, bnFrame* frame) {
-        bnPanic(bone->__jmp, NULL, BN_JMP_CODE_EXCEPTION);
+        _throw(bone, frame, "internal error");
 }
 
 void bnStdIntegerChilda(bnInterpreter* bone, bnFrame* frame) {
-        bnPanic(bone->__jmp, NULL, BN_JMP_CODE_EXCEPTION);
+        _throw(bone, frame, "internal error");
 }
 
 void bnStdIntegerNot(bnInterpreter* bone, bnFrame* frame) {
-        bnPanic(bone->__jmp, NULL, BN_JMP_CODE_EXCEPTION);
+        _throw(bone, frame, "internal error");
 }
 
 void bnStdIntegerPlus(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -347,7 +349,7 @@ void bnStdIntegerMinus(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -360,7 +362,7 @@ void bnStdIntegerMultiply(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -373,7 +375,7 @@ void bnStdIntegerDivide(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -386,7 +388,7 @@ void bnStdIntegerModulo(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -399,7 +401,7 @@ void bnStdIntegerBitAnd(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -412,7 +414,7 @@ void bnStdIntegerBitOr(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -435,7 +437,7 @@ void bnStdIntegerGT(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -448,7 +450,7 @@ void bnStdIntegerGE(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -461,7 +463,7 @@ void bnStdIntegerLT(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -474,7 +476,7 @@ void bnStdIntegerLE(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -487,7 +489,7 @@ void bnStdIntegerEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -500,7 +502,7 @@ void bnStdIntegerNotEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -512,7 +514,7 @@ void bnStdIntegerNotEqual(bnInterpreter* bone, bnFrame* frame) {
 void bnStdIntegerToString(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         char buf[100];
         sprintf(buf, "%d", ((bnInteger*)a)->value);
@@ -568,7 +570,7 @@ void bnStdStringEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING || b->type != BN_OBJECT_STRING) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         bnStringView ai = ((bnString*)a)->value;
         bnStringView bi = ((bnString*)b)->value;
@@ -585,7 +587,7 @@ void bnStdArrayArraySet(bnInterpreter* bone, bnFrame* frame) {
         bnObject* b = bnPopStack(frame->vStack);
         bnObject* c = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_ARRAY || b->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         bnArray* arr = a;
         bnInteger* idx = b;
@@ -597,10 +599,16 @@ void bnStdArrayArrayGet(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_ARRAY || b->type != BN_OBJECT_INTEGER) {
-                bnPanic(bone, NULL, BN_JMP_CODE_EXCEPTION);
+                _throw(bone, frame, "internal error");
         }
         bnArray* arr = a;
         bnInteger* idx = b;
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              g_ptr_array_index(arr->arr, idx->value));
+}
+
+static void _throw(bnInterpreter* bone, bnFrame* frame, const char* str) {
+        bnThrow(bone, bnIntern(bone->pool, "error"),
+                bnNewString(bone, bnIntern(bone->pool, str)),
+                BN_JMP_CODE_EXCEPTION);
 }

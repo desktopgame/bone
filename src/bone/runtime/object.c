@@ -41,6 +41,7 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
         // assert(paramLen == argc);
         // create new frame
         bnFrame* sub = bnSubFrame(frame);
+        sub->currentCall = lambda;
         for (int i = 0; i < argc; i++) {
                 bnPushStack(sub->vStack, bnPopStack(frame->vStack));
         }
@@ -64,12 +65,17 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                         g_hash_table_replace(sub->variableTable, k, v);
                 }
 
-                // int code = setjmp(bone->__jmp);
-                // if (code == 0) {
-                lambda->u.vFunc(bone, sub);
-                //} else {
-                //        assert(code == BN_JMP_CODE_EXCEPTION);
-                //}
+                int code = BN_JMP_PUSH(bone->__jstack);
+                if (code == 0) {
+                        lambda->u.vFunc(bone, sub);
+                } else {
+                        if (code != BN_JMP_CODE_EXCEPTION) {
+                                abort();
+                        } else {
+                                // on exception...
+                        }
+                }
+                BN_JMP_POP(bone->__jstack);
         } else {
                 // write captured vatiable
                 GHashTableIter iter;
