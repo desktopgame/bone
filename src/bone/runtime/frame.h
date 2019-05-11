@@ -17,6 +17,7 @@ typedef struct bnFrame {
         struct bnObject* register0;
         struct bnFrame* prev;
         struct bnFrame* next;
+        GList* snapshots;
 } bnFrame;
 
 /**

@@ -2,6 +2,7 @@
 #include "array.h"
 #include "interpreter.h"
 #include "object.h"
+#include "snapshot.h"
 
 bnFrame* bnNewFrame() {
         bnFrame* ret = BN_MALLOC(sizeof(bnFrame));
@@ -15,6 +16,7 @@ bnFrame* bnNewFrame() {
         ret->pc = 0;
         ret->panicName = 0;
         ret->panic = NULL;
+        ret->snapshots = NULL;
         return ret;
 }
 
@@ -66,5 +68,8 @@ void bnDeleteFrame(bnFrame* self) {
                 self->prev->next = NULL;
         }
         bnDeleteStack(self->vStack, NULL);
+        bnDeleteStack(self->hierarcySelf, NULL);
+        g_hash_table_destroy(self->variableTable);
+        g_list_free_full(self->snapshots, bnDeleteSnapShot);
         BN_FREE(self);
 }

@@ -5,6 +5,7 @@
 #include "interpreter.h"
 #include "lambda.h"
 #include "object.h"
+#include "snapshot.h"
 
 static GRecMutex gHeapMtx;
 
@@ -73,12 +74,24 @@ static void gc_mark(bnHeap* self, bnFrame* frame) {
         if (frame->next != NULL) {
                 gc_mark(self, frame->next);
         }
+        // mark local variable
         GHashTableIter hashIter;
         gpointer k, v;
         g_hash_table_iter_init(&hashIter, frame->variableTable);
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
                 gc_mark_rec(v);
         }
+        // mark defer
+        GList* defIter = frame->snapshots;
+        while (defIter != NULL) {
+                bnSnapShot* sn = defIter->data;
+                g_hash_table_iter_init(&hashIter, sn->table);
+                while (g_hash_table_iter_next(&hashIter, &k, &v)) {
+                        gc_mark_rec(v);
+                }
+                defIter = defIter->next;
+        }
+        // mark stack
         bnStackElement* stackE = frame->vStack->head;
         while (stackE != NULL) {
                 gc_mark_rec(stackE->value);

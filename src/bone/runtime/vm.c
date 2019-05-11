@@ -6,6 +6,7 @@
 #include "integer.h"
 #include "lambda.h"
 #include "opcode.h"
+#include "snapshot.h"
 #include "string.h"
 
 void bnDebugStack(FILE* fp, bnStack* stack, const char* name) {
@@ -23,6 +24,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                 bnIntern(bone->pool, "true"));
         bnObject* BN_FALSE = g_hash_table_lookup(frame->variableTable,
                                                  bnIntern(bone->pool, "false"));
+        GList* snapshotIter = NULL;
         for (int PC = 0; PC < env->codeArray->len; PC++) {
                 bnOpcode code = (bnOpcode)g_ptr_array_index(env->codeArray, PC);
 #if VMDEBUG
@@ -320,6 +322,57 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
 
                                 bnDeleteFrame(sub);
                                 bnGC(bone);
+                                break;
+                        }
+                        case BN_OP_DEFER_PUSH: {
+                                bnLabel* jmp =
+                                    g_ptr_array_index(env->codeArray, ++PC);
+                                bnSnapShot* sn = bnNewSnapShot(jmp->pos);
+                                GHashTableIter hashIter;
+                                gpointer k, v;
+                                g_hash_table_iter_init(&hashIter,
+                                                       frame->variableTable);
+                                while (
+                                    g_hash_table_iter_next(&hashIter, &k, &v)) {
+                                        g_hash_table_replace(sn->table, k, v);
+                                }
+                                frame->snapshots = snapshotIter =
+                                    g_list_append(frame->snapshots, sn);
+                                break;
+                        }
+                        case BN_OP_DEFER_BEGIN: {
+                                int deferNest = 1;
+                                while (1) {
+                                        assert(PC < env->codeArray->len);
+                                        gpointer data = g_ptr_array_index(
+                                            env->codeArray, ++PC);
+                                        // bug if index of string view equal
+                                        // BN_OP_GEN_LAMBDA_END
+                                        if (bnOperands(data) == 1) {
+                                                ++PC;
+                                                continue;
+                                        }
+                                        if (data == BN_OP_DEFER_BEGIN) {
+                                                deferNest++;
+                                        } else if (data == BN_OP_DEFER_END) {
+                                                if (--deferNest == 0) {
+                                                        break;
+                                                }
+                                        }
+                                }
+                                break;
+                        }
+                        case BN_OP_DEFER_NEXT: {
+                                if (snapshotIter != NULL) {
+                                        PC = ((bnSnapShot*)snapshotIter->data)
+                                                 ->pc;
+                                        snapshotIter = snapshotIter->next;
+                                } else {
+                                        PC = env->codeArray->len;
+                                }
+                                break;
+                        }
+                        case BN_OP_DEFER_END: {
                                 break;
                         }
                 }

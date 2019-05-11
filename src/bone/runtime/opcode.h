@@ -44,6 +44,10 @@ typedef enum bnOpcode {
 
         BN_OP_FUNCCALL,
         BN_OP_GEN_CHAR,
+        BN_OP_DEFER_PUSH,
+        BN_OP_DEFER_BEGIN,
+        BN_OP_DEFER_NEXT,
+        BN_OP_DEFER_END,
 } bnOpcode;
 
 int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary, int pos);

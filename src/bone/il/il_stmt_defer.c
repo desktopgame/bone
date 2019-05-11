@@ -1,4 +1,5 @@
 #include "il_stmt_defer.h"
+#include "../runtime/enviroment.h"
 
 bnILStmtDefer* bnNewILStmtDefer(bnILStatement* stmt) {
         bnILStmtDefer* ret = BN_MALLOC(sizeof(bnILStmtDefer));
@@ -14,7 +15,16 @@ void bnDumpILStmtDefer(FILE* fp, struct bnStringPool* pool, bnILStmtDefer* self,
 }
 
 void bnGenerateILStmtDefer(struct bnInterpreter* bone, bnILStmtDefer* self,
-                           struct bnEnviroment* env) {}
+                           bnEnviroment* env) {
+        bnLabel* lab = bnNewLabel(0);
+        g_ptr_array_add(env->codeArray, BN_OP_DEFER_PUSH);
+        g_ptr_array_add(env->codeArray, lab);
+        g_ptr_array_add(env->codeArray, BN_OP_DEFER_BEGIN);
+        lab->pos = bnGenerateNOP(env);
+        bnGenerateILStatement(bone, self->stmt, env);
+        g_ptr_array_add(env->codeArray, BN_OP_DEFER_NEXT);
+        g_ptr_array_add(env->codeArray, BN_OP_DEFER_END);
+}
 
 void bnDeleteILStmtDefer(bnILStmtDefer* self) {
         bnDeleteILStatement(self->stmt);

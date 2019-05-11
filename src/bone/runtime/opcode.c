@@ -112,6 +112,23 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
                         fprintf(fp, "funccall %d", argc);
                         break;
                 }
+                case BN_OP_DEFER_PUSH: {
+                        bnLabel* jmp = g_ptr_array_index(ary, ++pos);
+                        fprintf(fp, "defer push %d", jmp->pos);
+                        break;
+                }
+                case BN_OP_DEFER_BEGIN: {
+                        fprintf(fp, "defer begin");
+                        break;
+                }
+                case BN_OP_DEFER_NEXT: {
+                        fprintf(fp, "defer next");
+                        break;
+                }
+                case BN_OP_DEFER_END: {
+                        fprintf(fp, "defer end");
+                        break;
+                }
         }
         return pos + 1;
 }
@@ -121,7 +138,8 @@ int bnOperands(bnOpcode data) {
             data == BN_OP_GET || data == BN_OP_GEN_INT ||
             data == BN_OP_GEN_STRING || data == BN_OP_GOTO ||
             data == BN_OP_GOTO_IF || data == BN_OP_GOTO_ELSE ||
-            data == BN_OP_FUNCCALL || data == BN_OP_GEN_CHAR) {
+            data == BN_OP_FUNCCALL || data == BN_OP_GEN_CHAR ||
+            data == BN_OP_DEFER_PUSH) {
                 return 1;
         }
         return 0;

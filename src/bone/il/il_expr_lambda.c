@@ -80,6 +80,7 @@ void bnGenerateILExprLambda(bnInterpreter* bone, bnILExprLambda* self,
                 bnGenerateILStatement(bone, ilstmt, env);
                 iter = iter->next;
         }
+        g_ptr_array_add(env->codeArray, BN_OP_DEFER_NEXT);
         bnGenerateExitLambda(env);
         g_ptr_array_add(env->codeArray, BN_OP_GEN_LAMBDA_END);
 }
