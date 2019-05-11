@@ -1,4 +1,0 @@
-a := object() <- recover(def()() {
-    panic e <- "error";
-});
-println(a.e);
