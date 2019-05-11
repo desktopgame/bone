@@ -29,6 +29,7 @@ typedef enum bnASTTag {
         BN_AST_OBJECT_INJECTION,
         BN_AST_ARRAY_SUBSCRIPT,
         BN_AST_ARRAY_LITERAL,
+        BN_AST_DEFER,
 
         BN_AST_POSITIVE,
         BN_AST_NEGATIVE,
@@ -88,6 +89,8 @@ typedef struct bnAST {
 bnAST* bnNewAST(bnASTTag tag);
 
 bnAST* bnNewBlankAST();
+
+bnAST* bnNewDeferAST(bnAST* astmt);
 
 bnAST* bnNewArrayLit(bnAST* aargs);
 

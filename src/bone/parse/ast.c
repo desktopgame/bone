@@ -22,6 +22,12 @@ bnAST* bnNewBlankAST() {
         return ret;
 }
 
+bnAST* bnNewDeferAST(bnAST* astmt) {
+        bnAST* ret = bnNewAST(BN_AST_DEFER);
+        bnPushAST(ret, astmt);
+        return ret;
+}
+
 bnAST* bnNewArrayLit(bnAST* aargs) {
         bnAST* ret = bnNewAST(BN_AST_ARRAY_LITERAL);
         bnPushAST(ret, aargs);
