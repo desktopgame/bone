@@ -18,7 +18,7 @@ void bnDumpILStmtReturn(FILE* fp, struct bnStringPool* pool,
 
 void bnGenerateILStmtReturn(struct bnInterpreter* bone, bnILStmtReturn* self,
                             bnEnviroment* env) {
-        g_ptr_array_add(env->codeArray, BN_OP_RETURN);
+        g_ptr_array_add(env->codeArray, BN_OP_DEFER_NEXT);
 }
 
 void bnDeleteILStmtReturn(bnILStmtReturn* self) {

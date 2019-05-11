@@ -53,6 +53,12 @@ void bnGenerateExitLambda(bnEnviroment* self);
  * @param self
  * @return
  */
+int bnGetLambdaOffset(bnEnviroment* self);
+
+/**
+ * @param self
+ * @return
+ */
 int bnGetPrependPos(bnEnviroment* self);
 
 /**

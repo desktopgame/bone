@@ -1,0 +1,6 @@
+a := def()() {
+    defer println("return after");
+    println("aaa");
+    return;
+};
+a();

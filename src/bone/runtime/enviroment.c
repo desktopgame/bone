@@ -12,7 +12,7 @@ bnEnviroment* bnNewEnviroment() {
 
 bnLabel* bnGenerateLabel(bnEnviroment* self, int pos) {
         if (self->labelFixStack->head != NULL) {
-                pos -= ((int)bnPeekStack(self->labelFixStack));
+                pos -= bnGetLambdaOffset(self);
         }
         bnLabel* lb = bnNewLabel(pos);
         g_ptr_array_add(self->codeArray, lb);
@@ -31,6 +31,13 @@ void bnGenerateEnterLambda(bnEnviroment* self) {
 
 void bnGenerateExitLambda(bnEnviroment* self) {
         bnPopStack(self->labelFixStack);
+}
+
+int bnGetLambdaOffset(bnEnviroment* self) {
+        if (bnGetStackSize(self->labelFixStack) == 0) {
+                return 0;
+        }
+        return ((int)bnPeekStack(self->labelFixStack));
 }
 
 int bnGetPrependPos(bnEnviroment* self) {
