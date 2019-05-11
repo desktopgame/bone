@@ -36,9 +36,6 @@ void bnDumpILStatement(FILE* fp, struct bnStringPool* pool, bnILStatement* self,
                         bnDumpILStmtScopeInjection(fp, pool, self->u.vScopeInj,
                                                    depth);
                         break;
-                case BN_IL_STMT_PANIC:
-                        bnDumpILStmtPanic(fp, pool, self->u.vPanic, depth);
-                        break;
                 default:
                         assert(false);
                         break;
@@ -70,9 +67,6 @@ void bnDeleteILStatement(bnILStatement* self) {
                 case BN_IL_STMT_SCOPE_INJECTION:
                         bnDeleteILStmtScopeInjection(self->u.vScopeInj);
                         break;
-                case BN_IL_STMT_PANIC:
-                        bnDeleteILStmtPanic(self->u.vPanic);
-                        break;
                 default:
                         assert(false);
                         break;
@@ -103,9 +97,6 @@ void bnGenerateILStatement(struct bnInterpreter* bone, bnILStatement* self,
                 case BN_IL_STMT_SCOPE_INJECTION:
                         bnGenerateILStmtScopeInjection(bone, self->u.vScopeInj,
                                                        env);
-                        break;
-                case BN_IL_STMT_PANIC:
-                        bnGenerateILStmtPanic(bone, self->u.vPanic, env);
                         break;
                 default:
                         assert(false);

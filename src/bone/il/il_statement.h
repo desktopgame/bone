@@ -22,7 +22,6 @@ struct bnILStmtReturn;
 struct bnILStmtScopeInjection;
 struct bnEnviroment;
 struct bnInterpreter;
-struct bnILStmtPanic;
 
 typedef struct bnILStatement {
         bnILStatementType type;
@@ -33,7 +32,6 @@ typedef struct bnILStatement {
                 struct bnILStmtWhile* vWhile;
                 struct bnILStmtReturn* vReturn;
                 struct bnILStmtScopeInjection* vScopeInj;
-                struct bnILStmtPanic* vPanic;
         } u;
         int line;
 } bnILStatement;
