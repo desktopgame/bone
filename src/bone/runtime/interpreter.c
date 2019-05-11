@@ -180,10 +180,6 @@ void bnPanic(bnInterpreter* self, bnStringView name, bnObject* exception) {
         }
         iter->panic = exception;
         iter->panicName = name;
-        if (iter->currentCall != NULL) {
-                iter->currentCall->returns =
-                    g_list_append(iter->currentCall->returns, name);
-        }
         g_hash_table_replace(iter->variableTable, name, exception);
 }
 
