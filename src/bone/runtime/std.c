@@ -193,27 +193,6 @@ void bnStdSystemArray(bnInterpreter* bone, bnFrame* frame) {
                              bnNewArray(bone, ((bnInteger*)a)->value));
 }
 
-void bnStdSystemRecover(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        if (a->type != BN_OBJECT_LAMBDA) {
-                _throw(bone, frame, "internal error");
-        }
-        bnLambda* lambda = a;
-        if (g_list_length(lambda->parameters) > 0) {
-                _throw(bone, frame, "internal error");
-        }
-        bone->nativeAlloc = g_list_append(bone->nativeAlloc, a);
-        bnFrame* sub = bnFuncCall(lambda, bone, frame, 0);
-        bnInjectFrame(sub->variableTable, frame);
-        if (frame->panic) {
-                frame->panic = NULL;
-                frame->panicName = 0;
-        }
-        bone->nativeAlloc = g_list_remove(bone->nativeAlloc, a);
-        bnDeleteFrame(sub);
-        bnGC(bone);
-}
-
 void bnStdSystemExternVar(bnInterpreter* bone, bnFrame* frame) {
         bnObject* name = bnPopStack(frame->vStack);
         if (name->type != BN_OBJECT_STRING) {

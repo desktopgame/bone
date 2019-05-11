@@ -130,11 +130,7 @@ void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
             bnNewLambdaFromCFunc(self, bnStdSystemLoad, pool, BN_C_ADD_PARAM,
                                  "path", BN_C_ADD_RETURN, "...",
                                  BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "recover"),
-            bnNewLambdaFromCFunc(self, bnStdSystemRecover, pool, BN_C_ADD_PARAM,
-                                 "lambda", BN_C_ADD_RETURN, "...",
-                                 BN_C_ADD_EXIT));
+
         g_hash_table_replace(
             frame->variableTable, bnIntern(pool, "extern_var"),
             bnNewLambdaFromCFunc(self, bnStdSystemExternVar, pool,
