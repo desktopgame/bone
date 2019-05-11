@@ -53,6 +53,7 @@ int bnEval(bnInterpreter* self) {
         bnGenerateILTopLevel(self, iltop, env);
         bnDeleteAST(ret);
         bnExecute(self, env, self->frame);
+        bnStringView panicName = self->frame->panicName;
         int status = self->frame->panic ? 1 : 0;
         self->frame->panic = NULL;
         bnDeleteILTopLevel(iltop);
@@ -62,6 +63,14 @@ int bnEval(bnInterpreter* self) {
         bnDeleteFrame(self->frame);
         self->frame = NULL;
         bnGC(self);
+        if (status) {
+#if DEBUG
+                printf("error code: %s\n", bnView2Str(self->pool, panicName));
+#else
+                fprintf(BN_STDERR, "error code: %s\n",
+                        bnView2Str(self->pool, panicName));
+#endif
+        }
         return status;
 }
 

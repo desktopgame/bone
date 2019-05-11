@@ -73,6 +73,8 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                                 abort();
                         } else {
                                 // on exception...
+                                frame->panic = sub->panic;
+                                frame->panicName = sub->panicName;
                         }
                 }
                 BN_JMP_POP(bone->__jstack);
