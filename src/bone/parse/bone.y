@@ -24,7 +24,7 @@
 		GT GE LT LE LSHIFT RSHIFT
 		NOT BIT_AND BIT_OR LOGIC_AND LOGIC_OR LP RP LB RB IF ELSE
 		EXC_OR DOTDOTDOT LSB RSB
-		DOT COMMA SEMICOLON WHILE DEF RETURN_T SCOPE INJECTION PANIC
+		DOT COMMA SEMICOLON WHILE DEF RETURN_T SCOPE INJECTION
 %type <ast_value>
 	argument_list
 	parameter_list
@@ -34,7 +34,6 @@
 	comp_stmt
 	return_stmt
 	injection_stmt
-	panic_stmt
 	expression
 	expression_nobrace
 	call_expr
@@ -128,7 +127,6 @@ statement
 	}
 	| return_stmt
 	| injection_stmt
-	| panic_stmt
 	;
 comp_stmt
 	: LB statement_list_opt RB
@@ -146,12 +144,6 @@ injection_stmt
 	: SCOPE INJECTION call_expr SEMICOLON
 	{
 		$$ = bnNewScopeInjectionAST($3);
-	}
-	;
-panic_stmt
-	: PANIC IDENT INJECTION expression SEMICOLON
-	{
-		$$ = bnNewPanicAST($2, $4);
 	}
 	;
 expression

@@ -152,7 +152,6 @@ static void update_loc() {
 %%
 
 <INITIAL>";"				{ return (SEMICOLON); }
-<INITIAL>"panic"				{ return (PANIC); }
 <INITIAL>"{}"				{ return (SCOPE); }
 <INITIAL>"<-"				{ return (INJECTION); }
 <INITIAL>"return"				{ return (RETURN_T); }
