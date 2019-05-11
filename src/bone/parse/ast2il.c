@@ -258,6 +258,9 @@ static bnILStatement* ast2stmt(bnAST* a) {
                 ret->type = BN_IL_STMT_SCOPE_INJECTION;
                 ret->u.vScopeInj =
                     bnNewILStmtScopeInjection(ast2expr(bnFirstAST(a)));
+        } else if (a->tag == BN_AST_DEFER) {
+                ret->type = BN_IL_STMT_DEFER;
+                ret->u.vDefer = bnNewILStmtDefer(ast2stmt(bnFirstAST(a)));
         }
         ret->line = a->line;
         return ret;
