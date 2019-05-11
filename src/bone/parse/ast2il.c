@@ -177,7 +177,7 @@ static bnILExpression* ast2expr(bnAST* a) {
         } else if (a->tag == BN_AST_EQUAL) {
                 ret->type = BN_IL_EXPR_BINOP;
                 ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_EQUAL);
-        } else if(a->tag == BN_AST_NOT) {
+        } else if (a->tag == BN_AST_NOT) {
                 ret->type = BN_IL_EXPR_UOP;
                 ret->u.vUOp = ast2iluop(a, BN_IL_UNOP_NOT);
         } else if (a->tag == BN_AST_NOTEQUAL) {
@@ -258,10 +258,6 @@ static bnILStatement* ast2stmt(bnAST* a) {
                 ret->type = BN_IL_STMT_SCOPE_INJECTION;
                 ret->u.vScopeInj =
                     bnNewILStmtScopeInjection(ast2expr(bnFirstAST(a)));
-        } else if (a->tag == BN_AST_PANIC) {
-                ret->type = BN_IL_STMT_PANIC;
-                ret->u.vPanic =
-                    bnNewILStmtPanic(a->u.svvalue, ast2expr(bnFirstAST(a)));
         }
         ret->line = a->line;
         return ret;
