@@ -283,6 +283,15 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                     frame->variableTable,
                                     GINT_TO_POINTER((int)name));
                                 const char* str = bnView2Str(bone->pool, name);
+                                if (value == NULL) {
+                                        char buf[256];
+                                        sprintf(
+                                            buf,
+                                            "is'nt found local variable: %s",
+                                            str);
+                                        bnPanic(bone, bnNewString(bone, buf));
+                                        break;
+                                }
                                 assert(value != NULL);
                                 bnPushStack(frame->vStack, value);
                                 break;
@@ -306,6 +315,13 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
 #if DEBUG
                                 const char* str = bnView2Str(bone->pool, name);
 #endif
+                                if (obj == NULL) {
+                                        char buf[256];
+                                        sprintf(buf, "is'nt found member: %s",
+                                                str);
+                                        bnPanic(bone, bnNewString(bone, buf));
+                                        break;
+                                }
                                 assert(data != NULL);
                                 bnPushStack(frame->vStack, data);
                                 break;
