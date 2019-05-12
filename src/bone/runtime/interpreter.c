@@ -63,6 +63,7 @@ int bnEval(bnInterpreter* self) {
         bnGC(self);
         bnDeleteFrame(self->frame);
         self->frame = NULL;
+        g_hash_table_remove_all(self->externTable);
         bnGC(self);
         if (status) {
 #if DEBUG
