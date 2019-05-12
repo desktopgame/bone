@@ -192,6 +192,11 @@ bnObject* bnGetFalse(struct bnStringPool* pool, bnFrame* frame) {
 }
 
 void bnDeleteInterpreter(bnInterpreter* self) {
+        // free a allocated by bone program
+        self->frame = NULL;
+        g_hash_table_remove_all(self->externTable);
+        bnGC(self);
+        // free a other
         bnDeleteStringPool(self->pool);
         bnDeleteHeap(self->heap);
         bnDeleteJStack(self->__jstack);
