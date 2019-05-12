@@ -318,7 +318,7 @@ void bnDeleteAST(bnAST* self) {
                 return;
         }
         g_list_free_full(self->children, ast_child_delete);
-        free(self);
+        BN_FREE(self);
 }
 
 bnAST* bnFirstAST(bnAST* self) { return self->children->data; }

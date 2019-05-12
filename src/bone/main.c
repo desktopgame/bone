@@ -5,8 +5,10 @@
 #include <CUnit/Console.h>
 #endif
 #include <stdio.h>
+#include <stdlib.h>
 #include "test.h"
 #include "util/io.h"
+#include "util/memory.h"
 
 static void runTest() {
 #if !defined(_WIN32)
@@ -31,7 +33,7 @@ static void runTest() {
 
 int main(int argc, char* argv[]) {
         bnInitIO();
-        printf("%d\n", sizeof(jmp_buf));
         runTest();
+        bnDumpMemoryLeaks(stdout);
         return 0;
 }

@@ -1,5 +1,6 @@
 #ifndef BONE_MEMORY_H
 #define BONE_MEMORY_H
+#include <stdio.h>
 #include <stdlib.h>
 
 #if DEBUG
@@ -65,4 +66,15 @@ void* bnReallocFunc(void* block, size_t newSize, const char* filename,
  * @param lineno
  */
 void bnFreeFunc(void* block, const char* filename, int lineno);
+
+/**
+ * check a overrun in memory
+ */
+void bnCheckMemoryBounds();
+
+/**
+ * dump a still freed memory.
+ * @param fp
+ */
+void bnDumpMemoryLeaks(FILE* fp);
 #endif
