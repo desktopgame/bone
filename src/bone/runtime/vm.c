@@ -298,6 +298,12 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         }
                         case BN_OP_PUT: {
                                 bnObject* container = bnPopStack(frame->vStack);
+                                if (container == NULL) {
+                                        bnPanic(bone,
+                                                bnNewString(
+                                                    bone, "receiver is null"));
+                                        break;
+                                }
                                 bnObject* value = bnPopStack(frame->vStack);
                                 bnStringView name =
                                     g_ptr_array_index(env->codeArray, ++PC);
@@ -307,6 +313,12 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         }
                         case BN_OP_GET: {
                                 bnObject* container = bnPopStack(frame->vStack);
+                                if (container == NULL) {
+                                        bnPanic(bone,
+                                                bnNewString(
+                                                    bone, "receiver is null"));
+                                        break;
+                                }
                                 bnStringView name =
                                     g_ptr_array_index(env->codeArray, ++PC);
                                 gpointer data =
