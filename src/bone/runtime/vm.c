@@ -9,16 +9,6 @@
 #include "snapshot.h"
 #include "string.h"
 
-void bnDebugStack(FILE* fp, bnStack* stack, const char* name) {
-        fprintf(fp, "--- %s ---\n", name == NULL ? "" : name);
-        bnStackElement* iter = stack->head;
-        while (iter != NULL) {
-                bnPrintObject(fp, (bnObject*)iter->value);
-                fprintf(fp, "\n");
-                iter = iter->next;
-        }
-}
-
 int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
         bnObject* BN_TRUE = g_hash_table_lookup(frame->variableTable,
                                                 bnIntern(bone->pool, "true"));
