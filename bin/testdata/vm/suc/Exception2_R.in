@@ -1,0 +1,12 @@
+unsafe := def(index)(value, error) {
+    value := "not error";
+    error := false;
+    if(index == 0) {
+        value := "error";
+        error := "index is zero";
+    }
+};
+a := object() <- unsafe(0);
+if(a.error) {
+    println(a.value);
+}

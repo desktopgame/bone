@@ -292,54 +292,63 @@ fopen := extern_var("fopen");
 ````
 
 # 例外処理(exception handling)
-現在boneには例外処理のための特別な構文が存在しません。  
-(not exists exception handling syntax)  
-  
-Goに習った例外処理であれば今すぐにでも可能ですが、
-ライブラリレベルのサポートはまだありません。  
-(Right now can exception handling like Go.  
-however, not provide package for error like go)  
-  
-````
-readFile := def() (txt, error) {
-    ...
+boneでは、二種類の例外処理の方法が存在します。  
+一つはboneが複数の戻り値を返すことを活かしたものです。
 
-    error := false;
-    if( not opened file) {
-        error := true
-        return;
+戻り値が一つの場合(when in number of return value one)
+````
+unsafe := def(index)(error) {
+    if(index == 0) {
+        error := "index is zero";
     }
 };
-val <- readFile()
-if(val.error) {
-    ...
+error := unsafe(0);
+if(error) {
+    println(error);
 }
 ````
 
-## パニックとリカバー(panic and recover)
-パニックとリカバーは試験的に導入されている機能です。  
-(panic and recover is experimental function)
-
-クロージャの中でパニックが宣言されると、暗黙のうちに戻り値が追加されます。  
-その値はデフォルトで false になります。  
-(add return value on implicit, if declared panic on closure expression.  
-it value initialized by false)
+戻り値が二つ以上の場合(when in number of return value greater than equal one)
 ````
-panicはステートメントです。以下の書式をとります。
-(panic is statement. syntax is next)
-
-panic 名前 <- オブジェクト
-
-次の様に使います。
-指定の名前で変数を宣言して関数を抜けます。
-(how to use is next.)
-
-result := object() <- recover(def ()(){
-    panic exception <- newError();
-});
-if(result.exception) {
-    ...
+unsafe := def(index)(value, error) {
+    value := "not error";
+    error := false;
+    if(index == 0) {
+        value := "error";
+        error := "index is zero";
+    }
+};
+a := object() <- unsafe(0);
+if(a.error) {
+    println(a.value);
 }
+````
+戻り値が二つ以上の場合(when in number of return value greater than equal one)
+````
+unsafe := def(index)(value, error) {
+    value := "not error";
+    error := false;
+    if(index == 0) {
+        value := "error";
+        error := "index is zero";
+    }
+};
+{} <- unsafe(0);
+if(error) {
+    println(value);
+}
+````
+
+二つ目はパニックを使ったものです。  
+これはgo言語に習った仕様になっています。  
+(the second is by panic.
+it is like a go language)
+````
+p := def()() {
+    defer println(recover());
+    panic("recover");
+};
+p();
 ````
 
 # 実装が保留されているもの(pending function)

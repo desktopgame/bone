@@ -1,0 +1,9 @@
+unsafe := def(index)(error) {
+    if(index == 0) {
+        error := "index is zero";
+    }
+};
+error := unsafe(0);
+if(error) {
+    println(error);
+}
