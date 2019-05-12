@@ -180,7 +180,7 @@ static int bnVM(const char* dir, int flag) {
                 iter = iter->next;
         }
         g_list_free_full(list, free);
-        bnDeleteStringPool(bone->pool);
+        bnDeleteInterpreter(bone);
         return 0;
 }
 
