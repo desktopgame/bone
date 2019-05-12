@@ -45,7 +45,12 @@ void bnDefine(bnObject* self, bnStringView name, bnObject* value);
 struct bnFrame* bnFuncCall(bnObject* self, struct bnInterpreter* bone,
                            struct bnFrame* frame, int argc);
 
-void bnPrintObject(FILE* fp, bnObject* self);
+/**
+ * @param fp
+ * @param bone
+ * @param self
+ */
+void bnPrintObject(FILE* fp, struct bnInterpreter* bone, bnObject* self);
 
 /**
  * @param self

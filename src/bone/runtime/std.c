@@ -70,7 +70,7 @@ void bnStdDebugDumpTable(bnInterpreter* bone, bnFrame* frame) {
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
                 const char* kStr = (const char*)bnView2Str(bone->pool, k);
                 fprintf(stdout, "%s:", kStr);
-                bnPrintObject(stdout, v);
+                bnPrintObject(stdout, bone, v);
                 fprintf(stdout, "\n");
         }
 }
@@ -88,7 +88,7 @@ static void showInfo(bnInterpreter* bone, bnObject* a, int depth) {
                 // bnFindent(BN_STDOUT, depth);
                 fprintf(BN_STDOUT, "%s", strk);
                 fprintf(BN_STDOUT, "[");
-                bnPrintObject(BN_STDOUT, v);
+                bnPrintObject(BN_STDOUT, bone, v);
                 fprintf(BN_STDOUT, "]");
                 fprintf(BN_STDOUT, "\n");
                 if (a != v) {

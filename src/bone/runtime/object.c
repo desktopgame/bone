@@ -11,6 +11,7 @@
 #include "keyword.h"
 #include "lambda.h"
 #include "object.h"
+#include "string.h"
 #include "vm.h"
 
 void bnInitObject(struct bnHeap* heap, bnObject* self, bnObjectType type) {
@@ -112,7 +113,7 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
         return sub;
 }
 
-void bnPrintObject(FILE* fp, bnObject* self) {
+void bnPrintObject(FILE* fp, bnInterpreter* bone, bnObject* self) {
         switch (self->type) {
                 case BN_OBJECT_PROTO:
                         fprintf(fp, "proto %p", (void*)self);
@@ -127,13 +128,19 @@ void bnPrintObject(FILE* fp, bnObject* self) {
                         fprintf(fp, "char %c", ((bnChar*)self)->value);
                         break;
                 case BN_OBJECT_STRING:
-                        fprintf(fp, "string");
+                        fprintf(
+                            fp, "string %s",
+                            bnView2Str(bone->pool, ((bnString*)self)->value));
                         break;
                 case BN_OBJECT_BOOL:
-                        fprintf(fp, "bool");
+                        fprintf(fp, "bool %s",
+                                ((bnBool*)self)->value ? "true" : "false");
                         break;
                 case BN_OBJECT_LAMBDA:
                         fprintf(fp, "lambda");
+                        break;
+                case BN_OBJECT_ARRAY:
+                        fprintf(fp, "array[%d]", ((bnArray*)self)->size);
                         break;
         }
 }
