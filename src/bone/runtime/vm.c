@@ -139,13 +139,35 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                         // bug if index of string view equal
                                         // BN_OP_GEN_LAMBDA_END
                                         if (bnOperands(data) == 1) {
-                                                g_ptr_array_add(
-                                                    lmb->u.vEnv->codeArray,
-                                                    data);
-                                                g_ptr_array_add(
-                                                    lmb->u.vEnv->codeArray,
-                                                    g_ptr_array_index(
-                                                        env->codeArray, ++PC));
+                                                if (data == BN_OP_GOTO ||
+                                                    data == BN_OP_GOTO_IF ||
+                                                    data == BN_OP_GOTO_ELSE) {
+                                                        g_ptr_array_add(
+                                                            lmb->u.vEnv
+                                                                ->codeArray,
+                                                            data);
+                                                        bnLabel* clone = bnNewLabel(
+                                                            ((bnLabel*)
+                                                                 g_ptr_array_index(
+                                                                     env->codeArray,
+                                                                     ++PC))
+                                                                ->pos);
+                                                        g_ptr_array_add(
+                                                            lmb->u.vEnv
+                                                                ->codeArray,
+                                                            clone);
+                                                } else {
+                                                        g_ptr_array_add(
+                                                            lmb->u.vEnv
+                                                                ->codeArray,
+                                                            data);
+                                                        g_ptr_array_add(
+                                                            lmb->u.vEnv
+                                                                ->codeArray,
+                                                            g_ptr_array_index(
+                                                                env->codeArray,
+                                                                ++PC));
+                                                }
                                                 continue;
                                         }
                                         if (data == BN_OP_GEN_LAMBDA_BEGIN) {

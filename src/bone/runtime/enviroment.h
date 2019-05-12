@@ -25,6 +25,13 @@ bnEnviroment* bnNewEnviroment();
  * @param pos
  * @return
  */
+bnLabel* bnAutoNewLabel(bnEnviroment* self, int pos);
+
+/**
+ * @param self
+ * @param pos
+ * @return
+ */
 bnLabel* bnGenerateLabel(bnEnviroment* self, int pos);
 
 /**
