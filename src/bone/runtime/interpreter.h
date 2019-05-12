@@ -39,39 +39,32 @@ void bnWriteDefaults(bnInterpreter* self, struct bnFrame* frame,
  * @param fmt
  * @param ...
  */
-void bnFormatThrow(bnInterpreter* self, bnStringView name, const char* fmt,
-                   ...);
+void bnFormatThrow(bnInterpreter* self, const char* fmt, ...);
 
 /**
  * @param self
- * @param name
  * @param fmt
  * @param ...
  */
-void bnVFormatThrow(bnInterpreter* self, bnStringView name, const char* fmt,
-                    va_list ap);
+void bnVFormatThrow(bnInterpreter* self, const char* fmt, va_list ap);
 
 /**
  * bnThrow is call longjmp().
  * shoud be invoke only in can native function.
  * call bnPanic in internal.
  * @param self
- * @param name
  * @param exception
  * @param code
  */
-void bnThrow(bnInterpreter* self, bnStringView name, struct bnObject* exception,
-             int code);
+void bnThrow(bnInterpreter* self, struct bnObject* exception, int code);
 
 /**
  * do a panic in current frame.
  * in almost, this function use by wrapper function.
  * @param self
- * @param name
  * @param exception
  */
-void bnPanic(bnInterpreter* self, bnStringView name,
-             struct bnObject* exception);
+void bnPanic(bnInterpreter* self, struct bnObject* exception);
 
 /**
  * @param pool

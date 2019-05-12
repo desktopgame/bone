@@ -83,7 +83,6 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                     bone, frame, 1);
                                 if (sub->panic) {
                                         frame->panic = sub->panic;
-                                        frame->panicName = sub->panicName;
                                         break;
                                 }
                                 bnArray* ary = bnPopStack(frame->vStack);
@@ -404,10 +403,6 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                 if (frame->panic) {
                         if (frame->prev) {
                                 frame->prev->panic = frame->panic;
-                                frame->prev->panicName = frame->panicName;
-                                g_hash_table_replace(frame->prev->variableTable,
-                                                     frame->panicName,
-                                                     frame->panic);
                         }
                         break;
                 }

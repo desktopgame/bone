@@ -233,6 +233,13 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              obj);
 }
+
+void bnStdSystemPanic(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        frame->panic = a;
+}
+
+void bnStdSystemRecover(bnInterpreter* bone, bnFrame* frame) {}
 // Bool
 
 void bnStdBoolFuncCall(bnInterpreter* bone, bnFrame* frame);
@@ -587,7 +594,6 @@ void bnStdArrayArrayGet(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void _throw(bnInterpreter* bone, bnFrame* frame, const char* str) {
-        bnThrow(bone, bnIntern(bone->pool, "error"),
-                bnNewString(bone, bnIntern(bone->pool, str)),
+        bnThrow(bone, bnNewString(bone, bnIntern(bone->pool, str)),
                 BN_JMP_CODE_EXCEPTION);
 }

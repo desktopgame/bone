@@ -11,7 +11,6 @@ typedef struct bnFrame {
         bnStack* vStack;
         bnStack* hierarcySelf;
         GHashTable* variableTable;
-        bnStringView panicName;
         struct bnLambda* currentCall;
         struct bnObject* panic;
         struct bnObject* register0;

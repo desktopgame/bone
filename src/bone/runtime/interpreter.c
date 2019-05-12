@@ -54,7 +54,6 @@ int bnEval(bnInterpreter* self) {
         g_ptr_array_add(env->codeArray, BN_OP_DEFER_NEXT);
         bnDeleteAST(ret);
         bnExecute(self, env, self->frame);
-        bnStringView panicName = self->frame->panicName;
         int status = self->frame->panic ? 1 : 0;
         self->frame->panic = NULL;
         bnDeleteILTopLevel(iltop);
@@ -65,14 +64,6 @@ int bnEval(bnInterpreter* self) {
         self->frame = NULL;
         g_hash_table_remove_all(self->externTable);
         bnGC(self);
-        if (status) {
-#if DEBUG
-                printf("error code: %s\n", bnView2Str(self->pool, panicName));
-#else
-                fprintf(BN_STDERR, "error code: %s\n",
-                        bnView2Str(self->pool, panicName));
-#endif
-        }
         return status;
 }
 
@@ -144,31 +135,36 @@ void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
                                  BN_C_ADD_PARAM, "name", BN_C_ADD_PARAM,
                                  "params", BN_C_ADD_PARAM, "returns",
                                  BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
+        g_hash_table_replace(
+            frame->variableTable, bnIntern(pool, "panic"),
+            bnNewLambdaFromCFunc(self, bnStdSystemExternDef, pool,
+                                 BN_C_ADD_PARAM, "error", BN_C_ADD_EXIT));
+        g_hash_table_replace(
+            frame->variableTable, bnIntern(pool, "recover"),
+            bnNewLambdaFromCFunc(self, bnStdSystemExternDef, pool,
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
 }
 
-void bnFormatThrow(bnInterpreter* self, bnStringView name, const char* fmt,
-                   ...) {
+void bnFormatThrow(bnInterpreter* self, const char* fmt, ...) {
         va_list ap;
         va_start(ap, fmt);
-        bnVFormatThrow(self, name, fmt, ap);
+        bnVFormatThrow(self, fmt, ap);
         va_end(ap);
 }
 
-void bnVFormatThrow(bnInterpreter* self, bnStringView name, const char* fmt,
-                    va_list ap) {
+void bnVFormatThrow(bnInterpreter* self, const char* fmt, va_list ap) {
         char buf[100];
         vsprintf(buf, fmt, ap);
         bnObject* obj = bnNewString(self, bnIntern(self->pool, buf));
-        bnThrow(self, name, obj, BN_JMP_CODE_EXCEPTION);
+        bnThrow(self, obj, BN_JMP_CODE_EXCEPTION);
 }
 
-void bnThrow(bnInterpreter* self, bnStringView name, bnObject* exception,
-             int code) {
-        bnPanic(self, name, exception);
+void bnThrow(bnInterpreter* self, bnObject* exception, int code) {
+        bnPanic(self, exception);
         BN_JMP_DO(self->__jstack, code);
 }
 
-void bnPanic(bnInterpreter* self, bnStringView name, bnObject* exception) {
+void bnPanic(bnInterpreter* self, bnObject* exception) {
         bnFrame* iter = self->frame;
         while (1) {
                 if (iter->next == NULL) {
@@ -177,8 +173,6 @@ void bnPanic(bnInterpreter* self, bnStringView name, bnObject* exception) {
                 iter = iter->next;
         }
         iter->panic = exception;
-        iter->panicName = name;
-        g_hash_table_replace(iter->variableTable, name, exception);
 }
 
 bnObject* bnGetBool(struct bnStringPool* pool, bnFrame* frame, bool cond) {
