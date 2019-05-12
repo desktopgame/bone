@@ -233,18 +233,6 @@ void bnParseTest() {
         bnParse("./testdata/parse/suc", EXPECT_SUC);
 }
 
-void bnStringPoolTest() {
-        struct bnStringPool* pool = bnNewStringPool();
-        bnStringView nullView = bnIntern(pool, NULL);
-        bnStringView emptyView = bnIntern(pool, "");
-        CU_ASSERT(nullView == BN_NULL_VIEW);
-        CU_ASSERT(emptyView == BN_EMPTY_VIEW);
-        const char* kwdstr = "keyword";
-        bnStringView kwdView = bnIntern(pool, kwdstr);
-        CU_ASSERT(!strcmp(kwdstr, bnView2Str(pool, kwdView)));
-        bnDeleteStringPool(pool);
-}
-
 void bnVMTest() {
         bnVM("./testdata/vm/err", EXPECT_ERR);
         bnVM("./testdata/vm/suc", EXPECT_SUC);

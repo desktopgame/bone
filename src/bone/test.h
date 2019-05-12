@@ -3,8 +3,6 @@
 
 void bnParseTest();
 
-void bnStringPoolTest();
-
 void bnVMTest();
 
 void bnRunTest();
