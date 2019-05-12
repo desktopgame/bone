@@ -4,9 +4,31 @@
 #include "parser.h"
 
 // proto
+
+// use for dispose a list, if parse failed.
+static GRecMutex gMutex;
+static GList* gAllAST = NULL;
 static void ast_child_delete(gpointer item);
 static void bnDumpASTImpl(FILE* fp, struct bnStringPool* pool, bnAST* self,
                           int depth);
+
+void bnCleanAST(bool error) {
+        g_rec_mutex_lock(&gMutex);
+        if (!error) {
+                g_list_free(gAllAST);
+                gAllAST = NULL;
+                return;
+        }
+        GList* iter = gAllAST;
+        while (iter != NULL) {
+                bnAST* a = iter->data;
+                g_list_free(a->children);
+                BN_FREE(a);
+                iter = iter->next;
+        }
+        gAllAST = NULL;
+        g_rec_mutex_unlock(&gMutex);
+}
 
 bnAST* bnNewAST(bnASTTag tag) {
         bnAST* ret = (bnAST*)BN_MALLOC(sizeof(bnAST));
@@ -14,6 +36,9 @@ bnAST* bnNewAST(bnASTTag tag) {
         ret->children = NULL;
         ret->line = bnGetParseLine();
         bnPushParseLine(ret->line);
+        g_rec_mutex_lock(&gMutex);
+        gAllAST = g_list_append(gAllAST, ret);
+        g_rec_mutex_unlock(&gMutex);
         return ret;
 }
 

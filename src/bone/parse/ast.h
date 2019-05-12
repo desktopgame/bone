@@ -86,6 +86,8 @@ typedef struct bnAST {
         int line;
 } bnAST;
 
+void bnCleanAST(bool error);
+
 bnAST* bnNewAST(bnASTTag tag);
 
 bnAST* bnNewBlankAST();

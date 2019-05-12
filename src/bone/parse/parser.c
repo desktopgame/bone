@@ -35,11 +35,13 @@ bnAST *bnParseFile(struct bnStringPool *pool, const char *filename) {
                 //失敗
                 free_lq();
                 g_rec_mutex_unlock(&gMutex);
+                bnCleanAST(true);
                 return NULL;
         }
         free_lq();
         bnAST *ret = yy_release();
         g_rec_mutex_unlock(&gMutex);
+        bnCleanAST(false);
         return ret;
 }
 
@@ -59,12 +61,14 @@ bnAST *bnParseString(struct bnStringPool *pool, const char *source) {
                 yy_clearstr();
                 free_lq();
                 g_rec_mutex_unlock(&gMutex);
+                bnCleanAST(true);
                 return NULL;
         }
         yy_clearstr();
         free_lq();
         bnAST *ret = yy_release();
         g_rec_mutex_unlock(&gMutex);
+        bnCleanAST(false);
         return ret;
 }
 
