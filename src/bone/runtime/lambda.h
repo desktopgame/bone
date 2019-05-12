@@ -30,13 +30,18 @@ typedef struct bnLambda {
         } u;
 } bnLambda;
 
+#define bnNewLambda(bone, type) \
+        (bnNewLambdaFunc(bone, type, __FILE__, __LINE__))
 /**
  * return new instance of bnLambda.
  * @param bone
  * @param type
+ * @param filename
+ * @param lineno
  * @return
  */
-bnLambda* bnNewLambda(struct bnInterpreter* bone, bnLambdaType type);
+bnLambda* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
+                          const char* filename, int lineno);
 
 /**
  * return new instance of bnLambda, from C function.

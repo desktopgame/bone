@@ -3,8 +3,9 @@
 
 static void free_lambda(bnObject* obj);
 
-bnLambda* bnNewLambda(bnInterpreter* bone, bnLambdaType type) {
-        bnLambda* ret = BN_MALLOC(sizeof(bnLambda));
+bnLambda* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
+                          const char* filename, int lineno) {
+        bnLambda* ret = bnMallocFunc(sizeof(bnLambda), filename, lineno);
         bnInitObject(bone->heap, &ret->base, BN_OBJECT_LAMBDA);
         ret->base.freeFunc = free_lambda;
         ret->type = type;
