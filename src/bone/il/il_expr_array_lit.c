@@ -1,4 +1,5 @@
 #include "il_expr_array_lit.h"
+#include "../glib.h"
 #include "../runtime/enviroment.h"
 #include "../runtime/interpreter.h"
 
@@ -30,4 +31,7 @@ void bnGenerateILExprArrayLit(bnInterpreter* bone, bnILExprArrayLit* self,
         g_ptr_array_add(env->codeArray, g_list_length(self->expressions));
 }
 
-void bnDeleteILExprArrayLit(bnILExprArrayLit* self) {}
+void bnDeleteILExprArrayLit(bnILExprArrayLit* self) {
+        g_list_free_full(self->expressions, bnDeleteILExpression);
+        BN_FREE(self);
+}
