@@ -89,6 +89,7 @@ void bnDeleteILExprLambda(bnILExprLambda* self) {
         g_list_free(self->parameters);
         g_list_free(self->returns);
         g_list_free_full(self->statements, bnDeleteILStatement);
+        BN_FREE(self);
 }
 
 static bool is_instance_base(struct bnStringPool* pool, bnILExprLambda* self) {
