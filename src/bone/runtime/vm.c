@@ -156,6 +156,9 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                             lmb->u.vEnv
                                                                 ->codeArray,
                                                             clone);
+                                                        g_ptr_array_add(
+                                                            lmb->u.vEnv->labels,
+                                                            clone);
                                                 } else {
                                                         g_ptr_array_add(
                                                             lmb->u.vEnv
