@@ -279,7 +279,10 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                             buf,
                                             "is'nt found local variable: %s",
                                             str);
-                                        bnPanic(bone, bnNewString(bone, buf));
+                                        bnPanic(bone,
+                                                bnNewString(
+                                                    bone,
+                                                    bnIntern(bone->pool, buf)));
                                         break;
                                 }
                                 assert(value != NULL);
@@ -321,7 +324,10 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                         char buf[256];
                                         sprintf(buf, "is'nt found member: %s",
                                                 str);
-                                        bnPanic(bone, bnNewString(bone, buf));
+                                        bnPanic(bone,
+                                                bnNewString(
+                                                    bone,
+                                                    bnIntern(bone->pool, buf)));
                                         break;
                                 }
                                 assert(data != NULL);

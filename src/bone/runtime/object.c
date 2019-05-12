@@ -129,7 +129,7 @@ void bnPrintObject(FILE* fp, bnInterpreter* bone, bnObject* self) {
                         break;
                 case BN_OBJECT_STRING:
                         fprintf(
-                            fp, "string %s",
+                            fp, "\"%s\"",
                             bnView2Str(bone->pool, ((bnString*)self)->value));
                         break;
                 case BN_OBJECT_BOOL:

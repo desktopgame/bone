@@ -54,6 +54,11 @@ int bnEval(bnInterpreter* self) {
         g_ptr_array_add(env->codeArray, BN_OP_DEFER_NEXT);
         bnDeleteAST(ret);
         bnExecute(self, env, self->frame);
+        if (self->frame->panic != NULL) {
+                printf("panic:");
+                bnPrintObject(stdout, self, self->frame->panic);
+                printf("\n");
+        }
         int status = self->frame->panic ? 1 : 0;
         self->frame->panic = NULL;
         bnDeleteILTopLevel(iltop);

@@ -97,7 +97,7 @@ static void gc_mark(bnHeap* self, bnFrame* frame) {
                 gc_mark_rec(stackE->value);
                 stackE = stackE->next;
         }
-        if (frame->panic) {
+        if (frame->panic != NULL) {
                 gc_mark_rec(frame->panic);
         }
 }
