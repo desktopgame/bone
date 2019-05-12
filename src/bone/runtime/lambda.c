@@ -63,5 +63,8 @@ static void free_lambda(bnObject* obj) {
         g_hash_table_destroy(lmb->outer);
         g_list_free(lmb->parameters);
         g_list_free(lmb->returns);
+        if (lmb->type == BN_LAMBDA_SCRIPT) {
+                bnDeleteEnviroment(lmb->u.vEnv);
+        }
         bnDeleteObject(obj);
 }
