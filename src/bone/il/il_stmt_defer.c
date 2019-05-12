@@ -16,7 +16,7 @@ void bnDumpILStmtDefer(FILE* fp, struct bnStringPool* pool, bnILStmtDefer* self,
 
 void bnGenerateILStmtDefer(struct bnInterpreter* bone, bnILStmtDefer* self,
                            bnEnviroment* env) {
-        bnLabel* lab = bnNewLabel(0);
+        bnLabel* lab = bnAutoNewLabel(env, 0);
         g_ptr_array_add(env->codeArray, BN_OP_DEFER_PUSH);
         g_ptr_array_add(env->codeArray, lab);
         g_ptr_array_add(env->codeArray, BN_OP_DEFER_BEGIN);
