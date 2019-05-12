@@ -16,11 +16,13 @@ bnLambda* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
         return ret;
 }
 
-bnLambda* bnNewLambdaFromCFunc(struct bnInterpreter* bone, bnNativeFunc func,
-                               struct bnStringPool* pool, ...) {
+bnLambda* bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
+                                   bnNativeFunc func, struct bnStringPool* pool,
+                                   const char* filename, int lineno, ...) {
         va_list ap;
-        va_start(ap, func);
-        bnLambda* ret = bnNewLambda(bone, BN_LAMBDA_NATIVE);
+        va_start(ap, lineno);
+        bnLambda* ret =
+            bnNewLambdaFunc(bone, BN_LAMBDA_NATIVE, filename, lineno);
         ret->u.vFunc = func;
         while (1) {
                 int val = va_arg(ap, int);

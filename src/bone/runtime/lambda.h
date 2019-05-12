@@ -43,16 +43,22 @@ typedef struct bnLambda {
 bnLambda* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
                           const char* filename, int lineno);
 
+#define bnNewLambdaFromCFunc(bone, func, pool, ...)                     \
+        (bnNewLambdaFromCFuncFunc(bone, func, pool, __FILE__, __LINE__, \
+                                  __VA_ARGS__))
 /**
  * return new instance of bnLambda, from C function.
  * @param bone
  * @param func
  * @param pool
+ * @param filename
+ * @param lineno
  * @param ... (parameter, named returns)
  * @return
  */
-bnLambda* bnNewLambdaFromCFunc(struct bnInterpreter* bone, bnNativeFunc func,
-                               struct bnStringPool* pool, ...);
+bnLambda* bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
+                                   bnNativeFunc func, struct bnStringPool* pool,
+                                   const char* filename, int lineno, ...);
 
 bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnLambda* self);
 
