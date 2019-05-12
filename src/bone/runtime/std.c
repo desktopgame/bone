@@ -236,10 +236,21 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
 
 void bnStdSystemPanic(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
-        frame->panic = a;
+        bnThrow(bone, a, BN_JMP_CODE_EXCEPTION);
 }
 
-void bnStdSystemRecover(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdSystemRecover(bnInterpreter* bone, bnFrame* frame) {
+        g_hash_table_replace(
+            frame->variableTable, bnIntern(bone->pool, "ret"),
+            g_hash_table_lookup(frame->variableTable,
+                                bnIntern(bone->pool, "false")));
+        if (frame->prev->panic != NULL) {
+                g_hash_table_replace(frame->variableTable,
+                                     bnIntern(bone->pool, "ret"),
+                                     frame->prev->panic);
+                frame->prev->panic = NULL;
+        }
+}
 // Bool
 
 void bnStdBoolFuncCall(bnInterpreter* bone, bnFrame* frame);

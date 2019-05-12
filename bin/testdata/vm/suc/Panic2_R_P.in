@@ -1,0 +1,9 @@
+p := def()() {
+    panic("panic");
+};
+q := def()() {
+    defer println("hello");
+    p();
+    println("not shown this message");
+};
+q();

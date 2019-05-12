@@ -25,6 +25,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
         bnObject* BN_FALSE = g_hash_table_lookup(frame->variableTable,
                                                  bnIntern(bone->pool, "false"));
         GList* snapshotIter = NULL;
+        bool inDefer = false;
         for (int PC = 0; PC < env->codeArray->len; PC++) {
                 bnOpcode code = (bnOpcode)g_ptr_array_index(env->codeArray, PC);
 #if VMDEBUG
@@ -393,6 +394,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                         snapshotIter = snapshotIter->next;
                                 } else {
                                         PC = env->codeArray->len;
+                                        inDefer = false;
                                 }
                                 break;
                         }
@@ -400,11 +402,17 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                 }
-                if (frame->panic) {
-                        if (frame->prev) {
-                                frame->prev->panic = frame->panic;
+                if (frame->panic && !inDefer) {
+                        if (snapshotIter != NULL) {
+                                PC = ((bnSnapShot*)snapshotIter->data)->pc;
+                                snapshotIter = snapshotIter->next;
+                                inDefer = true;
+                        } else {
+                                if (frame->prev) {
+                                        frame->prev->panic = frame->panic;
+                                }
+                                break;
                         }
-                        break;
                 }
         }
         return 0;

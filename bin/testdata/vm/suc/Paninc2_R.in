@@ -1,0 +1,9 @@
+p := def()() {
+    defer println(recover());
+    panic("recover");
+};
+q := def()() {
+    p();
+    println("recover2");
+};
+q();

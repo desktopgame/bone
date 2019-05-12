@@ -1,0 +1,5 @@
+p := def()() {
+    defer println(recover());
+    panic("recover");
+};
+p();
