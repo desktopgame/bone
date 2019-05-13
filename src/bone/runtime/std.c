@@ -22,6 +22,7 @@
 #include "vm.h"
 
 static void _throw(bnInterpreter* bone, bnFrame* frame, const char* str);
+static bool file_exists(const char* path);
 
 // only in debug build
 #if DEBUG
@@ -112,6 +113,9 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
         }
         bnStringView pathView = ((bnString*)a)->value;
         const char* pathStr = bnView2Str(bone->pool, pathView);
+        if (!file_exists(pathStr)) {
+                bnFormatThrow(bone, "`%s` is not found", pathStr);
+        }
         // parse file
         bnAST* ast = bnParseFile(bone->pool, pathStr);
         if (ast == NULL) {
@@ -141,6 +145,9 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
         }
         bnStringView pathView = ((bnString*)a)->value;
         const char* pathStr = bnView2Str(bone->pool, pathView);
+        if (!file_exists(pathStr)) {
+                bnFormatThrow(bone, "`%s` is not found", pathStr);
+        }
         // parse file
         bnAST* ast = bnParseFile(bone->pool, pathStr);
         if (ast == NULL) {
@@ -607,4 +614,13 @@ void bnStdArrayArrayGet(bnInterpreter* bone, bnFrame* frame) {
 static void _throw(bnInterpreter* bone, bnFrame* frame, const char* str) {
         bnThrow(bone, bnNewString(bone, bnIntern(bone->pool, str)),
                 BN_JMP_CODE_EXCEPTION);
+}
+
+static bool file_exists(const char* path) {
+        FILE* fp = fopen(path, "r");
+        bool ret = fp != NULL;
+        if (fp != NULL) {
+                fclose(fp);
+        }
+        return ret;
 }
