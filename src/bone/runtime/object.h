@@ -6,8 +6,14 @@ struct bnInterpreter;
 struct bnFrame;
 struct bnHeap;
 
+/**
+ * bnFreeObjectFunc is for free a object.
+ */
 typedef void (*bnFreeObjectFunc)(struct bnObject* self);
 
+/**
+ * bnObjectType is type of object.
+ */
 typedef enum bnObjectType {
         BN_OBJECT_PROTO,
         BN_OBJECT_INTEGER,
@@ -19,6 +25,9 @@ typedef enum bnObjectType {
         BN_OBJECT_ARRAY,
 } bnObjectType;
 
+/**
+ * bnObject is every value in bone.
+ */
 typedef struct bnObject {
         GHashTable* table;
         bool mark;
@@ -26,6 +35,12 @@ typedef struct bnObject {
         bnFreeObjectFunc freeFunc;
 } bnObject;
 
+/**
+ * initialize a object.
+ * @param heap
+ * @param self
+ * @param type
+ */
 void bnInitObject(struct bnHeap* heap, bnObject* self, bnObjectType type);
 
 /**
@@ -36,12 +51,22 @@ void bnInitObject(struct bnHeap* heap, bnObject* self, bnObjectType type);
 bnObject* bnNewObject(struct bnHeap* heap);
 
 /**
+ * bnDefine is define new member.
  * @param self
  * @param name
  * @param value
  */
 void bnDefine(bnObject* self, bnStringView name, bnObject* value);
 
+/**
+ * bnFuncCall is run a `self` as function pointer.
+ * it and, return a subframe used for executed function.
+ * @param self
+ * @param bone
+ * @param frame
+ * @param argc
+ * @return
+ */
 struct bnFrame* bnFuncCall(bnObject* self, struct bnInterpreter* bone,
                            struct bnFrame* frame, int argc);
 
