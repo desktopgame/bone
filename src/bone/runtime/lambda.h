@@ -13,11 +13,17 @@ typedef void (*bnNativeFunc)(struct bnInterpreter* bone, struct bnFrame* frame);
 #define BN_C_ADD_RETURN (1)
 #define BN_C_ADD_EXIT (2)
 
+/**
+ * bnLambdaType is type of bnLambda.
+ */
 typedef enum bnLambdaType {
         BN_LAMBDA_SCRIPT,
         BN_LAMBDA_NATIVE,
 } bnLambdaType;
 
+/**
+ * bnLambda is function pointer in bone.
+ */
 typedef struct bnLambda {
         bnObject base;
         bnLambdaType type;
@@ -60,8 +66,20 @@ bnLambda* bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
                                    bnNativeFunc func, struct bnStringPool* pool,
                                    const char* filename, int lineno, ...);
 
+/**
+ * return true, if first parameter name is self.
+ * @param pool
+ * @param self
+ * @return
+ */
 bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnLambda* self);
 
+/**
+ * return true, if variadic return value.
+ * @param pool
+ * @param self
+ * @return
+ */
 bool bnIsVariadicReturn(struct bnStringPool* pool, bnLambda* self);
 
 #endif
