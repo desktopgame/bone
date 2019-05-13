@@ -1,0 +1,6 @@
+ar := array(4);
+println("");
+println("");
+println("");
+println("");
+ar["aa"] := "aaa";
