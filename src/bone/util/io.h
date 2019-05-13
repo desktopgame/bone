@@ -1,5 +1,6 @@
 #ifndef BONE_UTIL_IO_H
 #define BONE_UTIL_IO_H
+#include <stdbool.h>
 #include <stdio.h>
 
 #define BN_STDOUT (bnStdout())
@@ -28,4 +29,10 @@ FILE* bnStderr();
  * @return
  */
 FILE* bnStdin();
+
+/**
+ * @param path
+ * @return
+ */
+bool bnExists(const char* path);
 #endif

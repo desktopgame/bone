@@ -10,6 +10,7 @@
 #include "../parse/ast2il.h"
 #include "../parse/parser.h"
 #include "../util/fmt.h"
+#include "../util/io.h"
 #include "array.h"
 #include "bool.h"
 #include "enviroment.h"
@@ -616,11 +617,4 @@ static void _throw(bnInterpreter* bone, bnFrame* frame, const char* str) {
                 BN_JMP_CODE_EXCEPTION);
 }
 
-static bool file_exists(const char* path) {
-        FILE* fp = fopen(path, "r");
-        bool ret = fp != NULL;
-        if (fp != NULL) {
-                fclose(fp);
-        }
-        return ret;
-}
+static bool file_exists(const char* path) { return bnExists(path); }

@@ -16,3 +16,12 @@ FILE* bnStdout() { return out; }
 FILE* bnStderr() { return err; }
 
 FILE* bnStdin() { return in; }
+
+bool bnExists(const char* path) {
+        FILE* fp = fopen(path, "r");
+        bool ret = fp != NULL;
+        if (fp != NULL) {
+                fclose(fp);
+        }
+        return ret;
+}
