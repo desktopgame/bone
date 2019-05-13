@@ -37,18 +37,26 @@ typedef struct bnObject {
 
 /**
  * initialize a object.
- * @param heap
+ * @param bone
  * @param self
  * @param type
  */
-void bnInitObject(struct bnHeap* heap, bnObject* self, bnObjectType type);
+void bnInitObject(struct bnInterpreter* bonne, bnObject* self,
+                  bnObjectType type);
+
+/**
+ * include a kernel member, into self.
+ * @param bonen
+ * @param self
+ */
+void bnIncludeKernel(struct bnInterpreter* bone, bnObject* self);
 
 /**
  * return new instance of bnObject.
- * @param heap
+ * @param bone
  * @return
  */
-bnObject* bnNewObject(struct bnHeap* heap);
+bnObject* bnNewObject(struct bnInterpreter* bone);
 
 /**
  * bnDefine is define new member.

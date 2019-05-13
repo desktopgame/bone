@@ -6,7 +6,7 @@
 
 bnBool* bnNewBool(bnInterpreter* bone, bool value) {
         bnBool* ret = BN_MALLOC(sizeof(bnBool));
-        bnInitObject(bone->heap, &ret->base, BN_OBJECT_BOOL);
+        bnInitObject(bone, &ret->base, BN_OBJECT_BOOL);
         ret->value = value;
         ret->r = NULL;
         bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_NOT),

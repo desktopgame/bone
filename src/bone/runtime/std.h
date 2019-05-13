@@ -38,6 +38,54 @@ void bnStdSystemPanic(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdSystemRecover(struct bnInterpreter* bone, struct bnFrame* frame);
 
+// Object
+
+void bnStdObjectFuncCall(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectPositive(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectNegative(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectChilda(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectNot(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectPlus(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectMinus(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectMultiply(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectDivide(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectModulo(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectBitAnd(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectBitOr(struct bnInterpreter* bone, struct bnFrame* frame);
+
+// void bnStdObjectLogicAnd(struct bnInterpreter* bone, struct bnFrame* frame);
+
+// void bnStdObjectLogicOr(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectExcOr(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectLShift(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectRShift(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectGT(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectGE(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectLT(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectLE(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectEqual(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdObjectNotEqual(struct bnInterpreter* bone, struct bnFrame* frame);
+
 // Bool
 
 void bnStdBoolFuncCall(struct bnInterpreter* bone, struct bnFrame* frame);

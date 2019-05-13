@@ -1,0 +1,3 @@
+a := object();
+b := object();
+assert(a != b);

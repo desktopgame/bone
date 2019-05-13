@@ -3,7 +3,7 @@
 
 bnDouble* bnNewDouble(bnInterpreter* bone, double value) {
         bnDouble* ret = BN_MALLOC(sizeof(bnDouble));
-        bnInitObject(bone->heap, &ret->base, BN_OBJECT_DOUBLE);
+        bnInitObject(bone, &ret->base, BN_OBJECT_DOUBLE);
         ret->value = value;
         return ret;
 }

@@ -6,7 +6,7 @@ static void free_lambda(bnObject* obj);
 bnLambda* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
                           const char* filename, int lineno) {
         bnLambda* ret = bnMallocFunc(sizeof(bnLambda), filename, lineno);
-        bnInitObject(bone->heap, &ret->base, BN_OBJECT_LAMBDA);
+        bnInitObject(bone, &ret->base, BN_OBJECT_LAMBDA);
         ret->base.freeFunc = free_lambda;
         ret->type = type;
         ret->parameters = NULL;

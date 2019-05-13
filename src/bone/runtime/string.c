@@ -5,7 +5,7 @@
 
 bnString* bnNewString(bnInterpreter* bone, bnStringView value) {
         bnString* ret = BN_MALLOC(sizeof(bnString));
-        bnInitObject(bone->heap, &ret->base, BN_OBJECT_STRING);
+        bnInitObject(bone, &ret->base, BN_OBJECT_STRING);
         ret->value = value;
         bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_EQUAL),
                  bnNewLambdaFromCFunc(bone, bnStdStringEqual, bone->pool,

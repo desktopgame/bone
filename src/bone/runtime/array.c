@@ -9,13 +9,13 @@ static void free_array(bnObject* obj);
 
 bnArray* bnNewArray(bnInterpreter* bone, int size) {
         bnArray* ret = BN_MALLOC(sizeof(bnArray));
-        bnInitObject(bone->heap, &ret->base, BN_OBJECT_ARRAY);
+        bnInitObject(bone, &ret->base, BN_OBJECT_ARRAY);
         ret->base.freeFunc = free_array;
         ret->arr = g_ptr_array_new();
         ret->size = size;
         g_ptr_array_set_free_func(ret->arr, NULL);
         for (int i = 0; i < size; i++) {
-                g_ptr_array_add(ret->arr, bnNewObject(bone->heap));
+                g_ptr_array_add(ret->arr, bnNewObject(bone));
         }
         bnDefine(&ret->base, bnIntern(bone->pool, "length"),
                  bnNewInteger(bone, size));

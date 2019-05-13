@@ -11,21 +11,36 @@
 #include "keyword.h"
 #include "lambda.h"
 #include "object.h"
+#include "std.h"
 #include "string.h"
 #include "vm.h"
 
-void bnInitObject(struct bnHeap* heap, bnObject* self, bnObjectType type) {
+void bnInitObject(bnInterpreter* bone, bnObject* self, bnObjectType type) {
         self->table =
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         self->mark = false;
         self->type = type;
         self->freeFunc = NULL;
-        bnAddToHeap(heap, self);
+        bnAddToHeap(bone->heap, self);
 }
 
-bnObject* bnNewObject(struct bnHeap* heap) {
+void bnIncludeKernel(bnInterpreter* bone, bnObject* self) {
+        bnDefine(self, bnIntern(bone->pool, BN_KWD_EQUAL),
+                 bnNewLambdaFromCFunc(bone, bnStdObjectEqual, bone->pool,
+                                      BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
+                                      "other", BN_C_ADD_RETURN, "ret",
+                                      BN_C_ADD_EXIT));
+        bnDefine(self, bnIntern(bone->pool, BN_KWD_NOTEQUAL),
+                 bnNewLambdaFromCFunc(bone, bnStdObjectNotEqual, bone->pool,
+                                      BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
+                                      "other", BN_C_ADD_RETURN, "ret",
+                                      BN_C_ADD_EXIT));
+}
+
+bnObject* bnNewObject(bnInterpreter* bone) {
         bnObject* ret = BN_MALLOC(sizeof(bnObject));
-        bnInitObject(heap, ret, BN_OBJECT_PROTO);
+        bnInitObject(bone, ret, BN_OBJECT_PROTO);
+        bnIncludeKernel(bone, ret);
         return ret;
 }
 
@@ -54,7 +69,7 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
         GList* retIter = lambda->returns;
         while (retIter != NULL) {
                 g_hash_table_replace(sub->variableTable, retIter->data,
-                                     bnNewObject(bone->heap));
+                                     bnNewObject(bone));
                 retIter = retIter->next;
         }
         if (lambda->type == BN_LAMBDA_NATIVE) {

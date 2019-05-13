@@ -183,7 +183,7 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
 
 void bnStdSystemObject(bnInterpreter* bone, bnFrame* frame) {
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewObject(bone->heap));
+                             bnNewObject(bone));
 }
 
 void bnStdSystemArray(bnInterpreter* bone, bnFrame* frame) {
@@ -253,6 +253,65 @@ void bnStdSystemRecover(bnInterpreter* bone, bnFrame* frame) {
                 frame->prev->panic = NULL;
         }
 }
+
+// Object
+
+void bnStdObjectFuncCall(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectPositive(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectNegative(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectChilda(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectNot(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectPlus(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectMinus(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectMultiply(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectDivide(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectModulo(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectBitAnd(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectBitOr(bnInterpreter* bone, bnFrame* frame) {}
+
+// void bnStdObjectLogicAnd(bnInterpreter* bone, bnFrame* frame){}
+
+// void bnStdObjectLogicOr(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStdObjectExcOr(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectLShift(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectRShift(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectGT(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectGE(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectLT(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectLE(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdObjectEqual(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnGetBool(bone->pool, frame, a == b));
+}
+
+void bnStdObjectNotEqual(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnGetBool(bone->pool, frame, a != b));
+}
+
 // Bool
 
 void bnStdBoolFuncCall(bnInterpreter* bone, bnFrame* frame);
