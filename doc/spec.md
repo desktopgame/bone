@@ -220,9 +220,12 @@ VALUE:
 * false
 
 CLOSURE:
+* include
 * load
 * object
 * array
+* panic
+* recover
 * extern_var
 * extern_def
 
