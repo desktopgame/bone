@@ -1,64 +1,58 @@
-# cmake-template
-this project is template of programming by c In particular,  
-specialized for cmake.
+# about bone language
 
-# make
-````
-cd src
-cmake .
-make
-````
-
-# config
-must be replace a next words, in src/CMakeLists.txt
-````
-varAppName
-varExecutable
-varInstallDir
-varIgnoreCompile
-````
-
-
-# how to use in vscode
-first, install next plugin  
-[C/C++](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
-
-generate `c_cpp_properties.json` by next commad in command palette
-(command palette show by Ctrl + Shift + P)
-````
-C/C++: Edit configurations (JSON)
-````
-
-open `c_cpp_properties.json`  
-write include path, into include path section  
-in generic, write a include path of was configured for cmake  
+bone is based on prototyping language.  
+and, added some peculiar idea.  
+also, this language is but experiment,
+so, included in other languages popular function is not included in this language.  
 example:
+* class, interface, overload
+* method(use instead by closure)
+* exception, and try-catch(instead of exception introduced a `panic`, `recover` and `defer`)
+* null
+
+# affected a language
+* [crowbar](http://kmaebashi.com/programmer/devlang/crowbar.html)
+* [anko](https://github.com/mattn/anko)
+* [go](https://github.com/golang/go)
+
+# feature
+this language peculiar idea is object injection, and scope injection.  
+this idea is related with named return value.  
+and, need always nnamed return value if return a value.
+## concrete example
+named return value
 ````
-"includePath": [
-    "${workspaceFolder}/**",
-    "/usr/local/Cellar/glib/2.60.0_1/lib/glib-2.0/include",
-    "/usr/local/include/glib-2.0"
-],
+f := def()(value, error) {
+    value := "value is string";
+    error := false;
+};
+
+// object injection
+v := object() <- f();
+println(v.value);
+println(v.error);
+
+// scope injection
+{} <- f();
+println(value);
+println(error);
+
+// nested named return value
+f2 := def()(value, error, value2) {
+    {}  <- f();
+    value2 := "value 2";
+};
+````
+object injection
+````
+std := object() <- load("./std.bn");
+std.printf("hello, world");
+````
+scope injection
+````
+{} <- load("./std.bn");
+printf("hello, world");
 ````
 
-next, configure debug option  
-generate `launch.json` by next commad in command palette  
-(command palette show by Ctrl + Shift + P)
-````
-Debug: Select and Start Debugging
-C++(GDB/LLDB)
-````
-
-fix to next code in `launch.json`  
-before
-````
-"program": "enter program name, for example ${workspaceFolder}/a.out"
-"cwd": "${workspaceFolder}"
-"externalConsole": true
-````
-after
-````
-"program": "${workspaceFolder}/bin/varAppName"
-"cwd": "${workspaceFolder}/bin"
-"externalConsole": false
-````
+# more information
+visit document folder if read more information
