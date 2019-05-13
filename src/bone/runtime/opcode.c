@@ -1,10 +1,14 @@
 #include "opcode.h"
+#include "enviroment.h"
 #include "label.h"
 
-int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary,
+int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, bnEnviroment* env,
                   int pos) {
+        GPtrArray* ary = env->codeArray;
         bnOpcode data = (bnOpcode)g_ptr_array_index(ary, pos);
-        fprintf(fp, "<%d>", pos);
+        int line = bnFindLineRange(env, pos);
+        fprintf(fp, "<%d>", line);
+        fprintf(fp, "[%d]", pos);
         switch (data) {
                 case BN_OP_NOP:
                         fprintf(fp, "nop");

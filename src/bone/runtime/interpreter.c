@@ -56,13 +56,19 @@ int bnEval(bnInterpreter* self) {
         }
         bnILToplevel* iltop = bnAST2IL(ret);
         // generate instructions
-        bnEnviroment* env = bnNewEnviroment();
+        bnEnviroment* env =
+            bnNewEnviroment(bnIntern(self->pool, self->filenameRef));
         self->frame = bnNewFrame();
         bnWriteDefaults(self, self->frame, self->pool);
         bnGenerateILTopLevel(self, iltop, env);
         g_ptr_array_add(env->codeArray, BN_OP_DEFER_NEXT);
         bnDeleteAST(ret);
         bnExecute(self, env, self->frame);
+        while (bnGetStackSize(self->callStack) > 0) {
+                GString* gbuf = bnPopStack(self->callStack);
+                printf("TRACE: %s\n", gbuf->str);
+                g_string_free(gbuf, TRUE);
+        }
         if (self->frame->panic != NULL) {
                 printf("panic:");
                 bnPrintObject(stdout, self, self->frame->panic);

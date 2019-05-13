@@ -2,6 +2,7 @@
 #define BONE_RUNTIME_OPCODE_H
 #include <stdio.h>
 #include "../bone.h"
+struct bnEnviroment;
 
 /**
  * bnOpcode is used by bone vm.
@@ -55,11 +56,12 @@ typedef enum bnOpcode {
  * return a next position of opcode.
  * @param fp
  * @param pool
- * @param ary
+ * @param env
  * @param pos
  * @return
  */
-int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary, int pos);
+int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, struct bnEnviroment* env,
+                  int pos);
 
 /**
  * @param data

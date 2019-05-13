@@ -20,7 +20,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                 bnOpcode code = (bnOpcode)g_ptr_array_index(env->codeArray, PC);
 #if VMDEBUG
                 int stackCount = bnGetStackSize(frame->vStack);
-                bnPrintOpcode(stdout, bone->pool, env->codeArray, PC);
+                bnPrintOpcode(stdout, bone->pool, env, PC);
                 printf("[%d]\n", stackCount);
 #endif
                 switch (code) {
@@ -90,7 +90,9 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         case BN_OP_GEN_LAMBDA_BEGIN: {
                                 bnLambda* lmb =
                                     bnNewLambda(bone, BN_LAMBDA_SCRIPT);
-                                lmb->u.vEnv = bnNewEnviroment();
+                                lmb->u.vEnv = bnNewEnviroment(env->filename);
+                                lmb->u.vEnv->lineOffset =
+                                    bnFindLineRange(env, PC);
                                 // is instance base?
                                 int parameterLen =
                                     g_ptr_array_index(env->codeArray, ++PC);
@@ -401,9 +403,18 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnObject* lambda = bnPopStack(frame->vStack);
                                 int argc =
                                     g_ptr_array_index(env->codeArray, ++PC);
+                                int line = bnFindLineRange(env, PC);
+                                GString* gbuf = g_string_new(
+                                    bnView2Str(bone->pool, env->filename));
+                                g_string_append_printf(
+                                    gbuf, "<%d>", (line + env->lineOffset));
+                                bnPushStack(bone->callStack, gbuf);
                                 bnFrame* sub =
                                     bnFuncCall(lambda, bone, frame, argc);
-
+                                if (sub->panic == NULL) {
+                                        g_string_free(
+                                            bnPopStack(bone->callStack), TRUE);
+                                }
                                 bnDeleteFrame(sub);
                                 bnGC(bone);
                                 break;

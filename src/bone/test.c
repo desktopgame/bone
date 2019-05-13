@@ -44,7 +44,7 @@ static void writeEnv(const gchar* out, struct bnStringPool* pool,
         int pos = 0;
         int len = env->codeArray->len;
         while (pos < len) {
-                pos = bnPrintOpcode(fp, pool, env->codeArray, pos);
+                pos = bnPrintOpcode(fp, pool, env, pos);
                 fprintf(fp, "\n");
         }
         fclose(fp);
@@ -166,7 +166,8 @@ static int bnVM(const char* dir, int flag) {
                 bnAST* a = bnParseFile(bone->pool, path);
                 if (flag == EXPECT_SUC) {
                         bnILToplevel* iltop = bnAST2IL(a);
-                        bnEnviroment* env = bnNewEnviroment();
+                        bnEnviroment* env =
+                            bnNewEnviroment(bnIntern(bone->pool, path));
                         bnGenerateILTopLevel(bone, iltop, env);
                         writeEnv(out, bone->pool, env);
                         CU_ASSERT(a != NULL);

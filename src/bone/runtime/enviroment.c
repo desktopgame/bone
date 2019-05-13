@@ -4,12 +4,14 @@
 
 static void delete_label(gpointer data);
 
-bnEnviroment* bnNewEnviroment() {
+bnEnviroment* bnNewEnviroment(bnStringView filename) {
         bnEnviroment* ret = BN_MALLOC(sizeof(bnEnviroment));
         ret->codeArray = g_ptr_array_new();
         ret->labels = g_ptr_array_new();
         ret->ranges = g_ptr_array_new();
         ret->labelFixStack = bnNewStack();
+        ret->filename = filename;
+        ret->lineOffset = 0;
         g_ptr_array_set_free_func(ret->codeArray, NULL);
         g_ptr_array_set_free_func(ret->labels, delete_label);
         g_ptr_array_set_free_func(ret->ranges, bnDeleteLineRange);
@@ -36,6 +38,16 @@ void bnAddLineRange(bnEnviroment* self, int lineno) {
                 lr->line = lineno;
                 g_ptr_array_add(self->ranges, lr);
         }
+}
+
+int bnFindLineRange(bnEnviroment* self, int pc) {
+        for (int i = 0; i < self->ranges->len; i++) {
+                bnLineRange* lr = g_ptr_array_index(self->ranges, i);
+                if (pc >= lr->start && pc <= lr->end) {
+                        return lr->line;
+                }
+        }
+        return 0;
 }
 
 bnLabel* bnAutoNewLabel(bnEnviroment* self, int pos) {

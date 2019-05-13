@@ -125,7 +125,7 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
         bnILToplevel* iltop = bnAST2IL(ast);
         // gen code
         bnFrame* sub = bnSubFrame(frame);
-        bnEnviroment* env = bnNewEnviroment();
+        bnEnviroment* env = bnNewEnviroment(bnIntern(bone->pool, pathStr));
         bnGenerateILTopLevel(bone, iltop, env);
         bnInjectFrame(frame->variableTable, sub);
         bnExecute(bone, env, sub);
@@ -154,7 +154,7 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
         bnILToplevel* iltop = bnAST2IL(ast);
         // gen code
         bnFrame* sub = bnSubFrame(frame);
-        bnEnviroment* env = bnNewEnviroment();
+        bnEnviroment* env = bnNewEnviroment(bnIntern(bone->pool, pathStr));
         bnGenerateILTopLevel(bone, iltop, env);
         bnWriteDefaults(bone, sub, bone->pool);
         // get default hash
@@ -269,6 +269,7 @@ void bnStdSystemRecover(bnInterpreter* bone, bnFrame* frame) {
                                      bnIntern(bone->pool, "ret"),
                                      frame->prev->panic);
                 frame->prev->panic = NULL;
+                g_string_free(bnPopStack(bone->callStack), TRUE);
         }
 }
 

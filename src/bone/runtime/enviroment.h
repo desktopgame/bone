@@ -8,24 +8,33 @@
 struct bnLambda;
 
 typedef struct bnEnviroment {
+        bnStringView filename;
         GPtrArray* codeArray;
         GPtrArray* labels;
         GPtrArray* ranges;
         bnStack* labelFixStack;
+        int lineOffset;
 } bnEnviroment;
 
 /**
  * return new instance of bnEnviroment.
- * @param type
+ * @param filename
  * @return
  */
-bnEnviroment* bnNewEnviroment();
+bnEnviroment* bnNewEnviroment(bnStringView filename);
 
 /**
  * @param self
  * @param lineno
  */
 void bnAddLineRange(bnEnviroment* self, int lineno);
+
+/**
+ * @param self
+ * @param pc
+ * @return
+ */
+int bnFindLineRange(bnEnviroment* self, int pc);
 
 /**
  * @param self
