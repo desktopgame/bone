@@ -50,7 +50,20 @@ typedef enum bnOpcode {
         BN_OP_DEFER_END,
 } bnOpcode;
 
+/**
+ * print a opcode.
+ * return a next position of opcode.
+ * @param fp
+ * @param pool
+ * @param ary
+ * @param pos
+ * @return
+ */
 int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, GPtrArray* ary, int pos);
 
+/**
+ * @param data
+ * @return
+ */
 int bnOperands(bnOpcode data);
 #endif
