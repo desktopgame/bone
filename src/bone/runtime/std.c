@@ -189,7 +189,7 @@ void bnStdSystemObject(bnInterpreter* bone, bnFrame* frame) {
 void bnStdSystemArray(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, "should be `length` is integer");
         }
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              bnNewArray(bone, ((bnInteger*)a)->value));
@@ -198,10 +198,14 @@ void bnStdSystemArray(bnInterpreter* bone, bnFrame* frame) {
 void bnStdSystemExternVar(bnInterpreter* bone, bnFrame* frame) {
         bnObject* name = bnPopStack(frame->vStack);
         if (name->type != BN_OBJECT_STRING) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, "should be `name` is string");
         }
         gpointer v =
             g_hash_table_lookup(bone->externTable, ((bnString*)name)->value);
+        if (v == NULL) {
+                bnFormatThrow(bone, "not bound variable: `%s`",
+                              bnView2Str(bone->pool, ((bnString*)name)->value));
+        }
         bnObject* obj = v;
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              obj);
@@ -212,25 +216,39 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
         bnObject* params = bnPopStack(frame->vStack);
         bnObject* returns = bnPopStack(frame->vStack);
         if (name->type != BN_OBJECT_STRING) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, "should be `name` is string");
+        }
+        if (params->type != BN_OBJECT_ARRAY) {
+                _throw(bone, frame, "should be `params` is array");
+        }
+        if (returns->type != BN_OBJECT_ARRAY) {
+                _throw(bone, frame, "should be `returns` is array");
         }
         // find from extern table
         gpointer v =
             g_hash_table_lookup(bone->externTable, ((bnString*)name)->value);
+        if (v == NULL) {
+                bnFormatThrow(bone, "not bound variable: `%s`",
+                              bnView2Str(bone->pool, ((bnString*)name)->value));
+        }
         bnObject* obj = v;
         if (obj->type != BN_OBJECT_LAMBDA) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, "C value is not lambda");
         }
         // check parameters
         bnLambda* lambda = obj;
         bnArray* paraArr = params;
         if (paraArr->arr->len != g_list_length(lambda->parameters)) {
-                _throw(bone, frame, "internal error");
+                bnFormatThrow(bone, "illegal parameter length: %d != %d",
+                              paraArr->arr->len,
+                              g_list_length(lambda->parameters));
         }
         // check returns
         bnArray* retuArr = returns;
         if (retuArr->arr->len != g_list_length(lambda->returns)) {
-                _throw(bone, frame, "internal error");
+                bnFormatThrow(bone, "illegal return length: %d != %d",
+                              retuArr->arr->len,
+                              g_list_length(lambda->returns));
         }
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              obj);
