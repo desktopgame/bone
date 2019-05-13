@@ -3,7 +3,7 @@
 #include "object.h"
 
 /**
- * bnArray is bool.
+ * bnArray is array.
  */
 typedef struct bnArray {
         bnObject base;
