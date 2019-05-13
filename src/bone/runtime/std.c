@@ -120,7 +120,7 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
         // parse file
         bnAST* ast = bnParseFile(bone->pool, pathStr);
         if (ast == NULL) {
-                _throw(bone, frame, "internal error");
+                bnFormatThrow(bone, "syntax error in `%s`", pathStr);
         }
         bnILToplevel* iltop = bnAST2IL(ast);
         if (iltop == NULL) {
@@ -152,7 +152,7 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
         // parse file
         bnAST* ast = bnParseFile(bone->pool, pathStr);
         if (ast == NULL) {
-                _throw(bone, frame, "internal error");
+                bnFormatThrow(bone, "syntax error in `%s`", pathStr);
         }
         bnILToplevel* iltop = bnAST2IL(ast);
         if (iltop == NULL) {
