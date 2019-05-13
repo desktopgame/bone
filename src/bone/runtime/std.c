@@ -108,7 +108,7 @@ void bnStdDebugShowInfo(bnInterpreter* bone, bnFrame* frame) {
 void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, "should be path is string");
         }
         bnStringView pathView = ((bnString*)a)->value;
         const char* pathStr = bnView2Str(bone->pool, pathView);
@@ -137,7 +137,7 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
 void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, "should be path is string");
         }
         bnStringView pathView = ((bnString*)a)->value;
         const char* pathStr = bnView2Str(bone->pool, pathView);
