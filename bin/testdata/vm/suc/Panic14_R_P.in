@@ -1,0 +1,2 @@
+ar := array(4);
+ar["aa"] := "aaa";
