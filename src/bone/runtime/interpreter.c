@@ -47,10 +47,6 @@ int bnEval(bnInterpreter* self) {
                 return 1;
         }
         bnILToplevel* iltop = bnAST2IL(ret);
-        if (iltop == NULL) {
-                // fail compile
-                return 1;
-        }
         // generate instructions
         bnEnviroment* env = bnNewEnviroment();
         self->frame = bnNewFrame();

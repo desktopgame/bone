@@ -123,9 +123,6 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
                 bnFormatThrow(bone, "syntax error in `%s`", pathStr);
         }
         bnILToplevel* iltop = bnAST2IL(ast);
-        if (iltop == NULL) {
-                _throw(bone, frame, "internal error");
-        }
         // gen code
         bnFrame* sub = bnSubFrame(frame);
         bnEnviroment* env = bnNewEnviroment();
@@ -155,9 +152,6 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
                 bnFormatThrow(bone, "syntax error in `%s`", pathStr);
         }
         bnILToplevel* iltop = bnAST2IL(ast);
-        if (iltop == NULL) {
-                _throw(bone, frame, "internal error");
-        }
         // gen code
         bnFrame* sub = bnSubFrame(frame);
         bnEnviroment* env = bnNewEnviroment();
