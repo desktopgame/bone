@@ -27,11 +27,16 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef) {
         ret->__jstack = bnNewJStack();
         g_hash_table_replace(
             ret->externTable, bnIntern(ret->pool, "exit"),
-            bnNewLambdaFromCFunc(ret, bnExtExit, ret->pool, BN_C_ADD_PARAM,
-                                 "status", BN_C_ADD_EXIT));
+            bnNewLambdaFromCFunc(ret, bnExtSystemExit, ret->pool,
+                                 BN_C_ADD_PARAM, "status", BN_C_ADD_EXIT));
+        g_hash_table_replace(ret->externTable, bnIntern(ret->pool, "abort"),
+                             bnNewLambdaFromCFunc(ret, bnExtSystemAbort,
+                                                  ret->pool, BN_C_ADD_EXIT));
         g_hash_table_replace(
-            ret->externTable, bnIntern(ret->pool, "abort"),
-            bnNewLambdaFromCFunc(ret, bnExtAbort, ret->pool, BN_C_ADD_EXIT));
+            ret->externTable, bnIntern(ret->pool, "system"),
+            bnNewLambdaFromCFunc(ret, bnExtSystemSystem, ret->pool,
+                                 BN_C_ADD_PARAM, "args", BN_C_ADD_RETURN,
+                                 "status", BN_C_ADD_EXIT));
         return ret;
 }
 

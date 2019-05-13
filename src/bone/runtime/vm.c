@@ -167,6 +167,41 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                 g_ptr_array_add(
                                                     lmb->u.vEnv->codeArray,
                                                     data);
+                                                // add params
+                                                parameterLen =
+                                                    g_ptr_array_index(
+                                                        env->codeArray, ++PC);
+                                                g_ptr_array_add(
+                                                    lmb->u.vEnv->codeArray,
+                                                    parameterLen);
+                                                for (int i = 0;
+                                                     i < parameterLen; i++) {
+                                                        g_ptr_array_add(
+                                                            lmb->u.vEnv
+                                                                ->codeArray,
+                                                            g_ptr_array_index(
+                                                                env->codeArray,
+                                                                ++PC));
+                                                }
+                                                // add returns
+                                                namedReturnLen =
+                                                    g_ptr_array_index(
+                                                        env->codeArray, ++PC);
+                                                g_ptr_array_add(
+                                                    lmb->u.vEnv->codeArray,
+                                                    namedReturnLen);
+                                                g_ptr_array_add(
+                                                    lmb->u.vEnv->codeArray,
+                                                    BN_OP_NOP);
+                                                for (int i = 0;
+                                                     i < namedReturnLen; i++) {
+                                                        lmb->returns =
+                                                            g_list_append(
+                                                                lmb->returns,
+                                                                g_ptr_array_index(
+                                                                    env->codeArray,
+                                                                    ++PC));
+                                                }
                                                 lambdaNest++;
                                         } else if (data ==
                                                    BN_OP_GEN_LAMBDA_END) {

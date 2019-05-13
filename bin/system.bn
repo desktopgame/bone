@@ -1,2 +1,3 @@
 exit := extern_def("exit", ["status"], []);
 abort := extern_def("abort", [], []);
+system := extern_def("system", ["args"], ["status"]);

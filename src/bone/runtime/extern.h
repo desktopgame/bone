@@ -3,7 +3,9 @@
 struct bnFrame;
 struct bnInterpreter;
 
-void bnExtExit(struct bnInterpreter* bone, struct bnFrame* frame);
+void bnExtSystemExit(struct bnInterpreter* bone, struct bnFrame* frame);
 
-void bnExtAbort(struct bnInterpreter* bone, struct bnFrame* frame);
+void bnExtSystemAbort(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnExtSystemSystem(struct bnInterpreter* bone, struct bnFrame* frame);
 #endif
