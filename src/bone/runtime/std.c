@@ -266,7 +266,7 @@ void bnStdBoolChilda(bnInterpreter* bone, bnFrame* frame);
 void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_BOOL) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, "should be `self` is bool");
         }
         bnBool* b = a;
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
@@ -283,9 +283,43 @@ void bnStdBoolDivide(bnInterpreter* bone, bnFrame* frame);
 
 void bnStdBoolModulo(bnInterpreter* bone, bnFrame* frame);
 
-void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame);
+void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_BOOL) {
+                _throw(bone, frame, "should be `self` is bool");
+        }
+        if (b->type != BN_OBJECT_BOOL) {
+                _throw(bone, frame, "should be argument is bool");
+        }
+        bnBool* boolA = a;
+        bnBool* boolB = b;
+        bnObject* c = g_hash_table_lookup(
+            frame->variableTable,
+            bnIntern(bone->pool,
+                     (boolA->value & boolB->value) ? "true" : "false"));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             c);
+}
 
-void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame);
+void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_BOOL) {
+                _throw(bone, frame, "should be `self` is bool");
+        }
+        if (b->type != BN_OBJECT_BOOL) {
+                _throw(bone, frame, "should be argument is bool");
+        }
+        bnBool* boolA = a;
+        bnBool* boolB = b;
+        bnObject* c = g_hash_table_lookup(
+            frame->variableTable,
+            bnIntern(bone->pool,
+                     (boolA->value | boolB->value) ? "true" : "false"));
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             c);
+}
 
 // void bnStdBoolLogicAnd(struct bnInterpreter* bone, struct bnFrame* frame);
 

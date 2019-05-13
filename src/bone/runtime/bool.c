@@ -13,5 +13,15 @@ bnBool* bnNewBool(bnInterpreter* bone, bool value) {
                  bnNewLambdaFromCFunc(bone, bnStdBoolNot, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN,
                                       "ret", BN_C_ADD_EXIT));
+        bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_BIT_OR),
+                 bnNewLambdaFromCFunc(bone, bnStdBoolBitOr, bone->pool,
+                                      BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
+                                      "other", BN_C_ADD_RETURN, "ret",
+                                      BN_C_ADD_EXIT));
+        bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_BIT_AND),
+                 bnNewLambdaFromCFunc(bone, bnStdBoolBitAnd, bone->pool,
+                                      BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
+                                      "other", BN_C_ADD_RETURN, "ret",
+                                      BN_C_ADD_EXIT));
         return ret;
 }
