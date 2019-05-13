@@ -31,8 +31,11 @@ void bnExtSystemAbort(bnInterpreter* bone, bnFrame* frame) { abort(); }
 void bnExtSystemSystem(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_ARRAY) {
-                bnThrow(bone, bnNewString(bone, "should be `args` is array"),
-                        BN_JMP_CODE_EXCEPTION);
+                bnThrow(
+                    bone,
+                    bnNewString(bone, bnIntern(bone->pool,
+                                               "should be `args` is array")),
+                    BN_JMP_CODE_EXCEPTION);
         }
         bnArray* args = a;
         GString* gbuf = g_string_new("");
