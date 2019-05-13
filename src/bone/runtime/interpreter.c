@@ -36,9 +36,14 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef) {
 }
 
 int bnEval(bnInterpreter* self) {
+        if (!bnExists(self->filenameRef)) {
+                printf("abort:`%s` is not found", self->filenameRef);
+                return 1;
+        }
         bnAST* ret = bnParseFile(self->pool, self->filenameRef);
         if (ret == NULL) {
                 // fail parse
+                printf("abort:syntax error in `%s`", self->filenameRef);
                 return 1;
         }
         bnILToplevel* iltop = bnAST2IL(ret);

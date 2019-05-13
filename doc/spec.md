@@ -351,6 +351,18 @@ p := def()() {
 p();
 ````
 
+# エラーメッセージ(error message)
+
+パニックによる終了の時(when on abort by panic)
+````
+panic:error message
+````
+
+それ以外による終了の時(when on abort by other case)
+````
+abort:error message
+````
+
 # 実装が保留されているもの(pending function)
 実装が難しいか、言語を汚くする可能性があるために保留されているもの。  
 もしくは必要性が疑わしいもの。  
