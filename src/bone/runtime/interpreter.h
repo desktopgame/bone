@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "../glib.h"
 #include "../util/jump_stack.h"
+#include "../util/stack.h"
 #include "../util/string_pool.h"
 
 #define BN_JMP_CODE_EXCEPTION (1)
@@ -19,6 +20,7 @@ typedef struct bnInterpreter {
         struct bnStringPool* pool;
         struct bnFrame* frame;
         struct bnHeap* heap;
+        bnStack* callStack;
         bnJStack* __jstack;
 } bnInterpreter;
 

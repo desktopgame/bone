@@ -119,6 +119,7 @@ void bnGenerateILExpression(struct bnInterpreter* bone, bnILExpression* self,
                         assert(false);
                         break;
         }
+        bnAddLineRange(env, self->line);
 }
 
 void bnDeleteILExpression(bnILExpression* self) {

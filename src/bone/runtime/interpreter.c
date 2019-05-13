@@ -15,6 +15,8 @@
 #include "string.h"
 #include "vm.h"
 
+static void free_gstr(void* v);
+
 bnInterpreter* bnNewInterpreter(const char* filenameRef) {
         bnInterpreter* ret = BN_MALLOC(sizeof(bnInterpreter));
         ret->filenameRef = filenameRef;
@@ -25,6 +27,7 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef) {
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         ret->nativeAlloc = NULL;
         ret->__jstack = bnNewJStack();
+        ret->callStack = bnNewStack();
         g_hash_table_replace(
             ret->externTable, bnIntern(ret->pool, "exit"),
             bnNewLambdaFromCFunc(ret, bnExtSystemExit, ret->pool,
@@ -211,6 +214,9 @@ void bnDeleteInterpreter(bnInterpreter* self) {
         bnDeleteStringPool(self->pool);
         bnDeleteHeap(self->heap);
         bnDeleteJStack(self->__jstack);
+        bnDeleteStack(self->callStack, free_gstr);
         g_hash_table_destroy(self->externTable);
         BN_FREE(self);
 }
+
+static void free_gstr(void* v) { g_string_free(v, TRUE); }

@@ -111,4 +111,5 @@ void bnGenerateILStatement(struct bnInterpreter* bone, bnILStatement* self,
                         assert(false);
                         break;
         }
+        bnAddLineRange(env, self->line);
 }

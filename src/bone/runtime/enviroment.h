@@ -10,6 +10,7 @@ struct bnLambda;
 typedef struct bnEnviroment {
         GPtrArray* codeArray;
         GPtrArray* labels;
+        GPtrArray* ranges;
         bnStack* labelFixStack;
 } bnEnviroment;
 
@@ -19,6 +20,12 @@ typedef struct bnEnviroment {
  * @return
  */
 bnEnviroment* bnNewEnviroment();
+
+/**
+ * @param self
+ * @param lineno
+ */
+void bnAddLineRange(bnEnviroment* self, int lineno);
 
 /**
  * @param self

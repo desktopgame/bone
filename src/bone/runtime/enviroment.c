@@ -1,5 +1,6 @@
 #include "enviroment.h"
 #include "lambda.h"
+#include "line_range.h"
 
 static void delete_label(gpointer data);
 
@@ -7,10 +8,34 @@ bnEnviroment* bnNewEnviroment() {
         bnEnviroment* ret = BN_MALLOC(sizeof(bnEnviroment));
         ret->codeArray = g_ptr_array_new();
         ret->labels = g_ptr_array_new();
+        ret->ranges = g_ptr_array_new();
         ret->labelFixStack = bnNewStack();
         g_ptr_array_set_free_func(ret->codeArray, NULL);
         g_ptr_array_set_free_func(ret->labels, delete_label);
+        g_ptr_array_set_free_func(ret->ranges, bnDeleteLineRange);
         return ret;
+}
+
+void bnAddLineRange(bnEnviroment* self, int lineno) {
+        if (self->ranges->len == 0) {
+                bnLineRange* lr = bnNewLineRange();
+                lr->start = 0;
+                lr->end = 0;
+                lr->line = lineno;
+                g_ptr_array_add(self->ranges, lr);
+                return;
+        }
+        bnLineRange* lr =
+            g_ptr_array_index(self->ranges, self->ranges->len - 1);
+        if (lr->line == lineno) {
+                lr->end = self->codeArray->len;
+        } else {
+                bnLineRange* lr = bnNewLineRange();
+                lr->start = self->codeArray->len;
+                lr->end = self->codeArray->len;
+                lr->line = lineno;
+                g_ptr_array_add(self->ranges, lr);
+        }
 }
 
 bnLabel* bnAutoNewLabel(bnEnviroment* self, int pos) {
@@ -66,6 +91,7 @@ void bnGenerateFillNOP(bnEnviroment* self, int count) {
 void bnDeleteEnviroment(bnEnviroment* self) {
         g_ptr_array_free(self->codeArray, TRUE);
         g_ptr_array_free(self->labels, TRUE);
+        g_ptr_array_free(self->ranges, TRUE);
         bnDeleteStack(self->labelFixStack, NULL);
         BN_FREE(self);
 }
