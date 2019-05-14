@@ -1,0 +1,53 @@
+orig_array := array;
+
+array_class := object();
+
+array := def(length)(ret) {
+    {} <- orig_array(length);
+    ret.sub := array_class.sub;
+    ret.indexOf := array_class.indexOf;
+    ret.foreach := array_class.foreach;
+    ret.fill := array_class.fill;
+};
+array_class.sub := def(self, offs, len)(ret) {
+    if(offs < 0) {
+        panic("should be `offs` is positive");
+    }
+    if(offs + len >= self.length) {
+        panic("over index in bounds");
+    }
+    ret := array(len);
+    i := 0;
+    while(i < len) {
+        ret[i] := self[offs + i];
+        i += 1;
+    }
+};
+
+array_class.indexOf := def(self, value)(index) {
+    index := -1;
+    i := 0;
+    while(i < self.length) {
+        if(self[i] == value) {
+            index := i;
+            return;
+        }
+        i += 1;
+    }
+};
+
+array_class.foreach := def(self, f)() {
+    i := 0;
+    while(i < self.length) {
+        f(self[i]);
+        i += 1;
+    }
+};
+
+array_class.fill := def(self, v)() {
+    i := 0;
+    while(i < self.length) {
+        self[i] := v;
+        i += 1;
+    }
+};

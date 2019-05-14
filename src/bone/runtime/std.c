@@ -433,7 +433,13 @@ void bnStdIntegerPositive(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnStdIntegerNegative(bnInterpreter* bone, bnFrame* frame) {
-        _throw(bone, frame, "internal error");
+        bnObject* a = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_INTEGER) {
+                _throw(bone, frame, "should be `self` is integer");
+        }
+        int ai = ((bnInteger*)a)->value;
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnNewInteger(bone, -ai));
 }
 
 void bnStdIntegerChilda(bnInterpreter* bone, bnFrame* frame) {

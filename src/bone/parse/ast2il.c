@@ -180,6 +180,9 @@ static bnILExpression* ast2expr(bnAST* a) {
         } else if (a->tag == BN_AST_NOT) {
                 ret->type = BN_IL_EXPR_UOP;
                 ret->u.vUOp = ast2iluop(a, BN_IL_UNOP_NOT);
+        } else if (a->tag == BN_AST_NEGATIVE) {
+                ret->type = BN_IL_EXPR_UOP;
+                ret->u.vUOp = ast2iluop(a, BN_IL_UNOP_NEGATIVE);
         } else if (a->tag == BN_AST_NOTEQUAL) {
                 ret->type = BN_IL_EXPR_BINOP;
                 ret->u.vBinOp = ast2ilbinop(a, BN_IL_BINOP_NOTEQUAL);

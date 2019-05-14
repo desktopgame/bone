@@ -38,5 +38,7 @@ static bnStringView opToView(struct bnStringPool* pool, bnILExprUOp* self) {
         switch (self->type) {
                 case BN_IL_UNOP_NOT:
                         return bnIntern(pool, BN_KWD_NOT);
+                case BN_IL_UNOP_NEGATIVE:
+                        return bnIntern(pool, BN_KWD_NEGATIVE);
         }
 }
