@@ -37,9 +37,21 @@ foreach := def(self, f)() {
     }
 };
 
+toArray := def(self)(ret) {
+    ret := array(self.length());
+    iter := self.head;
+    i := 0;
+    while(iter) {
+        ret[i] := iter.data;
+        iter := iter.next;
+        i += 1;
+    }
+};
+
 new := def()(list) {
     list.head := element_class.new();
     list.append := append;
     list.length := length;
     list.foreach := foreach;
+    list.toArray := toArray;
 };

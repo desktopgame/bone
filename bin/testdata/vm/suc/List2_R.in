@@ -1,0 +1,13 @@
+{} <- load("./array.bn");
+list := object() <- include("./list.bn");
+mylist := list.new();
+mylist.append("hello");
+mylist.append("world");
+mylist.append("bone");
+
+myarr := mylist.toArray();
+myarr := myarr.sub(1, 2);
+
+myarr.foreach(def(data)() {
+    println(data);
+});

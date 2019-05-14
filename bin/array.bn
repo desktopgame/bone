@@ -13,7 +13,7 @@ array_class.sub := def(self, offs, len)(ret) {
     if(offs < 0) {
         panic("should be `offs` is positive");
     }
-    if(offs + len >= self.length) {
+    if(offs + len > self.length) {
         panic("over index in bounds");
     }
     ret := array(len);
