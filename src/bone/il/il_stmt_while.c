@@ -35,7 +35,7 @@ void bnGenerateILStmtWhile(struct bnInterpreter* bone, bnILStmtWhile* self,
         }
         g_ptr_array_add(env->codeArray, BN_OP_GOTO);
         bnGenerateLabel(env, pos);
-        loopEnd->pos = bnGenerateNOP(env);
+        loopEnd->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
 }
 
 void bnDeleteILStmtWhile(bnILStmtWhile* self) {

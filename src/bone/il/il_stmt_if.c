@@ -33,7 +33,7 @@ void bnGenerateILStmtIf(struct bnInterpreter* bone, bnILStmtIf* self,
                 bnGenerateILStatement(bone, iter->data, env);
                 iter = iter->next;
         }
-        ifFalse->pos = bnGenerateNOP(env);
+        ifFalse->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
 }
 
 void bnDeleteILStmtIf(bnILStmtIf* self) {
@@ -75,13 +75,13 @@ void bnGenerateILStmtIfElse(struct bnInterpreter* bone, bnILStmtIfElse* self,
         g_ptr_array_add(env->codeArray, BN_OP_GOTO);
         bnLabel* ifTrue = bnGenerateLabel(env, -1);
         // if(cond) { ... } else { ... }
-        ifFalse->pos = bnGenerateNOP(env);
+        ifFalse->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
         iter = self->statements;
         while (iter != NULL) {
                 bnGenerateILStatement(bone, iter->data, env);
                 iter = iter->next;
         }
-        ifTrue->pos = bnGenerateNOP(env);
+        ifTrue->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
 }
 
 void bnDeleteILStmtIfElse(bnILStmtIfElse* self) {
