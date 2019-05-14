@@ -1,19 +1,34 @@
-#include "extern.h"
+#include "system.h"
 #include <assert.h>
-#include "../bone.h"
-#include "../parse/ast2il.h"
-#include "../parse/parser.h"
-#include "../util/fmt.h"
-#include "array.h"
-#include "bool.h"
-#include "enviroment.h"
-#include "frame.h"
-#include "integer.h"
-#include "interpreter.h"
-#include "lambda.h"
-#include "object.h"
-#include "string.h"
-#include "vm.h"
+#include "../../bone.h"
+#include "../../parse/ast2il.h"
+#include "../../parse/parser.h"
+#include "../../util/fmt.h"
+#include "../array.h"
+#include "../bool.h"
+#include "../enviroment.h"
+#include "../frame.h"
+#include "../integer.h"
+#include "../interpreter.h"
+#include "../lambda.h"
+#include "../object.h"
+#include "../string.h"
+#include "../vm.h"
+
+void bnExternSystem(bnInterpreter* bone) {
+        g_hash_table_replace(
+            bone->externTable, bnIntern(bone->pool, "exit"),
+            bnNewLambdaFromCFunc(bone, bnExtSystemExit, bone->pool,
+                                 BN_C_ADD_PARAM, "status", BN_C_ADD_EXIT));
+        g_hash_table_replace(bone->externTable, bnIntern(bone->pool, "abort"),
+                             bnNewLambdaFromCFunc(bone, bnExtSystemAbort,
+                                                  bone->pool, BN_C_ADD_EXIT));
+        g_hash_table_replace(
+            bone->externTable, bnIntern(bone->pool, "system"),
+            bnNewLambdaFromCFunc(bone, bnExtSystemSystem, bone->pool,
+                                 BN_C_ADD_PARAM, "args", BN_C_ADD_RETURN,
+                                 "status", BN_C_ADD_EXIT));
+}
 
 void bnExtSystemExit(bnInterpreter* bone, bnFrame* frame) {
         bnObject* statusObj = bnPopStack(frame->vStack);

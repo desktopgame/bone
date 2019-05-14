@@ -1,0 +1,17 @@
+fio := object() <- load("./file.bn");
+println("load");
+newfile := object() <- fio.open("./test.out", "w");
+if(newfile.error) {
+    println("error");
+    return;
+}
+newfile.file.putc('s');
+newfile.file.putc('n');
+newfile.file.putc('o');
+newfile.file.putc('w');
+newfile.file.putc('b');
+newfile.file.putc('l');
+newfile.file.putc('i');
+newfile.file.putc('n');
+newfile.file.putc('d');
+newfile.file.close();

@@ -5,7 +5,8 @@
 #include "../parse/parser.h"
 #include "bool.h"
 #include "enviroment.h"
-#include "extern.h"
+#include "extern/file.h"
+#include "extern/system.h"
 #include "frame.h"
 #include "heap.h"
 #include "integer.h"
@@ -27,19 +28,10 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef) {
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         ret->nativeAlloc = NULL;
         ret->__jstack = bnNewJStack();
+        ret->__anyID = 1;
         ret->callStack = bnNewStack();
-        g_hash_table_replace(
-            ret->externTable, bnIntern(ret->pool, "exit"),
-            bnNewLambdaFromCFunc(ret, bnExtSystemExit, ret->pool,
-                                 BN_C_ADD_PARAM, "status", BN_C_ADD_EXIT));
-        g_hash_table_replace(ret->externTable, bnIntern(ret->pool, "abort"),
-                             bnNewLambdaFromCFunc(ret, bnExtSystemAbort,
-                                                  ret->pool, BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            ret->externTable, bnIntern(ret->pool, "system"),
-            bnNewLambdaFromCFunc(ret, bnExtSystemSystem, ret->pool,
-                                 BN_C_ADD_PARAM, "args", BN_C_ADD_RETURN,
-                                 "status", BN_C_ADD_EXIT));
+        bnExternSystem(ret);
+        bnExternFile(ret);
         return ret;
 }
 
@@ -209,6 +201,12 @@ bnObject* bnGetTrue(struct bnStringPool* pool, bnFrame* frame) {
 bnObject* bnGetFalse(struct bnStringPool* pool, bnFrame* frame) {
         return g_hash_table_lookup(frame->variableTable,
                                    bnIntern(pool, "false"));
+}
+
+int bnGenAnyID(bnInterpreter* self) {
+        int ret = self->__anyID;
+        self->__anyID++;
+        return ret;
 }
 
 void bnDeleteInterpreter(bnInterpreter* self) {
