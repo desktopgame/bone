@@ -76,7 +76,7 @@ void bnExtFilePutc(bnInterpreter* bone, bnFrame* frame) {
                 bnFormatThrow(bone, "should be `self` is file");
         }
         if (b->type != BN_OBJECT_CHAR) {
-                bnFormatThrow(bone, "should be `c` is string");
+                bnFormatThrow(bone, "should be `c` is char");
         }
         bnFile* afile = ((bnFile*)a);
         if (afile->fp == NULL) {

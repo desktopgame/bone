@@ -6,6 +6,17 @@ stdout := extern_var("stdout");
 stderr := extern_var("stderr");
 stdin := extern_var("stdin");
 
+puts := def(self, str)(error) {
+    i := 0;
+    while(i < str.length) {
+        {} <- self.putc(str.at(i));
+        if(error) {
+            return;
+        }
+        i += 1;
+    }
+};
+
 open := def(path, mode)(file, error) {
     {} <- _open(path, mode);
     if(error) {
@@ -14,6 +25,7 @@ open := def(path, mode)(file, error) {
     file.path := path;
     file.mode := mode;
     file.putc := putc;
+    file.puts := puts;
     file.getc := getc;
     file.close := close;
 };

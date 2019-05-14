@@ -231,6 +231,8 @@ void bnStdStringEqual(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdStringNotEqual(struct bnInterpreter* bone, struct bnFrame* frame);
 
+void bnStdStringAt(struct bnInterpreter* bone, struct bnFrame* frame);
+
 // Array
 
 void bnStdArrayArraySet(struct bnInterpreter* bone, struct bnFrame* frame);

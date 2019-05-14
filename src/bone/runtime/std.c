@@ -13,6 +13,7 @@
 #include "../util/io.h"
 #include "array.h"
 #include "bool.h"
+#include "char.h"
 #include "enviroment.h"
 #include "frame.h"
 #include "integer.h"
@@ -681,16 +682,47 @@ void bnStdStringEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING || b->type != BN_OBJECT_STRING) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame,
+                       "overload of equality on string is compare for string.");
         }
         bnStringView ai = ((bnString*)a)->value;
         bnStringView bi = ((bnString*)b)->value;
-        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              bnGetBool(bone->pool, frame, ai == bi));
 }
 
-void bnStdStringNotEqual(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdStringNotEqual(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_STRING || b->type != BN_OBJECT_STRING) {
+                _throw(bone, frame,
+                       "overload of equality on string is compare for string.");
+        }
+        bnStringView ai = ((bnString*)a)->value;
+        bnStringView bi = ((bnString*)b)->value;
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnGetBool(bone->pool, frame, ai != bi));
+}
+
+void bnStdStringAt(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_STRING) {
+                _throw(bone, frame, "should be `self` is string");
+        }
+        if (b->type != BN_OBJECT_INTEGER) {
+                _throw(bone, frame, "should be `index` is string");
+        }
+        bnStringView ai = ((bnString*)a)->value;
+        bnInteger* bi = b;
+        const char* astr = bnView2Str(bone->pool, ai);
+        int astrlen = strlen(astr);
+        if (bi->value < 0 || bi->value >= astrlen) {
+                bnFormatThrow(bone, "over index in bounds: %d~%d", 0, astrlen);
+        }
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnNewChar(bone, astr[bi->value]));
+}
 
 // Array
 void bnStdArrayArraySet(bnInterpreter* bone, bnFrame* frame) {
