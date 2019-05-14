@@ -187,6 +187,27 @@ void bnStdSystemObject(bnInterpreter* bone, bnFrame* frame) {
                              bnNewObject(bone));
 }
 
+void bnStdSystemString(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_ARRAY) {
+                bnFormatThrow(bone, "should be `array` is array");
+        }
+        bnArray* aArr = a;
+        GString* gbuf = g_string_new("");
+        for (int i = 0; i < aArr->arr->len; i++) {
+                bnObject* e = g_ptr_array_index(aArr->arr, i);
+                if (e->type != BN_OBJECT_CHAR) {
+                        bnFormatThrow(bone, "should be `array[%d]` is char", i);
+                }
+                bnChar* eChar = e;
+                g_string_append_c(gbuf, eChar->value);
+        }
+        bnStringView gview = bnIntern(bone->pool, gbuf->str);
+        g_string_free(gbuf, TRUE);
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnNewString(bone, gview));
+}
+
 void bnStdSystemArray(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER) {

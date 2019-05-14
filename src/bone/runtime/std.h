@@ -28,6 +28,8 @@ void bnStdSystemLoad(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdSystemObject(struct bnInterpreter* bone, struct bnFrame* frame);
 
+void bnStdSystemString(struct bnInterpreter* bone, struct bnFrame* frame);
+
 void bnStdSystemArray(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdSystemExternVar(struct bnInterpreter* bone, struct bnFrame* frame);
