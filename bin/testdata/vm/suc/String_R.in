@@ -1,0 +1,6 @@
+{} <- load("./array.bn");
+arr := array(5);
+arr.fill('a');
+arr[3] := 'c';
+str := string(arr);
+println(str);
