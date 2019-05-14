@@ -11,6 +11,7 @@ bnFrame* bnNewFrame() {
         ret->hierarcySelf = bnNewStack();
         ret->vStack = bnNewStack();
         ret->currentCall = NULL;
+        ret->depth = 0;
         ret->variableTable =
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         ret->pc = 0;
@@ -24,6 +25,7 @@ bnFrame* bnSubFrame(bnFrame* self) {
         bnFrame* ret = bnNewFrame();
         self->next = ret;
         ret->prev = self;
+        ret->depth = self->depth + 1;
         return ret;
 }
 

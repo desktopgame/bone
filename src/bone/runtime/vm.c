@@ -20,6 +20,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                 bnOpcode code = (bnOpcode)g_ptr_array_index(env->codeArray, PC);
 #if VMDEBUG
                 int stackCount = bnGetStackSize(frame->vStack);
+                bnFindent(stdout, frame->depth);
                 bnPrintOpcode(stdout, bone->pool, env, PC);
                 printf("[%d]\n", stackCount);
 #endif

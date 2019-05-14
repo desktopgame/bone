@@ -8,6 +8,7 @@ struct bnInterpreter;
 
 typedef struct bnFrame {
         int pc;
+        int depth;
         bnStack* vStack;
         bnStack* hierarcySelf;
         GHashTable* variableTable;
