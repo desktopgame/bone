@@ -1,0 +1,45 @@
+element_class := object();
+element_class.new := def()(element) {
+    element.prev := false;
+    element.next := false;
+    element.data := false;
+    element.append := def(self, data)() {
+        if(self.data) {
+            if(self.next) {
+                self.next.append(data);
+            } else {
+                self.next := element_class.new();
+                self.next.data := data;
+            }
+        } else {
+            self.data := data;
+        }
+    };
+};
+
+
+append := def(self, data)() {
+    self.head.append(data);
+};
+length := def(self)(length) {
+    length := 0;
+    iter := self.head;
+    while(iter) {
+        length += 1;
+        iter := iter.next;
+    }
+};
+foreach := def(self, f)() {
+    iter := self.head;
+    while(iter) {
+        f(iter.data);
+        iter := iter.next;
+    }
+};
+
+new := def()(list) {
+    list.head := element_class.new();
+    list.append := append;
+    list.length := length;
+    list.foreach := foreach;
+};

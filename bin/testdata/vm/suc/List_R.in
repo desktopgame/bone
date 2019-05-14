@@ -1,0 +1,12 @@
+
+list := object() <- load("./list.bn");
+mylist := list.new();
+println(mylist.length().toString());
+mylist.append("hello");
+mylist.append("world");
+mylist.append("bone");
+println(mylist.length().toString());
+
+mylist.foreach(def(data)() {
+    println(data);
+});

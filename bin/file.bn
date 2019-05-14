@@ -15,17 +15,24 @@ puts := def(self, str)(error) {
         }
         i += 1;
     }
+    self.putc('\n');
 };
+
+_inject := def(f)() {
+    f.putc := putc;
+    f.puts := puts;
+    f.getc := getc;
+    f.close := close;
+};
+
+_inject(stdout);
+_inject(stderr);
+_inject(stdin);
 
 open := def(path, mode)(file, error) {
     {} <- _open(path, mode);
     if(error) {
         return;
     }
-    file.path := path;
-    file.mode := mode;
-    file.putc := putc;
-    file.puts := puts;
-    file.getc := getc;
-    file.close := close;
+    _inject(file);
 };

@@ -355,9 +355,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 gpointer data =
                                     g_hash_table_lookup(container->table, name);
                                 bnObject* obj = data;
-#if DEBUG
                                 const char* str = bnView2Str(bone->pool, name);
-#endif
                                 if (obj == NULL) {
                                         char buf[256];
                                         sprintf(buf, "is'nt found member: %s",
