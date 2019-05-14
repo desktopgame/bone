@@ -161,6 +161,7 @@ void bnPrintObject(FILE* fp, bnInterpreter* bone, bnObject* self) {
 }
 
 bool bnObject2CBool(bnObject* self) {
+        assert(self != NULL);
         if (self->type == BN_OBJECT_BOOL) {
                 return ((bnBool*)self)->value;
         } else if (self->type == BN_OBJECT_INTEGER) {

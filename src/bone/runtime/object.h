@@ -23,6 +23,7 @@ typedef enum bnObjectType {
         BN_OBJECT_BOOL,
         BN_OBJECT_LAMBDA,
         BN_OBJECT_ARRAY,
+        BN_OBJECT_ANY,
 } bnObjectType;
 
 /**
@@ -41,7 +42,7 @@ typedef struct bnObject {
  * @param self
  * @param type
  */
-void bnInitObject(struct bnInterpreter* bonne, bnObject* self,
+void bnInitObject(struct bnInterpreter* bone, bnObject* self,
                   bnObjectType type);
 
 /**
