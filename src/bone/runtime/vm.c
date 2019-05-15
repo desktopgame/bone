@@ -59,8 +59,41 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         case BN_OP_GEN_STRING: {
                                 bnStringView name =
                                     g_ptr_array_index(env->codeArray, ++PC);
+                                // create array for string
+                                const char* str = bnView2Str(bone->pool, name);
+                                int slen = strlen(str);
                                 bnPushStack(frame->vStack,
-                                            bnNewString(bone, name));
+                                            bnNewInteger(bone, slen));
+                                bnObject* arrFunc = g_hash_table_lookup(
+                                    frame->variableTable,
+                                    bnIntern(bone->pool, "array"));
+                                bnFrame* sub =
+                                    bnFuncCall(arrFunc, bone, frame, 1);
+                                if (sub->panic) {
+                                        frame->panic = sub->panic;
+                                        break;
+                                }
+                                // fill by char
+                                bnArray* ary = bnPopStack(frame->vStack);
+                                for (int i = 0; i < slen; i++) {
+                                        g_ptr_array_index(ary->arr, i) =
+                                            bnNewChar(bone, str[i]);
+                                }
+                                bnPushStack(frame->vStack, ary);
+                                bnDeleteFrame(sub);
+                                bnGC(bone);
+                                // create string by string function
+                                bnFrame* sub2 = bnFuncCall(
+                                    g_hash_table_lookup(
+                                        frame->variableTable,
+                                        bnIntern(bone->pool, "string")),
+                                    bone, frame, 1);
+                                if (sub2->panic) {
+                                        frame->panic = sub->panic;
+                                        break;
+                                }
+                                bnDeleteFrame(sub2);
+                                bnGC(bone);
                                 break;
                         }
                         case BN_OP_GEN_ARRAY: {

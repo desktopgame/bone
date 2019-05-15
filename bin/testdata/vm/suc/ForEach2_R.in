@@ -1,5 +1,6 @@
-array := object() <- load("./testdata/lib/array.in");
-arr := array.new(3);
+array_class := object() <- load("./testdata/lib/array.in");
+array := array_class.new;
+arr := array_class.new(3);
 arr.fill("aaa");
 arr.foreach(def(value)() {
     println(value);
