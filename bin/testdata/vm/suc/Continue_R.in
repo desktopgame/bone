@@ -3,8 +3,7 @@ while(1) {
     if(i == 3) {
         i += 1;
         continue;
-    }
-    if(i == 5) {
+    } else if(i == 5) {
         break;
     }
     println(i.toString());
