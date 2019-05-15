@@ -257,6 +257,7 @@ CLOSURE:
 * load
 * object
 * array
+* string
 * panic
 * recover
 * extern_var
