@@ -14,6 +14,7 @@ example:
 * [crowbar](http://kmaebashi.com/programmer/devlang/crowbar.html)
 * [anko](https://github.com/mattn/anko)
 * [go](https://github.com/golang/go)
+* [ruby](https://github.com/ruby/ruby)
 
 # feature
 this language peculiar idea is object injection, and scope injection.  
