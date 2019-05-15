@@ -5,6 +5,7 @@
  */
 typedef struct bnLabel {
         int pos;
+        int refCount;
 } bnLabel;
 
 /**
