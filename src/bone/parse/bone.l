@@ -154,6 +154,8 @@ static void update_loc() {
 <INITIAL>";"				{ return (SEMICOLON); }
 <INITIAL>"{}"				{ return (SCOPE); }
 <INITIAL>"<-"				{ return (INJECTION); }
+<INITIAL>"continue"				{ return (CONTINUE); }
+<INITIAL>"break"				{ return (BREAK); }
 <INITIAL>"defer"				{ return (DEFER); }
 <INITIAL>"return"				{ return (RETURN_T); }
 <INITIAL>"if"				{ return (IF); }

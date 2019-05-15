@@ -100,10 +100,12 @@ extern int yydebug;
     SCOPE = 310,
     INJECTION = 311,
     DEFER = 312,
-    CHILDA = 313,
-    NEGATIVE = 314,
-    POSITIVE = 315,
-    FUNCCALL = 316
+    CONTINUE = 313,
+    BREAK = 314,
+    CHILDA = 315,
+    NEGATIVE = 316,
+    POSITIVE = 317,
+    FUNCCALL = 318
   };
 #endif
 
@@ -117,7 +119,7 @@ union YYSTYPE
 	bnAST* ast_value;
 	bnStringView svvalue;
 
-#line 121 "bone.tab.h" /* yacc.c:1916  */
+#line 123 "bone.tab.h" /* yacc.c:1916  */
 };
 
 typedef union YYSTYPE YYSTYPE;

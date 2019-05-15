@@ -264,6 +264,10 @@ static bnILStatement* ast2stmt(bnAST* a) {
         } else if (a->tag == BN_AST_DEFER) {
                 ret->type = BN_IL_STMT_DEFER;
                 ret->u.vDefer = bnNewILStmtDefer(ast2stmt(bnFirstAST(a)));
+        } else if (a->tag == BN_AST_CONTINUE) {
+                ret->type = BN_IL_STMT_CONTINUE;
+        } else if (a->tag == BN_AST_BREAK) {
+                ret->type = BN_IL_STMT_BREAK;
         }
         ret->line = a->line;
         return ret;

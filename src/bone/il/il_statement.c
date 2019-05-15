@@ -124,10 +124,22 @@ void bnGenerateILStatement(struct bnInterpreter* bone, bnILStatement* self,
                         bnGenerateILStmtDefer(bone, self->u.vDefer, env,
                                               ccache);
                         break;
-                case BN_IL_STMT_CONTINUE:
+                case BN_IL_STMT_CONTINUE: {
+                        bnLabel* start = bnPeekStack(ccache->whileStartStack);
+                        start->refCount++;
+                        g_ptr_array_add(env->codeArray, BN_OP_GOTO);
+                        g_ptr_array_add(env->codeArray, start);
+                        g_ptr_array_add(env->labels, start);
                         break;
-                case BN_IL_STMT_BREAK:
+                }
+                case BN_IL_STMT_BREAK: {
+                        bnLabel* end = bnPeekStack(ccache->whileEndStack);
+                        end->refCount++;
+                        g_ptr_array_add(env->codeArray, BN_OP_GOTO);
+                        g_ptr_array_add(env->codeArray, end);
+                        g_ptr_array_add(env->labels, end);
                         break;
+                }
                 default:
                         assert(false);
                         break;

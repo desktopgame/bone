@@ -25,7 +25,7 @@
 		NOT BIT_AND BIT_OR LOGIC_AND LOGIC_OR LP RP LB RB IF ELSE
 		EXC_OR DOTDOTDOT LSB RSB
 		DOT COMMA SEMICOLON WHILE DEF RETURN_T SCOPE INJECTION
-		DEFER
+		DEFER CONTINUE BREAK
 %type <ast_value>
 	argument_list
 	parameter_list
@@ -130,6 +130,14 @@ statement
 	| return_stmt
 	| injection_stmt
 	| defer_stmt
+	| CONTINUE SEMICOLON
+	{
+		$$ = bnNewAST(BN_AST_CONTINUE);
+	}
+	| BREAK SEMICOLON
+	{
+		$$ = bnNewAST(BN_AST_BREAK);
+	}
 	;
 comp_stmt
 	: LB statement_list_opt RB

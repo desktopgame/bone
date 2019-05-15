@@ -17,11 +17,24 @@ puts := def(self, str)(error) {
     }
     self.putc('\n');
 };
+gets := def(self)(str, error) {
+    list := object() <- load("./list.bn");
+    buf := list.new();
+    while(1) {
+        {} <- self.getc();
+        if(error) {
+            break;
+        }
+        buf.append(c);
+    }
+    str := string(buf.toArray());
+};
 
 _inject := def(f)() {
     f.putc := putc;
     f.puts := puts;
     f.getc := getc;
+    f.gets := gets;
     f.close := close;
 };
 

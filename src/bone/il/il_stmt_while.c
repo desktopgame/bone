@@ -25,17 +25,24 @@ void bnDumpILStmtWhile(FILE* fp, struct bnStringPool* pool, bnILStmtWhile* self,
 void bnGenerateILStmtWhile(struct bnInterpreter* bone, bnILStmtWhile* self,
                            bnEnviroment* env, bnCompileCache* ccache) {
         int pos = bnGenerateNOP(env);
+        bnLabel* loopStart = bnGenerateLabel(env, 0);
         bnGenerateILExpression(bone, self->cond, env, ccache);
         g_ptr_array_add(env->codeArray, BN_OP_GOTO_ELSE);
         bnLabel* loopEnd = bnGenerateLabel(env, 0);
+        bnPushStack(ccache->whileStartStack, loopStart);
+        bnPushStack(ccache->whileEndStack, loopEnd);
         GList* iter = self->statements;
         while (iter != NULL) {
                 bnGenerateILStatement(bone, iter->data, env, ccache);
                 iter = iter->next;
         }
         g_ptr_array_add(env->codeArray, BN_OP_GOTO);
-        bnGenerateLabel(env, pos);
+        // bnGenerateLabel(env, pos);
+        g_ptr_array_add(env->codeArray, loopStart);
+        loopStart->pos = pos - bnGetLambdaOffset(env);
         loopEnd->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
+        bnPopStack(ccache->whileStartStack);
+        bnPopStack(ccache->whileEndStack);
 }
 
 void bnDeleteILStmtWhile(bnILStmtWhile* self) {

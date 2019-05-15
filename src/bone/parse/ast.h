@@ -25,6 +25,8 @@ typedef enum bnASTTag {
         BN_AST_FUNCCALL,
         BN_AST_IDENT,
         BN_AST_RETURN,
+        BN_AST_CONTINUE,
+        BN_AST_BREAK,
         BN_AST_SCOPE_INJECTION,
         BN_AST_OBJECT_INJECTION,
         BN_AST_ARRAY_SUBSCRIPT,
