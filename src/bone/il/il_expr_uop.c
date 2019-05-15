@@ -20,8 +20,8 @@ void bnDumpILExprUOp(FILE* fp, struct bnStringPool* pool, bnILExprUOp* self,
 }
 
 void bnGenerateILExprUOp(bnInterpreter* bone, bnILExprUOp* self,
-                         bnEnviroment* env) {
-        bnGenerateILExpression(bone, self->a, env);
+                         bnEnviroment* env, bnCompileCache* ccache) {
+        bnGenerateILExpression(bone, self->a, env, ccache);
         g_ptr_array_add(env->codeArray, BN_OP_DUP);
         g_ptr_array_add(env->codeArray, BN_OP_GET);
         g_ptr_array_add(env->codeArray, opToView(bone->pool, self));

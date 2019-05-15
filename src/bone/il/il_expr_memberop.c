@@ -16,8 +16,9 @@ void bnDumpILExprMemberOp(FILE* fp, struct bnStringPool* pool,
 }
 
 void bnGenerateILExprMemberOp(struct bnInterpreter* bone,
-                              bnILExprMemberOp* self, bnEnviroment* env) {
-        bnGenerateILExpression(bone, self->expr, env);
+                              bnILExprMemberOp* self, bnEnviroment* env,
+                              bnCompileCache* ccache) {
+        bnGenerateILExpression(bone, self->expr, env, ccache);
         // for instance based closure
         // see: il_expr_funccallop.c
         g_ptr_array_add(env->codeArray, BN_OP_DUP);

@@ -1,6 +1,7 @@
 #ifndef BONE_IL_ILEXPRVARIABLE_H
 #define BONE_IL_ILEXPRVARIABLE_H
 #include "../bone.h"
+#include "compile_cache.h"
 struct bnEnviroment;
 struct bnInterpreter;
 
@@ -29,7 +30,8 @@ void bnDumpILExprVariable(FILE* fp, struct bnStringPool* pool,
                           bnILExprVariable* self, int depth);
 
 void bnGenerateILExprVariable(struct bnInterpreter* bone,
-                              bnILExprVariable* self, struct bnEnviroment* env);
+                              bnILExprVariable* self, struct bnEnviroment* env,
+                              bnCompileCache* ccache);
 
 /**
  * free a bnILExprVariable.

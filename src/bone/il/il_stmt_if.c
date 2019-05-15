@@ -23,14 +23,14 @@ void bnDumpILStmtIf(FILE* fp, struct bnStringPool* pool, bnILStmtIf* self,
 }
 
 void bnGenerateILStmtIf(struct bnInterpreter* bone, bnILStmtIf* self,
-                        bnEnviroment* env) {
+                        bnEnviroment* env, bnCompileCache* ccache) {
         // generate condition
-        bnGenerateILExpression(bone, self->cond, env);
+        bnGenerateILExpression(bone, self->cond, env, ccache);
         g_ptr_array_add(env->codeArray, BN_OP_GOTO_ELSE);
         bnLabel* ifFalse = bnGenerateLabel(env, -1);
         GList* iter = self->statements;
         while (iter != NULL) {
-                bnGenerateILStatement(bone, iter->data, env);
+                bnGenerateILStatement(bone, iter->data, env, ccache);
                 iter = iter->next;
         }
         ifFalse->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
@@ -62,14 +62,14 @@ void bnDumpILStmtIfElse(FILE* fp, struct bnStringPool* pool,
 }
 
 void bnGenerateILStmtIfElse(struct bnInterpreter* bone, bnILStmtIfElse* self,
-                            bnEnviroment* env) {
+                            bnEnviroment* env, bnCompileCache* ccache) {
         // if(cond) { ... }
-        bnGenerateILExpression(bone, self->trueCase->cond, env);
+        bnGenerateILExpression(bone, self->trueCase->cond, env, ccache);
         g_ptr_array_add(env->codeArray, BN_OP_GOTO_ELSE);
         bnLabel* ifFalse = bnGenerateLabel(env, -1);
         GList* iter = self->trueCase->statements;
         while (iter != NULL) {
-                bnGenerateILStatement(bone, iter->data, env);
+                bnGenerateILStatement(bone, iter->data, env, ccache);
                 iter = iter->next;
         }
         g_ptr_array_add(env->codeArray, BN_OP_GOTO);
@@ -78,7 +78,7 @@ void bnGenerateILStmtIfElse(struct bnInterpreter* bone, bnILStmtIfElse* self,
         ifFalse->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
         iter = self->statements;
         while (iter != NULL) {
-                bnGenerateILStatement(bone, iter->data, env);
+                bnGenerateILStatement(bone, iter->data, env, ccache);
                 iter = iter->next;
         }
         ifTrue->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);

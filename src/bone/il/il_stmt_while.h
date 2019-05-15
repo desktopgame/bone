@@ -29,7 +29,7 @@ void bnDumpILStmtWhile(FILE* fp, struct bnStringPool* pool, bnILStmtWhile* self,
                        int depth);
 
 void bnGenerateILStmtWhile(struct bnInterpreter* bone, bnILStmtWhile* self,
-                           struct bnEnviroment* env);
+                           struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
  * free a bnILStmtWhile.

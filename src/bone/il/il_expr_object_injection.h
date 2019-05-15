@@ -32,7 +32,8 @@ void bnDumpILExprObjectInjection(FILE* fp, struct bnStringPool* pool,
 
 void bnGenerateILExprObjectInjection(struct bnInterpreter* bone,
                                      bnILExprObjectInjection* self,
-                                     struct bnEnviroment* env);
+                                     struct bnEnviroment* env,
+                                     bnCompileCache* ccache);
 
 /**
  * free a bnILExprObjectInjection.

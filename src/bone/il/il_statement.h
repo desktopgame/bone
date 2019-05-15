@@ -2,6 +2,7 @@
 #define BONE_IL_ILSTATEMENT_H
 #include <stdio.h>
 #include "../util/string_pool.h"
+#include "compile_cache.h"
 
 typedef enum bnILStatementType {
         BN_IL_STMT_NONE,
@@ -13,6 +14,8 @@ typedef enum bnILStatementType {
         BN_IL_STMT_SCOPE_INJECTION,
         BN_IL_STMT_PANIC,
         BN_IL_STMT_DEFER,
+        BN_IL_STMT_CONTINUE,
+        BN_IL_STMT_BREAK,
 } bnILStatementType;
 
 struct bnILStmtExprStmt;
@@ -47,5 +50,5 @@ void bnDumpILStatement(FILE* fp, struct bnStringPool* pool, bnILStatement* self,
 void bnDeleteILStatement(bnILStatement* self);
 
 void bnGenerateILStatement(struct bnInterpreter* bone, bnILStatement* self,
-                           struct bnEnviroment* env);
+                           struct bnEnviroment* env, bnCompileCache* ccache);
 #endif

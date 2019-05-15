@@ -29,7 +29,7 @@ void bnDumpILStmtIf(FILE* fp, struct bnStringPool* pool, bnILStmtIf* self,
                     int depth);
 
 void bnGenerateILStmtIf(struct bnInterpreter* bone, bnILStmtIf* self,
-                        struct bnEnviroment* env);
+                        struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
  * free a bnILStmtIf.
@@ -69,5 +69,5 @@ void bnDumpILStmtIfElse(FILE* fp, struct bnStringPool* pool,
 void bnDeleteILStmtIfElse(bnILStmtIfElse* self);
 
 void bnGenerateILStmtIfElse(struct bnInterpreter* bone, bnILStmtIfElse* self,
-                            struct bnEnviroment* env);
+                            struct bnEnviroment* env, bnCompileCache* ccache);
 #endif

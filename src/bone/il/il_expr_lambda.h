@@ -1,6 +1,7 @@
 #ifndef $INCLUDE
 #define $INCLUDE
 #include "../bone.h"
+#include "compile_cache.h"
 struct bnEnviroment;
 struct bnInterpreter;
 
@@ -30,8 +31,7 @@ void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
                         bnILExprLambda* self, int depth);
 
 void bnGenerateILExprLambda(struct bnInterpreter* bone, bnILExprLambda* self,
-                            struct bnEnviroment* env);
-
+                            struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
  * free a bnILExprLambda.

@@ -23,30 +23,32 @@ void bnDumpILExprBinOp(FILE* fp, struct bnStringPool* pool, bnILExprBinOp* self,
 }
 
 void bnGenerateILExprBinOp(bnInterpreter* bone, bnILExprBinOp* self,
-                           bnEnviroment* env) {
+                           bnEnviroment* env, bnCompileCache* ccache) {
         if (self->type == BN_IL_BINOP_ASSIGN) {
                 bnILExpression* L = self->left;
                 if (L->type == BN_IL_EXPR_VARIABLE) {
                         bnILExprVariable* var = L->u.vVariable;
-                        bnGenerateILExpression(bone, self->right, env);
+                        bnGenerateILExpression(bone, self->right, env, ccache);
                         g_ptr_array_add(env->codeArray, BN_OP_STORE);
                         g_ptr_array_add(env->codeArray, var->name);
                 } else if (L->type == BN_IL_EXPR_MEMBEROP) {
-                        bnGenerateILExpression(bone, self->right, env);
+                        bnGenerateILExpression(bone, self->right, env, ccache);
                         bnILExprMemberOp* ilmem = L->u.vMemberOp;
-                        bnGenerateILExpression(bone, ilmem->expr, env);
+                        bnGenerateILExpression(bone, ilmem->expr, env, ccache);
                         g_ptr_array_add(env->codeArray, BN_OP_PUT);
                         g_ptr_array_add(env->codeArray, ilmem->name);
                 } else if (L->type == BN_IL_EXPR_ARRAY_SUBSCRIPT) {
                         bnILExprArraySubscript* arr = L->u.vArraySub;
-                        bnGenerateILExpression(bone, arr->arrayExpr, env);
+                        bnGenerateILExpression(bone, arr->arrayExpr, env,
+                                               ccache);
                         g_ptr_array_add(env->codeArray, BN_OP_DUP);
                         g_ptr_array_add(env->codeArray, BN_OP_GET);
                         g_ptr_array_add(env->codeArray,
                                         bnIntern(bone->pool, BN_KWD_ARRAY_SET));
-                        bnGenerateILExpression(bone, arr->indexExpr, env);
+                        bnGenerateILExpression(bone, arr->indexExpr, env,
+                                               ccache);
                         g_ptr_array_add(env->codeArray, BN_OP_SWAP);
-                        bnGenerateILExpression(bone, self->right, env);
+                        bnGenerateILExpression(bone, self->right, env, ccache);
                         g_ptr_array_add(env->codeArray, BN_OP_SWAP);
                         g_ptr_array_add(env->codeArray, BN_OP_FUNCCALL);
                         g_ptr_array_add(env->codeArray, 3);
@@ -54,11 +56,11 @@ void bnGenerateILExprBinOp(bnInterpreter* bone, bnILExprBinOp* self,
                         abort();
                 }
         } else {
-                bnGenerateILExpression(bone, self->left, env);
+                bnGenerateILExpression(bone, self->left, env, ccache);
                 g_ptr_array_add(env->codeArray, BN_OP_DUP);
                 g_ptr_array_add(env->codeArray, BN_OP_GET);
                 g_ptr_array_add(env->codeArray, opToView(bone->pool, self));
-                bnGenerateILExpression(bone, self->right, env);
+                bnGenerateILExpression(bone, self->right, env, ccache);
                 g_ptr_array_add(env->codeArray, BN_OP_SWAP);
                 g_ptr_array_add(env->codeArray, BN_OP_FUNCCALL);
                 g_ptr_array_add(env->codeArray, 2);

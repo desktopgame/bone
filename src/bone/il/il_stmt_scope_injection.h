@@ -29,7 +29,8 @@ void bnDumpILStmtScopeInjection(FILE* fp, struct bnStringPool* pool,
 
 void bnGenerateILStmtScopeInjection(struct bnInterpreter* bone,
                                     bnILStmtScopeInjection* self,
-                                    struct bnEnviroment* env);
+                                    struct bnEnviroment* env,
+                                    bnCompileCache* ccache);
 
 /**
  * free a bnILStmtScopeInjection.

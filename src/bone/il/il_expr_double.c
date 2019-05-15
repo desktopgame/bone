@@ -14,6 +14,6 @@ void bnDumpILExprDouble(FILE* fp, struct bnStringPool* pool,
 }
 
 void bnGenerateILExprDouble(struct bnInterpreter* bone, bnILExprDouble* self,
-                            bnEnviroment* env) {}
+                            bnEnviroment* env, bnCompileCache* ccache) {}
 
 void bnDeleteILExprDouble(bnILExprDouble* self) { BN_FREE(self); }

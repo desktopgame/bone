@@ -1,5 +1,6 @@
 #include "il_toplevel.h"
 #include "../runtime/enviroment.h"
+#include "compile_cache.h"
 #include "il_stmt_all.h"
 
 bnILToplevel* bnNewILTopLevel() {
@@ -27,10 +28,12 @@ void bnDumpILTopLevel(FILE* fp, struct bnStringPool* pool, bnILToplevel* self,
 
 void bnGenerateILTopLevel(struct bnInterpreter* bone, bnILToplevel* self,
                           bnEnviroment* env) {
+        bnCompileCache* ccache = bnNewCompileCache();
         GList* iter = self->statements;
         while (iter != NULL) {
                 bnILStatement* ilstmt = iter->data;
-                bnGenerateILStatement(bone, ilstmt, env);
+                bnGenerateILStatement(bone, ilstmt, env, ccache);
                 iter = iter->next;
         }
+        bnDeleteCompileCache(ccache);
 }

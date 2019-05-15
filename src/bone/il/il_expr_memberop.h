@@ -31,7 +31,8 @@ void bnDumpILExprMemberOp(FILE* fp, struct bnStringPool* pool,
                           bnILExprMemberOp* self, int depth);
 
 void bnGenerateILExprMemberOp(struct bnInterpreter* bone,
-                              bnILExprMemberOp* self, struct bnEnviroment* env);
+                              bnILExprMemberOp* self, struct bnEnviroment* env,
+                              bnCompileCache* ccache);
 
 /**
  * free a bnILExprMemberOp.

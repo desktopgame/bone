@@ -21,10 +21,10 @@ void bnDumpILExprArrayLit(FILE* fp, struct bnStringPool* pool,
 }
 
 void bnGenerateILExprArrayLit(bnInterpreter* bone, bnILExprArrayLit* self,
-                              bnEnviroment* env) {
+                              bnEnviroment* env, bnCompileCache* ccache) {
         GList* iter = self->expressions;
         while (iter != NULL) {
-                bnGenerateILExpression(bone, iter->data, env);
+                bnGenerateILExpression(bone, iter->data, env, ccache);
                 iter = iter->next;
         }
         g_ptr_array_add(env->codeArray, BN_OP_GEN_ARRAY);

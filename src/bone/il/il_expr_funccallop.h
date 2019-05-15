@@ -30,8 +30,10 @@ bnILExprFuncCallOp* bnNewILExprFuncCallOp(bnILExpression* expr);
 void bnDumpILExprFuncCallOp(FILE* fp, struct bnStringPool* pool,
                             bnILExprFuncCallOp* self, int depth);
 
-void bnGenerateILExprFuncCallOp(struct bnInterpreter* bone, bnILExprFuncCallOp* self,
-                                struct bnEnviroment* env);
+void bnGenerateILExprFuncCallOp(struct bnInterpreter* bone,
+                                bnILExprFuncCallOp* self,
+                                struct bnEnviroment* env,
+                                bnCompileCache* ccache);
 
 /**
  * free a bnILExprFuncCallOp.

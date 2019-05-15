@@ -56,7 +56,7 @@ void bnDumpILExprBinOp(FILE* fp, struct bnStringPool* pool, bnILExprBinOp* self,
                        int depth);
 
 void bnGenerateILExprBinOp(struct bnInterpreter* bone, bnILExprBinOp* self,
-                           struct bnEnviroment* env);
+                           struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
  * free a bnILExprBinOp.

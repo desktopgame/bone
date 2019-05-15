@@ -27,7 +27,8 @@ void bnDumpILExprArrayLit(FILE* fp, struct bnStringPool* pool,
                           bnILExprArrayLit* self, int depth);
 
 void bnGenerateILExprArrayLit(struct bnInterpreter* bone,
-                              bnILExprArrayLit* self, struct bnEnviroment* env);
+                              bnILExprArrayLit* self, struct bnEnviroment* env,
+                              bnCompileCache* ccache);
 
 /**
  * free a bnILExprArrayLit.

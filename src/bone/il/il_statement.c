@@ -39,6 +39,14 @@ void bnDumpILStatement(FILE* fp, struct bnStringPool* pool, bnILStatement* self,
                 case BN_IL_STMT_DEFER:
                         bnDumpILStmtDefer(fp, pool, self->u.vDefer, depth);
                         break;
+                case BN_IL_STMT_CONTINUE:
+                        bnFindent(fp, depth);
+                        fprintf(fp, "continue\n");
+                        break;
+                case BN_IL_STMT_BREAK:
+                        bnFindent(fp, depth);
+                        fprintf(fp, "break\n");
+                        break;
                 default:
                         assert(false);
                         break;
@@ -73,6 +81,10 @@ void bnDeleteILStatement(bnILStatement* self) {
                 case BN_IL_STMT_DEFER:
                         bnDeleteILStmtDefer(self->u.vDefer);
                         break;
+                case BN_IL_STMT_CONTINUE:
+                        break;
+                case BN_IL_STMT_BREAK:
+                        break;
                 default:
                         assert(false);
                         break;
@@ -81,31 +93,40 @@ void bnDeleteILStatement(bnILStatement* self) {
 }
 
 void bnGenerateILStatement(struct bnInterpreter* bone, bnILStatement* self,
-                           bnEnviroment* env) {
+                           bnEnviroment* env, bnCompileCache* ccache) {
         switch (self->type) {
                 case BN_IL_STMT_NONE:
                         break;
                 case BN_IL_STMT_EXPRSTMT:
-                        bnGenerateILStmtExpr(bone, self->u.vExprStmt, env);
+                        bnGenerateILStmtExpr(bone, self->u.vExprStmt, env,
+                                             ccache);
                         break;
                 case BN_IL_STMT_IF:
-                        bnGenerateILStmtIf(bone, self->u.vIf, env);
+                        bnGenerateILStmtIf(bone, self->u.vIf, env, ccache);
                         break;
                 case BN_IL_STMT_IF_ELSE:
-                        bnGenerateILStmtIfElse(bone, self->u.vIfElse, env);
+                        bnGenerateILStmtIfElse(bone, self->u.vIfElse, env,
+                                               ccache);
                         break;
                 case BN_IL_STMT_WHILE:
-                        bnGenerateILStmtWhile(bone, self->u.vWhile, env);
+                        bnGenerateILStmtWhile(bone, self->u.vWhile, env,
+                                              ccache);
                         break;
                 case BN_IL_STMT_RETURN:
-                        bnGenerateILStmtReturn(bone, self->u.vReturn, env);
+                        bnGenerateILStmtReturn(bone, self->u.vReturn, env,
+                                               ccache);
                         break;
                 case BN_IL_STMT_SCOPE_INJECTION:
                         bnGenerateILStmtScopeInjection(bone, self->u.vScopeInj,
-                                                       env);
+                                                       env, ccache);
                         break;
                 case BN_IL_STMT_DEFER:
-                        bnGenerateILStmtDefer(bone, self->u.vDefer, env);
+                        bnGenerateILStmtDefer(bone, self->u.vDefer, env,
+                                              ccache);
+                        break;
+                case BN_IL_STMT_CONTINUE:
+                        break;
+                case BN_IL_STMT_BREAK:
                         break;
                 default:
                         assert(false);

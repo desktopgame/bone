@@ -1,6 +1,7 @@
 #ifndef BONE_IL_ILEXPRDOUBLE_H
 #define BONE_IL_ILEXPRDOUBLE_H
 #include "../bone.h"
+#include "compile_cache.h"
 struct bnEnviroment;
 struct bnInterpreter;
 /**
@@ -28,7 +29,7 @@ void bnDumpILExprDouble(FILE* fp, struct bnStringPool* pool,
                         bnILExprDouble* self, int depth);
 
 void bnGenerateILExprDouble(struct bnInterpreter* bone, bnILExprDouble* self,
-                            struct bnEnviroment* env);
+                            struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
  * free a bnILExprDouble.

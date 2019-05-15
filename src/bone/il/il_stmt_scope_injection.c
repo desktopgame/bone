@@ -16,8 +16,9 @@ void bnDumpILStmtScopeInjection(FILE* fp, struct bnStringPool* pool,
 
 void bnGenerateILStmtScopeInjection(struct bnInterpreter* bone,
                                     bnILStmtScopeInjection* self,
-                                    struct bnEnviroment* env) {
-        bnGenerateILExpression(bone, self->expr, env);
+                                    struct bnEnviroment* env,
+                                    bnCompileCache* ccache) {
+        bnGenerateILExpression(bone, self->expr, env, ccache);
         g_ptr_array_add(env->codeArray, BN_OP_SCOPE_INJECTION);
 }
 

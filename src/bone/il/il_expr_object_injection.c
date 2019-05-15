@@ -20,9 +20,10 @@ void bnDumpILExprObjectInjection(FILE* fp, struct bnStringPool* pool,
 
 void bnGenerateILExprObjectInjection(struct bnInterpreter* bone,
                                      bnILExprObjectInjection* self,
-                                     struct bnEnviroment* env) {
-        bnGenerateILExpression(bone, self->leftExpr, env);
-        bnGenerateILExpression(bone, self->rightExpr, env);
+                                     struct bnEnviroment* env,
+                                     bnCompileCache* ccache) {
+        bnGenerateILExpression(bone, self->leftExpr, env, ccache);
+        bnGenerateILExpression(bone, self->rightExpr, env, ccache);
         g_ptr_array_add(env->codeArray, BN_OP_OBJECT_INJECTION);
 }
 

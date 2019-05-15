@@ -27,7 +27,7 @@ void bnDumpILStmtReturn(FILE* fp, struct bnStringPool* pool,
                         bnILStmtReturn* self, int depth);
 
 void bnGenerateILStmtReturn(struct bnInterpreter* bone, bnILStmtReturn* self,
-                            struct bnEnviroment* env);
+                            struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
  * free a bnILStmtReturn.

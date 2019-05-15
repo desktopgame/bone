@@ -39,7 +39,7 @@ void bnDumpILExprUOp(FILE* fp, struct bnStringPool* pool, bnILExprUOp* self,
                      int depth);
 
 void bnGenerateILExprUOp(struct bnInterpreter* bone, bnILExprUOp* self,
-                         struct bnEnviroment* env);
+                         struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
  * free a bnILExprUOp.

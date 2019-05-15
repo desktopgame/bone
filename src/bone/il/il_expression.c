@@ -69,51 +69,58 @@ void bnDumpILExpression(FILE* fp, struct bnStringPool* pool,
 }
 
 void bnGenerateILExpression(struct bnInterpreter* bone, bnILExpression* self,
-                            bnEnviroment* env) {
+                            bnEnviroment* env, bnCompileCache* ccache) {
         switch (self->type) {
                 case BN_IL_EXPR_NONE:
                         break;
                 case BN_IL_EXPR_INT:
-                        bnGenerateILExprInt(bone, self->u.vInt, env);
+                        bnGenerateILExprInt(bone, self->u.vInt, env, ccache);
                         break;
                 case BN_IL_EXPR_DOUBLE:
-                        bnGenerateILExprDouble(bone, self->u.vDouble, env);
+                        bnGenerateILExprDouble(bone, self->u.vDouble, env,
+                                               ccache);
                         break;
                 case BN_IL_EXPR_CHAR:
-                        bnGenerateILExprChar(bone, self->u.vChar, env);
+                        bnGenerateILExprChar(bone, self->u.vChar, env, ccache);
                         break;
                 case BN_IL_EXPR_STRING:
-                        bnGenerateILExprString(bone, self->u.vString, env);
+                        bnGenerateILExprString(bone, self->u.vString, env,
+                                               ccache);
                         break;
                 case BN_IL_EXPR_BINOP:
-                        bnGenerateILExprBinOp(bone, self->u.vBinOp, env);
+                        bnGenerateILExprBinOp(bone, self->u.vBinOp, env,
+                                              ccache);
                         break;
                 case BN_IL_EXPR_UOP:
-                        bnGenerateILExprUOp(bone, self->u.vUOp, env);
+                        bnGenerateILExprUOp(bone, self->u.vUOp, env, ccache);
                         break;
                 case BN_IL_EXPR_MEMBEROP:
-                        bnGenerateILExprMemberOp(bone, self->u.vMemberOp, env);
+                        bnGenerateILExprMemberOp(bone, self->u.vMemberOp, env,
+                                                 ccache);
                         break;
                 case BN_IL_EXPR_FUNCCALLOP:
                         bnGenerateILExprFuncCallOp(bone, self->u.vFuncCallOp,
-                                                   env);
+                                                   env, ccache);
                         break;
                 case BN_IL_EXPR_VARIABLE:
-                        bnGenerateILExprVariable(bone, self->u.vVariable, env);
+                        bnGenerateILExprVariable(bone, self->u.vVariable, env,
+                                                 ccache);
                         break;
                 case BN_IL_EXPR_LAMBDA:
-                        bnGenerateILExprLambda(bone, self->u.vLambda, env);
+                        bnGenerateILExprLambda(bone, self->u.vLambda, env,
+                                               ccache);
                         break;
                 case BN_IL_EXPR_OBJECT_INJECTION:
                         bnGenerateILExprObjectInjection(bone, self->u.vObjInj,
-                                                        env);
+                                                        env, ccache);
                         break;
                 case BN_IL_EXPR_ARRAY_SUBSCRIPT:
                         bnGenerateILExprArraySubscript(bone, self->u.vArraySub,
-                                                       env);
+                                                       env, ccache);
                         break;
                 case BN_IL_EXPR_ARRAY_LIT:
-                        bnGenerateILExprArrayLit(bone, self->u.vArrayLit, env);
+                        bnGenerateILExprArrayLit(bone, self->u.vArrayLit, env,
+                                                 ccache);
                         break;
                 default:
                         assert(false);

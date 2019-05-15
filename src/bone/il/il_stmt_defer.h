@@ -28,7 +28,7 @@ void bnDumpILStmtDefer(FILE* fp, struct bnStringPool* pool, bnILStmtDefer* self,
                        int depth);
 
 void bnGenerateILStmtDefer(struct bnInterpreter* bone, bnILStmtDefer* self,
-                           struct bnEnviroment* env);
+                           struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
  * free a bnILStmtDefer.

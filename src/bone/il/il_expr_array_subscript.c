@@ -22,12 +22,12 @@ void bnDumpILExprArraySubscript(FILE* fp, struct bnStringPool* pool,
 
 void bnGenerateILExprArraySubscript(bnInterpreter* bone,
                                     bnILExprArraySubscript* self,
-                                    bnEnviroment* env) {
-        bnGenerateILExpression(bone, self->arrayExpr, env);
+                                    bnEnviroment* env, bnCompileCache* ccache) {
+        bnGenerateILExpression(bone, self->arrayExpr, env, ccache);
         g_ptr_array_add(env->codeArray, BN_OP_DUP);
         g_ptr_array_add(env->codeArray, BN_OP_GET);
         g_ptr_array_add(env->codeArray, bnIntern(bone->pool, BN_KWD_ARRAY_GET));
-        bnGenerateILExpression(bone, self->indexExpr, env);
+        bnGenerateILExpression(bone, self->indexExpr, env, ccache);
         g_ptr_array_add(env->codeArray, BN_OP_SWAP);
         g_ptr_array_add(env->codeArray, BN_OP_FUNCCALL);
         g_ptr_array_add(env->codeArray, 2);

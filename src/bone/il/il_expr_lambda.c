@@ -50,7 +50,7 @@ void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
 }
 
 void bnGenerateILExprLambda(bnInterpreter* bone, bnILExprLambda* self,
-                            bnEnviroment* env) {
+                            bnEnviroment* env, bnCompileCache* ccache) {
         g_ptr_array_add(env->codeArray, BN_OP_GEN_LAMBDA_BEGIN);
         g_ptr_array_add(env->codeArray, g_list_length(self->parameters));
         GList* iter = self->parameters;
@@ -77,7 +77,7 @@ void bnGenerateILExprLambda(bnInterpreter* bone, bnILExprLambda* self,
         iter = self->statements;
         while (iter != NULL) {
                 bnILStatement* ilstmt = iter->data;
-                bnGenerateILStatement(bone, ilstmt, env);
+                bnGenerateILStatement(bone, ilstmt, env, ccache);
                 iter = iter->next;
         }
         g_ptr_array_add(env->codeArray, BN_OP_DEFER_NEXT);

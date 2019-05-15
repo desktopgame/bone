@@ -32,7 +32,8 @@ void bnDumpILExprArraySubscript(FILE* fp, struct bnStringPool* pool,
 
 void bnGenerateILExprArraySubscript(struct bnInterpreter* bone,
                                     bnILExprArraySubscript* self,
-                                    struct bnEnviroment* env);
+                                    struct bnEnviroment* env,
+                                    bnCompileCache* ccache);
 
 /**
  * free a bnILExprArraySubscript.

@@ -1,6 +1,7 @@
 #ifndef BONE_IL_ILEXPRSTRING_H
 #define BONE_IL_ILEXPRSTRING_H
 #include "../bone.h"
+#include "compile_cache.h"
 struct bnEnviroment;
 struct bnInterpreter;
 
@@ -29,7 +30,7 @@ void bnDumpILExprString(FILE* fp, struct bnStringPool* pool,
                         bnILExprString* self, int depth);
 
 void bnGenerateILExprString(struct bnInterpreter* bone, bnILExprString* self,
-                            struct bnEnviroment* env);
+                            struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
  * free a bnILExprString.

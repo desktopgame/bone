@@ -23,15 +23,16 @@ void bnDumpILExprFuncCallOp(FILE* fp, struct bnStringPool* pool,
 }
 
 void bnGenerateILExprFuncCallOp(struct bnInterpreter* bone,
-                                bnILExprFuncCallOp* self, bnEnviroment* env) {
+                                bnILExprFuncCallOp* self, bnEnviroment* env,
+                                bnCompileCache* ccache) {
         int count = 0;
         GList* iter = self->arguments;
         while (iter != NULL) {
                 count++;
-                bnGenerateILExpression(bone, iter->data, env);
+                bnGenerateILExpression(bone, iter->data, env, ccache);
                 iter = iter->next;
         }
-        bnGenerateILExpression(bone, self->expr, env);
+        bnGenerateILExpression(bone, self->expr, env, ccache);
         // instance based closure?
         if (self->expr->type == BN_IL_EXPR_MEMBEROP) {
                 g_ptr_array_add(env->codeArray, BN_OP_GET_REGISTER_0);

@@ -14,7 +14,7 @@ void bnDumpILExprString(FILE* fp, struct bnStringPool* pool,
 }
 
 void bnGenerateILExprString(struct bnInterpreter* bone, bnILExprString* self,
-                            bnEnviroment* env) {
+                            bnEnviroment* env, bnCompileCache* ccache) {
         g_ptr_array_add(env->codeArray, BN_OP_GEN_STRING);
         g_ptr_array_add(env->codeArray, self->value);
 }
