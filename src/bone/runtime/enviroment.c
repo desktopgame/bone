@@ -110,5 +110,5 @@ void bnDeleteEnviroment(bnEnviroment* self) {
 
 static void delete_label(gpointer data) {
         bnLabel* l = data;
-        BN_FREE(data);
+        bnDeleteLabel(l);
 }
