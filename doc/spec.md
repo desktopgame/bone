@@ -286,6 +286,27 @@ while(count) {
 }
 ````
 
+# 短絡評価(short-circuit evaluation)
+rubyの仕様に近いです。  
+(specification like a ruby)  
+  
+最後に評価された値を返します。  
+(return a evaluated last)  
+  
+````
+a := "aaa" && "bbb";
+//aは"bbb"
+//(a is "bbb")
+
+a := "aaa" || "bbb";
+//aは"aaa"
+//(a is "aaa")
+
+a := false && "aaa";
+//aはfalse
+//(a is false)
+````
+
 # null
 ありません。(bone is'nt have a null)  
 代わりに存在しない要素が参照された時にはpanicします。  
