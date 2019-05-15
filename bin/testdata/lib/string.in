@@ -1,0 +1,8 @@
+orig_string := string;
+
+string := def(array)(ret) {
+    {} <- orig_string(array);
+    ret.disp := def(self)() {
+        println(self);
+    };
+};
