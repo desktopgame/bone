@@ -24,7 +24,6 @@ static void runTest() {
         CU_cleanup_registry();
 #else
         bnParseTest();
-        bnStringPoolTest();
         bnVMTest();
         bnRunTest();
 #endif
