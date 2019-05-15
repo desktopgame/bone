@@ -251,6 +251,8 @@ hoge := def()(_value) {
 VALUE:
 * true
 * false
+* argc
+* argv
 
 CLOSURE:
 * include
