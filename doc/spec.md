@@ -210,6 +210,39 @@ println(arr[2]);
 loadは内部的にこれを使用しています。  
 (translate is comming later)
 
+# エクスポートされない変数(not export variable)
+loadやincludeなどの可変長名前つき戻り値によって実装される関数は、  
+公開されるべきでない変数を公開してしまう可能性があります。  
+(in function such as `load` and `include` implemented by multiple named return value,  it will be done export all variable)
+````
+temp := 0;
+
+work := def()() {
+    ...
+    tempを使って何か処理をする
+    (do something use a `temp`)
+};
+````
+これは一貫性を欠きますが、以下の様な仕様を採用しました。  
+(this is chipped a consistency,
+but it became specification.)
+````
+_temp := 0;
+//これは公開されない
+//this variable will not export
+
+hoge := def()(_value) {
+    _value := ...
+};
+//この様に数が決まっている戻り値では _ を使える。
+//(no problem, if it is fixed named return value count)
+
+{} <- hoge();
+//ただし、トップレベルにエクスポートされると、
+//それをload, includeするファイルからは見えない
+````
+
+
 # クロージャーのオーバーロード(overload of closure)
 できません。
 (can't)
@@ -403,38 +436,3 @@ fullName, hogeのみをインジェクションする。
 
 {} <- injection() match ["fullName", "hoge"]
 ````
-
-## エクスポートされない変数(not export variable)
-現状の仕様では、include, load は全ての変数を公開します。  
-(in now, include and load function is export all variable)  
-
-### 解決策1(solution 1)
-goに習って例えば大文字から始まる変数はエクスポートしない、などの仕様を考案中。  
-(translate is comming later)  
-* 一貫性を重視するならば、名前つき戻り値も大文字から始めなければいけない？
-  * 可変長名前つき戻り値のことを考えると、一応意味はある。
-  * 小文字の名前つき戻り値が使用されていたらコンパイルエラー？
-    * 例外ではない
-    * strictみたいな感じで必ず検査される
-### 解決策2(solution 2)
-予約語`local`の導入。  
-````
-local a := ...
-````
-* ダサいが無難
-* 他の言語にも似た様なやつがある
-  * perlなど
-    * my にすれば多少タイプ数はマシになる
-* タイプがめんどくさい
-* 内部的に宣言と代入を分ける必要がありそう
-  * 実装がめんどくさい
-
-### 解決策3(solution 3)
-変数テーブルにアクセスする手段を提供する。  
-変数テーブルをboneのハッシュオブジェクトとして参照可能にする。  
-* 多分前例がない
-* 面白そうではある
-
-### 解決策4(solution 4)
-解決策を提供しない。
-* 問題が完全に把握できないときは、解決策も提供しないのが最善の方法である。(X Window 基本原則より)
