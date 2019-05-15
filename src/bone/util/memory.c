@@ -39,6 +39,7 @@ void* bnSafeRealloc(void* block, size_t newSize) {
 void bnSafeFree(void* block) { free(block); }
 
 void* bnMallocFunc(size_t size, const char* filename, int lineno) {
+#if DEBUG
         if (size == 0) {
                 return NULL;
         }
@@ -59,10 +60,14 @@ void* bnMallocFunc(size_t size, const char* filename, int lineno) {
                 }
         }
         return get_user_data(last);
+#else
+        return bnSafeMalloc(size);
+#endif
 }
 
 void* bnReallocFunc(void* block, size_t newSize, const char* filename,
                     int lineno) {
+#if DEBUG
         bnMemInfo* a = find_info(block);
         if (a == NULL) {
                 return bnSafeRealloc(block, newSize);
@@ -78,9 +83,13 @@ void* bnReallocFunc(void* block, size_t newSize, const char* filename,
         memset(data + newSize, BN_MEM_OVER_DATA, BN_MEM_OVER_SIZE);
         a->size = newSize;
         return get_user_data(a);
+#else
+        return bnSafeRealloc(block, newSize);
+#endif
 }
 
 void bnFreeFunc(void* block, const char* filename, int lineno) {
+#if DEBUG
         bnCheckMemoryBounds();
         bnMemInfo* a = find_info(block);
         if (a == NULL) {
@@ -109,6 +118,9 @@ void bnFreeFunc(void* block, const char* filename, int lineno) {
         }
         bnSafeFree(a->area);
         bnSafeFree(a);
+#else
+        bnSafeFree(block);
+#endif
 }
 
 void bnCheckMemoryBounds() {

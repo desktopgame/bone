@@ -19,6 +19,7 @@
 #include "runtime/object.h"
 #include "runtime/opcode.h"
 #include "runtime/vm.h"
+#include "util/args.h"
 #include "util/string_pool.h"
 
 #if defined(_MSC_VER)
@@ -148,7 +149,7 @@ static int bnParse(const char* dir, int flag) {
 static int bnVM(const char* dir, int flag) {
         GList* list = bnGetFiles(dir);
         GList* iter = list;
-        bnInterpreter* bone = bnNewInterpreter("");
+        bnInterpreter* bone = bnNewInterpreter("", bnArgc(), bnArgv());
         while (iter != NULL) {
                 // do process only a suffix .in
                 gchar* path = iter->data;
@@ -210,7 +211,8 @@ static int bnRun(const char* dir, int flag) {
                 stdout = soutfp;
 #endif
                 // parse and test
-                bnInterpreter* bone = bnNewInterpreter(path);
+                bnInterpreter* bone =
+                    bnNewInterpreter(path, bnArgc(), bnArgv());
                 int ret = bnEval(bone);
 #if !defined(_WIN32)
                 stdout = _stdout;

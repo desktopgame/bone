@@ -16,6 +16,8 @@ struct bnHeap;
 typedef struct bnInterpreter {
         const char* filenameRef;
         GList* nativeAlloc;
+        int argc;
+        GPtrArray* argv;
         GHashTable* externTable;
         struct bnStringPool* pool;
         struct bnFrame* frame;
@@ -25,7 +27,8 @@ typedef struct bnInterpreter {
         int __anyID;
 } bnInterpreter;
 
-bnInterpreter* bnNewInterpreter(const char* filenameRef);
+bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
+                                char* argv[]);
 
 int bnEval(bnInterpreter* self);
 

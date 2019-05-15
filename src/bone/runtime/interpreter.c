@@ -3,6 +3,7 @@
 #include "../parse/ast.h"
 #include "../parse/ast2il.h"
 #include "../parse/parser.h"
+#include "array.h"
 #include "bool.h"
 #include "enviroment.h"
 #include "extern/file.h"
@@ -18,11 +19,14 @@
 
 static void free_gstr(void* v);
 
-bnInterpreter* bnNewInterpreter(const char* filenameRef) {
+bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
+                                char* argv[]) {
         bnInterpreter* ret = BN_MALLOC(sizeof(bnInterpreter));
         ret->filenameRef = filenameRef;
         ret->pool = bnNewStringPool();
         ret->heap = bnNewHeap();
+        ret->argc = argc;
+        ret->argv = g_ptr_array_new();
         ret->frame = NULL;
         ret->externTable =
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
@@ -30,6 +34,12 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef) {
         ret->__jstack = bnNewJStack();
         ret->__anyID = 1;
         ret->callStack = bnNewStack();
+        if (ret->argc > 1) {
+                for (int i = 0; i < ret->argc; i++) {
+                        g_ptr_array_add(ret->argv,
+                                        bnIntern(ret->pool, argv[i]));
+                }
+        }
         bnExternSystem(ret);
         bnExternFile(ret);
         return ret;
@@ -116,6 +126,15 @@ void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
             bnNewLambdaFromCFunc(self, bnStdDebugShowInfo, pool, BN_C_ADD_PARAM,
                                  "obj", BN_C_ADD_EXIT));
 #endif
+        g_hash_table_replace(frame->variableTable, bnIntern(pool, "argc"),
+                             bnNewInteger(self, BN_MAX(self->argc - 2, 0)));
+        bnArray* argv = bnNewArray(self, BN_MAX(self->argc - 2, 0));
+        for (int i = 2; i < self->argc; i++) {
+                g_ptr_array_index(argv->arr, i - 2) =
+                    bnNewString(self, g_ptr_array_index(self->argv, i));
+        }
+        g_hash_table_replace(frame->variableTable, bnIntern(pool, "argv"),
+                             argv);
         g_hash_table_replace(
             frame->variableTable, bnIntern(pool, "object"),
             bnNewLambdaFromCFunc(self, bnStdSystemObject, pool, BN_C_ADD_RETURN,
@@ -225,6 +244,7 @@ void bnDeleteInterpreter(bnInterpreter* self) {
         bnDeleteJStack(self->__jstack);
         bnDeleteStack(self->callStack, free_gstr);
         g_hash_table_destroy(self->externTable);
+        g_ptr_array_unref(self->argv);
         BN_FREE(self);
 }
 

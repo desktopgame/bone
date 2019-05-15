@@ -6,7 +6,11 @@
 #endif
 #include <stdio.h>
 #include <stdlib.h>
+#include "bone.h"
+#include "glib.h"
+#include "runtime/interpreter.h"
 #include "test.h"
+#include "util/args.h"
 #include "util/io.h"
 #include "util/memory.h"
 
@@ -30,8 +34,29 @@ static void runTest() {
 }
 
 int main(int argc, char* argv[]) {
+        bnInitArgs(argc, argv);
         bnInitIO();
-        runTest();
+        int status = 0;
+        if (argc == 1) {
+                //$ bone
+                // start interactive mode
+#if DEBUG
+                runTest();
+#else
+#endif
+        } else if (argc >= 2) {
+                //$ bone file, args...
+                GString* input = g_string_new(argv[1]);
+                if (!g_str_has_suffix(input->str, ".bn")) {
+                        g_string_append(input, ".bn");
+                }
+                bnInterpreter* bone = bnNewInterpreter(input->str, argc, argv);
+                status = bnEval(bone);
+                bnDeleteInterpreter(bone);
+                g_string_free(input, TRUE);
+        }
+#if DEBUG
         bnDumpMemoryLeaks(stdout);
-        return 0;
+#endif
+        return status;
 }

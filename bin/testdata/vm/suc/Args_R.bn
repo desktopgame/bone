@@ -1,0 +1,6 @@
+{} <- load("./file.bn");
+i := 0;
+while(i < argc) {
+    stdout.puts(argv[i]);
+    i += 1;
+}
