@@ -1,0 +1,17 @@
+_string := string;
+toArray := def(self)(ret) {
+    ret := array(self.length);
+    i := 0;
+    while(i < self.length) {
+        ret[i] := self.at(i);
+        i += 1;
+    }
+};
+substr := def(self, offs, len)(ret) {
+    ret := string(self.toArray().sub(offs,len));
+};
+string := def(array)(ret) {
+    {} <- _string(array);
+    ret.substr := substr;
+    ret.toArray := toArray;
+};

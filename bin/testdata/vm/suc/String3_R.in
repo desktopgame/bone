@@ -1,0 +1,3 @@
+{} <- load("./array.bn");
+{} <- include("./string.bn");
+println("abcd".substr(0,2));
