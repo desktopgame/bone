@@ -53,6 +53,10 @@ bnObject* bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
         int arrI = 0;
         while (g_hash_table_iter_next(&iter, &k, &v)) {
                 bnStringView retName = k;
+                const char* retNameStr = bnView2Str(bone->pool, retName);
+                if (*retNameStr == '_') {
+                        continue;
+                }
                 bnStringView exportName =
                     bnGetExportVariableName(bone->pool, retName);
                 // create private member
