@@ -1,6 +1,5 @@
 #include "memory.h"
 #include <string.h>
-#include <unistd.h>
 
 typedef struct bnMemInfo {
         size_t size;
