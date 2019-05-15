@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include "bone.h"
 #include "glib.h"
+#include "runtime/interactive.h"
 #include "runtime/interpreter.h"
 #include "test.h"
 #include "util/args.h"
@@ -43,6 +44,7 @@ int main(int argc, char* argv[]) {
 #if DEBUG
                 runTest();
 #else
+                bnInteractive(stdin, stdout);
 #endif
         } else if (argc >= 2) {
                 //$ bone file, args...
