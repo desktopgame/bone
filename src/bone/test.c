@@ -152,7 +152,7 @@ static int bnVM(const char* dir, int flag) {
         while (iter != NULL) {
                 // do process only a suffix .in
                 gchar* path = iter->data;
-                if (!g_str_has_suffix(path, ".in")) {
+                if (!g_str_has_suffix(path, ".in") || strstr(path, "_R")) {
                         iter = iter->next;
                         continue;
                 }

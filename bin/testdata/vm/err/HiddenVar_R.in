@@ -1,0 +1,7 @@
+test := def()(...) {
+    _var := "aaa";
+    var := "bbb";
+};
+{} <- test();
+println(var);
+println(_var);
