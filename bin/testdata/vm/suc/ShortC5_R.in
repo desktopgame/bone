@@ -1,0 +1,2 @@
+c := "aaa" && 0;
+println(c.toString());
