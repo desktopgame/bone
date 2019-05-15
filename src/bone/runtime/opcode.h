@@ -49,6 +49,7 @@ typedef enum bnOpcode {
         BN_OP_DEFER_BEGIN,
         BN_OP_DEFER_NEXT,
         BN_OP_DEFER_END,
+        BN_OP_POP,
 } bnOpcode;
 
 /**

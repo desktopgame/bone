@@ -1,0 +1,2 @@
+c := "aaa" || "bbb";
+println(c);

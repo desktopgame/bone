@@ -55,6 +55,44 @@ void bnGenerateILExprBinOp(bnInterpreter* bone, bnILExprBinOp* self,
                 } else {
                         abort();
                 }
+        } else if (self->type == BN_IL_BINOP_LOGIC_OR) {
+                bnLabel* ifshort = bnNewLabel(-1);
+                g_ptr_array_add(env->labels, ifshort);
+                bnLabel* iflazy = bnNewLabel(-1);
+                g_ptr_array_add(env->labels, iflazy);
+
+                bnGenerateILExpression(bone, self->left, env, ccache);
+                g_ptr_array_add(env->codeArray, BN_OP_DUP);
+                g_ptr_array_add(env->codeArray, BN_OP_GOTO_IF);
+                g_ptr_array_add(env->codeArray, ifshort);
+                g_ptr_array_add(env->codeArray, BN_OP_POP);
+                bnGenerateILExpression(bone, self->right, env, ccache);
+                g_ptr_array_add(env->codeArray, BN_OP_DUP);
+                g_ptr_array_add(env->codeArray, BN_OP_GOTO);
+                g_ptr_array_add(env->codeArray, iflazy);
+                bnGenerateNOP(env);
+                ifshort->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
+                bnGenerateNOP(env);
+                iflazy->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
+        } else if (self->type == BN_IL_BINOP_LOGIC_AND) {
+                bnLabel* ifshort = bnNewLabel(-1);
+                g_ptr_array_add(env->labels, ifshort);
+                bnLabel* iflazy = bnNewLabel(-1);
+                g_ptr_array_add(env->labels, iflazy);
+
+                bnGenerateILExpression(bone, self->left, env, ccache);
+                g_ptr_array_add(env->codeArray, BN_OP_DUP);
+                g_ptr_array_add(env->codeArray, BN_OP_GOTO_ELSE);
+                g_ptr_array_add(env->codeArray, ifshort);
+                g_ptr_array_add(env->codeArray, BN_OP_POP);
+                bnGenerateILExpression(bone, self->right, env, ccache);
+                g_ptr_array_add(env->codeArray, BN_OP_DUP);
+                g_ptr_array_add(env->codeArray, BN_OP_GOTO);
+                g_ptr_array_add(env->codeArray, iflazy);
+                bnGenerateNOP(env);
+                ifshort->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
+                bnGenerateNOP(env);
+                iflazy->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
         } else {
                 bnGenerateILExpression(bone, self->left, env, ccache);
                 g_ptr_array_add(env->codeArray, BN_OP_DUP);

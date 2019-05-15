@@ -503,6 +503,10 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         case BN_OP_DEFER_END: {
                                 break;
                         }
+                        case BN_OP_POP: {
+                                bnPopStack(frame->vStack);
+                                break;
+                        }
                 }
                 if (frame->panic && !inDefer) {
                         if (snapshotIter != NULL) {
