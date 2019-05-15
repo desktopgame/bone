@@ -131,7 +131,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                             env->codeArray, ++PC);
                                         // bug if index of string view equal
                                         // BN_OP_GEN_LAMBDA_END
-                                        if (bnOperands(data) == 1) {
+                                        if (bnOperands((bnOpcode)data) == 1) {
                                                 if (data == BN_OP_GOTO ||
                                                     data == BN_OP_GOTO_IF ||
                                                     data == BN_OP_GOTO_ELSE) {
@@ -442,7 +442,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                             env->codeArray, ++PC);
                                         // bug if index of string view equal
                                         // BN_OP_GEN_LAMBDA_END
-                                        if (bnOperands(data) == 1) {
+                                        if (bnOperands((bnOpcode)data) == 1) {
                                                 ++PC;
                                                 continue;
                                         }
