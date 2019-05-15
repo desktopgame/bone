@@ -32,7 +32,6 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         ret->nativeAlloc = NULL;
         ret->__jstack = bnNewJStack();
-        ret->__anyID = 1;
         ret->callStack = bnNewStack();
         if (ret->argc > 1) {
                 for (int i = 0; i < ret->argc; i++) {
@@ -225,12 +224,6 @@ bnObject* bnGetTrue(struct bnStringPool* pool, bnFrame* frame) {
 bnObject* bnGetFalse(struct bnStringPool* pool, bnFrame* frame) {
         return g_hash_table_lookup(frame->variableTable,
                                    bnIntern(pool, "false"));
-}
-
-int bnGenAnyID(bnInterpreter* self) {
-        int ret = self->__anyID;
-        self->__anyID++;
-        return ret;
 }
 
 void bnDeleteInterpreter(bnInterpreter* self) {

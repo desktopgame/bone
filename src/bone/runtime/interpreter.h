@@ -24,7 +24,6 @@ typedef struct bnInterpreter {
         struct bnHeap* heap;
         bnStack* callStack;
         bnJStack* __jstack;
-        int __anyID;
 } bnInterpreter;
 
 bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
@@ -94,13 +93,6 @@ struct bnObject* bnGetTrue(struct bnStringPool* pool, struct bnFrame* frame);
  * @return
  */
 struct bnObject* bnGetFalse(struct bnStringPool* pool, struct bnFrame* frame);
-
-/**
- * NOT multi-thread safe.
- * @param self
- * @return
- */
-int bnGenAnyID(bnInterpreter* self);
 
 void bnDeleteInterpreter(bnInterpreter* self);
 #endif
