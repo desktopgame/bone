@@ -270,8 +270,6 @@ boneにはif文, while文が存在しており、
 it specification is like C)  
   
 if文, while文で "true" として扱われるのは
-* true
-* 0以外の数字
 * false, 0以外のオブジェクト全て
 
 if文, while文で "false" として扱われるのは
