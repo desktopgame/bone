@@ -25,7 +25,7 @@ void bnDumpILStmtWhile(FILE* fp, struct bnStringPool* pool, bnILStmtWhile* self,
 void bnGenerateILStmtWhile(struct bnInterpreter* bone, bnILStmtWhile* self,
                            bnEnviroment* env, bnCompileCache* ccache) {
         int pos = bnGenerateNOP(env);
-        bnLabel* loopStart = bnGenerateLabel(env, 0);
+        bnLabel* loopStart = bnNewLabel(0);
         bnGenerateILExpression(bone, self->cond, env, ccache);
         g_ptr_array_add(env->codeArray, BN_OP_GOTO_ELSE);
         bnLabel* loopEnd = bnGenerateLabel(env, 0);
@@ -39,6 +39,7 @@ void bnGenerateILStmtWhile(struct bnInterpreter* bone, bnILStmtWhile* self,
         g_ptr_array_add(env->codeArray, BN_OP_GOTO);
         // bnGenerateLabel(env, pos);
         g_ptr_array_add(env->codeArray, loopStart);
+        g_ptr_array_add(env->labels, loopStart);
         loopStart->pos = pos - bnGetLambdaOffset(env);
         loopEnd->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
         bnPopStack(ccache->whileStartStack);
