@@ -1,0 +1,3 @@
+a := object();
+a.define("foo", "bar");
+assert(a.defined("foo"));

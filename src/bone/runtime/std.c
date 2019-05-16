@@ -395,6 +395,24 @@ void bnStdObjectDefined(bnInterpreter* bone, bnFrame* frame) {
                              bnGetBool(bone->pool, frame, contains));
 }
 
+void bnStdObjectExpand(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (b->type != BN_OBJECT_STRING) {
+                bnFormatThrow(bone, "shoud be `name` is string");
+        }
+        bnString* bStr = b;
+        gboolean contains = g_hash_table_contains(a->table, bStr->value);
+        g_hash_table_replace(frame->variableTable,
+                             bnIntern(bone->pool, "error"),
+                             bnGetBool(bone->pool, frame, !contains));
+        if (contains) {
+                g_hash_table_replace(
+                    frame->variableTable, bnIntern(bone->pool, "value"),
+                    g_hash_table_lookup(a->table, bStr->value));
+        }
+}
+
 // Bool
 
 void bnStdBoolFuncCall(bnInterpreter* bone, bnFrame* frame);

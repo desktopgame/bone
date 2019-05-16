@@ -40,14 +40,21 @@ void bnIncludeKernel(bnInterpreter* bone, bnObject* self) {
             bnNewLambdaFromCFunc(bone, bnStdObjectDefine, bone->pool,
                                  BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM, "name",
                                  BN_C_ADD_PARAM, "value", BN_C_ADD_EXIT));
-        bnDefine(self, bnIntern(bone->pool, "undef"),
-                 bnNewLambdaFromCFunc(bone, bnStdObjectUndef, bone->pool,
+        bnDefine(
+            self, bnIntern(bone->pool, "undef"),
+            bnNewLambdaFromCFunc(bone, bnStdObjectUndef, bone->pool,
+                                 BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM, "name",
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
+        bnDefine(
+            self, bnIntern(bone->pool, "defined"),
+            bnNewLambdaFromCFunc(bone, bnStdObjectDefined, bone->pool,
+                                 BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM, "name",
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
+        bnDefine(self, bnIntern(bone->pool, "expand"),
+                 bnNewLambdaFromCFunc(bone, bnStdObjectExpand, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
-                                      "name", BN_C_ADD_EXIT));
-        bnDefine(self, bnIntern(bone->pool, "defined"),
-                 bnNewLambdaFromCFunc(bone, bnStdObjectDefined, bone->pool,
-                                      BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
-                                      "name", BN_C_ADD_EXIT));
+                                      "name", BN_C_ADD_RETURN, "value",
+                                      BN_C_ADD_RETURN, "error", BN_C_ADD_EXIT));
 }
 
 bnObject* bnNewObject(bnInterpreter* bone) {
