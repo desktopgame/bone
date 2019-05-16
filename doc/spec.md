@@ -7,6 +7,19 @@ have prototyping function)
 目玉となる機能はインジェクション演算子、名前つき戻り値です。  
 (feature is injection operator)  
 
+## コマンドライン引数
+````
+$ bone
+````
+インタラクティブモードで起動。  
+ただし、デバッグビルドではテストを実行する。
+
+```
+$ bone filename args...
+````
+現在のパスから filename を解決して実行。  
+argsはスクリプト側から `argc` `argv` として参照できます。
+
 ## プロトタイピング(prototyping)
 boneでは存在しないメンバーに代入を行うと、  
 その名前のメンバーを作成します。  
