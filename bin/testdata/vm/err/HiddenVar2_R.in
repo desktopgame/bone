@@ -1,0 +1,2 @@
+{} <- load("./testdata/lib/hidden.in");
+println(_hidden);
