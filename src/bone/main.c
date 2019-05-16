@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 #if DEBUG
                 runTest();
 #else
-                bnInteractive(stdin, stdout);
+                bnInteractive(stdin);
 #endif
         } else if (argc >= 2) {
                 //$ bone file, args...

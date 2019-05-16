@@ -4,8 +4,7 @@
 
 /**
  * @param in
- * @param out
  * @return
  */
-int bnInteractive(FILE* in, FILE* out);
+int bnInteractive(FILE* in);
 #endif

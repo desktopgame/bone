@@ -22,7 +22,7 @@ gets := def(self)(str, error) {
     buf := list.new();
     while(1) {
         {} <- self.getc();
-        if(error) {
+        if(error || c == '\n') {
             break;
         }
         buf.append(c);

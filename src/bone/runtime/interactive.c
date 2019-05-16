@@ -13,7 +13,7 @@
 #include "interpreter.h"
 #include "vm.h"
 
-int bnInteractive(FILE* in, FILE* out) {
+int bnInteractive(FILE* in) {
         int status = 0;
         bool r = true;
         char* line;
@@ -51,13 +51,13 @@ int bnInteractive(FILE* in, FILE* out) {
                 if (current != NULL) {
                         bnInjectFrame(current->variableTable, fr);
                         bnDeleteFrame(current);
-                        current = fr;
                 }
                 bone->frame = fr;
                 bnExecute(bone, env, fr);
                 bnDeleteEnviroment(env);
                 bnDeleteILTopLevel(top);
                 bnDeleteAST(a);
+                current = fr;
         }
         free(line);
         bnGC(bone);

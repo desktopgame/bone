@@ -235,6 +235,54 @@ void bnStdStringNotEqual(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdStringAt(struct bnInterpreter* bone, struct bnFrame* frame);
 
+// Char
+
+void bnStdCharFuncCall(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharPositive(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharNegative(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharChilda(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharNot(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharPlus(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharMinus(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharMultiply(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharDivide(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharModulo(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharBitAnd(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharBitOr(struct bnInterpreter* bone, struct bnFrame* frame);
+
+// void bnStdCharLogicAnd(struct bnInterpreter* bone, struct bnFrame* frame);
+
+// void bnStdCharLogicOr(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharExcOr(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharLShift(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharRShift(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharGT(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharGE(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharLT(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharLE(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharEqual(struct bnInterpreter* bone, struct bnFrame* frame);
+
+void bnStdCharNotEqual(struct bnInterpreter* bone, struct bnFrame* frame);
+
 // Array
 
 void bnStdArrayArraySet(struct bnInterpreter* bone, struct bnFrame* frame);

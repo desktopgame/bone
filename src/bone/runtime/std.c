@@ -758,6 +758,78 @@ void bnStdStringAt(bnInterpreter* bone, bnFrame* frame) {
                              bnNewChar(bone, astr[bi->value]));
 }
 
+// Char
+
+void bnStdCharFuncCall(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharPositive(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharNegative(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharChilda(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharNot(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharPlus(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharMinus(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharMultiply(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharDivide(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharModulo(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharBitAnd(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharBitOr(bnInterpreter* bone, bnFrame* frame) {}
+
+// void bnStdCharLogicAnd(bnInterpreter* bone, bnFrame* frame){}
+
+// void bnStdCharLogicOr(bnInterpreter* bone, bnFrame* frame){}
+
+void bnStdCharExcOr(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharLShift(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharRShift(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharGT(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharGE(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharLT(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharLE(bnInterpreter* bone, bnFrame* frame) {}
+
+void bnStdCharEqual(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_CHAR || b->type != BN_OBJECT_CHAR) {
+                _throw(bone, frame,
+                       "overload of equality on char is compare for char.");
+        }
+        bnChar* aChar = a;
+        bnChar* bChar = b;
+        g_hash_table_replace(
+            frame->variableTable, bnIntern(bone->pool, "ret"),
+            bnGetBool(bone->pool, frame, aChar->value == bChar->value));
+}
+
+void bnStdCharNotEqual(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_CHAR || b->type != BN_OBJECT_CHAR) {
+                _throw(bone, frame,
+                       "overload of equality on char is compare for char.");
+        }
+        bnChar* aChar = a;
+        bnChar* bChar = b;
+        g_hash_table_replace(
+            frame->variableTable, bnIntern(bone->pool, "ret"),
+            bnGetBool(bone->pool, frame, aChar->value != bChar->value));
+}
+
 // Array
 void bnStdArrayArraySet(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
