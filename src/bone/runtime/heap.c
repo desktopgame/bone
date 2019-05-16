@@ -11,7 +11,6 @@ static GRecMutex gHeapMtx;
 
 typedef struct bnHeap {
         GList* objects;
-        int limit;
         int all;
 } bnHeap;
 
@@ -27,7 +26,6 @@ static void gc_sweep(bnHeap* self, bnFrame* frame);
 bnHeap* bnNewHeap() {
         bnHeap* ret = BN_MALLOC(sizeof(bnHeap));
         ret->objects = NULL;
-        ret->limit = 100;
         ret->all = 0;
         return ret;
 }
