@@ -92,7 +92,7 @@ void bnStdObjectDefine(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdObjectUndef(struct bnInterpreter* bone, struct bnFrame* frame);
 
-void bnStdObjectIfdef(struct bnInterpreter* bone, struct bnFrame* frame);
+void bnStdObjectDefined(struct bnInterpreter* bone, struct bnFrame* frame);
 
 // Bool
 

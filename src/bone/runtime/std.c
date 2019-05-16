@@ -383,7 +383,7 @@ void bnStdObjectUndef(bnInterpreter* bone, bnFrame* frame) {
                              bnGetBool(bone->pool, frame, removed));
 }
 
-void bnStdObjectIfdef(bnInterpreter* bone, bnFrame* frame) {
+void bnStdObjectDefined(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (b->type != BN_OBJECT_STRING) {

@@ -44,8 +44,8 @@ void bnIncludeKernel(bnInterpreter* bone, bnObject* self) {
                  bnNewLambdaFromCFunc(bone, bnStdObjectUndef, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "name", BN_C_ADD_EXIT));
-        bnDefine(self, bnIntern(bone->pool, "ifdef"),
-                 bnNewLambdaFromCFunc(bone, bnStdObjectIfdef, bone->pool,
+        bnDefine(self, bnIntern(bone->pool, "defined"),
+                 bnNewLambdaFromCFunc(bone, bnStdObjectDefined, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "name", BN_C_ADD_EXIT));
 }
