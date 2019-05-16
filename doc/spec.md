@@ -137,7 +137,7 @@ a := def () (retA, retB) {
 }
 ````
 
-# インジェクション(injection)
+## インジェクション(injection)
 インジェクションは上で紹介した以下のコードです。  
   
 メンバーの定義、もしくはローカル変数の宣言ができます。  
@@ -182,7 +182,7 @@ b := def() (val, val2, val3) {
 }
 ````
 
-# 可変長名前つき戻り値(translate is comming later)
+## 可変長名前つき戻り値(translate is comming later)
 そのスコープで定義された全ての変数を返す場合は、
 次の構文を使用します。  
 (translate is comming later)
@@ -210,7 +210,7 @@ println(arr[2]);
 loadは内部的にこれを使用しています。  
 (translate is comming later)
 
-# エクスポートされない変数(not export variable)
+## エクスポートされない変数(not export variable)
 loadやincludeなどの可変長名前つき戻り値によって実装される関数は、  
 公開されるべきでない変数を公開してしまう可能性があります。  
 (in function such as `load` and `include` implemented by multiple named return value,  it will be done export all variable)
@@ -243,11 +243,11 @@ hoge := def()(_value) {
 ````
 
 
-# クロージャーのオーバーロード(overload of closure)
+## クロージャーのオーバーロード(overload of closure)
 できません。
 (can't)
 
-# 組み込み変数(built-in variable)
+## 組み込み変数(built-in variable)
 VALUE:
 * true
 * false
@@ -265,7 +265,7 @@ CLOSURE:
 * extern_var
 * extern_def
 
-# 真偽値型(boolean type)
+## 真偽値型(boolean type)
 boneにはif文, while文が存在しており、
 その仕様はCを踏襲しています。  
 (bone have if and while statement.
@@ -288,7 +288,7 @@ while(count) {
 }
 ````
 
-# 短絡評価(short-circuit evaluation)
+## 短絡評価(short-circuit evaluation)
 rubyの仕様に近いです。  
 (specification like a ruby)  
   
@@ -309,7 +309,7 @@ a := false && "aaa";
 //(a is false)
 ````
 
-# null
+## null
 ありません。(bone is'nt have a null)  
 代わりに存在しない要素が参照された時にはpanicします。  
 ````
@@ -335,7 +335,7 @@ exampleC:
     b := a(); // ここでpanic(panic on here)
 ````
 
-# Cとのバインディング(binding with c)
+## Cとのバインディング(binding with c)
 boneからCの変数、関数を参照するには次の関数を使用します。  
 (use next function for reference to function in C from bone)
 ````
@@ -349,7 +349,7 @@ extern_defを使うことの利点は関数の引数,戻り値をソースコー
 fopen := extern_var("fopen");
 ````
 
-# 例外処理(exception handling)
+## 例外処理(exception handling)
 boneでは、二種類の例外処理の方法が存在します。  
 一つはboneが複数の戻り値を返すことを活かしたものです。
 
@@ -409,7 +409,7 @@ p := def()() {
 p();
 ````
 
-# エラーメッセージ(error message)
+## エラーメッセージ(error message)
 
 パニックによる終了の時(when on abort by panic)
 ````
@@ -421,12 +421,12 @@ panic:error message
 abort:error message
 ````
 
-# 実装が保留されているもの(pending function)
+## 実装が保留されているもの(pending function)
 実装が難しいか、言語を汚くする可能性があるために保留されているもの。  
 もしくは必要性が疑わしいもの。  
 (translate is comming later)
 
-## パターンマッチ(pattern match)
+### パターンマッチ(pattern match)
 インジェクションする要素を選択する  
 (translate is comming later)
 ````
@@ -448,7 +448,7 @@ windowから始まる名前で、かつscreenが含まれる名前だけをイ�
 }
 ````
 
-## パターンマッチ2(pattern match2)
+### パターンマッチ2(pattern match2)
 よりシンプルなもの。
 (translate is comming later)
 
