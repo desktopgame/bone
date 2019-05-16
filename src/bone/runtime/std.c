@@ -360,6 +360,41 @@ void bnStdObjectNotEqual(bnInterpreter* bone, bnFrame* frame) {
                              bnGetBool(bone->pool, frame, a != b));
 }
 
+void bnStdObjectDefine(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* c = bnPopStack(frame->vStack);
+        if (b->type != BN_OBJECT_STRING) {
+                bnFormatThrow(bone, "shoud be `name` is string");
+        }
+        bnString* bStr = b;
+        g_hash_table_replace(a->table, bStr->value, c);
+}
+
+void bnStdObjectUndef(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (b->type != BN_OBJECT_STRING) {
+                bnFormatThrow(bone, "shoud be `name` is string");
+        }
+        bnString* bStr = b;
+        gboolean removed = g_hash_table_remove(a->table, bStr->value);
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnGetBool(bone->pool, frame, removed));
+}
+
+void bnStdObjectIfdef(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* b = bnPopStack(frame->vStack);
+        if (b->type != BN_OBJECT_STRING) {
+                bnFormatThrow(bone, "shoud be `name` is string");
+        }
+        bnString* bStr = b;
+        gboolean contains = g_hash_table_contains(a->table, bStr->value);
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnGetBool(bone->pool, frame, contains));
+}
+
 // Bool
 
 void bnStdBoolFuncCall(bnInterpreter* bone, bnFrame* frame);
