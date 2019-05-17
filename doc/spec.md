@@ -278,6 +278,8 @@ CLOSURE:
 * extern_var
 * extern_def
 
+詳細は[こちら](blt.md)
+
 ## 真偽値型(boolean type)
 boneにはif文, while文が存在しており、
 その仕様はCを踏襲しています。  
