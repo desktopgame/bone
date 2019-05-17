@@ -7,14 +7,18 @@ def clean()
     File.delete("CMakeCache.txt") if(File.exists?("CMakeCache.txt"))
 end
 
-def build(type)
-    o, e, s = Open3.capture3("cmake . -D" + type + "=1")
+def build(mode, type)
+    cmd = "cmake . -DCMAKE_BUILD_TYPE=" + mode + " -D" + type + "=1";
+    puts cmd
+    o, e, s = Open3.capture3(cmd)
+    puts e
     o, e, s = Open3.capture3("make")
+    puts e
 end
 
 clean()
-build("BONE_SHARED")
+build("Release", "BONE_SHARED")
 clean()
-build("BONE_STATIC")
+build("Release", "BONE_STATIC")
 clean()
-build("BONE_RUN")
+build("Release", "BONE_RUN")
