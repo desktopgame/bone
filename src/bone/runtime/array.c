@@ -32,8 +32,8 @@ bnArray* bnNewArray(bnInterpreter* bone, int size) {
         bnDefine(&ret->base, bnIntern(bone->pool, "set"),
                  bnNewLambdaFromCFunc(bone, bnStdArrayArraySet, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
-                                      "index", BN_C_ADD_RETURN, "ret",
-                                      BN_C_ADD_EXIT));
+                                      "index", BN_C_ADD_PARAM, "value",
+                                      BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
         bnDefine(&ret->base, bnIntern(bone->pool, "get"),
                  bnNewLambdaFromCFunc(bone, bnStdArrayArrayGet, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,

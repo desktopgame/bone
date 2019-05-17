@@ -68,8 +68,7 @@ bnInteger* bnNewInteger(bnInterpreter* bone, int value) {
                                       "ret", BN_C_ADD_EXIT));
         bnDefine(&ret->base, bnIntern(bone->pool, "toString"),
                  bnNewLambdaFromCFunc(bone, bnStdIntegerToString, bone->pool,
-                                      BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
-                                      "other", BN_C_ADD_RETURN, "ret",
-                                      BN_C_ADD_EXIT));
+                                      BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN,
+                                      "ret", BN_C_ADD_EXIT));
         return ret;
 }
