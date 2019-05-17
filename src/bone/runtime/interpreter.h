@@ -34,6 +34,12 @@ typedef void (*bnPluginDestroy)(bnInterpreter*);
 bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
                                 char* argv[]);
 
+/**
+ * link dynamic libraries.
+ * it will be freed on bnEval.
+ * @param bone
+ * @param path
+ */
 void bnLink(bnInterpreter* bone, const char* path);
 
 int bnEval(bnInterpreter* self);
