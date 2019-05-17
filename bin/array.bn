@@ -1,15 +1,15 @@
 orig_array := array;
 
-array_class := object();
+class := object();
 
 array := def(length)(ret) {
     {} <- orig_array(length);
-    ret.sub := array_class.sub;
-    ret.indexOf := array_class.indexOf;
-    ret.foreach := array_class.foreach;
-    ret.fill := array_class.fill;
+    ret.sub := class.sub;
+    ret.indexOf := class.indexOf;
+    ret.foreach := class.foreach;
+    ret.fill := class.fill;
 };
-array_class.sub := def(self, offs, len)(ret) {
+class.sub := def(self, offs, len)(ret) {
     if(offs < 0) {
         panic("should be `offs` is positive");
     }
@@ -24,7 +24,7 @@ array_class.sub := def(self, offs, len)(ret) {
     }
 };
 
-array_class.indexOf := def(self, value)(index) {
+class.indexOf := def(self, value)(index) {
     index := -1;
     i := 0;
     while(i < self.length) {
@@ -36,7 +36,7 @@ array_class.indexOf := def(self, value)(index) {
     }
 };
 
-array_class.foreach := def(self, f)() {
+class.foreach := def(self, f)() {
     i := 0;
     while(i < self.length) {
         f(self[i]);
@@ -44,7 +44,7 @@ array_class.foreach := def(self, f)() {
     }
 };
 
-array_class.fill := def(self, v)() {
+class.fill := def(self, v)() {
     i := 0;
     while(i < self.length) {
         self[i] := v;
