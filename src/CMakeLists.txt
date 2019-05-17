@@ -90,5 +90,5 @@ set_target_properties(bone
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "../lib"
     LIBRARY_OUTPUT_DIRECTORY "../lib"
-    RUNTIME_OUTPUT_DIRECTORY "../lib"
+    RUNTIME_OUTPUT_DIRECTORY "../bin"
 )
