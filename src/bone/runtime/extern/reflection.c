@@ -117,4 +117,5 @@ void bnExtReflectionEntries(bnInterpreter* bone, bnFrame* frame) {
         }
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              arrayInst);
+        g_list_free(entries);
 }
