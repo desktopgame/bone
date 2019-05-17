@@ -88,14 +88,6 @@ void bnStdObjectEqual(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdObjectNotEqual(struct bnInterpreter* bone, struct bnFrame* frame);
 
-void bnStdObjectDefine(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdObjectUndef(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdObjectDefined(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdObjectExpand(struct bnInterpreter* bone, struct bnFrame* frame);
-
 // Bool
 
 void bnStdBoolFuncCall(struct bnInterpreter* bone, struct bnFrame* frame);

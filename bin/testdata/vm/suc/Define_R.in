@@ -1,3 +1,4 @@
+{} <- load("reflection.bn");
 a := object();
-a.define("foo", "bar");
+define(a,"foo", "bar");
 println(a.foo);

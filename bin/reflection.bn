@@ -1,0 +1,4 @@
+define := extern_def("define", ["self", "name", "value"], []);
+defined := extern_def("defined", ["self", "name"], ["ret"]);
+undef := extern_def("undef", ["self", "name"], ["ret"]);
+expand := extern_def("expand", ["self", "name"], ["value", "error"]);

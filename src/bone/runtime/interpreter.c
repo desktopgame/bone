@@ -7,6 +7,7 @@
 #include "bool.h"
 #include "enviroment.h"
 #include "extern/file.h"
+#include "extern/reflection.h"
 #include "extern/system.h"
 #include "frame.h"
 #include "heap.h"
@@ -41,6 +42,7 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
         }
         bnExternSystem(ret);
         bnExternFile(ret);
+        bnExternReflection(ret);
         return ret;
 }
 
