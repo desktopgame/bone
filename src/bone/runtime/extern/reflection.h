@@ -13,4 +13,6 @@ void bnExtReflectionDefined(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnExtReflectionExpand(struct bnInterpreter* bone, struct bnFrame* frame);
 
+void bnExtReflectionEntries(struct bnInterpreter* bone, struct bnFrame* frame);
+
 #endif

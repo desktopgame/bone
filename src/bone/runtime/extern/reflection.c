@@ -1,7 +1,9 @@
 #include "reflection.h"
 #include "../../bone.h"
+#include "../array.h"
 #include "../char.h"
 #include "../frame.h"
+#include "../integer.h"
 #include "../interpreter.h"
 #include "../lambda.h"
 #include "../string.h"
@@ -28,6 +30,11 @@ void bnExternReflection(bnInterpreter* bone) {
                                  BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM, "name",
                                  BN_C_ADD_RETURN, "value", BN_C_ADD_RETURN,
                                  "error", BN_C_ADD_EXIT));
+        g_hash_table_replace(
+            bone->externTable, bnIntern(bone->pool, "entries"),
+            bnNewLambdaFromCFunc(bone, bnExtReflectionEntries, bone->pool,
+                                 BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN, "ret",
+                                 BN_C_ADD_EXIT));
 }
 
 void bnExtReflectionDefine(bnInterpreter* bone, bnFrame* frame) {
@@ -81,4 +88,33 @@ void bnExtReflectionExpand(bnInterpreter* bone, bnFrame* frame) {
                     frame->variableTable, bnIntern(bone->pool, "value"),
                     g_hash_table_lookup(a->table, bStr->value));
         }
+}
+
+void bnExtReflectionEntries(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        GList* entries = NULL;
+        GHashTableIter hashIter;
+        gpointer k, v;
+        g_hash_table_iter_init(&hashIter, a->table);
+        while (g_hash_table_iter_next(&hashIter, &k, &v)) {
+                const char* kstr = bnView2Str(bone->pool, (bnStringView)k);
+                if (*kstr == '$') {
+                        continue;
+                }
+                entries = g_list_append(entries, k);
+        }
+        bnLambda* arrayFunc = g_hash_table_lookup(
+            frame->variableTable, bnIntern(bone->pool, "array"));
+        bnPushStack(frame->vStack, bnNewInteger(bone, g_list_length(entries)));
+        bnFrame* sub = bnFuncCall(arrayFunc, bone, frame, 1);
+        bnDeleteFrame(sub);
+        bnArray* arrayInst = bnPopStack(frame->vStack);
+        GList* iter = entries;
+        for (int i = 0; i < arrayInst->arr->len; i++) {
+                g_ptr_array_index(arrayInst->arr, i) =
+                    bnNewString(bone, iter->data);
+                iter = iter->next;
+        }
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             arrayInst);
 }

@@ -1,0 +1,9 @@
+{} <- load("reflection.bn");
+a := object();
+define(a, "foo", "bar");
+all := entries(a);
+i := 0;
+while(i < all.length) {
+    println(all[i]);
+    i += 1;
+}
