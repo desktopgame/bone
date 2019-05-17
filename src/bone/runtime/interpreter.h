@@ -16,6 +16,7 @@ struct bnHeap;
 typedef struct bnInterpreter {
         const char* filenameRef;
         GList* nativeAlloc;
+        GList* plugins;
         int argc;
         GPtrArray* argv;
         GHashTable* externTable;
@@ -26,8 +27,14 @@ typedef struct bnInterpreter {
         bnJStack* __jstack;
 } bnInterpreter;
 
+typedef void (*bnPluginInit)(bnInterpreter*);
+
+typedef void (*bnPluginDestroy)(bnInterpreter*);
+
 bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
                                 char* argv[]);
+
+void bnLink(bnInterpreter* bone, const char* path);
 
 int bnEval(bnInterpreter* self);
 

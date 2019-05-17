@@ -1,4 +1,5 @@
 #include "interpreter.h"
+#include <dlfcn.h>
 #include "../il/il_toplevel.h"
 #include "../parse/ast.h"
 #include "../parse/ast2il.h"
@@ -18,12 +19,27 @@
 #include "string.h"
 #include "vm.h"
 
+typedef struct bnModule {
+        gchar* path;
+        void* handle;
+        bnInterpreter* bone;
+} bnModule;
+
 static void free_gstr(void* v);
+static void load_plugins(bnInterpreter* self, const char* currentdir);
+static void load_plugin(bnInterpreter* self, gchar* path);
+static void unload_plugins(bnInterpreter* self);
+static void unload_plugin(void* handle);
+static bool is_dll(gchar* path);
+static bnModule* bn_new_module(gchar* path, void* handle, bnInterpreter* bone);
+static void bn_delete_module(bnModule* self);
+static gchar* without_extension(gchar* src);
 
 bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
                                 char* argv[]) {
         bnInterpreter* ret = BN_MALLOC(sizeof(bnInterpreter));
         ret->filenameRef = filenameRef;
+        ret->plugins = NULL;
         ret->pool = bnNewStringPool();
         ret->heap = bnNewHeap();
         ret->argc = argc;
@@ -46,6 +62,8 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
         return ret;
 }
 
+void bnLink(bnInterpreter* bone, const char* path) { load_plugins(bone, path); }
+
 int bnEval(bnInterpreter* self) {
         if (!bnExists(self->filenameRef)) {
                 printf("abort:`%s` is not found", self->filenameRef);
@@ -67,6 +85,7 @@ int bnEval(bnInterpreter* self) {
         g_ptr_array_add(env->codeArray, BN_OP_DEFER_NEXT);
         bnDeleteAST(ret);
         bnExecute(self, env, self->frame);
+        unload_plugins(self);
         while (bnGetStackSize(self->callStack) > 0) {
                 GString* gbuf = bnPopStack(self->callStack);
                 printf("TRACE: %s\n", gbuf->str);
@@ -244,3 +263,105 @@ void bnDeleteInterpreter(bnInterpreter* self) {
 }
 
 static void free_gstr(void* v) { g_string_free(v, TRUE); }
+
+static void load_plugins(bnInterpreter* self, const char* currentdir) {
+        GDir* dir = g_dir_open(currentdir, 0, NULL);
+        //ディレクトリを開けた場合
+        if (!dir) {
+                return;
+        }
+        const gchar* name;
+        while (name = g_dir_read_name(dir)) {
+                gchar* path;
+                gboolean is_dir;
+                path = g_build_filename(currentdir, name, NULL);
+                if (g_file_test(path, G_FILE_TEST_IS_DIR) || !is_dll(path)) {
+                        g_free(path);
+                        continue;
+                }
+                load_plugin(self, path);
+                g_free(path);
+        }
+        g_dir_close(dir);
+}
+
+static void load_plugin(bnInterpreter* self, gchar* path) {
+#if __APPLE__
+        char initFuncName[100];
+        gchar* base = without_extension(g_path_get_basename(path));
+        sprintf(initFuncName, "%s_Init", base);
+        void* handle = dlopen(path, RTLD_LAZY);
+        if (handle == NULL) {
+                perror("load_plugin");
+                return;
+        }
+        bnPluginInit initFunc = (bnPluginInit)dlsym(handle, initFuncName);
+        g_free(base);
+        if (initFunc == NULL) {
+                perror("load_plugin");
+        }
+        initFunc(self);
+        self->plugins =
+            g_list_append(self->plugins, bn_new_module(path, handle, self));
+#else
+
+#endif
+}
+
+static void unload_plugins(bnInterpreter* self) {
+        g_list_free_full(self->plugins, bn_delete_module);
+        self->plugins = NULL;
+}
+
+static bool is_dll(gchar* path) {
+        return g_str_has_suffix(path, ".dylib") ||
+               g_str_has_suffix(path, ".dll");
+}
+
+static bnModule* bn_new_module(gchar* path, void* handle, bnInterpreter* bone) {
+        bnModule* ret = BN_MALLOC(sizeof(bnModule));
+        ret->path = strdup(path);
+        ret->handle = handle;
+        ret->bone = bone;
+        return ret;
+}
+
+static void bn_delete_module(bnModule* self) {
+#if __APPLE__
+        void* handle = self->handle;
+        char destroyFuncName[100];
+        gchar* base = without_extension(g_path_get_basename(self->path));
+        sprintf(destroyFuncName, "%s_Destroy", base);
+        bnPluginDestroy destroyFunc =
+            (bnPluginDestroy)dlsym(handle, destroyFuncName);
+        if (destroyFunc == NULL) {
+                perror("bn_delete_module");
+                return;
+        }
+        g_free(base);
+        destroyFunc(self->bone);
+        if (dlclose(handle)) {
+                perror("bn_delete_module");
+                return;
+        }
+#else
+
+#endif
+        BN_FREE(self->path);
+        BN_FREE(self);
+}
+
+static gchar* without_extension(gchar* src) {
+        int offset = 0;
+        while (src[offset] != '\0') {
+                if (src[offset] == '.') {
+                        break;
+                }
+                offset++;
+        }
+        gchar* ret = BN_MALLOC(sizeof(gchar) * (offset + 1));
+        memset(ret, '\0', offset + 1);
+        memcpy(ret, src, offset);
+        g_free(src);
+        return ret;
+}

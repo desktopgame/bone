@@ -213,6 +213,7 @@ static int bnRun(const char* dir, int flag) {
                 // parse and test
                 bnInterpreter* bone =
                     bnNewInterpreter(path, bnArgc(), bnArgv());
+                bnLink(bone, "./testdata/plugins");
                 int ret = bnEval(bone);
 #if !defined(_WIN32)
                 stdout = _stdout;
