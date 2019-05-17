@@ -10,6 +10,9 @@ bnModule* bnNewModule(const char* path) {
         ret->handle = NULL;
 #if __APPLE__
         ret->handle = dlopen(path, RTLD_LAZY);
+        if (ret->handle == NULL) {
+                fprintf(stderr, "%s\n", dlerror());
+        }
 #endif
         return ret;
 }
@@ -24,6 +27,9 @@ void* bnGetSymbol(bnModule* self, const char* name) {
         void* sym = NULL;
 #if __APPLE__
         sym = dlsym(self->handle, destroyFuncName);
+        if (sym == NULL) {
+                fprintf(stderr, "%s\n", dlerror());
+        }
 #endif
         g_free(base);
         return sym;
