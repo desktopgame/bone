@@ -64,8 +64,15 @@ endforeach()
 link_directories (
     ${GLIB_LIBRARY_DIRS}
 )
-#add_executable(${BONE_EXECUTABLE} ${SOURCES})
-add_library(${BONE_EXECUTABLE} SHARED ${SOURCES})
+if(BONE_RUN)
+    add_executable(${BONE_EXECUTABLE} ${SOURCES})
+endif()
+if(BONE_SHARED)
+    add_library(${BONE_EXECUTABLE} SHARED ${SOURCES})
+endif()
+if(BONE_STATIC)
+    add_library(${BONE_EXECUTABLE} STATIC ${SOURCES})
+endif()
 add_definitions (${GLIB_CFLAGS_OTHER})
 target_include_directories(
     ${BONE_EXECUTABLE}
