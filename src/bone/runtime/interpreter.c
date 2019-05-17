@@ -1,5 +1,4 @@
 #include "interpreter.h"
-#include <dlfcn.h>
 #include "../il/il_toplevel.h"
 #include "../parse/ast.h"
 #include "../parse/ast2il.h"
@@ -14,16 +13,11 @@
 #include "heap.h"
 #include "integer.h"
 #include "lambda.h"
+#include "module.h"
 #include "object.h"
 #include "std.h"
 #include "string.h"
 #include "vm.h"
-
-typedef struct bnModule {
-        gchar* path;
-        void* handle;
-        bnInterpreter* bone;
-} bnModule;
 
 static void free_gstr(void* v);
 static void load_plugins(bnInterpreter* self, const char* currentdir);
@@ -31,9 +25,6 @@ static void load_plugin(bnInterpreter* self, gchar* path);
 static void unload_plugins(bnInterpreter* self);
 static void unload_plugin(void* handle);
 static bool is_dll(gchar* path);
-static bnModule* bn_new_module(gchar* path, void* handle, bnInterpreter* bone);
-static void bn_delete_module(bnModule* self);
-static gchar* without_extension(gchar* src);
 
 bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
                                 char* argv[]) {
@@ -286,82 +277,32 @@ static void load_plugins(bnInterpreter* self, const char* currentdir) {
 }
 
 static void load_plugin(bnInterpreter* self, gchar* path) {
-#if __APPLE__
-        char initFuncName[100];
-        gchar* base = without_extension(g_path_get_basename(path));
-        sprintf(initFuncName, "%s_Init", base);
-        void* handle = dlopen(path, RTLD_LAZY);
-        if (handle == NULL) {
-                perror("load_plugin");
-                return;
+        bnModule* mod = bnNewModule(path);
+        bnPluginInit init = (bnPluginInit)bnGetSymbol(mod, "Init");
+        if (init != NULL) {
+                init(self);
         }
-        bnPluginInit initFunc = (bnPluginInit)dlsym(handle, initFuncName);
-        g_free(base);
-        if (initFunc == NULL) {
-                perror("load_plugin");
-        }
-        initFunc(self);
-        self->plugins =
-            g_list_append(self->plugins, bn_new_module(path, handle, self));
-#else
-
-#endif
+        self->plugins = g_list_append(self->plugins, mod);
 }
 
 static void unload_plugins(bnInterpreter* self) {
-        g_list_free_full(self->plugins, bn_delete_module);
+        GList* iter = self->plugins;
+        while (iter != NULL) {
+                bnModule* mod = iter->data;
+                bnPluginDestroy destroy =
+                    (bnPluginDestroy)bnGetSymbol(mod, "Destroy");
+                if (destroy != NULL) {
+                        destroy(self);
+                }
+                bnDeleteModule(mod);
+                iter->data = NULL;
+                iter = iter->next;
+        }
+        g_list_free(self->plugins);
         self->plugins = NULL;
 }
 
 static bool is_dll(gchar* path) {
         return g_str_has_suffix(path, ".dylib") ||
                g_str_has_suffix(path, ".dll");
-}
-
-static bnModule* bn_new_module(gchar* path, void* handle, bnInterpreter* bone) {
-        bnModule* ret = BN_MALLOC(sizeof(bnModule));
-        ret->path = strdup(path);
-        ret->handle = handle;
-        ret->bone = bone;
-        return ret;
-}
-
-static void bn_delete_module(bnModule* self) {
-#if __APPLE__
-        void* handle = self->handle;
-        char destroyFuncName[100];
-        gchar* base = without_extension(g_path_get_basename(self->path));
-        sprintf(destroyFuncName, "%s_Destroy", base);
-        bnPluginDestroy destroyFunc =
-            (bnPluginDestroy)dlsym(handle, destroyFuncName);
-        if (destroyFunc == NULL) {
-                perror("bn_delete_module");
-                return;
-        }
-        g_free(base);
-        destroyFunc(self->bone);
-        if (dlclose(handle)) {
-                perror("bn_delete_module");
-                return;
-        }
-#else
-
-#endif
-        BN_FREE(self->path);
-        BN_FREE(self);
-}
-
-static gchar* without_extension(gchar* src) {
-        int offset = 0;
-        while (src[offset] != '\0') {
-                if (src[offset] == '.') {
-                        break;
-                }
-                offset++;
-        }
-        gchar* ret = BN_MALLOC(sizeof(gchar) * (offset + 1));
-        memset(ret, '\0', offset + 1);
-        memcpy(ret, src, offset);
-        g_free(src);
-        return ret;
 }
