@@ -49,7 +49,7 @@ void bnStdDebugPrint(bnInterpreter* bone, bnFrame* frame) {
         }
         bnString* str = a;
         const char* cstr = bnView2Str(bone->pool, str->value);
-        printf("  [%s]", cstr);
+        printf("> %s", cstr);
         fflush(stdout);
 }
 

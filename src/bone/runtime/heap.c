@@ -173,8 +173,4 @@ static void gc_sweep(bnHeap* self, bnFrame* frame) {
         g_list_free(self->objects);
         self->objects = ret;
         self->all -= sweep;
-#if DEBUG
-        printf("sweep %d\n", sweep);
-        printf("all %d\n", self->all);
-#endif
 }
