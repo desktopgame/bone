@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.5)
 project(bone C)
 
 set(CMAKE_CXX_COMPILER clang)
@@ -64,7 +64,8 @@ endforeach()
 link_directories (
     ${GLIB_LIBRARY_DIRS}
 )
-add_executable(${BONE_EXECUTABLE} ${SOURCES})
+#add_executable(${BONE_EXECUTABLE} ${SOURCES})
+add_library(${BONE_EXECUTABLE} SHARED ${SOURCES})
 add_definitions (${GLIB_CFLAGS_OTHER})
 target_include_directories(
     ${BONE_EXECUTABLE}
@@ -77,4 +78,10 @@ target_link_libraries(
     PRIVATE
     ${GLIB_LIBRARIES}
     ${CUNIT_LIBRARY}
+)
+set_target_properties(bone
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "../lib"
+    LIBRARY_OUTPUT_DIRECTORY "../lib"
+    RUNTIME_OUTPUT_DIRECTORY "../lib"
 )
