@@ -32,8 +32,10 @@ else()
     pkg_check_modules(GLIB REQUIRED glib-2.0)
 endif (WIN32)
 
-if(LINUX AND NOT IS_DIRECTORY ${GLIB_LIBRARY_DIRS})
-  set(GLIB_LIBRARY_DIRS /usr/lib)
+if(NOT APPLE)
+    if(LINUX AND NOT IS_DIRECTORY ${GLIB_LIBRARY_DIRS})
+    set(GLIB_LIBRARY_DIRS /usr/lib)
+    endif()
 endif()
 
 message(STATUS "GLIB_LIBRARY_DIRS=${GLIB_LIBRARY_DIRS}")
