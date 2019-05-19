@@ -79,6 +79,10 @@ endforeach()
 link_directories (
     ${GLIB_LIBRARY_DIRS}
 )
+if(NOT BONE_RUN AND NOT BONE_SHARED AND NOT BONE_STATIC)
+    message(FATAL_ERROR "should add in any options: -DBONE_RUN=1, -DBONE_SHARED=1, -DBONE_STATIC=1")
+endif()
+
 if(BONE_RUN)
     add_executable(${BONE_EXECUTABLE} ${SOURCES})
 endif()
