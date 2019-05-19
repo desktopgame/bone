@@ -1,9 +1,17 @@
 cmake_minimum_required(VERSION 3.5)
 project(bone C)
 
+if(UNIX AND NOT APPLE)
+  set(LINUX TRUE)
+endif()
+
 set(CMAKE_CXX_COMPILER clang)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
-set(CMAKE_C_FLAGS_DEBUG "-g -fsanitize=address -O0 -DDEBUG -MMD -Wall")
+if(APPLE)
+  set(CMAKE_C_FLAGS_DEBUG "-g -fsanitize=address -O0 -DDEBUG -DVMDEBUG -MMD -Wall")
+elseif(LINUX)
+  set(CMAKE_C_FLAGS_DEBUG "-d -O0 -DDEBUG -DVMDEBUG -MMD -Wall")
+endif()
 set(CMAKE_C_FLAGS_RELEASE "-g -O2 -MMD -w -DNDEBUG")
 set(BONE_EXECUTABLE "bone" CACHE STRING "executable file name")
 set(BONE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/bone CACHE PATH "Path to install")
@@ -23,6 +31,11 @@ else()
 
     pkg_check_modules(GLIB REQUIRED glib-2.0)
 endif (WIN32)
+
+if(LINUX AND NOT IS_DIRECTORY ${GLIB_LIBRARY_DIRS})
+  set(GLIB_LIBRARY_DIRS /usr/lib)
+endif()
+
 message(STATUS "GLIB_LIBRARY_DIRS=${GLIB_LIBRARY_DIRS}")
 message(STATUS "GLIB_INCLUDE_DIRS=${GLIB_INCLUDE_DIRS}")
 message(STATUS "GLIB_LIBRARIES=${GLIB_LIBRARIES}")
