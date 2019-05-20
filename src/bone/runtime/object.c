@@ -1,4 +1,5 @@
 #include "object.h"
+#include <stdlib.h>
 #include "../util/stack.h"
 #include "array.h"
 #include "bool.h"
@@ -64,6 +65,11 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
         if (bnIsInstanceBaseLambda(bone->pool, lambda) &&
             bnGetStackSize(frame->hierarcySelf) > 0) {
                 bnPushStack(sub->vStack, bnPeekStack(frame->hierarcySelf));
+                argc++;
+        }
+        int paramc = g_list_length(lambda->parameters);
+        if (paramc != argc) {
+                abort();
         }
         // set default return value
         GList* retIter = lambda->returns;
