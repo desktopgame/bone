@@ -49,6 +49,8 @@ void bnGC(bnInterpreter* bone) {
         g_rec_mutex_unlock(&gHeapMtx);
 }
 
+void bnDrop(bnHeap* self, bnObject* obj) { g_list_remove(self->objects, obj); }
+
 void bnDeleteHeap(bnHeap* self) {
         g_rec_mutex_lock(&gHeapMtx);
         g_list_free(self->objects);
