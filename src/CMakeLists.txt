@@ -38,12 +38,24 @@ if(NOT APPLE)
     endif()
 endif()
 
+include(CheckFunctionExists)
+include(CheckIncludeFile)
+include(CheckSymbolExists)
+
+CHECK_INCLUDE_FILE(unistd.h HAVE_UNISTD)
+CHECK_INCLUDE_FILE(dlfcn.h HAVE_DLFCN)
+CHECK_INCLUDE_FILE(windows.h HAVE_WINDOWS)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/bone/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/bone/config.h)
+
 message(STATUS "GLIB_LIBRARY_DIRS=${GLIB_LIBRARY_DIRS}")
 message(STATUS "GLIB_INCLUDE_DIRS=${GLIB_INCLUDE_DIRS}")
 message(STATUS "GLIB_LIBRARIES=${GLIB_LIBRARIES}")
 message(STATUS "CUNIT_INCLUDE_DIR=${CUNIT_INCLUDE_DIR}")
 message(STATUS "CUNIT_LIBRARY=${CUNIT_LIBRARY}")
 message(STATUS "BONE_INSTALL_DIR=${BONE_INSTALL_DIR}")
+message(STATUS "HAVE_UNISTD=${HAVE_UNISTD}")
+message(STATUS "HAVE_DLFCN=${HAVE_DLFCN}")
+message(STATUS "HAVE_WINDOWS=${HAVE_WINDOWS}")
 
 
 # enable_testing()
@@ -64,6 +76,7 @@ install(
     DESTINATION ${BONE_INSTALL_DIR}
 )
 add_custom_target(_uninstall rm -r ${BONE_INSTALL_DIR})
+add_custom_target(_clean rm -rf ./CMakeCache.txt && rm -r CMakeFiles)
 
 file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "**/*.c")
 foreach(e IN LISTS SOURCES)
