@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include "config.h"
 #include "glib.h"
 #include "util/fmt.h"
 #include "util/io.h"
