@@ -69,7 +69,9 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
         }
         int paramc = g_list_length(lambda->parameters);
         if (paramc != argc) {
-                abort();
+                sub->panic = frame->panic = bnNewString(
+                    bone, bnIntern(bone->pool, "illegal arguments"));
+                return sub;
         }
         // set default return value
         GList* retIter = lambda->returns;
