@@ -1,5 +1,14 @@
 #include "module.h"
+#include "../config.h"
+
+#if HAVE_DLFCN
 #include <dlfcn.h>
+#endif
+
+#if HAVE_WINDOWS
+#include <windows.h>
+#endif
+
 #include <stdio.h>
 #include "../util/memory.h"
 static gchar* without_extension(gchar* src);
@@ -8,7 +17,7 @@ bnModule* bnNewModule(const char* path) {
         bnModule* ret = BN_MALLOC(sizeof(bnModule));
         ret->path = strdup(path);
         ret->handle = NULL;
-#if __APPLE__
+#if HAVE_DLFCN
         ret->handle = dlopen(path, RTLD_LAZY);
         if (ret->handle == NULL) {
                 fprintf(stderr, "%s\n", dlerror());
@@ -25,7 +34,7 @@ void* bnGetSymbol(bnModule* self, const char* name) {
         gchar* base = without_extension(g_path_get_basename(self->path));
         sprintf(destroyFuncName, "%s_%s", base, name);
         void* sym = NULL;
-#if __APPLE__
+#if HAVE_DLFCN
         sym = dlsym(self->handle, destroyFuncName);
         if (sym == NULL) {
                 fprintf(stderr, "%s\n", dlerror());
@@ -37,7 +46,7 @@ void* bnGetSymbol(bnModule* self, const char* name) {
 
 void bnDeleteModule(bnModule* self) {
         if (self->handle != NULL) {
-#if __APPLE__
+#if HAVE_DLFCN
                 dlclose(self->handle);
 #endif
         }
