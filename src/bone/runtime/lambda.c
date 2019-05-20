@@ -11,6 +11,8 @@ bnLambda* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
         ret->type = type;
         ret->parameters = NULL;
         ret->returns = NULL;
+        ret->filename = 0;
+        ret->lineno = -1;
         ret->outer =
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         return ret;
@@ -24,6 +26,8 @@ bnLambda* bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
         bnLambda* ret =
             bnNewLambdaFunc(bone, BN_LAMBDA_NATIVE, filename, lineno);
         ret->u.vFunc = func;
+        ret->filename = bnIntern(bone->pool, filename);
+        ret->lineno = lineno;
         while (1) {
                 int val = va_arg(ap, int);
                 if (val == BN_C_ADD_EXIT) {

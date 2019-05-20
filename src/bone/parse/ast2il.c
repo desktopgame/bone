@@ -149,7 +149,7 @@ static bnILExpression* ast2expr(bnAST* a) {
                     ast2args(aargs, ret->u.vFuncCallOp->arguments);
         } else if (a->tag == BN_AST_LAMBDA) {
                 ret->type = BN_IL_EXPR_LAMBDA;
-                bnILExprLambda* illambda = bnNewILExprLambda();
+                bnILExprLambda* illambda = bnNewILExprLambda(0, a->line);
                 bnAST* aparams = bnFirstAST(a);
                 bnAST* areturns = bnSecondAST(a);
                 bnAST* astmt = bnThirdAST(a);

@@ -6,11 +6,13 @@
 
 static bool is_instance_base(struct bnStringPool* pool, bnILExprLambda* self);
 
-bnILExprLambda* bnNewILExprLambda() {
+bnILExprLambda* bnNewILExprLambda(bnStringView filename, int lineno) {
         bnILExprLambda* ret = BN_MALLOC(sizeof(bnILExprLambda));
         ret->parameters = NULL;
         ret->returns = NULL;
         ret->statements = NULL;
+        ret->filename = filename;
+        ret->lineno = lineno;
         return ret;
 }
 

@@ -118,6 +118,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         case BN_OP_GEN_LAMBDA_BEGIN: {
                                 bnLambda* lmb =
                                     bnNewLambda(bone, BN_LAMBDA_SCRIPT);
+                                lmb->filename = env->filename;
+                                lmb->lineno = bnFindLineRange(env, PC);
                                 lmb->u.vEnv = bnNewEnviroment(env->filename);
                                 lmb->u.vEnv->lineOffset =
                                     bnFindLineRange(env, PC);
@@ -426,12 +428,44 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_FUNCCALL: {
-                                bnObject* lambda = bnPopStack(frame->vStack);
+                                bnLambda* lambda = bnPopStack(frame->vStack);
                                 int argc =
                                     g_ptr_array_index(env->codeArray, ++PC);
                                 int line = bnFindLineRange(env, PC);
-                                GString* gbuf = g_string_new(
+                                GString* gbuf = g_string_new("");
+                                g_string_append_printf(
+                                    gbuf, "call at %s, ",
                                     bnView2Str(bone->pool, env->filename));
+                                GList* iter = ((bnLambda*)lambda)->parameters;
+                                g_string_append_printf(
+                                    gbuf, "defined at %s, ",
+                                    bnView2Str(bone->pool, lambda->filename));
+                                g_string_append_printf(gbuf, "<%d>",
+                                                       lambda->lineno);
+                                g_string_append(gbuf, " #");
+                                g_string_append_c(gbuf, '(');
+                                while (iter != NULL) {
+                                        g_string_append(
+                                            gbuf,
+                                            bnView2Str(bone->pool, iter->data));
+                                        iter = iter->next;
+                                        if (iter != NULL) {
+                                                g_string_append_c(gbuf, ' ');
+                                        }
+                                }
+                                g_string_append_c(gbuf, ')');
+                                iter = ((bnLambda*)lambda)->returns;
+                                g_string_append_c(gbuf, '(');
+                                while (iter != NULL) {
+                                        g_string_append(
+                                            gbuf,
+                                            bnView2Str(bone->pool, iter->data));
+                                        iter = iter->next;
+                                        if (iter != NULL) {
+                                                g_string_append_c(gbuf, ' ');
+                                        }
+                                }
+                                g_string_append_c(gbuf, ')');
                                 g_string_append_printf(
                                     gbuf, "<%d>", (line + env->lineOffset));
                                 bnPushStack(bone->callStack, gbuf);

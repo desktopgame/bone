@@ -12,13 +12,17 @@ typedef struct bnILExprLambda {
         GList* parameters;
         GList* returns;
         GList* statements;
+        bnStringView filename;
+        int lineno;
 } bnILExprLambda;
 
 /**
  * return new instance of bnILExprLambda.
+ * @param filename
+ * @param lineno
  * @return
  */
-bnILExprLambda* bnNewILExprLambda();
+bnILExprLambda* bnNewILExprLambda(bnStringView filename, int lineno);
 
 /**
  * print a information of bnILExprLambda.

@@ -30,6 +30,8 @@ typedef struct bnLambda {
         GHashTable* outer;
         GList* parameters;
         GList* returns;
+        bnStringView filename;
+        int lineno;
         union {
                 bnEnviroment* vEnv;
                 bnNativeFunc vFunc;
