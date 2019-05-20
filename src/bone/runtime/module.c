@@ -18,7 +18,7 @@ bnModule* bnNewModule(const char* path) {
         ret->path = strdup(path);
         ret->handle = NULL;
 #if HAVE_DLFCN
-        ret->handle = dlopen(path, RTLD_LAZY);
+        ret->handle = dlopen(path, RTLD_NOW);
         if (ret->handle == NULL) {
                 fprintf(stderr, "%s\n", dlerror());
         }
@@ -47,7 +47,10 @@ void* bnGetSymbol(bnModule* self, const char* name) {
 void bnDeleteModule(bnModule* self) {
         if (self->handle != NULL) {
 #if HAVE_DLFCN
-                dlclose(self->handle);
+                int status = dlclose(self->handle);
+                if (status != 0) {
+                        fprintf(stderr, "%s\n", dlerror());
+                }
 #endif
         }
         BN_FREE(self->path);
