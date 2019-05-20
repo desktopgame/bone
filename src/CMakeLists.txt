@@ -75,6 +75,10 @@ install(
     DIRECTORY ./../doc
     DESTINATION ${BONE_INSTALL_DIR}
 )
+install(
+    DIRECTORY ./../lib
+    DESTINATION ${BONE_INSTALL_DIR}
+)
 add_custom_target(_uninstall rm -r ${BONE_INSTALL_DIR})
 add_custom_target(_clean rm -rf ./CMakeCache.txt && rm -r CMakeFiles)
 
