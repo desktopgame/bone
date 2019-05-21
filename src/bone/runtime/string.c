@@ -27,3 +27,7 @@ bnString* bnNewString(bnInterpreter* bone, bnStringView value) {
                                       BN_C_ADD_EXIT));
         return ret;
 }
+
+bnString* bnNewString2(bnInterpreter* bone, const char* str) {
+        return bnNewString(bone, bnIntern(bone->pool, str));
+}

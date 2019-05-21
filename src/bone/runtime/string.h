@@ -19,4 +19,10 @@ typedef struct bnString {
  */
 bnString* bnNewString(bnInterpreter* bone, bnStringView value);
 
+/**
+ * @param bone
+ * @param str
+ * @return
+ */
+bnString* bnNewString2(bnInterpreter* bone, const char* str);
 #endif
