@@ -382,7 +382,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnObject* container = bnPopStack(frame->vStack);
                                 if (container == NULL) {
                                         bnPanic(bone,
-                                                bnNewString(
+                                                bnNewString2(
                                                     bone, "receiver is null"));
                                         break;
                                 }

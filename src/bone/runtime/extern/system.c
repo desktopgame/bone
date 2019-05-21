@@ -34,7 +34,7 @@ void bnExtSystemExit(bnInterpreter* bone, bnFrame* frame) {
         bnObject* statusObj = bnPopStack(frame->vStack);
         if (statusObj->type != BN_OBJECT_INTEGER) {
                 bnThrow(bone,
-                        bnNewString(bone, "should be `status` is integer"),
+                        bnNewString2(bone, "should be `status` is integer"),
                         BN_JMP_CODE_EXCEPTION);
         }
         bnInteger* statusInt = statusObj;

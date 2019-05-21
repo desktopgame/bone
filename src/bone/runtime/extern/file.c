@@ -62,7 +62,7 @@ void bnExtFileOpen(bnInterpreter* bone, bnFrame* frame) {
         if (fp == NULL) {
                 g_hash_table_replace(frame->variableTable,
                                      bnIntern(bone->pool, "error"),
-                                     bnNewString(bone, strerror(errno)));
+                                     bnNewString2(bone, strerror(errno)));
                 return;
         }
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "file"),
