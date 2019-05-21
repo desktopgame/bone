@@ -119,11 +119,12 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         case BN_OP_GEN_LAMBDA_BEGIN: {
                                 bnLambda* lmb =
                                     bnNewLambda(bone, BN_LAMBDA_SCRIPT);
+                                int line =
+                                    g_ptr_array_index(env->codeArray, ++PC);
                                 lmb->filename = env->filename;
-                                lmb->lineno = bnFindLineRange(env, PC);
+                                lmb->lineno = line;
                                 lmb->u.vEnv = bnNewEnviroment(env->filename);
-                                lmb->u.vEnv->lineOffset =
-                                    bnFindLineRange(env, PC);
+                                lmb->u.vEnv->lineOffset = line;
                                 // is instance base?
                                 int parameterLen =
                                     g_ptr_array_index(env->codeArray, ++PC);
@@ -200,6 +201,11 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                 g_ptr_array_add(
                                                     lmb->u.vEnv->codeArray,
                                                     data);
+                                                line = g_ptr_array_index(
+                                                    env->codeArray, ++PC);
+                                                g_ptr_array_add(
+                                                    lmb->u.vEnv->codeArray,
+                                                    line);
                                                 // add params
                                                 parameterLen =
                                                     g_ptr_array_index(
@@ -437,16 +443,17 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 const char* caller =
                                     bnView2Str(bone->pool, env->filename);
                                 g_string_append_printf(
-                                    gbuf, "call at %s, ",
-                                    caller + bnLastPathComponent(caller));
+                                    gbuf, "call at %s<%d>, ",
+                                    caller + bnLastPathComponent(caller),
+                                    bnFindLineRange(env, PC) + env->lineOffset);
                                 const char* definer =
                                     bnView2Str(bone->pool, lambda->filename);
                                 GList* iter = ((bnLambda*)lambda)->parameters;
                                 g_string_append_printf(
-                                    gbuf, "defined at %s, ",
-                                    definer + bnLastPathComponent(definer));
-                                g_string_append_printf(gbuf, "<%d>",
-                                                       lambda->lineno);
+                                    gbuf, "defined at %s<%d>, ",
+                                    definer + bnLastPathComponent(definer),
+                                    lambda->lineno);
+
                                 g_string_append(gbuf, " #");
                                 g_string_append_c(gbuf, '(');
                                 while (iter != NULL) {

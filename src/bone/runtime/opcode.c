@@ -43,6 +43,7 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, bnEnviroment* env,
                         break;
                 }
                 case BN_OP_GEN_LAMBDA_BEGIN: {
+                        int line = g_ptr_array_index(ary, ++pos);
                         int parameterLen = g_ptr_array_index(ary, ++pos);
                         pos += parameterLen;
                         int returnLen = g_ptr_array_index(ary, ++pos);
