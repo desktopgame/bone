@@ -1,5 +1,6 @@
 #include "vm.h"
 #include "../glib.h"
+#include "../util/string.h"
 #include "array.h"
 #include "char.h"
 #include "heap.h"
@@ -433,13 +434,17 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                     g_ptr_array_index(env->codeArray, ++PC);
                                 int line = bnFindLineRange(env, PC);
                                 GString* gbuf = g_string_new("");
+                                const char* caller =
+                                    bnView2Str(bone->pool, env->filename);
                                 g_string_append_printf(
                                     gbuf, "call at %s, ",
-                                    bnView2Str(bone->pool, env->filename));
+                                    caller + bnLastPathComponent(caller));
+                                const char* definer =
+                                    bnView2Str(bone->pool, lambda->filename);
                                 GList* iter = ((bnLambda*)lambda)->parameters;
                                 g_string_append_printf(
                                     gbuf, "defined at %s, ",
-                                    bnView2Str(bone->pool, lambda->filename));
+                                    definer + bnLastPathComponent(definer));
                                 g_string_append_printf(gbuf, "<%d>",
                                                        lambda->lineno);
                                 g_string_append(gbuf, " #");
