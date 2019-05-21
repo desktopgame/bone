@@ -1,5 +1,6 @@
 #include "memory.h"
 #include <string.h>
+#include "string.h"
 
 typedef struct bnMemInfo {
         size_t size;
@@ -144,14 +145,8 @@ void bnDumpMemoryLeaks(FILE* fp) {
         bnMemInfo* iter = root;
         int items = 0;
         while (iter != NULL) {
-                int len = strlen(iter->filename);
-                int pos = 0;
-                char* sp = iter->filename + (len - 1);
-                while (*sp != '/') {
-                        sp--;
-                        pos++;
-                }
-                fprintf(fp, "%s <%d> %p\n", iter->filename + (len - pos),
+                fprintf(fp, "%s <%d> %p\n",
+                        iter->filename + bnLastPathComponent(iter->filename),
                         iter->lineno, iter->area);
                 iter = iter->next;
                 items++;
