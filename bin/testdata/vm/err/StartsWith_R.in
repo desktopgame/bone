@@ -1,0 +1,5 @@
+{} <- load("string.bn");
+word := "testAAA";
+word2 := "testB";
+assert(word.startsWith("testB"));
+assert(word2.startsWith("testA"));

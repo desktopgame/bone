@@ -36,7 +36,8 @@ void bnStdDebugAssert(bnInterpreter* bone, bnFrame* frame) {
         }
         bnBool* cond = a;
         if (!cond->value) {
-                abort();
+                // abort();
+                _throw(bone, frame, "assertion failed");
         }
 }
 

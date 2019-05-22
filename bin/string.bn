@@ -7,6 +7,20 @@ toArray := def(self)(ret) {
         i += 1;
     }
 };
+startsWith := def(self, range)(ret) {
+    if(range.length > self.length) {
+        panic("range.length > self.length");
+    }
+    ret := true;
+    i := 0;
+    while(i < range.length) {
+        if(self.at(i) != range.at(i)) {
+            ret := false;
+            break;
+        }
+        i += 1;
+    }
+};
 substr := def(self, offs, len)(ret) {
     ret := string(self.toArray().sub(offs,len));
 };
@@ -14,4 +28,5 @@ string := def(array)(ret) {
     {} <- _string(array);
     ret.substr := substr;
     ret.toArray := toArray;
+    ret.startsWith := startsWith;
 };
