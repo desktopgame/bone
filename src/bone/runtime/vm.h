@@ -6,6 +6,8 @@
 struct bnObject;
 struct bnLambda;
 
+void bnScopeInjection(bnInterpreter* bone, struct bnObject* src, bnFrame* dst);
+
 void bnObjectInjection(bnInterpreter* bone, struct bnObject* src,
                        struct bnObject* dst);
 
