@@ -10,6 +10,44 @@
 #include "snapshot.h"
 #include "string.h"
 
+GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
+                                  bnLambda* lambda, int PC) {
+        int line = bnFindLineRange(env, PC);
+        GString* gbuf = g_string_new("");
+        const char* caller = bnView2Str(bone->pool, env->filename);
+        g_string_append_printf(gbuf, "call at %s<%d>, ",
+                               caller + bnLastPathComponent(caller),
+                               bnFindLineRange(env, PC) + env->lineOffset);
+        const char* definer = bnView2Str(bone->pool, lambda->filename);
+        GList* iter = ((bnLambda*)lambda)->parameters;
+        g_string_append_printf(gbuf, "defined at %s<%d>, ",
+                               definer + bnLastPathComponent(definer),
+                               lambda->lineno);
+
+        g_string_append(gbuf, " #");
+        g_string_append_c(gbuf, '(');
+        while (iter != NULL) {
+                g_string_append(gbuf, bnView2Str(bone->pool, iter->data));
+                iter = iter->next;
+                if (iter != NULL) {
+                        g_string_append_c(gbuf, ' ');
+                }
+        }
+        g_string_append_c(gbuf, ')');
+        iter = ((bnLambda*)lambda)->returns;
+        g_string_append_c(gbuf, '(');
+        while (iter != NULL) {
+                g_string_append(gbuf, bnView2Str(bone->pool, iter->data));
+                iter = iter->next;
+                if (iter != NULL) {
+                        g_string_append_c(gbuf, ' ');
+                }
+        }
+        g_string_append_c(gbuf, ')');
+        g_string_append_printf(gbuf, "<%d>", (line + env->lineOffset));
+        return gbuf;
+}
+
 int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
         bnObject* BN_TRUE = g_hash_table_lookup(frame->variableTable,
                                                 bnIntern(bone->pool, "true"));
@@ -438,49 +476,10 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnLambda* lambda = bnPopStack(frame->vStack);
                                 int argc =
                                     g_ptr_array_index(env->codeArray, ++PC);
-                                int line = bnFindLineRange(env, PC);
-                                GString* gbuf = g_string_new("");
-                                const char* caller =
-                                    bnView2Str(bone->pool, env->filename);
-                                g_string_append_printf(
-                                    gbuf, "call at %s<%d>, ",
-                                    caller + bnLastPathComponent(caller),
-                                    bnFindLineRange(env, PC) + env->lineOffset);
-                                const char* definer =
-                                    bnView2Str(bone->pool, lambda->filename);
-                                GList* iter = ((bnLambda*)lambda)->parameters;
-                                g_string_append_printf(
-                                    gbuf, "defined at %s<%d>, ",
-                                    definer + bnLastPathComponent(definer),
-                                    lambda->lineno);
 
-                                g_string_append(gbuf, " #");
-                                g_string_append_c(gbuf, '(');
-                                while (iter != NULL) {
-                                        g_string_append(
-                                            gbuf,
-                                            bnView2Str(bone->pool, iter->data));
-                                        iter = iter->next;
-                                        if (iter != NULL) {
-                                                g_string_append_c(gbuf, ' ');
-                                        }
-                                }
-                                g_string_append_c(gbuf, ')');
-                                iter = ((bnLambda*)lambda)->returns;
-                                g_string_append_c(gbuf, '(');
-                                while (iter != NULL) {
-                                        g_string_append(
-                                            gbuf,
-                                            bnView2Str(bone->pool, iter->data));
-                                        iter = iter->next;
-                                        if (iter != NULL) {
-                                                g_string_append_c(gbuf, ' ');
-                                        }
-                                }
-                                g_string_append_c(gbuf, ')');
-                                g_string_append_printf(
-                                    gbuf, "<%d>", (line + env->lineOffset));
-                                bnPushStack(bone->callStack, gbuf);
+                                bnPushStack(bone->callStack,
+                                            bnCreateStackFrameString(
+                                                bone, env, lambda, PC));
                                 bnFrame* sub =
                                     bnFuncCall(lambda, bone, frame, argc);
                                 if (sub->panic == NULL) {

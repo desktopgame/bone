@@ -3,6 +3,10 @@
 #include "enviroment.h"
 #include "frame.h"
 #include "interpreter.h"
+struct bnLambda;
+
+GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
+                                  struct bnLambda* lambda, int PC);
 
 /**
  * bnExecute be run a bone.
