@@ -35,6 +35,11 @@ void bnExternReflection(bnInterpreter* bone) {
             bnNewLambdaFromCFunc(bone, bnExtReflectionEntries, bone->pool,
                                  BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN, "ret",
                                  BN_C_ADD_EXIT));
+        g_hash_table_replace(
+            bone->externTable, bnIntern(bone->pool, "export"),
+            bnNewLambdaFromCFunc(bone, bnExtReflectionExport, bone->pool,
+                                 BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN, "...",
+                                 BN_C_ADD_EXIT));
 }
 
 void bnExtReflectionDefine(bnInterpreter* bone, bnFrame* frame) {
@@ -118,4 +123,20 @@ void bnExtReflectionEntries(bnInterpreter* bone, bnFrame* frame) {
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              arrayInst);
         g_list_free(entries);
+}
+
+void bnExtReflectionExport(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        GHashTableIter hashIter;
+        g_hash_table_iter_init(&hashIter, a->table);
+        gpointer k, v;
+        while (g_hash_table_iter_next(&hashIter, &k, &v)) {
+                bnStringView view = k;
+                const char* str = bnView2Str(bone->pool, view);
+                if (*str == '$') {
+                        continue;
+                }
+                // view = bnGetExportVariableName(bone->pool, view);
+                g_hash_table_replace(frame->variableTable, view, v);
+        }
 }
