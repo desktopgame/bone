@@ -15,10 +15,12 @@ GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
         int line = bnFindLineRange(env, PC);
         GString* gbuf = g_string_new("");
         const char* caller = bnView2Str(bone->pool, env->filename);
+        assert(caller != NULL);
         g_string_append_printf(gbuf, "call at %s<%d>, ",
                                caller + bnLastPathComponent(caller),
                                bnFindLineRange(env, PC) + env->lineOffset);
         const char* definer = bnView2Str(bone->pool, lambda->filename);
+        assert(definer != NULL);
         GList* iter = ((bnLambda*)lambda)->parameters;
         g_string_append_printf(gbuf, "defined at %s<%d>, ",
                                definer + bnLastPathComponent(definer),
@@ -423,15 +425,22 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_FUNCCALL: {
-                                bnLambda* lambda = bnPopStack(frame->vStack);
+                                bnObject* obj = bnPopStack(frame->vStack);
+                                if (obj->type != BN_OBJECT_LAMBDA) {
+                                        frame->panic =
+                                            bnNewString2(bone,
+                                                         "shoud be receiver is "
+                                                         "closure object");
+                                        break;
+                                }
                                 int argc =
                                     g_ptr_array_index(env->codeArray, ++PC);
 
                                 bnPushStack(bone->callStack,
-                                            bnCreateStackFrameString(
-                                                bone, env, lambda, PC));
+                                            bnCreateStackFrameString(bone, env,
+                                                                     obj, PC));
                                 bnFrame* sub =
-                                    bnFuncCall(lambda, bone, frame, argc);
+                                    bnFuncCall(obj, bone, frame, argc);
                                 if (sub->panic == NULL) {
                                         g_string_free(
                                             bnPopStack(bone->callStack), TRUE);

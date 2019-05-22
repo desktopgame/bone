@@ -1,0 +1,8 @@
+rec := false;
+rec := def(i)() {
+    println(i.toString());
+    if(i > 0) {
+        rec(i - 1);
+    }
+};
+rec(5);
