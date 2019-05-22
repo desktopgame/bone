@@ -753,7 +753,8 @@ void bnStdStringAt(bnInterpreter* bone, bnFrame* frame) {
         const char* astr = bnView2Str(bone->pool, ai);
         int astrlen = strlen(astr);
         if (bi->value < 0 || bi->value >= astrlen) {
-                bnFormatThrow(bone, "over index in bounds: %d~%d", 0, astrlen);
+                bnFormatThrow(bone, "over index in bounds: %d~%d[%d]", 0,
+                              astrlen, bi->value);
         }
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              bnNewChar(bone, astr[bi->value]));
