@@ -48,6 +48,99 @@ GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
         return gbuf;
 }
 
+struct bnLambda* bnCreateLambdaInActiveCode(bnInterpreter* bone,
+                                            bnEnviroment* env, bnFrame* frame,
+                                            int* pPC) {
+        bnLambda* lmb = bnNewLambda(bone, BN_LAMBDA_SCRIPT);
+        int line = g_ptr_array_index(env->codeArray, ++(*pPC));
+        lmb->filename = env->filename;
+        lmb->lineno = line;
+        lmb->u.vEnv = bnNewEnviroment(env->filename);
+        lmb->u.vEnv->lineOffset = line;
+        // is instance base?
+        int parameterLen = g_ptr_array_index(env->codeArray, ++(*pPC));
+        for (int i = 0; i < parameterLen; i++) {
+                lmb->parameters =
+                    g_list_append(lmb->parameters,
+                                  g_ptr_array_index(env->codeArray, ++(*pPC)));
+        }
+        // length of named return
+        int namedReturnLen = g_ptr_array_index(env->codeArray, ++(*pPC));
+        g_ptr_array_add(lmb->u.vEnv->codeArray, BN_OP_NOP);
+        for (int i = 0; i < namedReturnLen; i++) {
+                lmb->returns = g_list_append(
+                    lmb->returns, g_ptr_array_index(env->codeArray, ++(*pPC)));
+        }
+        // collect all variables
+        GHashTableIter hashIter;
+        g_hash_table_iter_init(&hashIter, frame->variableTable);
+        gpointer k, v;
+        while (g_hash_table_iter_next(&hashIter, &k, &v)) {
+                g_hash_table_replace(lmb->outer, k, v);
+        }
+        int lambdaNest = 1;
+        // generate code
+        while (1) {
+                assert(*pPC < env->codeArray->len);
+                gpointer data = g_ptr_array_index(env->codeArray, ++(*pPC));
+                // bug if index of string view equal
+                // BN_OP_GEN_LAMBDA_END
+                if (bnOperands((bnOpcode)data) == 1) {
+                        if (data == BN_OP_GOTO || data == BN_OP_GOTO_IF ||
+                            data == BN_OP_GOTO_ELSE) {
+                                g_ptr_array_add(lmb->u.vEnv->codeArray, data);
+                                bnLabel* clone =
+                                    bnNewLabel(((bnLabel*)g_ptr_array_index(
+                                                    env->codeArray, ++(*pPC)))
+                                                   ->pos);
+                                g_ptr_array_add(lmb->u.vEnv->codeArray, clone);
+                                g_ptr_array_add(lmb->u.vEnv->labels, clone);
+                        } else {
+                                g_ptr_array_add(lmb->u.vEnv->codeArray, data);
+                                g_ptr_array_add(lmb->u.vEnv->codeArray,
+                                                g_ptr_array_index(
+                                                    env->codeArray, ++(*pPC)));
+                        }
+                        continue;
+                }
+                if (data == BN_OP_GEN_LAMBDA_BEGIN) {
+                        g_ptr_array_add(lmb->u.vEnv->codeArray, data);
+                        line = g_ptr_array_index(env->codeArray, ++(*pPC));
+                        g_ptr_array_add(lmb->u.vEnv->codeArray, line);
+                        // add params
+                        parameterLen =
+                            g_ptr_array_index(env->codeArray, ++(*pPC));
+                        g_ptr_array_add(lmb->u.vEnv->codeArray, parameterLen);
+                        for (int i = 0; i < parameterLen; i++) {
+                                g_ptr_array_add(lmb->u.vEnv->codeArray,
+                                                g_ptr_array_index(
+                                                    env->codeArray, ++(*pPC)));
+                        }
+                        // add returns
+                        namedReturnLen =
+                            g_ptr_array_index(env->codeArray, ++(*pPC));
+                        g_ptr_array_add(lmb->u.vEnv->codeArray, namedReturnLen);
+                        g_ptr_array_add(lmb->u.vEnv->codeArray, BN_OP_NOP);
+                        for (int i = 0; i < namedReturnLen; i++) {
+                                lmb->returns = g_list_append(
+                                    lmb->returns,
+                                    g_ptr_array_index(env->codeArray,
+                                                      ++(*pPC)));
+                        }
+                        lambdaNest++;
+                } else if (data == BN_OP_GEN_LAMBDA_END) {
+                        if (--lambdaNest == 0) {
+                                break;
+                        }
+                        g_ptr_array_add(lmb->u.vEnv->codeArray, data);
+
+                } else {
+                        g_ptr_array_add(lmb->u.vEnv->codeArray, data);
+                }
+        }
+        return lmb;
+}
+
 void bnScopeInjection(bnInterpreter* bone, bnObject* src, bnFrame* dst) {
         // collect all hidden variables
         GHashTableIter hashIter;
@@ -189,147 +282,9 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_GEN_LAMBDA_BEGIN: {
-                                bnLambda* lmb =
-                                    bnNewLambda(bone, BN_LAMBDA_SCRIPT);
-                                int line =
-                                    g_ptr_array_index(env->codeArray, ++PC);
-                                lmb->filename = env->filename;
-                                lmb->lineno = line;
-                                lmb->u.vEnv = bnNewEnviroment(env->filename);
-                                lmb->u.vEnv->lineOffset = line;
-                                // is instance base?
-                                int parameterLen =
-                                    g_ptr_array_index(env->codeArray, ++PC);
-                                for (int i = 0; i < parameterLen; i++) {
-                                        lmb->parameters = g_list_append(
-                                            lmb->parameters,
-                                            g_ptr_array_index(env->codeArray,
-                                                              ++PC));
-                                }
-                                // length of named return
-                                int namedReturnLen =
-                                    g_ptr_array_index(env->codeArray, ++PC);
-                                g_ptr_array_add(lmb->u.vEnv->codeArray,
-                                                BN_OP_NOP);
-                                for (int i = 0; i < namedReturnLen; i++) {
-                                        lmb->returns = g_list_append(
-                                            lmb->returns,
-                                            g_ptr_array_index(env->codeArray,
-                                                              ++PC));
-                                }
-                                // collect all variables
-                                GHashTableIter hashIter;
-                                g_hash_table_iter_init(&hashIter,
-                                                       frame->variableTable);
-                                gpointer k, v;
-                                while (
-                                    g_hash_table_iter_next(&hashIter, &k, &v)) {
-                                        g_hash_table_replace(lmb->outer, k, v);
-                                }
-                                int lambdaNest = 1;
-                                // generate code
-                                while (1) {
-                                        assert(PC < env->codeArray->len);
-                                        gpointer data = g_ptr_array_index(
-                                            env->codeArray, ++PC);
-                                        // bug if index of string view equal
-                                        // BN_OP_GEN_LAMBDA_END
-                                        if (bnOperands((bnOpcode)data) == 1) {
-                                                if (data == BN_OP_GOTO ||
-                                                    data == BN_OP_GOTO_IF ||
-                                                    data == BN_OP_GOTO_ELSE) {
-                                                        g_ptr_array_add(
-                                                            lmb->u.vEnv
-                                                                ->codeArray,
-                                                            data);
-                                                        bnLabel* clone = bnNewLabel(
-                                                            ((bnLabel*)
-                                                                 g_ptr_array_index(
-                                                                     env->codeArray,
-                                                                     ++PC))
-                                                                ->pos);
-                                                        g_ptr_array_add(
-                                                            lmb->u.vEnv
-                                                                ->codeArray,
-                                                            clone);
-                                                        g_ptr_array_add(
-                                                            lmb->u.vEnv->labels,
-                                                            clone);
-                                                } else {
-                                                        g_ptr_array_add(
-                                                            lmb->u.vEnv
-                                                                ->codeArray,
-                                                            data);
-                                                        g_ptr_array_add(
-                                                            lmb->u.vEnv
-                                                                ->codeArray,
-                                                            g_ptr_array_index(
-                                                                env->codeArray,
-                                                                ++PC));
-                                                }
-                                                continue;
-                                        }
-                                        if (data == BN_OP_GEN_LAMBDA_BEGIN) {
-                                                g_ptr_array_add(
-                                                    lmb->u.vEnv->codeArray,
-                                                    data);
-                                                line = g_ptr_array_index(
-                                                    env->codeArray, ++PC);
-                                                g_ptr_array_add(
-                                                    lmb->u.vEnv->codeArray,
-                                                    line);
-                                                // add params
-                                                parameterLen =
-                                                    g_ptr_array_index(
-                                                        env->codeArray, ++PC);
-                                                g_ptr_array_add(
-                                                    lmb->u.vEnv->codeArray,
-                                                    parameterLen);
-                                                for (int i = 0;
-                                                     i < parameterLen; i++) {
-                                                        g_ptr_array_add(
-                                                            lmb->u.vEnv
-                                                                ->codeArray,
-                                                            g_ptr_array_index(
-                                                                env->codeArray,
-                                                                ++PC));
-                                                }
-                                                // add returns
-                                                namedReturnLen =
-                                                    g_ptr_array_index(
-                                                        env->codeArray, ++PC);
-                                                g_ptr_array_add(
-                                                    lmb->u.vEnv->codeArray,
-                                                    namedReturnLen);
-                                                g_ptr_array_add(
-                                                    lmb->u.vEnv->codeArray,
-                                                    BN_OP_NOP);
-                                                for (int i = 0;
-                                                     i < namedReturnLen; i++) {
-                                                        lmb->returns =
-                                                            g_list_append(
-                                                                lmb->returns,
-                                                                g_ptr_array_index(
-                                                                    env->codeArray,
-                                                                    ++PC));
-                                                }
-                                                lambdaNest++;
-                                        } else if (data ==
-                                                   BN_OP_GEN_LAMBDA_END) {
-                                                if (--lambdaNest == 0) {
-                                                        break;
-                                                }
-                                                g_ptr_array_add(
-                                                    lmb->u.vEnv->codeArray,
-                                                    data);
-
-                                        } else {
-                                                g_ptr_array_add(
-                                                    lmb->u.vEnv->codeArray,
-                                                    data);
-                                        }
-                                }
-                                bnPushStack(frame->vStack, lmb);
+                                bnPushStack(frame->vStack,
+                                            bnCreateLambdaInActiveCode(
+                                                bone, env, frame, &PC));
                                 break;
                         }
                         case BN_OP_GEN_LAMBDA_END: {

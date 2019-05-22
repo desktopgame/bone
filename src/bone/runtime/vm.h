@@ -14,6 +14,10 @@ void bnObjectInjection(bnInterpreter* bone, struct bnObject* src,
 GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
                                   struct bnLambda* lambda, int PC);
 
+struct bnLambda* bnCreateLambdaInActiveCode(bnInterpreter* bone,
+                                            bnEnviroment* env,
+                                            struct bnFrame* frame, int* pPC);
+
 /**
  * bnExecute be run a bone.
  * return other than zero if breaked bone vm.
