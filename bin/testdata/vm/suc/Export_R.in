@@ -1,0 +1,5 @@
+{} <- load("reflection.bn");
+a := object();
+a.name := "hoge";
+b := object() <- export(a);
+println(b.name);
