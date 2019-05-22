@@ -3,7 +3,11 @@
 #include "enviroment.h"
 #include "frame.h"
 #include "interpreter.h"
+struct bnObject;
 struct bnLambda;
+
+void bnObjectInjection(bnInterpreter* bone, struct bnObject* src,
+                       struct bnObject* dst);
 
 GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
                                   struct bnLambda* lambda, int PC);

@@ -48,6 +48,23 @@ GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
         return gbuf;
 }
 
+void bnObjectInjection(bnInterpreter* bone, bnObject* src, bnObject* dst) {
+        // collect all hidden variables
+        GHashTableIter hashIter;
+        g_hash_table_iter_init(&hashIter, src->table);
+        gpointer k, v;
+        while (g_hash_table_iter_next(&hashIter, &k, &v)) {
+                bnStringView kView = k;
+                const char* kStr = bnView2Str(bone->pool, kView);
+                if (g_str_has_prefix(kStr, "$$_")) {
+                        const char* origName = kStr + 3;
+                        bnStringView origView = bnIntern(bone->pool, origName);
+                        g_hash_table_replace(dst->table, origView, v);
+                        g_hash_table_iter_remove(&hashIter);
+                }
+        }
+}
+
 int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
         bnObject* BN_TRUE = g_hash_table_lookup(frame->variableTable,
                                                 bnIntern(bone->pool, "true"));
@@ -345,26 +362,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         case BN_OP_OBJECT_INJECTION: {
                                 bnObject* src = bnPopStack(frame->vStack);
                                 bnObject* dst = bnPopStack(frame->vStack);
-                                // collect all hidden variables
-                                GHashTableIter hashIter;
-                                g_hash_table_iter_init(&hashIter, src->table);
-                                gpointer k, v;
-                                while (
-                                    g_hash_table_iter_next(&hashIter, &k, &v)) {
-                                        bnStringView kView = k;
-                                        const char* kStr =
-                                            bnView2Str(bone->pool, kView);
-                                        if (g_str_has_prefix(kStr, "$$_")) {
-                                                const char* origName = kStr + 3;
-                                                bnStringView origView =
-                                                    bnIntern(bone->pool,
-                                                             origName);
-                                                g_hash_table_replace(
-                                                    dst->table, origView, v);
-                                                g_hash_table_iter_remove(
-                                                    &hashIter);
-                                        }
-                                }
+                                bnObjectInjection(bone, src, dst);
                                 bnPushStack(frame->vStack, dst);
                                 break;
                         }
