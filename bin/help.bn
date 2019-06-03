@@ -1,0 +1,15 @@
+{} <- include("file.bn");
+stdout.puts("bone command line help:");
+stdout.puts("    bone");
+stdout.puts("        run a bone in interactive mode");
+stdout.puts("");
+stdout.puts("    bone $filename");
+stdout.puts("        run a $filename by bone interpreter.");
+stdout.puts("        can omission of file extension");
+stdout.puts("");
+stdout.puts("    bone $filename $args...");
+stdout.puts("        run a $filename by bone interpreter.");
+stdout.puts("        can omission of file extension");
+stdout.puts("        $args is will be define in bone variable");
+stdout.puts("");
+stdout.puts("visit document folder if read more information.");
