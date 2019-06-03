@@ -278,6 +278,7 @@ static void update_loc() {
     BEGIN INITIAL;
 }
 <ML_COMMENT>.      ;
+<L_COMMENT>.      ;
 <L_COMMENT>\n  {
 	yaccLineno++;
 	bnSetParseLine(yaccLineno);
