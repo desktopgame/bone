@@ -1,0 +1,6 @@
+{} <- load("array.bn");
+{} <- include("dir.bn");
+all := files(".");
+all.foreach(def(e)() {
+    println(e);
+});
