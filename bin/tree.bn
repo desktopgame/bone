@@ -14,8 +14,8 @@ indent := def(depth)() {
     }
 };
 tree := def(self, dir, depth)() {
-    indent(depth);
-    stdout.puts(dir);
+    //indent(depth);
+    //stdout.puts(dir);
     allFiles := files(dir);
     allFiles.foreach(def(e)() {
         indent(depth + 1);
