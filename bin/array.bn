@@ -24,12 +24,12 @@ class.sub := def(self, offs, len)(ret) {
     }
 };
 
-class.indexOf := def(self, value)(index) {
-    index := -1;
+class.indexOf := def(self, value)(ret) {
+    ret := -1;
     i := 0;
     while(i < self.length) {
         if(self[i] == value) {
-            index := i;
+            ret := i;
             return;
         }
         i += 1;
