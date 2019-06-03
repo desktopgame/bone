@@ -1,0 +1,1 @@
+eval("{} <- include(\"file.bn\");  stdout.puts(\"aaa\");");
