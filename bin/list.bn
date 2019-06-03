@@ -1,9 +1,9 @@
 element_class := object();
-element_class.new := def()(element) {
-    element.prev := false;
-    element.next := false;
-    element.data := false;
-    element.append := def(self, data)() {
+element_class.new := def()(ret) {
+    ret.prev := false;
+    ret.next := false;
+    ret.data := false;
+    ret.append := def(self, data)() {
         if(self.data) {
             if(self.next) {
                 self.next.append(data);
@@ -21,11 +21,11 @@ element_class.new := def()(element) {
 append := def(self, data)() {
     self.head.append(data);
 };
-length := def(self)(length) {
-    length := 0;
+length := def(self)(ret) {
+    ret := 0;
     iter := self.head;
     while(iter) {
-        length += 1;
+        ret += 1;
         iter := iter.next;
     }
 };
@@ -48,10 +48,10 @@ toArray := def(self)(ret) {
     }
 };
 
-new := def()(list) {
-    list.head := element_class.new();
-    list.append := append;
-    list.length := length;
-    list.foreach := foreach;
-    list.toArray := toArray;
+new := def()(ret) {
+    ret.head := element_class.new();
+    ret.append := append;
+    ret.length := length;
+    ret.foreach := foreach;
+    ret.toArray := toArray;
 };
