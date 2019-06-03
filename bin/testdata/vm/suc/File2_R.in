@@ -5,5 +5,5 @@ if(newfile.error) {
     println("error");
     return;
 }
-newfile.file.puts("puts puts puts ...");
-newfile.file.close();
+newfile.ret.puts("puts puts puts ...");
+newfile.ret.close();

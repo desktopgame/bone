@@ -1,13 +1,13 @@
-_open := extern_def("file.fopen", ["path", "mode"], ["file", "error"]);
+_open := extern_def("file.fopen", ["path", "mode"], ["ret", "error"]);
 putc := extern_def("file.fputc", ["self", "c"], ["error"]);
-getc := extern_def("file.fgetc", ["self"], ["c", "error"]);
+getc := extern_def("file.fgetc", ["self"], ["ret", "error"]);
 close := extern_def("file.fclose", ["self"], []);
 stdout := extern_var("file.stdout");
 stderr := extern_var("file.stderr");
 stdin := extern_var("file.stdin");
 
 puts := def(self, str)(error) {
-    i := 0; 
+    i := 0;
     while(i < str.length) {
         {} <- self.putc(str.at(i));
         if(error) {
@@ -17,17 +17,17 @@ puts := def(self, str)(error) {
     }
     self.putc('\n');
 };
-gets := def(self)(str, error) {
+gets := def(self)(ret, error) {
     list := object() <- load("./list.bn");
     buf := list.new();
     while(1) {
         {} <- self.getc();
-        if(error || c == '\n') {
+        if(error || ret == '\n') {
             break;
         }
-        buf.append(c);
+        buf.append(ret);
     }
-    str := string(buf.toArray());
+    ret := string(buf.toArray());
 };
 
 _inject := def(f)() {
@@ -42,10 +42,10 @@ _inject(stdout);
 _inject(stderr);
 _inject(stdin);
 
-open := def(path, mode)(file, error) {
+open := def(path, mode)(ret, error) {
     {} <- _open(path, mode);
     if(error) {
         return;
     }
-    _inject(file);
+    _inject(ret);
 };

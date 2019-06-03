@@ -19,7 +19,7 @@ void bnExternFile(bnInterpreter* bone) {
             bone->externTable, bnIntern(bone->pool, "file.fopen"),
             bnNewLambdaFromCFunc(bone, bnExtFileOpen, bone->pool,
                                  BN_C_ADD_PARAM, "path", BN_C_ADD_PARAM, "mode",
-                                 BN_C_ADD_RETURN, "file", BN_C_ADD_RETURN,
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_RETURN,
                                  "error", BN_C_ADD_EXIT));
         g_hash_table_replace(
             bone->externTable, bnIntern(bone->pool, "file.fputc"),
@@ -29,7 +29,7 @@ void bnExternFile(bnInterpreter* bone) {
         g_hash_table_replace(
             bone->externTable, bnIntern(bone->pool, "file.fgetc"),
             bnNewLambdaFromCFunc(bone, bnExtFileGetc, bone->pool,
-                                 BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN, "c",
+                                 BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN, "ret",
                                  BN_C_ADD_RETURN, "error", BN_C_ADD_EXIT));
         g_hash_table_replace(
             bone->externTable, bnIntern(bone->pool, "file.fclose"),
@@ -68,7 +68,7 @@ void bnExtFileOpen(bnInterpreter* bone, bnFrame* frame) {
                                      bnNewString2(bone, strerror(errno)));
                 return;
         }
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "file"),
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              bnNewFile(bone, fp));
 }
 
@@ -118,7 +118,7 @@ void bnExtFileGetc(bnInterpreter* bone, bnFrame* frame) {
                                      bnGetTrue(bone->pool, frame));
                 return;
         }
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "c"),
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              bnNewChar(bone, c));
 }
 

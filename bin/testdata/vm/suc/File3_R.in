@@ -5,5 +5,5 @@ if(newfile.error) {
     println("error");
     return;
 }
-println(newfile.file.gets());
-newfile.file.close();
+println(newfile.ret.gets());
+newfile.ret.close();
