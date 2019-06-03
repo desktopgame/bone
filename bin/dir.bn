@@ -1,0 +1,4 @@
+files := extern_def("dir.files", ["path"], ["ret"]);
+directories := extern_def("dir.directories", ["path"], ["ret"]);
+delete := extern_def("dir.delete", ["path"], ["error"]);
+create := extern_def("dir.create", ["path"], ["error"]);

@@ -49,6 +49,7 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
         }
         bnExternSystem(ret);
         bnExternFile(ret);
+        bnExternDir(ret);
         bnExternReflection(ret);
         return ret;
 }
