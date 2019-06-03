@@ -1,0 +1,9 @@
+{} <- include("file.bn");
+i := 0;
+while(i < argc) {
+    word := argv[i];
+    stdout.put_word(word);
+    stdout.putc(' ');
+    i += 1;
+}
+stdout.puts("");
