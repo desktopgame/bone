@@ -29,26 +29,32 @@ void bnGenerateILExprBinOp(bnInterpreter* bone, bnILExprBinOp* self,
                 if (L->type == BN_IL_EXPR_VARIABLE) {
                         bnILExprVariable* var = L->u.vVariable;
                         bnGenerateILExpression(bone, self->right, env, ccache);
+                        g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
                         g_ptr_array_add(env->codeArray, BN_OP_STORE);
                         g_ptr_array_add(env->codeArray, var->name);
                 } else if (L->type == BN_IL_EXPR_MEMBEROP) {
                         bnGenerateILExpression(bone, self->right, env, ccache);
+                        g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
                         bnILExprMemberOp* ilmem = L->u.vMemberOp;
                         bnGenerateILExpression(bone, ilmem->expr, env, ccache);
+                        g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
                         g_ptr_array_add(env->codeArray, BN_OP_PUT);
                         g_ptr_array_add(env->codeArray, ilmem->name);
                 } else if (L->type == BN_IL_EXPR_ARRAY_SUBSCRIPT) {
                         bnILExprArraySubscript* arr = L->u.vArraySub;
                         bnGenerateILExpression(bone, arr->arrayExpr, env,
                                                ccache);
+                        g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
                         g_ptr_array_add(env->codeArray, BN_OP_DUP);
                         g_ptr_array_add(env->codeArray, BN_OP_GET);
                         g_ptr_array_add(env->codeArray,
                                         bnIntern(bone->pool, BN_KWD_ARRAY_SET));
                         bnGenerateILExpression(bone, arr->indexExpr, env,
                                                ccache);
+                        g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
                         g_ptr_array_add(env->codeArray, BN_OP_SWAP);
                         bnGenerateILExpression(bone, self->right, env, ccache);
+                        g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
                         g_ptr_array_add(env->codeArray, BN_OP_SWAP);
                         g_ptr_array_add(env->codeArray, BN_OP_FUNCCALL);
                         g_ptr_array_add(env->codeArray, 3);

@@ -94,6 +94,12 @@ bool bnObject2CBool(bnObject* self);
 
 /**
  * @param pool
+ * @param self
+ */
+void bnCleanupInjectionBuffer(struct bnStringPool* pool, bnObject* self);
+
+/**
+ * @param pool
  * @param view
  * @return
  */

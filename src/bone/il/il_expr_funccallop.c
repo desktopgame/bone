@@ -30,6 +30,7 @@ void bnGenerateILExprFuncCallOp(struct bnInterpreter* bone,
         while (iter != NULL) {
                 count++;
                 bnGenerateILExpression(bone, iter->data, env, ccache);
+                g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
                 iter = iter->next;
         }
         bnGenerateILExpression(bone, self->expr, env, ccache);

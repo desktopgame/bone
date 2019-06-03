@@ -134,6 +134,10 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, bnEnviroment* env,
                         fprintf(fp, "defer end");
                         break;
                 }
+                case BN_OP_CLEANUP_INJBUF: {
+                        fprintf(fp, "cleanup injbuf");
+                        break;
+                }
         }
         return pos + 1;
 }

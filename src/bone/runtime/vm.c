@@ -505,6 +505,11 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnPopStack(frame->vStack);
                                 break;
                         }
+                        case BN_OP_CLEANUP_INJBUF: {
+                                bnCleanupInjectionBuffer(
+                                    bone->pool, bnPeekStack(frame->vStack));
+                                break;
+                        }
                 }
                 if (frame->panic && !inDefer) {
                         if (snapshotIter != NULL) {

@@ -178,6 +178,19 @@ bool bnObject2CBool(bnObject* self) {
         return true;
 }
 
+void bnCleanupInjectionBuffer(struct bnStringPool* pool, bnObject* self) {
+        GHashTableIter hashIter;
+        gpointer k, v;
+        g_hash_table_iter_init(&hashIter, self->table);
+        while (g_hash_table_iter_next(&hashIter, &k, &v)) {
+                bnStringView view = k;
+                const char* str = bnView2Str(pool, view);
+                if (g_str_has_prefix(str, "$$_")) {
+                        g_hash_table_iter_remove(&hashIter);
+                }
+        }
+}
+
 bnStringView bnGetExportVariableName(struct bnStringPool* pool,
                                      bnStringView view) {
         const char* str = bnView2Str(pool, view);
