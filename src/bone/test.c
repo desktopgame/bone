@@ -110,7 +110,7 @@ static GList* bnGetFiles(const char* dir) {
         return ret;
 }
 
-static int bnParse(const char* dir, int flag) {
+static int bnParse(GPtrArray* dest, const char* dir, int flag) {
         GList* list = bnGetFiles(dir);
         GList* iter = list;
         struct bnStringPool* pool = bnNewStringPool();
@@ -133,10 +133,16 @@ static int bnParse(const char* dir, int flag) {
                         bnILToplevel* iltop = bnAST2IL(a);
                         writeIL(out, pool, iltop);
                         CU_ASSERT(a != NULL);
+                        if (a == NULL) {
+                                g_ptr_array_add(dest, g_string_new(path));
+                        }
                         bnDeleteAST(a);
                         bnDeleteILTopLevel(iltop);
                 } else if (flag == EXPECT_ERR) {
                         CU_ASSERT(a == NULL);
+                        if (a != NULL) {
+                                g_ptr_array_add(dest, g_string_new(path));
+                        }
                 }
                 g_free(out);
                 iter = iter->next;
@@ -146,7 +152,7 @@ static int bnParse(const char* dir, int flag) {
         return 0;
 }
 
-static int bnVM(const char* dir, int flag) {
+static int bnVM(GPtrArray* dest, const char* dir, int flag) {
         GList* list = bnGetFiles(dir);
         GList* iter = list;
         bnInterpreter* bone = bnNewInterpreter("", bnArgc(), bnArgv());
@@ -186,7 +192,7 @@ static int bnVM(const char* dir, int flag) {
         return 0;
 }
 
-static int bnRun(const char* dir, int flag) {
+static int bnRun(GPtrArray* dest, const char* dir, int flag) {
         GList* list = bnGetFiles(dir);
         GList* iter = list;
         while (iter != NULL) {
@@ -222,8 +228,14 @@ static int bnRun(const char* dir, int flag) {
 #endif
                 if (flag == EXPECT_SUC) {
                         CU_ASSERT(ret == 0 || panicTest);
+                        if (ret != 0 && !panicTest) {
+                                g_ptr_array_add(dest, g_string_new(path));
+                        }
                 } else if (flag == EXPECT_ERR) {
                         CU_ASSERT(ret != 0);
+                        if (ret == 0) {
+                                g_ptr_array_add(dest, g_string_new(path));
+                        }
                 }
                 bnDeleteInterpreter(bone);
                 iter = iter->next;
@@ -232,17 +244,33 @@ static int bnRun(const char* dir, int flag) {
         return 0;
 }
 
+static void dump_result(const char* header, GPtrArray* src) {
+        printf("FAIL [%s/%d]\n", header, src->len);
+        for (int i = 0; i < src->len; i++) {
+                GString* str = g_ptr_array_index(src, i);
+                printf("    %s\n", str->str);
+        }
+        g_ptr_array_set_free_func(src, g_string_free);
+        g_ptr_array_free(src, TRUE);
+}
+
 void bnParseTest() {
-        bnParse("./testdata/parse/err", EXPECT_ERR);
-        bnParse("./testdata/parse/suc", EXPECT_SUC);
+        GPtrArray* dest = g_ptr_array_new();
+        bnParse(dest, "./testdata/parse/err", EXPECT_ERR);
+        bnParse(dest, "./testdata/parse/suc", EXPECT_SUC);
+        dump_result("PARSE", dest);
 }
 
 void bnVMTest() {
-        bnVM("./testdata/vm/err", EXPECT_ERR);
-        bnVM("./testdata/vm/suc", EXPECT_SUC);
+        GPtrArray* dest = g_ptr_array_new();
+        bnVM(dest, "./testdata/vm/err", EXPECT_ERR);
+        bnVM(dest, "./testdata/vm/suc", EXPECT_SUC);
+        dump_result("VM", dest);
 }
 
 void bnRunTest() {
-        bnRun("./testdata/vm/err", EXPECT_ERR);
-        bnRun("./testdata/vm/suc", EXPECT_SUC);
+        GPtrArray* dest = g_ptr_array_new();
+        bnRun(dest, "./testdata/vm/err", EXPECT_ERR);
+        bnRun(dest, "./testdata/vm/suc", EXPECT_SUC);
+        dump_result("RUN", dest);
 }
