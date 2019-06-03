@@ -1,4 +1,5 @@
 #include "array.h"
+#include "char.h"
 #include "integer.h"
 #include "interpreter.h"
 #include "keyword.h"
@@ -40,6 +41,12 @@ bnArray* bnNewArray(bnInterpreter* bone, int size) {
                                       "index", BN_C_ADD_RETURN, "ret",
                                       BN_C_ADD_EXIT));
         return ret;
+}
+
+void bnFillString(bnInterpreter* bone, const char* str, bnArray* ary) {
+        for (int i = 0; i < ary->size; i++) {
+                g_ptr_array_index(ary->arr, i) = bnNewChar(bone, str[i]);
+        }
 }
 
 static void free_array(bnObject* obj) {

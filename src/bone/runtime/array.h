@@ -18,4 +18,11 @@ typedef struct bnArray {
  * @return
  */
 bnArray* bnNewArray(struct bnInterpreter* bone, int size);
+
+/**
+ * @param bone
+ * @param str
+ * @param ary
+ */
+void bnFillString(struct bnInterpreter* bone, const char* str, bnArray* ary);
 #endif
