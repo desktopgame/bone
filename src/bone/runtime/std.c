@@ -169,7 +169,7 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
                 keys = g_list_append(keys, v);
         }
         bnExecute(bone, env, sub);
-        assert(frame->panic == NULL);
+        // assert(frame->panic == NULL);
         // remove default
         GList* listIter = keys;
         while (listIter != NULL) {
@@ -177,6 +177,32 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
                 listIter = listIter->next;
         }
         g_list_free(keys);
+        bnInjectFrame(sub->variableTable, frame);
+        bnDeleteAST(ast);
+        bnDeleteILTopLevel(iltop);
+        bnDeleteEnviroment(env);
+        bnDeleteFrame(sub);
+}
+
+void bnStdSystemEval(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        if (a->type != BN_OBJECT_STRING) {
+                _throw(bone, frame, "should be path is string");
+        }
+        bnStringView srcView = ((bnString*)a)->value;
+        const char* srcStr = bnView2Str(bone->pool, srcView);
+        // parse file
+        bnAST* ast = bnParseString(bone->pool, srcStr);
+        if (ast == NULL) {
+                bnFormatThrow(bone, "syntax error in `%s`", "string");
+        }
+        bnILToplevel* iltop = bnAST2IL(ast);
+        // gen code
+        bnFrame* sub = bnSubFrame(frame);
+        bnEnviroment* env = bnNewEnviroment(bnIntern(bone->pool, "string"));
+        bnGenerateILTopLevel(bone, iltop, env);
+        bnInjectFrame(frame->variableTable, sub);
+        bnExecute(bone, env, sub);
         bnInjectFrame(sub->variableTable, frame);
         bnDeleteAST(ast);
         bnDeleteILTopLevel(iltop);
