@@ -1,6 +1,6 @@
 fio := object() <- load("./file.bn");
 println("load");
-newfile := object() <- fio.open("./test2.out", "r");
+newfile := object() <- fio.open("./testdata/iotest/test2.out", "r");
 if(newfile.error) {
     println("error");
     return;

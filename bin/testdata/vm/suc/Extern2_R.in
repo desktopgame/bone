@@ -1,2 +1,2 @@
 {} <- load("./system.bn");
-system(["touch", "__P__.out"]);
+system(["touch", "./testdata/iotest/__P__.out"]);
