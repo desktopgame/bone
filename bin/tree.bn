@@ -1,0 +1,32 @@
+{} <- load("array.bn");
+{} <- include("dir.bn");
+{} <- include("file.bn");
+//FIXME:this script is very slow
+
+indent := def(depth)() {
+    i := 0;
+    while(i < depth) {
+        stdout.putc(' ');
+        stdout.putc(' ');
+        stdout.putc(' ');
+        stdout.putc(' ');
+        i += 1;
+    }
+};
+tree := def(self, dir, depth)() {
+    indent(depth);
+    stdout.puts(dir);
+    allFiles := files(dir);
+    allFiles.foreach(def(e)() {
+        indent(depth + 1);
+        stdout.puts(e);
+    });
+    allDirs := directories(dir);
+    allDirs.foreach(def(e)() {
+        indent(depth + 1);
+        stdout.puts(e);
+        self(self, e, depth + 1);
+    });
+};
+tree(tree, ".", 0);
+
