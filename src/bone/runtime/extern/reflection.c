@@ -28,7 +28,7 @@ void bnExternReflection(bnInterpreter* bone) {
             bone->externTable, bnIntern(bone->pool, "expand"),
             bnNewLambdaFromCFunc(bone, bnExtReflectionExpand, bone->pool,
                                  BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM, "name",
-                                 BN_C_ADD_RETURN, "value", BN_C_ADD_RETURN,
+                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_RETURN,
                                  "error", BN_C_ADD_EXIT));
         g_hash_table_replace(
             bone->externTable, bnIntern(bone->pool, "entries"),
@@ -90,7 +90,7 @@ void bnExtReflectionExpand(bnInterpreter* bone, bnFrame* frame) {
                              bnGetBool(bone->pool, frame, !contains));
         if (contains) {
                 g_hash_table_replace(
-                    frame->variableTable, bnIntern(bone->pool, "value"),
+                    frame->variableTable, bnIntern(bone->pool, "ret"),
                     g_hash_table_lookup(a->table, bStr->value));
         }
 }
