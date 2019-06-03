@@ -11,6 +11,7 @@ static GRecMutex gHeapMtx;
 
 typedef struct bnHeap {
         GList* objects;
+        GList* protected;
         int all;
 } bnHeap;
 
@@ -26,6 +27,7 @@ static void gc_sweep(bnHeap* self, bnFrame* frame);
 bnHeap* bnNewHeap() {
         bnHeap* ret = BN_MALLOC(sizeof(bnHeap));
         ret->objects = NULL;
+        ret->protected = NULL;
         ret->all = 0;
         return ret;
 }
@@ -50,6 +52,16 @@ void bnGC(bnInterpreter* bone) {
 }
 
 void bnDrop(bnHeap* self, bnObject* obj) { g_list_remove(self->objects, obj); }
+
+bnObject* bnProtect(bnHeap* self, bnObject* obj) {
+        self->protected = g_list_append(self->protected, obj);
+        return obj;
+}
+
+void bnRelease(bnHeap* self) {
+        g_list_free(self->protected);
+        self->protected = NULL;
+}
 
 void bnDeleteHeap(bnHeap* self) {
         g_rec_mutex_lock(&gHeapMtx);
@@ -99,6 +111,13 @@ static void gc_mark(bnHeap* self, bnFrame* frame) {
         }
         if (frame->panic != NULL) {
                 gc_mark_rec(frame->panic);
+        }
+        // mark protected
+        GList* proIter = self->protected;
+        while (proIter != NULL) {
+                bnObject* obj = proIter->data;
+                gc_mark_rec(obj);
+                proIter = proIter->next;
         }
 }
 

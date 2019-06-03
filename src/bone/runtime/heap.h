@@ -30,6 +30,20 @@ void bnGC(struct bnInterpreter* bone);
 void bnDrop(struct bnHeap* self, struct bnObject* obj);
 
 /**
+ * protect `obj`.
+ * @param self
+ * @param obj
+ * @return
+ */
+struct bnObject* bnProtect(struct bnHeap* self, struct bnObject* obj);
+
+/**
+ * release protected all object.
+ * @param self
+ */
+void bnRelease(struct bnHeap* self);
+
+/**
  * @param self
  */
 void bnDeleteHeap(struct bnHeap* self);
