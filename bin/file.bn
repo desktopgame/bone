@@ -6,7 +6,7 @@ stdout := extern_var("file.stdout");
 stderr := extern_var("file.stderr");
 stdin := extern_var("file.stdin");
 
-puts := def(self, str)(error) {
+put_word := def(self, str)(error) {
     i := 0;
     while(i < str.length) {
         {} <- self.putc(str.at(i));
@@ -15,6 +15,9 @@ puts := def(self, str)(error) {
         }
         i += 1;
     }
+};
+puts := def(self, str)(error) {
+    {} <- put_word(self, str);
     self.putc('\n');
 };
 gets := def(self)(ret, error) {
@@ -31,6 +34,7 @@ gets := def(self)(ret, error) {
 };
 
 _inject := def(f)() {
+    f.put_word := put_word;
     f.putc := putc;
     f.puts := puts;
     f.getc := getc;
