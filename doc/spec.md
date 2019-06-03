@@ -473,3 +473,11 @@ fullName, hogeのみをインジェクションする。
 
 {} <- injection() match ["fullName", "hoge"]
 ````
+
+### パターンマッチ3(pattern match3)
+````
+fun := def()(a, b, c, d, error) {
+    ...
+};
+{a, b, error} := fun();
+````
