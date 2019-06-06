@@ -12,6 +12,7 @@ typedef struct bnEnviroment {
         GPtrArray* codeArray;
         GPtrArray* labels;
         GPtrArray* ranges;
+        GArray* doubleConstants;
         bnStack* labelFixStack;
         int lineOffset;
 } bnEnviroment;

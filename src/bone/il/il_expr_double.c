@@ -14,6 +14,11 @@ void bnDumpILExprDouble(FILE* fp, struct bnStringPool* pool,
 }
 
 void bnGenerateILExprDouble(struct bnInterpreter* bone, bnILExprDouble* self,
-                            bnEnviroment* env, bnCompileCache* ccache) {}
+                            bnEnviroment* env, bnCompileCache* ccache) {
+        int len = env->doubleConstants->len;
+        g_array_append_val(env->doubleConstants, self->value);
+        g_ptr_array_add(env->codeArray, BN_OP_GEN_DOUBLE);
+        g_ptr_array_add(env->codeArray, len);
+}
 
 void bnDeleteILExprDouble(bnILExprDouble* self) { BN_FREE(self); }

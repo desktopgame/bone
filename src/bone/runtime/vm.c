@@ -3,6 +3,7 @@
 #include "../util/string.h"
 #include "array.h"
 #include "char.h"
+#include "double.h"
 #include "heap.h"
 #include "integer.h"
 #include "lambda.h"
@@ -210,8 +211,15 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                             bnNewInteger(bone, data));
                                 break;
                         }
-                        case BN_OP_GEN_DOUBLE:
+                        case BN_OP_GEN_DOUBLE: {
+                                int idx =
+                                    g_ptr_array_index(env->codeArray, ++PC);
+                                double dv = g_array_index(env->doubleConstants,
+                                                          double, idx);
+                                bnPushStack(frame->vStack,
+                                            bnNewDouble(bone, dv));
                                 break;
+                        }
                         case BN_OP_GEN_CHAR: {
                                 char c =
                                     g_ptr_array_index(env->codeArray, ++PC);

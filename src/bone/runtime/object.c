@@ -115,6 +115,7 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                 bnObject* arr = bnExportAllVariable(bone, sub);
                 bnPushStack(frame->vStack, arr);
         } else if (g_list_length(lambda->returns) > 0) {
+                assert(lambda->returns->data != NULL);
                 bnObject* body = g_hash_table_lookup(sub->variableTable,
                                                      lambda->returns->data);
                 assert(body != NULL);

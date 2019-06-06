@@ -12,6 +12,8 @@ bnEnviroment* bnNewEnviroment(bnStringView filename) {
         ret->labelFixStack = bnNewStack();
         ret->filename = filename;
         ret->lineOffset = 0;
+        ret->doubleConstants =
+            g_array_sized_new(FALSE, TRUE, sizeof(double), 10);
         g_ptr_array_set_free_func(ret->codeArray, NULL);
         g_ptr_array_set_free_func(ret->labels, delete_label);
         g_ptr_array_set_free_func(ret->ranges, bnDeleteLineRange);
@@ -104,6 +106,7 @@ void bnDeleteEnviroment(bnEnviroment* self) {
         g_ptr_array_free(self->codeArray, TRUE);
         g_ptr_array_free(self->labels, TRUE);
         g_ptr_array_free(self->ranges, TRUE);
+        g_array_free(self->doubleConstants, FALSE);
         bnDeleteStack(self->labelFixStack, NULL);
         BN_FREE(self);
 }
