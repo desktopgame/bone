@@ -1,7 +1,17 @@
 _file := object() <- load("file.bn");
 _list := object() <- load("list.bn");
 
-readAll := def(path)(ret, error) {
+write_all := def(path, t)(error) {
+    fp := object() <- _file.open(path, "w");
+    if(fp.error) {
+        error := fp.error;
+        return;
+    }
+    fp.ret.put_word(t);
+    fp.ret.close();
+};
+
+read_all := def(path)(ret, error) {
     fp := object() <- _file.open(path, "r");
     if(fp.error) {
         error := fp.error;
