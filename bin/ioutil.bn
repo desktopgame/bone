@@ -1,0 +1,20 @@
+_file := object() <- load("file.bn");
+_list := object() <- load("list.bn");
+
+readAll := def(path)(ret, error) {
+    fp := object() <- _file.open(path, "r");
+    if(fp.error) {
+        error := fp.error;
+        return;
+    }
+    buf := _list.new();
+    while(1) {
+        ch := object() <- fp.ret.getc();
+        if(ch.error) {
+            break;
+        }
+        buf.append(ch.ret);
+    }
+    fp.ret.close();
+    ret := string(buf.toArray());
+};
