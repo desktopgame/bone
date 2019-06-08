@@ -112,10 +112,12 @@ void bnExtFileGetc(bnInterpreter* bone, bnFrame* frame) {
                              bnGetFalse(bone->pool, frame));
         FILE* fp = afile->fp;
         int c = fgetc(fp);
-        if (c == EOF) {
+        fpos_t pos;
+        if (c == EOF || feof(fp) || fgetpos(fp, &pos)) {
                 g_hash_table_replace(frame->variableTable,
                                      bnIntern(bone->pool, "error"),
                                      bnGetTrue(bone->pool, frame));
+                clearerr(fp);
                 return;
         }
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
