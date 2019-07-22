@@ -98,7 +98,7 @@ Invoke-WebRequest -Uri https://gist.githubusercontent.com/tversteeg/ba848fad54a9
   * https://rubyinstaller.org/downloads/
 ````
 lines = []
-release = true
+release = false
 
 a_include = "$(SolutionDir)packages\\glib.2.36.2.11\\build\\native\\include;$(SolutionDir)include;$(IncludePath)"
 a_library = "C:\\Users\\Koya\\Documents\\bone_sln\\packages\\glib.2.36.2.11\\build\\native\\lib\\v110\\Win32\\Debug\\dynamic;%(AdditionalLibraryDirectories)"
