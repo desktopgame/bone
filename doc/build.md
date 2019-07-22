@@ -86,7 +86,7 @@ end
 ````
 実行
 ````
-cd cd your_solution_dir
+cd your_solution_dir
 ruby vs_patch.rb
 ````
 * VisualStudioを開き、ビルド
