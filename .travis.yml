@@ -1,9 +1,8 @@
 language: c
-addons:
-  apt:
-    packages:
-      - cmake
-      - glib
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install cmake
+  - sudo apt-get install glib
 script:
   - gcc --version
   - pwd
