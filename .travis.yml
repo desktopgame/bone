@@ -1,4 +1,6 @@
 language: c
 script:
   - gcc --version
+  - pwd
+  - ls
   - sudo ./src/utest.bash
