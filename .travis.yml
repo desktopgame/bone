@@ -3,4 +3,4 @@ script:
   - gcc --version
   - pwd
   - ls
-  - sudo sh ./src/utest.bash
+  - sudo sh ./src/utest.sh
