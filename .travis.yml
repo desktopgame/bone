@@ -1,4 +1,9 @@
 language: c
+addons:
+  apt:
+    packages:
+      - cmake
+      - glib
 script:
   - gcc --version
   - pwd
