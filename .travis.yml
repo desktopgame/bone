@@ -9,4 +9,4 @@ script:
   - gcc --version
   - pwd
   - ls
-  - sudo sh .utest.sh
+  - sudo sh ./utest.sh
