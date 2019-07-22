@@ -18,6 +18,7 @@
 typedef SSIZE_T ssize_t;
 #endif
 
+//https://stackoverflow.com/questions/735126/are-there-alternate-implementations-of-gnu-getline-interface/735472#735472
 #if defined(_MSC_VER)
 size_t windows_getline(char** lineptr, size_t* n, FILE* stream) {
         char* bufptr = NULL;
