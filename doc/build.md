@@ -96,6 +96,8 @@ Invoke-WebRequest -Uri https://gist.githubusercontent.com/tversteeg/ba848fad54a9
   bone.vcxprojの一部の設定を置換する
 * ruby
   * https://rubyinstaller.org/downloads/
+
+vs_patch.rb
 ````
 lines = []
 release = false
@@ -133,4 +135,9 @@ File.open("bone.vcxproj", "w") do |fp|
         fp.puts(line)
     end
 end
+````
+実行
+````
+cd cd your_solution_dir
+ruby vs_patch.rb
 ````
