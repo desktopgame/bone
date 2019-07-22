@@ -13,6 +13,11 @@
 #include "interpreter.h"
 #include "vm.h"
 
+#if defined(_MSC_VER)
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#endif
+
 int bnInteractive(FILE* in) {
         int status = 0;
         bool r = true;
