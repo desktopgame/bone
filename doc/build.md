@@ -51,7 +51,7 @@ lines = []
 release = false
 
 a_include = "$(SolutionDir)packages\\glib.2.36.2.11\\build\\native\\include;$(SolutionDir)include;$(IncludePath)"
-a_library = "C:\\Users\\Koya\\Documents\\bone_sln\\packages\\glib.2.36.2.11\\build\\native\\lib\\v110\\Win32\\Debug\\dynamic;%(AdditionalLibraryDirectories)"
+a_library = "$(SolutionDir)packages\\glib.2.36.2.11\\build\\native\\lib\\v110\\Win32\\Debug\\dynamic;%(AdditionalLibraryDirectories)"
 a_depend = "gio-2.0.lib;glib-2.0.lib;gmodule-2.0.lib;gobject-2.0.lib;gthread-2.0.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib"
 
 if(release)
