@@ -18,6 +18,67 @@
 typedef SSIZE_T ssize_t;
 #endif
 
+#if defined(_MSC_VER)
+size_t windows_getline(char** lineptr, size_t* n, FILE* stream) {
+        char* bufptr = NULL;
+        char* p = bufptr;
+        size_t size;
+        int c;
+
+        if (lineptr == NULL) {
+                return -1;
+        }
+        if (stream == NULL) {
+                return -1;
+        }
+        if (n == NULL) {
+                return -1;
+        }
+        bufptr = *lineptr;
+        size = *n;
+
+        c = fgetc(stream);
+        if (c == EOF) {
+                return -1;
+        }
+        if (bufptr == NULL) {
+                bufptr = malloc(128);
+                if (bufptr == NULL) {
+                        return -1;
+                }
+                size = 128;
+        }
+        p = bufptr;
+        while (c != EOF) {
+                if ((p - bufptr) > (size - 1)) {
+                        size = size + 128;
+                        bufptr = realloc(bufptr, size);
+                        if (bufptr == NULL) {
+                                return -1;
+                        }
+                }
+                *p++ = c;
+                if (c == '\n') {
+                        break;
+                }
+                c = fgetc(stream);
+        }
+
+        *p++ = '\0';
+        *lineptr = bufptr;
+        *n = size;
+
+        return p - bufptr - 1;
+}
+#endif
+
+#if defined(_MSC_VER)
+#define xgetline(line, n, stream) (windows_getline(line, n, stream))
+#else
+#define xgetline(line, n, stream) (getline(line, n, stream))
+#endif
+
+
 int bnInteractive(FILE* in) {
         int status = 0;
         bool r = true;
@@ -27,7 +88,7 @@ int bnInteractive(FILE* in) {
         bnInterpreter* bone = bnNewInterpreter("stdin", 0, NULL);
         bnFrame* current = NULL;
         while (r) {
-                if ((read = getline(&line, &len, in)) == -1) {
+                if ((read = xgetline(&line, &len, in)) == -1) {
                         perror("bnInteractive");
                         break;
                 }
