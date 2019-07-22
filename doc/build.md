@@ -92,6 +92,7 @@ cd your_solution_dir
 mkdir include
 Invoke-WebRequest -Uri https://gist.githubusercontent.com/tversteeg/ba848fad54a96754b64a316ca91b4968/raw/5b4e66b7561e092ebcfe4f3fcef478550b5e4ecc/glibconfig.h -OutFile include/glibconfig.h
 ````
+* VisualStudioを閉じる
 * rubyが実行できるなら、次のスクリプトを実行して  
   bone.vcxprojの一部の設定を置換する
 * ruby
@@ -141,3 +142,4 @@ end
 cd cd your_solution_dir
 ruby vs_patch.rb
 ````
+* VisualStudioを開き、ビルド
