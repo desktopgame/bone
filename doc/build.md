@@ -55,12 +55,12 @@ a_library = "$(SolutionDir)packages\\glib.2.36.2.11\\build\\native\\lib\\v110\\W
 a_depend = "gio-2.0.lib;glib-2.0.lib;gmodule-2.0.lib;gobject-2.0.lib;gthread-2.0.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib"
 
 if(release)
-  a_include.gsub("Debug", "Release")
-  a_include.gsub("debug", "release")
-  a_library.gsub("Debug", "Release")
-  a_library.gsub("debug", "release")
-  a_depend.gsub("Debug", "Release")
-  a_depend.gsub("debug", "release")
+  a_include = a_include.gsub("Debug", "Release")
+  a_include = a_include.gsub("debug", "release")
+  a_library = a_library.gsub("Debug", "Release")
+  a_library = a_library.gsub("debug", "release")
+  a_depend = a_depend.gsub("Debug", "Release")
+  a_depend = a_depend.gsub("debug", "release")
 end
 File.open("bone.vcxproj", "r") do |fp|
     txt = fp.read()
