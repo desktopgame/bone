@@ -147,7 +147,7 @@ static int bnParse(GPtrArray* dest, const char* dir, int flag) {
                 g_free(out);
                 iter = iter->next;
         }
-        g_list_free_full(list, free);
+        g_list_free_full(list, g_free);
         bnDeleteStringPool(pool);
         return 0;
 }
@@ -187,7 +187,7 @@ static int bnVM(GPtrArray* dest, const char* dir, int flag) {
                 g_free(out);
                 iter = iter->next;
         }
-        g_list_free_full(list, free);
+        g_list_free_full(list, g_free);
         bnDeleteInterpreter(bone);
         return 0;
 }
@@ -240,7 +240,7 @@ static int bnRun(GPtrArray* dest, const char* dir, int flag) {
                 bnDeleteInterpreter(bone);
                 iter = iter->next;
         }
-        g_list_free_full(list, free);
+        g_list_free_full(list, g_free);
         return 0;
 }
 
@@ -256,21 +256,36 @@ static void dump_result(const char* header, GPtrArray* src) {
 
 void bnParseTest() {
         GPtrArray* dest = g_ptr_array_new();
-        bnParse(dest, "./testdata/parse/err", EXPECT_ERR);
-        bnParse(dest, "./testdata/parse/suc", EXPECT_SUC);
+#if _WIN32
+        bnParse(dest, "testdata\\parse\\err", EXPECT_ERR);
+        bnParse(dest, "testdata\\parse\\suc", EXPECT_SUC);
+#else
+		bnParse(dest, "./testdata/parse/err", EXPECT_ERR);
+		bnParse(dest, "./testdata/parse/suc", EXPECT_SUC);
+#endif
         dump_result("PARSE", dest);
 }
 
 void bnVMTest() {
         GPtrArray* dest = g_ptr_array_new();
-        bnVM(dest, "./testdata/vm/err", EXPECT_ERR);
-        bnVM(dest, "./testdata/vm/suc", EXPECT_SUC);
+#if _WIN32
+        bnVM(dest, "testdata\\vm\\err", EXPECT_ERR);
+        bnVM(dest, "testdata\\vm\\suc", EXPECT_SUC);
+#else
+		bnVM(dest, "./testdata/vm/err", EXPECT_ERR);
+		bnVM(dest, "./testdata/vm/suc", EXPECT_SUC);
+#endif
         dump_result("VM", dest);
 }
 
 void bnRunTest() {
         GPtrArray* dest = g_ptr_array_new();
-        bnRun(dest, "./testdata/vm/err", EXPECT_ERR);
-        bnRun(dest, "./testdata/vm/suc", EXPECT_SUC);
+#if _WIN32
+        bnRun(dest, "testdata\\vm\\err", EXPECT_ERR);
+        bnRun(dest, "testdata\\vm\\suc", EXPECT_SUC);
+#else
+		bnRun(dest, "./testdata/vm/err", EXPECT_ERR);
+		bnRun(dest, "./testdata/vm/suc", EXPECT_SUC);
+#endif
         dump_result("RUN", dest);
 }
