@@ -12,8 +12,8 @@ typedef struct bnStringPool {
 
 bnStringPool* bnNewStringPool() {
         bnStringPool* ret = BN_MALLOC(sizeof(bnStringPool));
-        ret->table =
-            g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
+		ret->table =
+            g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
         ret->map = g_ptr_array_new();
         ret->count = 2;
         g_ptr_array_add(ret->map, BN_NULL_STRING);
