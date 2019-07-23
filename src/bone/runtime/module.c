@@ -1,5 +1,5 @@
 #include "module.h"
-#include "../config.h"
+#include "../bone.h"
 
 #if HAVE_DLFCN
 #include <dlfcn.h>
