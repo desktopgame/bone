@@ -28,6 +28,10 @@ make
 ````
 cmake -S your_clone_dir\src -B your_solution_dir -D BONE_RUN=1
 ````
+または
+````
+cmake -D BONE_RUN=1 -S your_clone_dir\src -B your_solution_dir
+````
 * 作成されたプロジェクト(your_solution_dir\bone.sln)を開き  
   メニューより　ツール -> Nugetパッケージマネージャ -> パッケージマネージャコンソール　を開く
 ````
@@ -50,7 +54,7 @@ vs_patch.rb
 lines = []
 release = false
 
-a_include = "$(SolutionDir)packages\\glib.2.36.2.11\\build\\native\\include;$(SolutionDir)include;$(IncludePath)"
+a_include = "$(SolutionDir)bone;$(SolutionDir)packages\\glib.2.36.2.11\\build\\native\\include;$(SolutionDir)include;$(IncludePath)"
 a_library = "$(SolutionDir)packages\\glib.2.36.2.11\\build\\native\\lib\\v110\\Win32\\Debug\\dynamic;%(AdditionalLibraryDirectories)"
 a_depend = "gio-2.0.lib;glib-2.0.lib;gmodule-2.0.lib;gobject-2.0.lib;gthread-2.0.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib"
 
