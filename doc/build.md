@@ -54,3 +54,19 @@ Invoke-WebRequest -Uri https://gist.githubusercontent.com/desktopgame/8083490657
 * ruby
   * https://rubyinstaller.org/downloads/
 * VisualStudioを開き、ビルド
+* この時点ではまだデバッグができないので...  
+  * 以下のファイルを**your_solution_dir\packages\glib.redist.2.36.2.11\build\native\bin\v110\Win32\Debug\dynamic**から**your_solution_dir**へコピーします。
+    * gio-2-vs10.dll
+    * glib-2-vs10.dll
+    * gmodule-2-vs10.dll
+    * gobject-2-vs10.dll
+    * gthread-2-vs10.dll
+  * 以下のファイルを**your_solution_dir\packages\libintl.redist.0.18.2.10\build\native\bin\v110\Win32\Debug\dynamic\cdecl**から**your_solution_dir**へコピーします。
+    * libintl.dll
+  * また、glibの各種.dllはVisualStudio2012でビルドされているので...
+    * [Visual Studio Express 2012 for Windows Desktop](https://my.visualstudio.com/Downloads?q=visual%20studio%202012&wt.mc_id=o~msft~vscom~older-downloads)のインストールが必要です。
+    * ただし、Releaseビルドであれば[再配布パッケージ](https://www.microsoft.com/ja-jp/download/details.aspx?id=30679)のみダウンロードすればOKです。
+      * Releaseビルドの場合はglib,libintlの.dllもReleaseビルドのものを使用する必要があります。
+        * つまり、以下よりコピーする
+        * your_solution_dir\packages\glib.redist.2.36.2.11\build\native\bin\v110\Win32\\**Release**\dynamic
+        * your_solution_dir\packages\libintl.redist.0.18.2.10\build\native\bin\v110\Win32\\**Release**\dynamic\cdecl
