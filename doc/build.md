@@ -70,3 +70,10 @@ Invoke-WebRequest -Uri https://gist.githubusercontent.com/desktopgame/8083490657
         * つまり、以下よりコピーする
         * your_solution_dir\packages\glib.redist.2.36.2.11\build\native\bin\v110\Win32\\**Release**\dynamic
         * your_solution_dir\packages\libintl.redist.0.18.2.10\build\native\bin\v110\Win32\\**Release**\dynamic\cdecl
+  * さらに、VisualStudioでは**DEBUG**ではなく **_DEBUG**としてマクロが定義されるので...
+    * boneプロジェクトを右クリック -> プロパティ
+    * 構成プロパティ -> C++ -> プリプロセッサ -> プリプロセッサの定義
+      * **DEBUG**を追加
+  * さらに、VisualStudioのデバッグ時作業ディレクトリは**your_solution_dir**なので...
+    * your_clone_dir\binの中身をyour_solution_dirへコピー
+    * これでテストが実行出来るように。
