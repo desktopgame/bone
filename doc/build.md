@@ -15,7 +15,7 @@ brew install cmake
 次のコマンドを打ち込みます。(type next command in terminal)
 ````
 cd bone
-cmake .
+cmake -D BONE_RUN=1 .
 make
 ````
 
