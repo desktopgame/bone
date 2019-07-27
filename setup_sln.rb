@@ -129,5 +129,15 @@ Dir.chdir(solution_dir + "\\packages") do
     end
 end
 copy_dll(solution_dir)
+Dir.open(Dir.pwd + "\\bin") do|dirp|
+    dirp.each do|file|
+        path = Dir.pwd + "\\bin\\" + file
+        if(File.directory?(path))
+            FileUtils.cp_r(path, solution_dir)
+        else
+            FileUtils.cp(path, solution_dir + "\\" + File.basename(path))
+        end
+    end
+end
 puts("created project successfully")
 puts(solution_dir)
