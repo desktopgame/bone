@@ -131,6 +131,7 @@ end
 copy_dll(solution_dir)
 Dir.open(Dir.pwd + "\\bin") do|dirp|
     dirp.each do|file|
+        next if file.start_with?(".")
         path = Dir.pwd + "\\bin\\" + file
         if(File.directory?(path))
             FileUtils.cp_r(path, solution_dir)
