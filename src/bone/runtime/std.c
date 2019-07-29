@@ -111,6 +111,7 @@ void bnStdDebugShowInfo(bnInterpreter* bone, bnFrame* frame) {
 // Built-in
 
 void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
+		BN_CHECK_MEM();
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "should be path is string");
@@ -140,6 +141,7 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
+		BN_CHECK_MEM();
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "should be path is string");
