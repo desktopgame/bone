@@ -32,6 +32,12 @@ typedef SSIZE_T ssize_t;
 #define EXPECT_ERR (0)
 #define EXPECT_SUC (1)
 
+static void free_gstring_with_segment(gpointer pdata) {
+	GString* str = pdata;
+	g_string_free(str, TRUE);
+}
+
+
 static void writeEnv(const gchar* out, struct bnStringPool* pool,
                      bnEnviroment* env) {
         if (env == NULL) {
@@ -146,6 +152,7 @@ static int bnParse(GPtrArray* dest, const char* dir, int flag) {
                 }
                 g_free(out);
                 iter = iter->next;
+				BN_CHECK_MEM();
         }
         g_list_free_full(list, g_free);
         bnDeleteStringPool(pool);
@@ -186,6 +193,7 @@ static int bnVM(GPtrArray* dest, const char* dir, int flag) {
                 }
                 g_free(out);
                 iter = iter->next;
+				BN_CHECK_MEM();
         }
         g_list_free_full(list, g_free);
         bnDeleteInterpreter(bone);
@@ -239,8 +247,10 @@ static int bnRun(GPtrArray* dest, const char* dir, int flag) {
                 }
                 bnDeleteInterpreter(bone);
                 iter = iter->next;
+				BN_CHECK_MEM();
         }
         g_list_free_full(list, g_free);
+		BN_CHECK_MEM();
         return 0;
 }
 
@@ -250,7 +260,7 @@ static void dump_result(const char* header, GPtrArray* src) {
                 GString* str = g_ptr_array_index(src, i);
                 printf("    %s\n", str->str);
         }
-        g_ptr_array_set_free_func(src, g_string_free);
+        g_ptr_array_set_free_func(src, free_gstring_with_segment);
         g_ptr_array_free(src, TRUE);
 }
 
@@ -263,6 +273,7 @@ void bnParseTest() {
 		bnParse(dest, "./testdata/parse/err", EXPECT_ERR);
 		bnParse(dest, "./testdata/parse/suc", EXPECT_SUC);
 #endif
+		BN_CHECK_MEM();
         dump_result("PARSE", dest);
 }
 

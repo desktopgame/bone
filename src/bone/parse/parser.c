@@ -74,7 +74,9 @@ bnAST *bnParseString(struct bnStringPool *pool, const char *source) {
 
 bnParserInputTag bnGetParserInputTag() { return gParserInputTag; }
 
-void bnBeginStringLit() { init_string_lit(); }
+void bnBeginStringLit() { init_string_lit();
+BN_CHECK_MEM();
+}
 
 bnStringView bnInternIdentifier(const char *str) {
         return bnIntern(gPool, str);
@@ -83,12 +85,14 @@ bnStringView bnInternIdentifier(const char *str) {
 void bnAppendStringLit(char c) {
         assert(gStr != NULL);
         g_string_append_c(gStr, c);
+		BN_CHECK_MEM();
 }
 
 bnAST *bnEndStringLit() {
         bnAST *ret = bnNewStringAST(bnInternIdentifier(gStr->str));
         g_string_free(gStr, TRUE);
         gStr = NULL;
+		BN_CHECK_MEM();
         return ret;
 }
 

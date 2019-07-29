@@ -35,6 +35,7 @@ bnAST* bnNewAST(bnASTTag tag) {
         ret->tag = tag;
         ret->children = NULL;
         ret->line = bnGetParseLine();
+		ret->u.ivalue = 0;
         bnPushParseLine(ret->line);
         g_rec_mutex_lock(&gMutex);
         gAllAST = g_list_append(gAllAST, ret);

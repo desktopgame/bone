@@ -202,6 +202,7 @@ bnStringView bnGetExportVariableName(struct bnStringPool* pool,
 
 void bnDeleteObject(bnObject* self) {
         if (self->freeFunc != NULL) {
+				assert(self->freeFunc != NULL);
                 self->freeFunc(self);
         } else {
                 g_hash_table_destroy(self->table);

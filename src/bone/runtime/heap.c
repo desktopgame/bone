@@ -43,11 +43,13 @@ void bnGC(bnInterpreter* bone) {
         bnHeap* self = bone->heap;
         bnFrame* frame = bone->frame;
         g_rec_mutex_lock(&gHeapMtx);
+		BN_CHECK_MEM();
         gc_clear(self, frame);
         gc_mark(self, frame);
         gc_mark_extern(bone);
         gc_mark_native(bone);
         gc_sweep(self, frame);
+		BN_CHECK_MEM();
         g_rec_mutex_unlock(&gHeapMtx);
 }
 
