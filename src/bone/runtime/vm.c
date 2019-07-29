@@ -345,6 +345,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                     frame->variableTable,
                                     GINT_TO_POINTER((int)name));
                                 const char* str = bnView2Str(bone->pool, name);
+                                assert(str != NULL);
                                 if (value == NULL) {
                                         char buf[256];
                                         sprintf(
@@ -390,6 +391,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                     g_hash_table_lookup(container->table, name);
                                 bnObject* obj = data;
                                 const char* str = bnView2Str(bone->pool, name);
+                                assert(str != NULL);
                                 if (obj == NULL) {
                                         char buf[256];
                                         sprintf(buf, "is'nt found member: %s",

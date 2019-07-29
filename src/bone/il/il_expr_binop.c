@@ -151,6 +151,10 @@ static bnStringView opToView(struct bnStringPool* pool, bnILExprBinOp* self) {
                         return bnIntern(pool, ":=");
                 case BN_IL_BINOP_EQUAL:
                         return bnIntern(pool, BN_KWD_EQUAL);
+                case BN_IL_BINOP_LSHIFT:
+                        return bnIntern(pool, BN_KWD_LSHIFT);
+                case BN_IL_BINOP_RSHIFT:
+                        return bnIntern(pool, BN_KWD_RSHIFT);
                 case BN_IL_BINOP_NOTEQUAL:
                         return bnIntern(pool, BN_KWD_NOTEQUAL);
         }
