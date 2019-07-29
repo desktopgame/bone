@@ -21,7 +21,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
 if(APPLE)
   set(CMAKE_C_FLAGS_DEBUG "-g -fsanitize=address -O0 -DDEBUG -DVMDEBUG -MMD -Wall")
 elseif(LINUX)
-  set(CMAKE_C_FLAGS_DEBUG "-d -O0 -std=c99 -DDEBUG -DVMDEBUG -MMD -Wall -ldl")
+  set(CMAKE_C_FLAGS_DEBUG "-d -O0 -std=c99 -DDEBUG -DVMDEBUG -MMD -Wall")
 endif()
 set(CMAKE_C_FLAGS_RELEASE "-g -O2 -MMD -w -DNDEBUG")
 set(BONE_EXECUTABLE "bone" CACHE STRING "executable file name")
@@ -141,6 +141,7 @@ target_link_libraries(
     PRIVATE
     ${GLIB_LIBRARIES}
     ${CUNIT_LIBRARY}
+    ${CMAKE_DL_LIBS}    
 )
 set_target_properties(bone
     PROPERTIES
