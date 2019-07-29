@@ -1,6 +1,5 @@
-# 概要(about bone language)
 ![](https://travis-ci.org/desktopgame/bone.svg?branch=master)
-
+# 概要(about bone language)
 boneはプロトタイピング言語をベースとしており、  
 いくつか独自のアイデアも加えられています。  
 また、この言語は実験的なものなので  
