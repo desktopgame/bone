@@ -6,8 +6,8 @@
 #if _MSC_VER
 #include <crtdbg.h>
 	#if DEBUG
-		#define BN_MALLOC(size) (_malloc_dbg(size, _NORMAL_BLOCK, __FILE__, __LINE__))
-		#define BN_REALLOC(block, size) (_realloc_dbg(block, size, _NORMAL_BLOCK, __FILE__, __LINE__))
+		#define BN_MALLOC(size) (bnNonNullFunc(_malloc_dbg(size, _NORMAL_BLOCK, __FILE__, __LINE__), __FILE__, __LINE__))
+		#define BN_REALLOC(block, size) (bnNonNullFunc(_realloc_dbg(block, size, _NORMAL_BLOCK, __FILE__, __LINE__), __FILE__, __LINE__))
 		#define BN_FREE(block) (_free_dbg(block, _NORMAL_BLOCK))
 	#else
 		#define BN_MALLOC(size) (bnSafeMalloc(size))
@@ -24,6 +24,12 @@
 		#define BN_REALLOC(block, size) (bnSafeRealloc(block, size))
 		#define BN_FREE(block) bnSafeFree(block)
 	#endif
+#endif
+
+#if _MSC_VER
+#define BN_CHECK_MEM() _ASSERTE(_CrtCheckMemory())
+#else
+#define BN_CHECK_MEM() ((void)0)
 #endif
 
 
@@ -51,6 +57,18 @@ void* bnSafeRealloc(void* block, size_t newSize);
  * @param block
  */
 void bnSafeFree(void* block);
+
+
+/**
+ * return a pdata.
+ * exit if pdata equals a null
+ * @param pdata
+ * @param filename
+ * @param lineno
+ * @return pdata
+ */
+void* bnNonNullFunc(void* pdata, const char* filename, int lineno);
+#define bnNonNull(pdata) (bnNonNullFunc(pdata, __FILE__, __LINE__))
 
 #if _MSC_VER && DEBUG
 
