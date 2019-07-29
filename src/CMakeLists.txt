@@ -9,6 +9,9 @@ endif()
 if(WIN32)
   set(USE_CUNIT OFF)
 endif()
+if(USE_CUNIT)
+  set(USE_CUNIT_DEF -DUSE_CUNIT)
+endif()
 
 if(LINUX)
   set(CMAKE_C_COMPILER gcc)
@@ -129,7 +132,10 @@ endif()
 if(BONE_STATIC)
     add_library(${BONE_EXECUTABLE} STATIC ${SOURCES})
 endif()
-add_definitions (${GLIB_CFLAGS_OTHER})
+add_definitions (
+    ${GLIB_CFLAGS_OTHER}
+    ${USE_CUNIT_DEF}
+)
 target_include_directories(
     ${BONE_EXECUTABLE}
     PRIVATE

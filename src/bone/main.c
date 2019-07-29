@@ -1,5 +1,5 @@
 
-#if !defined(_WIN32)
+#if USE_CUNIT
 #include <CUnit/Basic.h>
 #include <CUnit/CUnit.h>
 #include <CUnit/Console.h>
@@ -39,7 +39,7 @@ static void runTest() {
 
 int main(int argc, char* argv[]) {
 #if _MSC_VER && DEBUG
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+        _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
         bnInitArgs(argc, argv);
         bnInitIO();
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
         }
 #if DEBUG
 #if _MSC_VER
-		_CrtDumpMemoryLeaks();
+        _CrtDumpMemoryLeaks();
 #else
         bnDumpMemoryLeaks(stdout);
 #endif
