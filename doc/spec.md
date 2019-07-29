@@ -277,6 +277,44 @@ CLOSURE:
 
 詳細は[こちら](blt.md)
 
+## 予約語
+いくつかの名前は演算子オーバーロードのために予約されています。
+````
+opCall
+opPositive
+opNegative
+opChilda
+opNot
+opPlus
+opMinus
+opMultiply
+opDivide
+opModulo
+opBitAnd
+opBitOr
+opExcOr
+opLeftShift
+opRightShift
+opGT
+opGE
+opLT
+opLE
+opEqual
+opNotEqual
+opArraySet
+opArrayGet
+````
+
+演算子オーバーロードの使用例
+````
+a := 10;
+a.opPlus := def(self, other)(ret) {
+    ret := "hello";
+};
+println(a + 1);
+//hello
+````
+
 ## 真偽値型(boolean type)
 boneにはif文, while文が存在しており、
 その仕様はCを踏襲しています。  
