@@ -1,4 +1,4 @@
-![](https://travis-ci.org/desktopgame/bone.svg?branch=master)
+[![Build Status](https://travis-ci.org/desktopgame/bone.svg?branch=master)](https://travis-ci.org/desktopgame/bone)
 # 概要(about bone language)
 boneはプロトタイピング言語をベースとしており、  
 いくつか独自のアイデアも加えられています。  
