@@ -39,6 +39,9 @@ void* bnSafeRealloc(void* block, size_t newSize) {
 
 void bnSafeFree(void* block) { free(block); }
 
+#if _MSC_VER && DEBUG
+#else
+
 void* bnMallocFunc(size_t size, const char* filename, int lineno) {
 #if DEBUG
         if (size == 0) {
@@ -123,8 +126,11 @@ void bnFreeFunc(void* block, const char* filename, int lineno) {
         bnSafeFree(block);
 #endif
 }
+#endif
 
 void bnCheckMemoryBounds() {
+#if _MSC_VER && DEBUG
+#else
         bnMemInfo* iter = root;
         while (iter != NULL) {
                 unsigned char* data = iter->area;
@@ -138,9 +144,12 @@ void bnCheckMemoryBounds() {
                 }
                 iter = iter->next;
         }
+#endif
 }
 
 void bnDumpMemoryLeaks(FILE* fp) {
+#if _MSC_VER && DEBUG
+#else
         bnCheckMemoryBounds();
         bnMemInfo* iter = root;
         int items = 0;
@@ -152,6 +161,7 @@ void bnDumpMemoryLeaks(FILE* fp) {
                 items++;
         }
         fprintf(fp, "memory leaks: %d\n", items);
+#endif
 }
 
 static bnMemInfo* new_mem_info(size_t size, const char* filename, int lineno) {
