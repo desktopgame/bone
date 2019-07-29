@@ -604,9 +604,29 @@ void bnStdIntegerBitOr(bnInterpreter* bone, bnFrame* frame) {
 
 void bnStdIntegerExcOr(bnInterpreter* bone, bnFrame* frame) {}
 
-void bnStdIntegerLShift(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdIntegerLShift(bnInterpreter* bone, bnFrame* frame) {
+	bnObject* a = bnPopStack(frame->vStack);
+	bnObject* b = bnPopStack(frame->vStack);
+	if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
+		bnFormatThrow(bone, "Integer#<< is required integer argument");
+	}
+	int ai = ((bnInteger*)a)->value;
+	int bi = ((bnInteger*)b)->value;
+	g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+		bnNewInteger(bone, ai << bi));
+}
 
-void bnStdIntegerRShift(bnInterpreter* bone, bnFrame* frame) {}
+void bnStdIntegerRShift(bnInterpreter* bone, bnFrame* frame) {
+	bnObject* a = bnPopStack(frame->vStack);
+	bnObject* b = bnPopStack(frame->vStack);
+	if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
+		bnFormatThrow(bone, "Integer#<< is required integer argument");
+	}
+	int ai = ((bnInteger*)a)->value;
+	int bi = ((bnInteger*)b)->value;
+	g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+		bnNewInteger(bone, ai >> bi));
+}
 
 void bnStdIntegerGT(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
