@@ -1,0 +1,5 @@
+a := 10;
+a.opPlus := def(self, other)(ret) {
+    ret := "hello";
+};
+println(a + 1);
