@@ -6,4 +6,6 @@
 #else
 #include <glib-2.0/glib.h>
 #endif
+
+#include "util/winglib.h"
 #endif
