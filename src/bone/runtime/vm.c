@@ -28,25 +28,25 @@ GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
                                lambda->lineno);
 
         g_string_append(gbuf, " #");
-        g_string_append_c(gbuf, '(');
+        bnGStringAppendC(gbuf, '(');
         while (iter != NULL) {
                 g_string_append(gbuf, bnView2Str(bone->pool, iter->data));
                 iter = iter->next;
                 if (iter != NULL) {
-                        g_string_append_c(gbuf, ' ');
+                        bnGStringAppendC(gbuf, ' ');
                 }
         }
-        g_string_append_c(gbuf, ')');
+        bnGStringAppendC(gbuf, ')');
         iter = ((bnLambda*)lambda)->returns;
-        g_string_append_c(gbuf, '(');
+        bnGStringAppendC(gbuf, '(');
         while (iter != NULL) {
                 g_string_append(gbuf, bnView2Str(bone->pool, iter->data));
                 iter = iter->next;
                 if (iter != NULL) {
-                        g_string_append_c(gbuf, ' ');
+                        bnGStringAppendC(gbuf, ' ');
                 }
         }
-        g_string_append_c(gbuf, ')');
+        bnGStringAppendC(gbuf, ')');
         g_string_append_printf(gbuf, "<%d>", (line + env->lineOffset));
         return gbuf;
 }

@@ -84,7 +84,7 @@ bnStringView bnInternIdentifier(const char *str) {
 
 void bnAppendStringLit(char c) {
         assert(gStr != NULL);
-        g_string_append_c(gStr, c);
+		bnGStringAppendC(gStr, c);
 		BN_CHECK_MEM();
 }
 

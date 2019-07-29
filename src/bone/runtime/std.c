@@ -230,7 +230,7 @@ void bnStdSystemString(bnInterpreter* bone, bnFrame* frame) {
                         bnFormatThrow(bone, "should be `array[%d]` is char", i);
                 }
                 bnChar* eChar = e;
-                g_string_append_c(gbuf, eChar->value);
+                bnGStringAppendC(gbuf, eChar->value);
         }
         bnStringView gview = bnIntern(bone->pool, gbuf->str);
         g_string_free(gbuf, TRUE);

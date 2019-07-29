@@ -11,6 +11,6 @@ struct GString* bnGStringAppendC(struct GString* str, char c);
 #else
 
 #include "../glib.h"
-#define bnGStringAppendC(str, c) (g_string_append_c(str, c))
+#define bnGStringAppendC(str, c) (bnGStringAppendC(str, c))
 #endif
 #endif
