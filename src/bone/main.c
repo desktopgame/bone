@@ -14,7 +14,7 @@
 #include "util/memory.h"
 
 static void runTest() {
-#if !defined(_WIN32)
+#if __APPLE__
         CU_pSuite testSuite;
 
         CU_initialize_registry();
