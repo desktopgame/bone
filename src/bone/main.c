@@ -1,9 +1,4 @@
-
-#if __APPLE__
-#include <CUnit/Basic.h>
-#include <CUnit/CUnit.h>
-#include <CUnit/Console.h>
-#endif
+#include "cunit.h"
 #if _MSC_VER && DEBUG
 #include <crtdbg.h>
 #endif

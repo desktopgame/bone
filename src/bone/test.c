@@ -1,14 +1,8 @@
 #include "test.h"
-#if !defined(_WIN32)
-#include <CUnit/Basic.h>
-#include <CUnit/CUnit.h>
-#include <CUnit/Console.h>
-#else
-#define CU_ASSERT(cond) assert(cond)
-#endif
 #include <assert.h>
 #include <string.h>
 #include "bone.h"
+#include "cunit.h"
 #include "il/il_toplevel.h"
 #include "parse/ast2il.h"
 #include "parse/parser.h"
@@ -33,10 +27,9 @@ typedef SSIZE_T ssize_t;
 #define EXPECT_SUC (1)
 
 static void free_gstring_with_segment(gpointer pdata) {
-	GString* str = pdata;
-	g_string_free(str, TRUE);
+        GString* str = pdata;
+        g_string_free(str, TRUE);
 }
-
 
 static void writeEnv(const gchar* out, struct bnStringPool* pool,
                      bnEnviroment* env) {
@@ -152,7 +145,7 @@ static int bnParse(GPtrArray* dest, const char* dir, int flag) {
                 }
                 g_free(out);
                 iter = iter->next;
-				BN_CHECK_MEM();
+                BN_CHECK_MEM();
         }
         g_list_free_full(list, g_free);
         bnDeleteStringPool(pool);
@@ -193,7 +186,7 @@ static int bnVM(GPtrArray* dest, const char* dir, int flag) {
                 }
                 g_free(out);
                 iter = iter->next;
-				BN_CHECK_MEM();
+                BN_CHECK_MEM();
         }
         g_list_free_full(list, g_free);
         bnDeleteInterpreter(bone);
@@ -249,10 +242,10 @@ static int bnRun(GPtrArray* dest, const char* dir, int flag) {
                 }
                 bnDeleteInterpreter(bone);
                 iter = iter->next;
-				BN_CHECK_MEM();
+                BN_CHECK_MEM();
         }
         g_list_free_full(list, g_free);
-		BN_CHECK_MEM();
+        BN_CHECK_MEM();
         return 0;
 }
 
@@ -272,10 +265,10 @@ void bnParseTest() {
         bnParse(dest, "testdata\\parse\\err", EXPECT_ERR);
         bnParse(dest, "testdata\\parse\\suc", EXPECT_SUC);
 #else
-		bnParse(dest, "./testdata/parse/err", EXPECT_ERR);
-		bnParse(dest, "./testdata/parse/suc", EXPECT_SUC);
+        bnParse(dest, "./testdata/parse/err", EXPECT_ERR);
+        bnParse(dest, "./testdata/parse/suc", EXPECT_SUC);
 #endif
-		BN_CHECK_MEM();
+        BN_CHECK_MEM();
         dump_result("PARSE", dest);
 }
 
@@ -285,8 +278,8 @@ void bnVMTest() {
         bnVM(dest, "testdata\\vm\\err", EXPECT_ERR);
         bnVM(dest, "testdata\\vm\\suc", EXPECT_SUC);
 #else
-		bnVM(dest, "./testdata/vm/err", EXPECT_ERR);
-		bnVM(dest, "./testdata/vm/suc", EXPECT_SUC);
+        bnVM(dest, "./testdata/vm/err", EXPECT_ERR);
+        bnVM(dest, "./testdata/vm/suc", EXPECT_SUC);
 #endif
         dump_result("VM", dest);
 }
@@ -297,8 +290,8 @@ void bnRunTest() {
         bnRun(dest, "testdata\\vm\\err", EXPECT_ERR);
         bnRun(dest, "testdata\\vm\\suc", EXPECT_SUC);
 #else
-		bnRun(dest, "./testdata/vm/err", EXPECT_ERR);
-		bnRun(dest, "./testdata/vm/suc", EXPECT_SUC);
+        bnRun(dest, "./testdata/vm/err", EXPECT_ERR);
+        bnRun(dest, "./testdata/vm/suc", EXPECT_SUC);
 #endif
         dump_result("RUN", dest);
 }
