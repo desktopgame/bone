@@ -220,8 +220,10 @@ static int bnRun(GPtrArray* dest, const char* dir, int flag) {
                 // parse and test
                 bnInterpreter* bone =
                     bnNewInterpreter(path, bnArgc(), bnArgv());
-#if !_WIN32
-                bnLink(bone, "./testdata/plugins");
+#if _WIN32
+                bnLink(bone, "testdata\\plugins");
+#else
+				bnLink(bone, "./testdata/plugins");
 #endif
                 int ret = bnEval(bone);
 #if !defined(_WIN32)
