@@ -311,7 +311,7 @@ static void unload_plugins(bnInterpreter* self) {
 static bool is_dll(gchar* path) {
 #if __APPLE__
         return g_str_has_suffix(path, ".dylib");
-#elif __WIN32
+#elif _WIN32
         return g_str_has_suffix(path, ".dll");
 #elif __linux__
         return g_str_has_suffix(path, ".so");
