@@ -79,7 +79,7 @@ static gchar* without_extension(gchar* src) {
                 }
                 offset++;
         }
-        gchar* ret = BN_MALLOC(sizeof(gchar) * (offset + 1));
+        gchar* ret = g_malloc(sizeof(gchar) * (offset + 2));
         memset(ret, '\0', offset + 1);
         memcpy(ret, src, offset);
         g_free(src);
