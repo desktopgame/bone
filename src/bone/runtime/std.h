@@ -90,54 +90,6 @@ void bnStdObjectEqual(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnStdObjectNotEqual(struct bnInterpreter* bone, struct bnFrame* frame);
 
-// Bool
-
-void bnStdBoolFuncCall(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolPositive(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolNegative(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolChilda(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolNot(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolPlus(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolMinus(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolMultiply(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolDivide(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolModulo(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolBitAnd(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolBitOr(struct bnInterpreter* bone, struct bnFrame* frame);
-
-// void bnStdBoolLogicAnd(struct bnInterpreter* bone, struct bnFrame* frame);
-
-// void bnStdBoolLogicOr(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolExcOr(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolLShift(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolRShift(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolGT(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolGE(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolLT(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolLE(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolEqual(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdBoolNotEqual(struct bnInterpreter* bone, struct bnFrame* frame);
-
 // Char
 
 void bnStdCharFuncCall(struct bnInterpreter* bone, struct bnFrame* frame);
