@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6561b890c2ab43d3a6eef9e77f23d39a)](https://app.codacy.com/app/desktopgame/bone?utm_source=github.com&utm_medium=referral&utm_content=desktopgame/bone&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.org/desktopgame/bone.svg?branch=master)](https://travis-ci.org/desktopgame/bone)
 # 概要(about bone language)
 boneはプロトタイピング言語をベースとしており、  
