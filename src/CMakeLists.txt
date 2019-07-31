@@ -87,6 +87,9 @@ message(STATUS "CMAKE_C_FLAGS_RELEASE=${CMAKE_C_FLAGS_RELEASE}")
 add_custom_target(
     myTest
     COMMAND pwd
+    COMMAND ./bone
+    COMMENT [[!! running tests !!]]
+    WORKING_DIRECTORY ../bin
 )
 
 install(DIRECTORY DESTINATION ${BONE_INSTALL_DIR})
