@@ -149,8 +149,8 @@ target_link_libraries(
     PRIVATE
     ${GLIB_LIBRARIES}
     ${CUNIT_LIBRARY}
-    ${CMAKE_DL_LIBS}  
-    ${CMAKE_M_LIBS}  
+    ${CMAKE_DL_LIBS}
+    m
 )
 set_target_properties(bone
     PROPERTIES
