@@ -91,9 +91,5 @@ void bnStdObjectEqual(struct bnInterpreter* bone, struct bnFrame* frame);
 void bnStdObjectNotEqual(struct bnInterpreter* bone, struct bnFrame* frame);
 
 
-// Array
 
-void bnStdArrayArraySet(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnStdArrayArrayGet(struct bnInterpreter* bone, struct bnFrame* frame);
 #endif
