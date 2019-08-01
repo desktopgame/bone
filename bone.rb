@@ -33,14 +33,10 @@ module Bone
       ext = File.extname(file)
       basename = File.basename(file, ext)
       count = 1
-      puts("dir="+dir)
-      puts("ext="+ext)
-      puts("basename="+basename)
       while File.exist?(file)
           file = dir + File::SEPARATOR + basename + "(" + count.to_s + ")" + ext
           count += 1
       end
-      puts("file="+file)
       file
     end
 
