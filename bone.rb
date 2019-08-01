@@ -21,11 +21,27 @@ module Bone
     def self.unique_dir(dir)
         basename = dir
         count = 1
-        while Dir.exists?(dir)
+        while Dir.exist?(dir)
             dir = basename + "(" + count.to_s + ")"
             count += 1
         end
         dir
+    end
+
+    def self.unique_file(file)
+      dir = File::dirname(file)
+      ext = File.extname(file)
+      basename = File.basename(file, ext)
+      count = 1
+      puts("dir="+dir)
+      puts("ext="+ext)
+      puts("basename="+basename)
+      while File.exist?(file)
+          file = dir + File::SEPARATOR + basename + "(" + count.to_s + ")" + ext
+          count += 1
+      end
+      puts("file="+file)
+      file
     end
 
     def self.os
