@@ -1,3 +1,5 @@
+require 'rbconfig'
+
 module Bone
     def self.check_cwd
         entries = []
@@ -13,6 +15,7 @@ module Bone
         raise message if !entries.include?("bin")
         raise message if !entries.include?("template")
         raise message if !entries.include?("setup_sln.rb")
+        Dir.pwd
     end
 
     def self.unique_dir(dir)
@@ -23,5 +26,23 @@ module Bone
             count += 1
         end
         dir
+    end
+
+    def self.os
+      @os ||= (
+        host_os = RbConfig::CONFIG['host_os']
+        case host_os
+        when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+          :windows
+        when /darwin|mac os/
+          :macosx
+        when /linux/
+          :linux
+        when /solaris|bsd/
+          :unix
+        else
+          :unknown
+        end
+      )
     end
 end
