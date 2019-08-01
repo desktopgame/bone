@@ -1,8 +1,9 @@
 #include "string.h"
+#include "char.h"
+#include "frame.h"
 #include "integer.h"
 #include "keyword.h"
 #include "lambda.h"
-#include "frame.h"
 
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
 
