@@ -35,17 +35,21 @@ void* bnGetSymbol(bnModule* self, const char* name) {
         if (self->handle == NULL) {
                 return NULL;
         }
-        char destroyFuncName[100];
+        char funcName[100];
         gchar* base = without_extension(g_path_get_basename(self->path));
-        sprintf(destroyFuncName, "%s_%s", base, name);
+        sprintf(funcName, "%s_%s", base, name);
         void* sym = NULL;
 #if HAVE_DLFCN
-        sym = dlsym(self->handle, destroyFuncName);
+        unsigned char* ptr = funcName;
+        if (g_str_has_prefix(funcName, "lib")) {
+                ptr = ptr + (sizeof(char) * 3);
+        }
+        sym = dlsym(self->handle, ptr);
         if (sym == NULL) {
                 fprintf(stderr, "%s\n", dlerror());
         }
 #elif HAVE_WINDOWS
-        sym = GetProcAddress(self->handle, destroyFuncName);
+        sym = GetProcAddress(self->handle, funcName);
         if (sym == NULL) {
                 fprintf(stderr, "GetProcAddress: %lu\n", GetLastError());
         }
