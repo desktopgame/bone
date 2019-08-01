@@ -1,32 +1,7 @@
 require "open3"
 require 'open-uri'
 require 'Fileutils'
-
-def check_cwd
-    entries = []
-    Dir.open(".") do|dirp|
-        dirp.each do |file|
-            entries << file
-        end
-    end
-    message = sprintf("%s is not bone repository", Dir.pwd)
-    raise message if !entries.include?("src")
-    raise message if !entries.include?("doc")
-    raise message if !entries.include?("lib")
-    raise message if !entries.include?("bin")
-    raise message if !entries.include?("template")
-    raise message if !entries.include?("setup_sln.rb")
-end
-
-def unique_dir(dir)
-    basename = dir
-    count = 1
-    while Dir.exists?(dir)
-        dir = basename + "(" + count.to_s + ")"
-        count += 1
-    end
-    dir
-end
+require_relative "bone"
 
 def select_dll_base(base_dir)
     files = []
@@ -73,9 +48,9 @@ def copy_dll(solution_dir)
     end
 end
 
-check_cwd()
+Bone::check_cwd()
 # create solution directory
-solution_dir = unique_dir(File::dirname(Dir::pwd) + "\\bone_sln")
+solution_dir = Bone::unique_dir(File::dirname(Dir::pwd) + "\\bone_sln")
 Dir.mkdir(solution_dir)
 # create project
 puts("create project...")
