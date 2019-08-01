@@ -252,7 +252,9 @@ static int bnRun(GPtrArray* dest, const char* dir, int flag) {
 }
 
 static void dump_result(const char* header, GPtrArray* src) {
+		printf("\n---\n");
         printf("FAIL [%s/%d]\n", header, src->len);
+		printf("---\n");
         for (int i = 0; i < src->len; i++) {
                 GString* str = g_ptr_array_index(src, i);
                 printf("    %s\n", str->str);
