@@ -48,6 +48,12 @@ def copy_dll(solution_dir)
     end
 end
 
+os = Bone::os()
+if os != :windows
+    puts("unsupported a your operating system")
+    exit(0)
+end
+
 Bone::check_cwd()
 # create solution directory
 solution_dir = Bone::unique_dir(File::dirname(Dir::pwd) + "\\bone_sln")
