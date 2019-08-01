@@ -5,25 +5,30 @@
 
 #if _MSC_VER
 #include <crtdbg.h>
-	#if DEBUG
-		#define BN_MALLOC(size) (bnNonNullFunc(_malloc_dbg(size, _NORMAL_BLOCK, __FILE__, __LINE__), __FILE__, __LINE__))
-		#define BN_REALLOC(block, size) (bnNonNullFunc(_realloc_dbg(block, size, _NORMAL_BLOCK, __FILE__, __LINE__), __FILE__, __LINE__))
-		#define BN_FREE(block) (_free_dbg(block, _NORMAL_BLOCK))
-	#else
-		#define BN_MALLOC(size) (bnSafeMalloc(size))
-		#define BN_REALLOC(block, size) (bnSafeRealloc(block, size))
-		#define BN_FREE(block) bnSafeFree(block)
-	#endif
+#if DEBUG
+#define BN_MALLOC(size)                                                      \
+        (bnNonNullFunc(_malloc_dbg(size, _NORMAL_BLOCK, __FILE__, __LINE__), \
+                       __FILE__, __LINE__))
+#define BN_REALLOC(block, size)                                           \
+        (bnNonNullFunc(                                                   \
+            _realloc_dbg(block, size, _NORMAL_BLOCK, __FILE__, __LINE__), \
+            __FILE__, __LINE__))
+#define BN_FREE(block) (_free_dbg(block, _NORMAL_BLOCK))
 #else
-	#if DEBUG
-		#define BN_MALLOC(size) (bnMallocFunc(size, __FILE__, __LINE__))
-		#define BN_REALLOC(block, size) (bnReallocFunc(block, size, __FILE__, __LINE__))
-		#define BN_FREE(block) (bnFreeFunc(block, __FILE__, __LINE__))
-	#else
-		#define BN_MALLOC(size) (bnSafeMalloc(size))
-		#define BN_REALLOC(block, size) (bnSafeRealloc(block, size))
-		#define BN_FREE(block) bnSafeFree(block)
-	#endif
+#define BN_MALLOC(size) (bnSafeMalloc(size))
+#define BN_REALLOC(block, size) (bnSafeRealloc(block, size))
+#define BN_FREE(block) bnSafeFree(block)
+#endif
+#else
+#if DEBUG
+#define BN_MALLOC(size) (bnMallocFunc(size, __FILE__, __LINE__))
+#define BN_REALLOC(block, size) (bnReallocFunc(block, size, __FILE__, __LINE__))
+#define BN_FREE(block) (bnFreeFunc(block, __FILE__, __LINE__))
+#else
+#define BN_MALLOC(size) (bnSafeMalloc(size))
+#define BN_REALLOC(block, size) (bnSafeRealloc(block, size))
+#define BN_FREE(block) bnSafeFree(block)
+#endif
 #endif
 
 #if _MSC_VER
@@ -31,8 +36,6 @@
 #else
 #define BN_CHECK_MEM() ((void)0)
 #endif
-
-
 
 /**
  * return memory of allocated by malloc.
@@ -58,7 +61,6 @@ void* bnSafeRealloc(void* block, size_t newSize);
  */
 void bnSafeFree(void* block);
 
-
 /**
  * return a pdata.
  * exit if pdata equals a null
@@ -72,8 +74,10 @@ void* bnNonNullFunc(void* pdata, const char* filename, int lineno);
 
 #if _MSC_VER && DEBUG
 
-#define bnMallocFunc(size) (_malloc_dbg(size, _NORMAL_BLOCK, __FILE__, __LINE__))
-#define bnReallocFunc(block, size) (_realloc_dbg(block, size, _NORMAL_BLOCK, __FILE__, __LINE__))
+#define bnMallocFunc(size) \
+        (_malloc_dbg(size, _NORMAL_BLOCK, __FILE__, __LINE__))
+#define bnReallocFunc(block, size) \
+        (_realloc_dbg(block, size, _NORMAL_BLOCK, __FILE__, __LINE__))
 #define bnFreeFunc(block) (_free_dbg(block, _NORMAL_BLOCK))
 #else
 

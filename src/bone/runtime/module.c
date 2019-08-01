@@ -23,10 +23,10 @@ bnModule* bnNewModule(const char* path) {
                 fprintf(stderr, "%s\n", dlerror());
         }
 #elif HAVE_WINDOWS
-		ret->handle = LoadLibrary(path);
-		if (ret->handle == NULL) {
-			fprintf(stderr, "LoadLibrary: %lu\n", GetLastError());
-		}
+        ret->handle = LoadLibrary(path);
+        if (ret->handle == NULL) {
+                fprintf(stderr, "LoadLibrary: %lu\n", GetLastError());
+        }
 #endif
         return ret;
 }
@@ -45,10 +45,10 @@ void* bnGetSymbol(bnModule* self, const char* name) {
                 fprintf(stderr, "%s\n", dlerror());
         }
 #elif HAVE_WINDOWS
-		sym = GetProcAddress(self->handle, destroyFuncName);
-		if (sym == NULL) {
-			fprintf(stderr, "GetProcAddress: %lu\n", GetLastError());
-		}
+        sym = GetProcAddress(self->handle, destroyFuncName);
+        if (sym == NULL) {
+                fprintf(stderr, "GetProcAddress: %lu\n", GetLastError());
+        }
 #endif
         g_free(base);
         return sym;
@@ -62,9 +62,9 @@ void bnDeleteModule(bnModule* self) {
                         fprintf(stderr, "%s\n", dlerror());
                 }
 #elif HAVE_WINDOWS
-			if (!FreeLibrary(self->handle)) {
-				fprintf(stderr, "FreeLibrary: %lu\n", GetLastError());
-			}
+                if (!FreeLibrary(self->handle)) {
+                        fprintf(stderr, "FreeLibrary: %lu\n", GetLastError());
+                }
 #endif
         }
         BN_FREE(self->path);

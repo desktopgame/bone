@@ -1,10 +1,10 @@
 #include "array.h"
 #include "char.h"
+#include "frame.h"
 #include "integer.h"
 #include "interpreter.h"
 #include "keyword.h"
 #include "lambda.h"
-#include "frame.h"
 
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
 
@@ -52,8 +52,6 @@ void bnFillString(bnInterpreter* bone, const char* str, bnArray* ary) {
                 g_ptr_array_index(ary->arr, i) = bnNewChar(bone, str[i]);
         }
 }
-
-
 
 // Array
 static void bnStdArrayArraySet(bnInterpreter* bone, bnFrame* frame) {

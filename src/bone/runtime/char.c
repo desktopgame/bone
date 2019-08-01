@@ -1,8 +1,8 @@
 #include "char.h"
+#include "frame.h"
 #include "interpreter.h"
 #include "keyword.h"
 #include "lambda.h"
-#include "frame.h"
 
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
 
@@ -29,7 +29,6 @@ static void bnStdCharLT(bnInterpreter* bone, bnFrame* frame);
 static void bnStdCharLE(bnInterpreter* bone, bnFrame* frame);
 static void bnStdCharEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdCharNotEqual(bnInterpreter* bone, bnFrame* frame);
-
 
 bnChar* bnNewChar(bnInterpreter* bone, char value) {
         bnChar* ret = BN_MALLOC(sizeof(bnChar));

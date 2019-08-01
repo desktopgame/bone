@@ -1,8 +1,8 @@
 #include "bool.h"
+#include "frame.h"
 #include "interpreter.h"
 #include "keyword.h"
 #include "lambda.h"
-#include "frame.h"
 
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
 
@@ -29,7 +29,6 @@ static void bnStdBoolLT(bnInterpreter* bone, bnFrame* frame);
 static void bnStdBoolLE(bnInterpreter* bone, bnFrame* frame);
 static void bnStdBoolEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdBoolNotEqual(bnInterpreter* bone, bnFrame* frame);
-
 
 bnBool* bnNewBool(bnInterpreter* bone, bool value) {
         bnBool* ret = BN_MALLOC(sizeof(bnBool));
@@ -120,9 +119,11 @@ static void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame) {
                              c);
 }
 
-// static void bnStdBoolLogicAnd(struct bnInterpreter* bone, struct bnFrame* frame);
+// static void bnStdBoolLogicAnd(struct bnInterpreter* bone, struct bnFrame*
+// frame);
 
-// static void bnStdBoolLogicOr(struct bnInterpreter* bone, struct bnFrame* frame);
+// static void bnStdBoolLogicOr(struct bnInterpreter* bone, struct bnFrame*
+// frame);
 
 static void bnStdBoolExcOr(bnInterpreter* bone, bnFrame* frame);
 

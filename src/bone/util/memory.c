@@ -39,12 +39,12 @@ void* bnSafeRealloc(void* block, size_t newSize) {
 
 void bnSafeFree(void* block) { free(block); }
 
-void * bnNonNullFunc(void * pdata, const char* filename, int lineno) {
-	if (pdata == NULL) {
-		fprintf(stderr, "pointer is null: <%d>%s\n", lineno, filename);
-		abort();
-	}
-	return pdata;
+void* bnNonNullFunc(void* pdata, const char* filename, int lineno) {
+        if (pdata == NULL) {
+                fprintf(stderr, "pointer is null: <%d>%s\n", lineno, filename);
+                abort();
+        }
+        return pdata;
 }
 
 #if _MSC_VER && DEBUG

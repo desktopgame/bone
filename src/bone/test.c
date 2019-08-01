@@ -223,7 +223,7 @@ static int bnRun(GPtrArray* dest, const char* dir, int flag) {
 #if _WIN32
                 bnLink(bone, "testdata\\plugins");
 #else
-				bnLink(bone, "./testdata/plugins");
+                bnLink(bone, "./testdata/plugins");
 #endif
                 int ret = bnEval(bone);
 #if !defined(_WIN32)
@@ -252,9 +252,9 @@ static int bnRun(GPtrArray* dest, const char* dir, int flag) {
 }
 
 static void dump_result(const char* header, GPtrArray* src) {
-		printf("\n---\n");
+        printf("\n---\n");
         printf("FAIL [%s/%d]\n", header, src->len);
-		printf("---\n");
+        printf("---\n");
         for (int i = 0; i < src->len; i++) {
                 GString* str = g_ptr_array_index(src, i);
                 printf("    %s\n", str->str);

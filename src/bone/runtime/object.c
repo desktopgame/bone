@@ -16,7 +16,6 @@
 #include "string.h"
 #include "vm.h"
 
-
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
 
 static void bnStdObjectFuncCall(bnInterpreter* bone, bnFrame* frame);
@@ -42,7 +41,6 @@ static void bnStdObjectLT(bnInterpreter* bone, bnFrame* frame);
 static void bnStdObjectLE(bnInterpreter* bone, bnFrame* frame);
 static void bnStdObjectEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdObjectNotEqual(bnInterpreter* bone, bnFrame* frame);
-
 
 void bnInitObject(bnInterpreter* bone, bnObject* self, bnObjectType type) {
         self->table =
@@ -230,7 +228,7 @@ bnStringView bnGetExportVariableName(struct bnStringPool* pool,
 
 void bnDeleteObject(bnObject* self) {
         if (self->freeFunc != NULL) {
-				assert(self->freeFunc != NULL);
+                assert(self->freeFunc != NULL);
                 self->freeFunc(self);
         } else {
                 g_hash_table_destroy(self->table);
