@@ -42,11 +42,11 @@ unless File.exist?(DOT_FFI)
     fp.puts('        printf("my_tan¥n");')
     fp.puts('        return 0;')
     fp.puts('}')
-    fp.puts('static double my_max(double x) {')
+    fp.puts('static double my_max(double x, double y) {')
     fp.puts('        printf("my_max¥n");')
     fp.puts('        return 0;')
     fp.puts('}')
-    fp.puts('static double my_min(double x) {')
+    fp.puts('static double my_min(double x, double y) {')
     fp.puts('        printf("my_min¥n");')
     fp.puts('        return 0;')
     fp.puts('}')
@@ -138,7 +138,7 @@ File.open(C_FFI, 'w') do |fp|
     fp.puts(inline_line)
   end
   functions.each do |f|
-    fp.puts(sprintf('static void ffi_%s_%s(bnInterpreter* bone, , bnFrame* frame) {', NAME, f.name))
+    fp.puts(sprintf('static void ffi_%s_%s(bnInterpreter* bone, bnFrame* frame) {', NAME, f.name))
     f.parameter_list.each_with_index do |param, i|
         fp.puts(sprintf('        // parameter[%d] %s', i, param.name))
         fp.puts(sprintf('        bnObject* arg%d = bnPopStack(frame->vStack);', i))
@@ -187,17 +187,15 @@ File.open(C_FFI, 'w') do |fp|
   functions.each do |f|
     buf = '        g_hash_table_replace(bone->externTable,'
     buf += sprintf('bnIntern(bone->pool, "ffi.%s_%s"),', NAME, f.name)
-    buf += sprintf('bnNewLambdaFromCFunc(bone, ffi_%s_%s, bone->pool,', NAME, f.name)
+    buf += sprintf('bnNewLambdaFromCFunc(bone, ffi_%s_%s, bone->pool', NAME, f.name)
     if f.return_type != 'void'
-        buf += 'BN_C_ADD_RETURN, "ret"'
+        buf += ', BN_C_ADD_RETURN, "ret"'
     end
-    if f.parameter_list.length > 0
-        buf += ','
-    end
+    buf += ','
     f.parameter_list.each do |param|
         buf += sprintf('BN_C_ADD_PARAM, "%s",', param.name)
     end
-    buf += 'BN_C_ADD_EXIT);'
+    buf += 'BN_C_ADD_EXIT));'
     fp.puts(buf)
   end
   fp.puts('}')
@@ -217,7 +215,7 @@ File.open(BONE_FFI, 'w') do |fp|
             if i == f.parameter_list.length - 1
                 fp.write(sprintf('"%s"', param.name))
             else
-              fp.write(sprintf('"%s, "', param.name))
+              fp.write(sprintf('"%s", ', param.name))
             end
         end
         fp.write('],')
