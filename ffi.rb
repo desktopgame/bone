@@ -133,6 +133,8 @@ File.open(C_FFI, 'w') do |fp|
   fp.puts('#include <bone/runtime/integer.h>')
   fp.puts('#include <bone/runtime/char.h>')
   fp.puts('#include <bone/runtime/double.h>')
+  fp.puts('#include <bone/util/string_pool.h>')
+  fp.puts('#include <glib.h>')
   fp.puts('')
   inline_lines.each do |inline_line|
     fp.puts(inline_line)
@@ -201,6 +203,12 @@ File.open(C_FFI, 'w') do |fp|
   fp.puts('}')
   fp.puts('')
   fp.puts('void ffi_destroy(bnInterpreter* bone) {')
+  functions.each_with_index do |f, i|
+    fp.puts(sprintf('        void* data%d = g_hash_table_lookup(bone->externTable, bnIntern(bone->pool, "ffi.%s_%s"));', i, NAME, f.name))
+    fp.puts(sprintf('        g_hash_table_steal(bone->externTable, bnIntern(bone->pool, "ffi.%s_%s"));', NAME, f.name))
+    fp.puts(sprintf('        bnDrop(bone->heap, data%d);', i))
+    fp.puts(sprintf('        bnDeleteObject(data%d);', i))
+  end
   fp.puts('}')
 end
 # create .bn
