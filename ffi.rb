@@ -227,7 +227,11 @@ File.open(BONE_FFI, 'w') do |fp|
             end
         end
         fp.write('],')
-        fp.write('["ret"]')
+        if f.return_type == 'void'
+          fp.write('[]')
+        else
+          fp.write('["ret"]')
+        end
         fp.write(');')
         fp.puts('')
     end
