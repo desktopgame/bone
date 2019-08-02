@@ -180,6 +180,7 @@ Dir.open(Dir.pwd + "/bin") do|dirp|
         end
     end
 end
+FileUtils.cp("ffi.rb", src_app_dir + "/ffi.rb")
 
 # make project
 Dir.chdir(src_dir) do
