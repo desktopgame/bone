@@ -18,7 +18,7 @@ bnModule* bnNewModule(const char* path) {
         ret->path = strdup(path);
         ret->handle = NULL;
 #if HAVE_DLFCN
-        ret->handle = dlopen(path, RTLD_NOW);
+        ret->handle = dlopen(path, RTLD_LAZY);
         if (ret->handle == NULL) {
                 fprintf(stderr, "%s\n", dlerror());
         }
