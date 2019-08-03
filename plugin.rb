@@ -156,14 +156,20 @@ main = <<-EOS
 #include <stdio.h>
 #include <glib.h>
 #include <bone/runtime/interpreter.h>
+#include <bone/config.h>
 //#include "ffi.h"
 
 void varProjectName_Init(bnInterpreter* bone) {
     printf("varProjectName Init");
     //ffi_init(bone);
 }
+
 void varProjectName_Destroy(bnInterpreter* bone) {
     printf("varProjectName Destroy");
+}
+
+const char* varProjectName_GetTargetVersion() {
+    return bnGetBuildVersion();
 }
 EOS
 main = main.gsub('varProjectName', NAME)
