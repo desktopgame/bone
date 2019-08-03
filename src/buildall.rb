@@ -17,7 +17,7 @@ def clean()
 end
 
 def build(mode, type)
-    cmd = "cmake . -DCMAKE_BUILD_TYPE=" + mode + " -D" + type + "=1";
+    cmd = "cmake . -DCMAKE_BUILD_TYPE=" + mode + " -D" + type + "=1" + " -DDEF_NGLOBAL=ON";
     puts cmd
     o, e, s = Open3.capture3(cmd)
     puts e

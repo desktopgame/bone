@@ -51,7 +51,7 @@ void* bnNonNullFunc(void* pdata, const char* filename, int lineno) {
 #else
 
 void* bnMallocFunc(size_t size, const char* filename, int lineno) {
-#if DEBUG
+#if (DEBUG && !defined(NGLOBAL))
         if (size == 0) {
                 return NULL;
         }
@@ -79,7 +79,7 @@ void* bnMallocFunc(size_t size, const char* filename, int lineno) {
 
 void* bnReallocFunc(void* block, size_t newSize, const char* filename,
                     int lineno) {
-#if DEBUG
+#if (DEBUG && !defined(NGLOBAL))
         bnMemInfo* a = find_info(block);
         if (a == NULL) {
                 return bnSafeRealloc(block, newSize);
@@ -101,7 +101,7 @@ void* bnReallocFunc(void* block, size_t newSize, const char* filename,
 }
 
 void bnFreeFunc(void* block, const char* filename, int lineno) {
-#if DEBUG
+#if (DEBUG && !defined(NGLOBAL))
         bnCheckMemoryBounds();
         bnMemInfo* a = find_info(block);
         if (a == NULL) {

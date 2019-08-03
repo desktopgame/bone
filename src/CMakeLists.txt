@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(bone C)
-
+# set option
 option(USE_CUNIT "USE_CUNIT" ON)
+option(DEF_NGLOBAL "DEF_NGLOBAL" OFF)
 
 if(UNIX AND NOT APPLE)
   set(LINUX TRUE)
@@ -9,7 +10,7 @@ endif()
 if(WIN32)
   set(USE_CUNIT OFF)
 endif()
-
+# set compiler
 if(LINUX)
   set(CMAKE_C_COMPILER gcc)
   set(CMAKE_CXX_COMPILER gcc++)
@@ -17,6 +18,13 @@ else()
   set(CMAKE_C_COMPILER clang)
   set(CMAKE_CXX_COMPILER clang++)
 endif()
+# define macros
+if(DEF_NGLOBAL)
+    set(NGLOBAL "-DNGLOBAL=2")
+else()
+    set(NGLOBAL "")
+endif()
+# build option
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
 if(APPLE)
   set(CMAKE_C_FLAGS_DEBUG "-g -fsanitize=address -O0 -DDEBUG -DVMDEBUG -MMD -Wall")
@@ -24,10 +32,11 @@ elseif(LINUX)
   set(CMAKE_C_FLAGS_DEBUG "-d -O0 -std=c99 -DDEBUG -DVMDEBUG -MMD -Wall")
 endif()
 set(CMAKE_C_FLAGS_RELEASE "-g -O2 -MMD -w -DNDEBUG")
+# file location
 set(BONE_EXECUTABLE "bone" CACHE STRING "executable file name")
 set(BONE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/bone CACHE PATH "Path to install")
 set(BONE_IGNORE_COMPILE "CMakeCCompilerId.c" "feature_tests.c")
-
+# include path, library path
 if (WIN32)
     set(GLIB_LIBRARY_DIRS "C:/msys64/mingw64/bin" CACHE PATH "glib library dirs")
     set(GLIB_INCLUDE_DIRS "C:/msys64/mingw64/include/glib-2.0" "C:/msys64/mingw64/lib/glib-2.0/include" CACHE PATH "glib include dirs")
@@ -53,7 +62,7 @@ if(NOT APPLE)
     set(GLIB_LIBRARY_DIRS /usr/lib)
     endif()
 endif()
-
+# config.h
 include(CheckFunctionExists)
 include(CheckIncludeFile)
 include(CheckSymbolExists)
@@ -144,6 +153,7 @@ if(BONE_STATIC)
 endif()
 add_definitions (
     ${GLIB_CFLAGS_OTHER}
+    ${NGLOBAL}
 )
 target_include_directories(
     ${BONE_EXECUTABLE}
