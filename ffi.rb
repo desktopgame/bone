@@ -14,6 +14,14 @@ class Parameter
     end
 end
 
+class Type
+  attr_accessor :name
+
+  def initialize(name)
+    @name = name
+  end
+end
+
 class Function
     attr_accessor :name, :return_type, :parameter_list
 
@@ -67,6 +75,7 @@ unless File.exist?(DOT_FFI)
     fp.puts('        return str')
     fp.puts('}')
     fp.puts('%%END')
+    fp.puts('$type/MyHoge')
     fp.puts('$function/double/my_sin(double x);')
     fp.puts('$function/double/my_cos(double x);')
     fp.puts('$function/double/my_tan(double x);')
@@ -91,6 +100,7 @@ end
 NAME = ARGV[0]
 BONE_FFI = sprintf('ffi_%s.bn', NAME)
 functions = []
+types = []
 inline_lines = []
 in_inline = false
 File.open(DOT_FFI) do |fp|
@@ -123,6 +133,8 @@ File.open(DOT_FFI) do |fp|
         f.parameter_list << Parameter.new(param[0], param[1])
       end
       functions << f
+    elsif words[0] == '$type'
+      types << Type.new(words[1])
     end
   end
 end
@@ -153,12 +165,33 @@ File.open(C_FFI, 'w') do |fp|
   fp.puts('#include <bone/runtime/integer.h>')
   fp.puts('#include <bone/runtime/char.h>')
   fp.puts('#include <bone/runtime/double.h>')
+  fp.puts('#include <bone/runtime/any.h>')
   fp.puts('#include <bone/util/string_pool.h>')
   fp.puts('#include <glib.h>')
   fp.puts('')
+  fp.puts('//')
+  fp.puts('// Type')
+  fp.puts('//')
+  types.each do |type|
+    tyname = type.name
+    fp.puts(sprintf('typedef struct %s {', tyname))
+    fp.puts('        bnAny base;');
+    fp.puts('}')
+    fp.puts(sprintf('static %s* bnNew%s(bnInterpreter* bone) {', tyname, tyname))
+    fp.puts(sprintf('        %s* ret = BN_MALLOC(sizeof(%s));', tyname, tyname))
+    fp.puts(sprintf('        bnInitAny(bone, &ret->base, "ffi.%s_%s");', NAME, tyname))
+    fp.puts('        return ret;')
+    fp.puts('}')
+  end
+  fp.puts('//')
+  fp.puts('// Inline')
+  fp.puts('//')
   inline_lines.each do |inline_line|
     fp.puts(inline_line)
   end
+  fp.puts('//')
+  fp.puts('// Function')
+  fp.puts('//')
   functions.each do |f|
     fp.puts(sprintf('static void ffi_%s_%s(bnInterpreter* bone, bnFrame* frame) {', NAME, f.name))
     f.parameter_list.each_with_index do |param, i|
@@ -195,7 +228,7 @@ File.open(C_FFI, 'w') do |fp|
           fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be %s");', param.name, param.type))
           fp.puts('        }')
           fp.puts(sprintf('        bnAny* val%d = ((bnAny*)arg%d);', i, i))
-          fp.puts(sprintf('        if(any->type != bnIntern(bone->pool, "%s") {', param.type))
+          fp.puts(sprintf('        if(any->type != bnIntern(bone->pool, "ffi.%s_%s") {', NAME, param.type))
           fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be %s");', param.name, param.type))
           fp.puts(sprintf('        }'))
         end
