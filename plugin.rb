@@ -20,8 +20,8 @@ Dir.mkdir(src_dir)
 src_gitig = Bone::unique_file(src_dir + "/.gitkeep")
 FileUtils.touch(src_gitig)
 
-# create ../bone_embed/src/app
-src_app_dir = Bone::unique_dir(src_dir + "/app")
+# create ../bone_embed/src/plugin
+src_app_dir = Bone::unique_dir(src_dir + "/plugin")
 Dir.mkdir(src_app_dir)
 
 # create ../bone_embed/bin
@@ -141,7 +141,7 @@ File.open(src_cmake, "w") do |fp|
     fp.write(cmake_option)
 end
 
-# create ../bone_embed/src/app/main.c
+# create ../bone_embed/src/plugin/main.c
 main = <<-EOS
 #include <stdio.h>
 #include <glib.h>
