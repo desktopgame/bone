@@ -1,8 +1,13 @@
 #ifndef BONE_CONFIG_H
 #define BONE_CONFIG_H
 
+#define BUILD_VERSION ("${BONE_BUILD_VERSION}")
 #cmakedefine HAVE_UNISTD @HAVE_UNISTD@
 #cmakedefine HAVE_DLFCN @HAVE_DLFCN@
 #cmakedefine HAVE_WINDOWS @HAVE_WINDOWS@
 
+/**
+ * @return
+ */
+const char* bnGetBuildVersion();
 #endif
