@@ -77,7 +77,6 @@ int bnEval(bnInterpreter* self) {
         g_ptr_array_add(env->codeArray, BN_OP_DEFER_NEXT);
         bnDeleteAST(ret);
         bnExecute(self, env, self->frame);
-        unload_plugins(self);
         while (bnGetStackSize(self->callStack) > 0) {
                 GString* gbuf = bnPopStack(self->callStack);
                 printf("TRACE: %s\n", gbuf->str);
@@ -98,6 +97,7 @@ int bnEval(bnInterpreter* self) {
         self->frame = NULL;
         g_hash_table_remove_all(self->externTable);
         bnGC(self);
+        unload_plugins(self);
         return status;
 }
 
