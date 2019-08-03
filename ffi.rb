@@ -52,6 +52,10 @@ unless File.exist?(DOT_FFI)
     fp.puts('static void my_exit(int status) {')
     fp.puts('        printf("my_exit¥n");')
     fp.puts('}')
+    fp.puts('static bool my_assert(bool cond) {')
+    fp.puts('        printf("my_assert");')
+    fp.puts('        return cond;')
+    fp.puts('}')
     fp.puts('%%END')
     fp.puts('$function/double/my_sin(double x);')
     fp.puts('$function/double/my_cos(double x);')
@@ -59,6 +63,7 @@ unless File.exist?(DOT_FFI)
     fp.puts('$function/double/my_max(double x, double y);')
     fp.puts('$function/double/my_min(double x, double y);')
     fp.puts('$function/void/my_exit(int status);')
+    fp.puts('$function/bool/my_assert(bool cond);')
   end
   puts('was created  `.ffi`')
   puts('please agein execute when after edit `.ffi`')
@@ -160,6 +165,11 @@ File.open(C_FFI, 'w') do |fp|
             fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be char");', param.name))
             fp.puts('        }')
             fp.puts(sprintf('        char val%d = ((bnChar*)arg%d)->value;', i, i))
+        elsif param.type == 'bool'
+          fp.puts(sprintf('        if(arg%d->type != BN_OBJECT_BOOL) {', i))
+          fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be bool");', param.name))
+          fp.puts('        }')
+          fp.puts(sprintf('        bool val%d = ((bnBool*)arg%d)->value;', i, i))
         end
     end
     if f.return_type != 'void'
@@ -181,6 +191,8 @@ File.open(C_FFI, 'w') do |fp|
         fp.puts(sprintf('g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),bnNewChar(bone, c_ret));'))
     elsif f.return_type == 'double'
         fp.puts(sprintf('g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),bnNewDouble(bone, c_ret));'))
+    elsif f.return_type == 'bool'
+      fp.puts(sprintf('g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),bnGetBool(bone->pool, frame, c_ret));'))
     end
     fp.puts('')
     fp.puts('}')
