@@ -31,6 +31,8 @@ typedef void (*bnPluginInit)(bnInterpreter*);
 
 typedef void (*bnPluginDestroy)(bnInterpreter*);
 
+typedef const char* (*bnPluginGetTargetVersion)();
+
 bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
                                 char* argv[]);
 

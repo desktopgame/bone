@@ -284,6 +284,24 @@ static void load_plugins(bnInterpreter* self, const char* currentdir) {
 
 static void load_plugin(bnInterpreter* self, gchar* path) {
         bnModule* mod = bnNewModule(path);
+        // check version
+        bnPluginGetTargetVersion getTargetVersion =
+            (bnPluginGetTargetVersion)bnGetSymbol(mod, "GetTargetVersion");
+        if (getTargetVersion == NULL) {
+                fprintf(stderr, "%s is not defined xxx_GetTargetVersion\n",
+                        path);
+                bnDeleteModule(mod);
+                return;
+        }
+        const char* versionString = (const char*)getTargetVersion();
+        if (strcmp(versionString, bnGetBuildVersion())) {
+                fprintf(stderr, "not match build version: %s\n", path);
+                fprintf(stderr, "required version: %s\n", versionString);
+                fprintf(stderr, "real     version: %s\n", bnGetBuildVersion());
+                bnDeleteModule(mod);
+                return;
+        }
+        // call _Init
         bnPluginInit init = (bnPluginInit)bnGetSymbol(mod, "Init");
         if (init != NULL) {
                 init(self);
