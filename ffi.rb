@@ -56,6 +56,16 @@ unless File.exist?(DOT_FFI)
     fp.puts('        printf("my_assert");')
     fp.puts('        return cond;')
     fp.puts('}')
+    fp.puts('static void my_puts(char* str) {')
+    fp.puts('        printf("my_puts");')
+    fp.puts('}')
+    fp.puts('static char* my_gets() {')
+    fp.puts('        printf("my_puts");')
+    fp.puts('        return "my_puts"')
+    fp.puts('}')
+    fp.puts('static char* my_cat(char* str) {')
+    fp.puts('        return str')
+    fp.puts('}')
     fp.puts('%%END')
     fp.puts('$function/double/my_sin(double x);')
     fp.puts('$function/double/my_cos(double x);')
@@ -64,6 +74,9 @@ unless File.exist?(DOT_FFI)
     fp.puts('$function/double/my_min(double x, double y);')
     fp.puts('$function/void/my_exit(int status);')
     fp.puts('$function/bool/my_assert(bool cond);')
+    fp.puts('$function/void/my_puts(char* str);')
+    fp.puts('$function/char*/my_gets();')
+    fp.puts('$function/char*/my_cat(char* str);')
   end
   puts('was created  `.ffi`')
   puts('please agein execute when after edit `.ffi`')
@@ -165,6 +178,12 @@ File.open(C_FFI, 'w') do |fp|
             fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be char");', param.name))
             fp.puts('        }')
             fp.puts(sprintf('        char val%d = ((bnChar*)arg%d)->value;', i, i))
+        elsif param.type == 'char*'
+          fp.puts(sprintf('        if(arg%d->type != BN_OBJECT_STRING) {', i))
+          fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be string");', param.name))
+          fp.puts('        }')
+          fp.puts(sprintf('        bnStringView val%d = ((bnString*)arg%d)->value;', i, i))
+          fp.puts(sprintf('        const char* str%d = bnView2Str(bone->pool, val%d)', i, i))
         elsif param.type == 'bool'
           fp.puts(sprintf('        if(arg%d->type != BN_OBJECT_BOOL) {', i))
           fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be bool");', param.name))
@@ -177,20 +196,26 @@ File.open(C_FFI, 'w') do |fp|
     end
     fp.write(sprintf('%s(', f.name))
     f.parameter_list.each_with_index do |param, i|
+      argname = param.type == 'char*' ? 'str' : 'val'
       if i == f.parameter_list.length - 1
-        fp.write(sprintf('val%d);', i))
+        fp.write(sprintf('%s%d);', argname, i))
       else
-        fp.write(sprintf('val%d, ', i))
+        fp.write(sprintf('%s%d, ', argname, i))
       end
+    end
+    if f.parameter_list.size == 0
+      fp.write(');')
     end
     fp.puts('')
     fp.write('        ')
     if f.return_type == 'int'
-        fp.puts(sprintf('g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),bnNewInteger(bone, c_ret));'))
-    elsif f.return_type == 'char'
-        fp.puts(sprintf('g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),bnNewChar(bone, c_ret));'))
+      fp.puts(sprintf('g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),bnNewInteger(bone, c_ret));'))
     elsif f.return_type == 'double'
-        fp.puts(sprintf('g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),bnNewDouble(bone, c_ret));'))
+      fp.puts(sprintf('g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),bnNewDouble(bone, c_ret));'))
+    elsif f.return_type == 'char'
+      fp.puts(sprintf('g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),bnNewChar(bone, c_ret));'))
+    elsif f.return_type == 'char*'
+      fp.puts(sprintf('g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),bnNewString2(bone, c_ret));'))
     elsif f.return_type == 'bool'
       fp.puts(sprintf('g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),bnGetBool(bone->pool, frame, c_ret));'))
     end
