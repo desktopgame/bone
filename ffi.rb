@@ -218,7 +218,7 @@ File.open(C_FFI, 'w') do |fp|
           fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be string");', param.name))
           fp.puts('        }')
           fp.puts(sprintf('        bnStringView val%d = ((bnString*)arg%d)->value;', i, i))
-          fp.puts(sprintf('        const char* str%d = bnView2Str(bone->pool, val%d)', i, i))
+          fp.puts(sprintf('        const char* str%d = bnView2Str(bone->pool, val%d);', i, i))
         elsif param.type == 'bool'
           fp.puts(sprintf('        if(arg%d->type != BN_OBJECT_BOOL) {', i))
           fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be bool");', param.name))
