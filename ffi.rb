@@ -4,7 +4,6 @@ require 'pp'
 DOT_FFI = '.ffi'
 H_FFI = 'ffi.h'
 C_FFI = 'ffi.c'
-NAME = ARGV[0]
 
 class Parameter
     attr_accessor :type, :name
@@ -70,6 +69,7 @@ if ARGV.length == 0
     puts('example: ruby ffi.rb myFFI')
     abort
 end
+NAME = ARGV[0]
 BONE_FFI = sprintf('ffi_%s.bn', NAME)
 functions = []
 inline_lines = []
