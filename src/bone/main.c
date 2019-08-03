@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
                         g_string_append(input, ".bn");
                 }
                 bnInterpreter* bone = bnNewInterpreter(input->str, argc, argv);
-                bnLink(bone, ".");
+                bnLink(bone, "plugins");
                 status = bnEval(bone);
                 bnDeleteInterpreter(bone);
                 g_string_free(input, TRUE);
