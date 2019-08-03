@@ -77,6 +77,7 @@ unless File.exist?(DOT_FFI)
     fp.puts('$function/void/my_puts(char* str);')
     fp.puts('$function/char*/my_gets();')
     fp.puts('$function/char*/my_cat(char* str);')
+    fp.puts('$function/char*/my_orig(MyHoge str);')
   end
   puts('was created  `.ffi`')
   puts('please agein execute when after edit `.ffi`')
@@ -189,6 +190,14 @@ File.open(C_FFI, 'w') do |fp|
           fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be bool");', param.name))
           fp.puts('        }')
           fp.puts(sprintf('        bool val%d = ((bnBool*)arg%d)->value;', i, i))
+        else
+          fp.puts(sprintf('        if(arg%d->type != BN_OBJECT_ANY) {', i))
+          fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be %s");', param.name, param.type))
+          fp.puts('        }')
+          fp.puts(sprintf('        bnAny* val%d = ((bnAny*)arg%d);', i, i))
+          fp.puts(sprintf('        if(any->type != bnIntern(bone->pool, "%s") {', param.type))
+          fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be %s");', param.name, param.type))
+          fp.puts(sprintf('        }'))
         end
     end
     if f.return_type != 'void'
