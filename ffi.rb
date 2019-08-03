@@ -216,12 +216,6 @@ File.open(C_FFI, 'w') do |fp|
   fp.puts('}')
   fp.puts('')
   fp.puts(sprintf('void ffi_%s_destroy(bnInterpreter* bone) {', NAME))
-  functions.each_with_index do |f, i|
-    fp.puts(sprintf('        void* data%d = g_hash_table_lookup(bone->externTable, bnIntern(bone->pool, "ffi.%s_%s"));', i, NAME, f.name))
-    fp.puts(sprintf('        g_hash_table_steal(bone->externTable, bnIntern(bone->pool, "ffi.%s_%s"));', NAME, f.name))
-    fp.puts(sprintf('        bnDrop(bone->heap, data%d);', i))
-    fp.puts(sprintf('        bnDeleteObject(data%d);', i))
-  end
   fp.puts('}')
 end
 # create .bn
