@@ -2,32 +2,41 @@ require_relative "bone"
 require 'fileutils'
 require "open3"
 
+# check args
+if ARGV.length == 0
+    puts('please ffi name')
+    puts('example: ruby plugin.rb myPlugin')
+    abort
+end
+NAME = ARGV[0]
+
+# check OS
 os = Bone::os()
 if os != :macosx
-    puts("unsupported a your operating system")
+    puts('unsupported a your operating system')
     exit(0)
 end
 
 # create ../bone_embed
-puts("create project directories")
+puts('create project directories')
 cwd = Bone::check_cwd()
-project_dir = Bone::unique_dir(File::dirname(cwd) + "/bone_plugin")
+project_dir = Bone::unique_dir(sprintf(File::dirname(cwd) + '/bone_plugin_%s', NAME))
 Dir.mkdir(project_dir)
 
 # create ../bone_embed/src
-src_dir = Bone::unique_dir(project_dir + "/src")
+src_dir = Bone::unique_dir(project_dir + '/src')
 Dir.mkdir(src_dir)
-src_gitig = Bone::unique_file(src_dir + "/.gitkeep")
+src_gitig = Bone::unique_file(src_dir + '/.gitkeep')
 FileUtils.touch(src_gitig)
 
 # create ../bone_embed/src/plugin
-src_app_dir = Bone::unique_dir(src_dir + "/plugin")
+src_app_dir = Bone.unique_dir(sprintf(src_dir + '/%s', NAME))
 Dir.mkdir(src_app_dir)
 
 # create ../bone_embed/bin
-bin_dir = Bone::unique_dir(project_dir + "/bin")
+bin_dir = Bone::unique_dir(project_dir + '/bin')
 Dir.mkdir(bin_dir)
-bin_gitig = Bone::unique_file(bin_dir + "/.gitkeep")
+bin_gitig = Bone::unique_file(bin_dir + '/.gitkeep')
 FileUtils.touch(bin_gitig)
 
 # create ../bone_embed/.gitignore
@@ -134,10 +143,11 @@ set_target_properties(varProjectName
     RUNTIME_OUTPUT_DIRECTORY "../bin"
 )
 EOS
-cmake_option = cmake_option.gsub("your bone header", Dir.pwd + "/src")
-cmake_option = cmake_option.gsub("your bone library", Dir.pwd + "/lib")
-src_cmake = Bone::unique_file(src_dir + "/CMakeLists.txt")
-File.open(src_cmake, "w") do |fp|
+cmake_option = cmake_option.gsub('varProjectName', NAME)
+cmake_option = cmake_option.gsub('your bone header', Dir.pwd + '/src')
+cmake_option = cmake_option.gsub('your bone library', Dir.pwd + '/lib')
+src_cmake = Bone.unique_file(src_dir + '/CMakeLists.txt')
+File.open(src_cmake, 'w') do |fp|
     fp.write(cmake_option)
 end
 
@@ -146,17 +156,19 @@ main = <<-EOS
 #include <stdio.h>
 #include <glib.h>
 #include <bone/runtime/interpreter.h>
-
+//#include "ffi.h"
 
 void varProjectName_Init(bnInterpreter* bone) {
-    printf("hello Init");
+    printf("varProjectName Init");
+    //ffi_init(bone);
 }
 void varProjectName_Destroy(bnInterpreter* bone) {
-    printf("hello Destroy");
+    printf("varProjectName Destroy");
 }
 EOS
-src_main = Bone::unique_file(src_app_dir + "/hello.c")
-File.open(src_main, "w") do |fp|
+main = main.gsub('varProjectName', NAME)
+src_main = Bone::unique_file(src_app_dir + '/main.c')
+File.open(src_main, 'w') do |fp|
     fp.write(main)
 end
 # create ../bone_embed/bin/bone.bn
@@ -164,32 +176,32 @@ bone = <<-EOS
 {} <- include("file.bn");
 stdout.puts("hello, world");
 EOS
-src_bone = Bone::unique_file(bin_dir + "/bone.bn")
-File.open(src_bone, "w") do |fp|
+src_bone = Bone.unique_file(bin_dir + '/bone.bn')
+File.open(src_bone, 'w') do |fp|
     fp.write(bone)
 end
 
-Dir.open(Dir.pwd + "/bin") do|dirp|
+Dir.open(Dir.pwd + '/bin') do|dirp|
     dirp.each do|file|
-        next if file.start_with?(".")
-        path = Dir.pwd + "/bin/" + file
+        next if file.start_with?('.')
+        path = Dir.pwd + '/bin/' + file
         if(File.directory?(path))
-            FileUtils.cp_r(path, project_dir + "/bin")
+            FileUtils.cp_r(path, project_dir + '/bin')
         else
-            FileUtils.cp(path, project_dir + "/bin/" + File.basename(path))
+            FileUtils.cp(path, project_dir + '/bin/' + File.basename(path))
         end
     end
 end
-FileUtils.cp("ffi.rb", src_app_dir + "/ffi.rb")
+FileUtils.cp('ffi.rb', src_app_dir + '/ffi.rb')
 
 # make project
 Dir.chdir(src_dir) do
-    o, e, s = Open3.capture3("cmake .")
+    o, e, s = Open3.capture3('cmake .')
     puts o
     if s != 0
         puts e
     end
-    o, e, s = Open3.capture3("make")
+    o, e, s = Open3.capture3('make')
     puts o
     if s != 0
         puts e
