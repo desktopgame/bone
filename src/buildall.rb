@@ -2,6 +2,15 @@ require "open3"
 require "fileutils"
 require "date"
 
+# check args
+if ARGV.length == 0
+    puts('please build option')
+    puts('example: ruby buildall.rb Debug')
+    puts('example: ruby buildall.rb Release')
+    abort
+end
+NAME = ARGV[0]
+
 def clean()
     FileUtils.rm_r("CMakeFiles") if(File.exists?("CMakeFiles"))
     File.delete("CMakeCache.txt") if(File.exists?("CMakeCache.txt"))
@@ -16,10 +25,13 @@ def build(mode, type)
     puts e
 end
 
-clean()
-build("Release", "BONE_SHARED")
-clean()
-build("Release", "BONE_STATIC")
-clean()
-build("Release", "BONE_RUN")
-FileUtils.cp("../lib/libbone.dylib", "../bin/libbone.dylib")
+def main(option)
+    clean()
+    build(option, "BONE_SHARED")
+    clean()
+    build(option, "BONE_STATIC")
+    clean()
+    build(option, "BONE_RUN")
+    FileUtils.cp("../lib/libbone.dylib", "../bin/libbone.dylib")
+end
+main(ARGV[0])
