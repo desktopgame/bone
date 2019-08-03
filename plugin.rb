@@ -4,7 +4,7 @@ require "open3"
 
 # check args
 if ARGV.length == 0
-    puts('please ffi name')
+    puts('please plugin name')
     puts('example: ruby plugin.rb myPlugin')
     abort
 end
