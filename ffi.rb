@@ -68,6 +68,7 @@ end
 if ARGV.length == 0
     puts('please ffi name')
     puts('example: ruby ffi.rb myFFI')
+    abort
 end
 BONE_FFI = sprintf('ffi_%s.bn', NAME)
 functions = []
