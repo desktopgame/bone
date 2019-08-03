@@ -115,8 +115,8 @@ File.open(H_FFI, "w") do |fp|
     fp.puts('#ifndef FFI_H')
     fp.puts('#define FFI_H')
     fp.puts('#include <bone/runtime/interpreter.h>')
-    fp.puts('void ffi_init(bnInterpreter* bone);')
-    fp.puts('void ffi_destroy(bnInterpreter* bone);')
+    fp.puts(sprintf('void ffi_%s_init(bnInterpreter* bone);', NAME))
+    fp.puts(sprintf('void ffi_%s_destroy(bnInterpreter* bone);', NAME))
     fp.puts('#endif')
 end
 # create .c
@@ -186,7 +186,7 @@ File.open(C_FFI, 'w') do |fp|
     fp.puts('}')
     fp.puts('')
   end
-  fp.puts('void ffi_init(bnInterpreter* bone) {')
+  fp.puts(sprintf('void ffi_%s_init(bnInterpreter* bone) {', NAME))
   functions.each do |f|
     buf = '        g_hash_table_replace(bone->externTable,'
     buf += sprintf('bnIntern(bone->pool, "ffi.%s_%s"),', NAME, f.name)
@@ -203,7 +203,7 @@ File.open(C_FFI, 'w') do |fp|
   end
   fp.puts('}')
   fp.puts('')
-  fp.puts('void ffi_destroy(bnInterpreter* bone) {')
+  fp.puts(sprintf('void ffi_%s_destroy(bnInterpreter* bone) {', NAME))
   functions.each_with_index do |f, i|
     fp.puts(sprintf('        void* data%d = g_hash_table_lookup(bone->externTable, bnIntern(bone->pool, "ffi.%s_%s"));', i, NAME, f.name))
     fp.puts(sprintf('        g_hash_table_steal(bone->externTable, bnIntern(bone->pool, "ffi.%s_%s"));', NAME, f.name))
