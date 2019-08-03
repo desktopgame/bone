@@ -87,6 +87,7 @@ unless File.exist?(DOT_FFI)
     fp.puts('$function/char*/my_gets();')
     fp.puts('$function/char*/my_cat(char* str);')
     fp.puts('$function/char*/my_orig(MyHoge str);')
+    fp.puts('$function/void*/my_generic(void* obj);')
   end
   puts('was created  `.ffi`')
   puts('please agein execute when after edit `.ffi`')
@@ -223,6 +224,8 @@ File.open(C_FFI, 'w') do |fp|
           fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be bool");', param.name))
           fp.puts('        }')
           fp.puts(sprintf('        bool val%d = ((bnBool*)arg%d)->value;', i, i))
+        elsif param.type == 'void*'
+          # nothing
         else
           fp.puts(sprintf('        if(arg%d->type != BN_OBJECT_ANY) {', i))
           fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be %s");', param.name, param.type))
@@ -233,7 +236,9 @@ File.open(C_FFI, 'w') do |fp|
           fp.puts(sprintf('        }'))
         end
     end
-    if f.return_type != 'void'
+    if f.return_type == 'void*'
+      fp.write(sprintf('        bnObject* c_ret = '))
+    elsif f.return_type != 'void'
       fp.write(sprintf('        %s c_ret = ', f.return_type))
     end
     fp.write(sprintf('%s(', f.name))
@@ -260,6 +265,8 @@ File.open(C_FFI, 'w') do |fp|
       fp.puts(sprintf('g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),bnNewString2(bone, c_ret));'))
     elsif f.return_type == 'bool'
       fp.puts(sprintf('g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),bnGetBool(bone->pool, frame, c_ret));'))
+    elsif f.return_type == 'void*'
+      fp.puts(sprintf('g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),c_ret);'))
     end
     fp.puts('')
     fp.puts('}')
