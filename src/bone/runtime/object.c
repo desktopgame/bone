@@ -305,6 +305,10 @@ static void to_string(bnInterpreter* bone, GString* str, bnObject* root,
         gpointer k, v;
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
                 bnStringView name = (bnStringView)k;
+                const char* vname = bnView2Str(bone->pool, name);
+                if (*vname == '$') {
+                        continue;
+                }
                 bnObject* entry = (bnObject*)v;
                 for (int i = 0; i < depth; i++) {
                         g_string_append(str, "    ");
@@ -312,6 +316,18 @@ static void to_string(bnInterpreter* bone, GString* str, bnObject* root,
                 g_string_append(str, bnView2Str(bone->pool, name));
                 g_string_append(str, "\n");
                 to_string(bone, str, entry, depth + 1);
+        }
+        if (root->type == BN_OBJECT_ARRAY) {
+                bnArray* ary = root;
+                for (int n = 0; n < ary->arr->len; n++) {
+                        bnObject* v = g_ptr_array_index(ary->arr, n);
+
+                        for (int i = 0; i < depth; i++) {
+                                g_string_append(str, "    ");
+                        }
+                        g_string_append_printf(str, "[%d]\n", n);
+                        to_string(bone, str, v, depth + 1);
+                }
         }
 }
 
