@@ -17,29 +17,29 @@ if os != :macosx
     exit(0)
 end
 
-# create ../bone_embed
+# create ../bone_plugin
 puts('create project directories')
 cwd = Bone::check_cwd()
 project_dir = Bone::unique_dir(sprintf(File::dirname(cwd) + '/bone_plugin_%s', NAME))
 Dir.mkdir(project_dir)
 
-# create ../bone_embed/src
+# create ../bone_plugin/src
 src_dir = Bone::unique_dir(project_dir + '/src')
 Dir.mkdir(src_dir)
 src_gitig = Bone::unique_file(src_dir + '/.gitkeep')
 FileUtils.touch(src_gitig)
 
-# create ../bone_embed/src/plugin
+# create ../bone_plugin/src/plugin
 src_app_dir = Bone.unique_dir(sprintf(src_dir + '/%s', NAME))
 Dir.mkdir(src_app_dir)
 
-# create ../bone_embed/bin
+# create ../bone_plugin/bin
 bin_dir = Bone::unique_dir(project_dir + '/bin')
 Dir.mkdir(bin_dir)
 bin_gitig = Bone::unique_file(bin_dir + '/.gitkeep')
 FileUtils.touch(bin_gitig)
 
-# create ../bone_embed/.gitignore
+# create ../bone_plugin/.gitignore
 ignore_option = <<-EOS
 CMakeLists.txt.user
 CMakeCache.txt
@@ -58,7 +58,7 @@ File.open(project_gitig, "w") do |fp|
     fp.write(ignore_option)
 end
 
-# create ../bone_embed/src/CMakeLists.txt
+# create ../bone_plugin/src/CMakeLists.txt
 cmake_option = <<-EOS
 cmake_minimum_required(VERSION 2.8)
 project(varProjectName C)
@@ -151,7 +151,7 @@ File.open(src_cmake, 'w') do |fp|
     fp.write(cmake_option)
 end
 
-# create ../bone_embed/src/plugin/main.c
+# create ../bone_plugin/src/plugin/main.c
 main = <<-EOS
 #include <stdio.h>
 #include <glib.h>
@@ -177,7 +177,7 @@ src_main = Bone::unique_file(src_app_dir + '/main.c')
 File.open(src_main, 'w') do |fp|
     fp.write(main)
 end
-# create ../bone_embed/bin/bone.bn
+# create ../bone_plugin/bin/bone.bn
 bone = <<-EOS
 {} <- include("file.bn");
 stdout.puts("hello, world");
