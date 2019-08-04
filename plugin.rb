@@ -39,6 +39,17 @@ Dir.mkdir(bin_dir)
 bin_gitig = Bone::unique_file(bin_dir + '/.gitkeep')
 FileUtils.touch(bin_gitig)
 
+
+# create ../bone_plugin/lib
+lib_dir = Bone::unique_dir(project_dir + '/lib')
+Dir.mkdir(lib_dir)
+lib_gitig = Bone::unique_file(lib_dir + '/.gitignore')
+File.open(lib_gitig, "w") do |fp|
+    fp.puts('*.dylib')
+    fp.puts('*.so')
+    fp.puts('*.dll')
+end
+
 # create ../bone_plugin/.gitignore
 ignore_option = <<-EOS
 CMakeLists.txt.user
