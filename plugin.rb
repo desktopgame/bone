@@ -36,8 +36,13 @@ Dir.mkdir(src_app_dir)
 # create ../bone_plugin/bin
 bin_dir = Bone::unique_dir(project_dir + '/bin')
 Dir.mkdir(bin_dir)
-bin_gitig = Bone::unique_file(bin_dir + '/.gitkeep')
-FileUtils.touch(bin_gitig)
+bin_gitig = Bone::unique_file(bin_dir + '/.gitignore')
+File.open(bin_gitig, "w") do |fp|
+    fp.puts('bone')
+    fp.puts('*.dylib')
+    fp.puts('*.so')
+    fp.puts('*.dll')
+end
 
 
 # create ../bone_plugin/lib
