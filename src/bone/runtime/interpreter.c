@@ -18,6 +18,7 @@
 #include "std.h"
 #include "string.h"
 #include "vm.h"
+#include "../util/io.h"
 
 static void free_gstr(void* v);
 static void load_plugins(bnInterpreter* self, const char* currentdir);
@@ -47,6 +48,11 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
                                         bnIntern(ret->pool, argv[i]));
                 }
         }
+#if DEBUG
+        ret->stdout = bnStdout();
+        ret->stderr = bnStderr();
+        ret->stdin = bnStdin();
+#endif
         bnExternSystem(ret);
         bnExternFile(ret);
         bnExternDir(ret);

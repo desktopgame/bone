@@ -2,6 +2,7 @@
 #define BONE_RUNTIME_INTERPRETER_H
 #include <setjmp.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include "../glib.h"
 #include "../util/jump_stack.h"
 #include "../util/stack.h"
@@ -25,6 +26,11 @@ typedef struct bnInterpreter {
         struct bnHeap* heap;
         bnStack* callStack;
         bnJStack* __jstack;
+#if DEBUG
+        FILE* stdout;
+        FILE* stderr;
+        FILE* stdin;
+#endif
 } bnInterpreter;
 
 typedef void (*bnPluginInit)(bnInterpreter*);
