@@ -41,6 +41,7 @@ static void bnStdObjectLT(bnInterpreter* bone, bnFrame* frame);
 static void bnStdObjectLE(bnInterpreter* bone, bnFrame* frame);
 static void bnStdObjectEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdObjectNotEqual(bnInterpreter* bone, bnFrame* frame);
+static void bnStdObjectToString(bnInterpreter* bone, bnFrame* frame);
 
 void bnInitObject(bnInterpreter* bone, bnObject* self, bnObjectType type) {
         self->table =
@@ -62,6 +63,10 @@ void bnIncludeKernel(bnInterpreter* bone, bnObject* self) {
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "other", BN_C_ADD_RETURN, "ret",
                                       BN_C_ADD_EXIT));
+        bnDefine(self, bnIntern(bone->pool, "toString"),
+                 bnNewLambdaFromCFunc(bone, bnStdObjectToString, bone->pool,
+                                      BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN,
+                                      "ret", BN_C_ADD_EXIT));
 }
 
 bnObject* bnNewObject(bnInterpreter* bone) {
@@ -291,4 +296,30 @@ static void bnStdObjectNotEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* b = bnPopStack(frame->vStack);
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              bnGetBool(bone->pool, frame, a != b));
+}
+
+static void to_string(bnInterpreter* bone, GString* str, bnObject* root,
+                      int depth) {
+        GHashTableIter hashIter;
+        g_hash_table_iter_init(&hashIter, root->table);
+        gpointer k, v;
+        while (g_hash_table_iter_next(&hashIter, &k, &v)) {
+                bnStringView name = (bnStringView)k;
+                bnObject* entry = (bnObject*)v;
+                for (int i = 0; i < depth; i++) {
+                        g_string_append(str, "    ");
+                }
+                g_string_append(str, bnView2Str(bone->pool, name));
+                g_string_append(str, "\n");
+                to_string(bone, str, entry, depth + 1);
+        }
+}
+
+static void bnStdObjectToString(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnPopStack(frame->vStack);
+        GString* str = g_string_new("ROOT\n");
+        to_string(bone, str, a, 1);
+        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
+                             bnNewString2(bone, str->str));
+        g_string_free(str, TRUE);
 }
