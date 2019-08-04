@@ -23,6 +23,47 @@ cwd = Bone::check_cwd()
 project_dir = Bone::unique_dir(sprintf(File::dirname(cwd) + '/bone_plugin_%s', NAME))
 Dir.mkdir(project_dir)
 
+# create ../bone_plugin/.vscode
+vscode_dir = Bone::unique_dir(project_dir + "/.vscode")
+Dir.mkdir(vscode_dir)
+LAUNCH = <<-EOS
+{
+    // IntelliSense を使用して利用可能な属性を学べます。
+    // 既存の属性の説明をホバーして表示します。
+    // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "(lldb) Launch(Bulitin)",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/bin/bone",
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/bin",
+        "args": [],
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "lldb"
+      },
+      {
+        "name": "(lldb) Launch(Externnal)",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/bin/bone",
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/bin",
+        "args": [],
+        "environment": [],
+        "externalConsole": true,
+        "MIMode": "lldb"
+      },
+    ]
+  }
+EOS
+File.open(vscode_dir + "/launch.json", "w") do |fp|
+    fp.write(LAUNCH)
+end
+
 # create ../bone_plugin/src
 src_dir = Bone::unique_dir(project_dir + '/src')
 Dir.mkdir(src_dir)
