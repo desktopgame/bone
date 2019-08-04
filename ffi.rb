@@ -100,6 +100,7 @@ if ARGV.length == 0
 end
 NAME = ARGV[0]
 BONE_FFI = sprintf('ffi_%s.bn', NAME)
+BONE_TEST = sprintf('ffi_%s_test.bn', NAME)
 functions = []
 types = []
 inline_lines = []
@@ -316,4 +317,12 @@ File.open(BONE_FFI, 'w') do |fp|
         fp.write(');')
         fp.puts('')
     end
+end
+# create .bn
+if File.exist?(BONE_TEST)
+    File.delete(BONE_TEST)
+end
+File.open(BONE_TEST, "w") do|fp|
+  fp.puts(sprintf('{} <- load("ffi_%s.bn")', NAME))
+  fp.puts('{} <- load("file.bn")')
 end
