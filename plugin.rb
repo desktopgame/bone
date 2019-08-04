@@ -176,12 +176,12 @@ main = <<-EOS
 //#include "ffi.h"
 
 void varProjectName_Init(bnInterpreter* bone) {
-    printf("varProjectName Init");
+    printf("varProjectName Init\n");
     //ffi_init(bone);
 }
 
 void varProjectName_Destroy(bnInterpreter* bone) {
-    printf("varProjectName Destroy");
+    printf("varProjectName Destroy\n");
 }
 
 const char* varProjectName_GetTargetVersion() {
