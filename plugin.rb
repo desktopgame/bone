@@ -60,8 +60,38 @@ LAUNCH = <<-EOS
     ]
   }
 EOS
-File.open(vscode_dir + "/launch.json", "w") do |fp|
+C_CPP_PROPS = <<-EOS
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "varBoneInclude"
+            ],
+            "defines": [
+                "DEBUG",
+                "VMDEBUG"
+            ],
+            "macFrameworkPath": [
+                "/System/Library/Frameworks",
+                "/Library/Frameworks"
+            ],
+            "compilerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}
+EOS
+C_CPP_PROPS = C_CPP_PROPS.gsub('varBoneInclude', Dir.pwd + '/src');
+File.open(vscode_dir + '/launch.json', "w") do |fp|
     fp.write(LAUNCH)
+end
+File.open(vscode_dir + '/c_cpp_properties.json', "w") do |fp|
+    fp.write(C_CPP_PROPS)
 end
 
 # create ../bone_plugin/src
