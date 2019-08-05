@@ -1,0 +1,14 @@
+a := object();
+a.name := "this";
+a.print := def(self, str)() {
+    println(self.name);
+    println(str);
+};
+
+b := object();
+b.a := a;
+b.get := def(self)(ret) {
+    ret := self.a;
+};
+
+b.get().print("Yey");
