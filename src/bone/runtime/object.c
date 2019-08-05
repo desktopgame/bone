@@ -123,6 +123,9 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                 int code = BN_JMP_PUSH(bone->__jstack);
                 if (code == 0) {
                         lambda->u.vFunc(bone, sub);
+                        if (sub->panic != NULL) {
+                                frame->panic = sub->panic;
+                        }
                 } else {
                         if (code != BN_JMP_CODE_EXCEPTION) {
                                 abort();
