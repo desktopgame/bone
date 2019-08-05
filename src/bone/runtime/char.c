@@ -5,6 +5,7 @@
 #include "lambda.h"
 
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
+#define message() ("should be parameter is char")
 
 static void bnStdCharFuncCall(bnInterpreter* bone, bnFrame* frame);
 static void bnStdCharPositive(bnInterpreter* bone, bnFrame* frame);
@@ -95,8 +96,7 @@ static void bnStdCharEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_CHAR || b->type != BN_OBJECT_CHAR) {
-                _throw(bone, frame,
-                       "overload of equality on char is compare for char.");
+                _throw(bone, frame, message());
         }
         bnChar* aChar = a;
         bnChar* bChar = b;
@@ -109,8 +109,7 @@ static void bnStdCharNotEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_CHAR || b->type != BN_OBJECT_CHAR) {
-                _throw(bone, frame,
-                       "overload of equality on char is compare for char.");
+                _throw(bone, frame, message());
         }
         bnChar* aChar = a;
         bnChar* bChar = b;
