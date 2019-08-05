@@ -11,6 +11,7 @@
 #include "string.h"
 
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
+#define message() ("should be parameter is double")
 
 static void bnStdDoubleFuncCall(bnInterpreter* bone, bnFrame* frame);
 static void bnStdDoublePositive(bnInterpreter* bone, bnFrame* frame);
@@ -114,7 +115,7 @@ static void bnStdDoublePlus(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
@@ -127,7 +128,7 @@ static void bnStdDoubleMinus(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
@@ -140,7 +141,7 @@ static void bnStdDoubleMultiply(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
@@ -153,7 +154,7 @@ static void bnStdDoubleDivide(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
@@ -166,7 +167,7 @@ static void bnStdDoubleModulo(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
@@ -185,7 +186,7 @@ static void bnStdDoubleGT(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
@@ -197,7 +198,7 @@ static void bnStdDoubleGE(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
@@ -210,7 +211,7 @@ static void bnStdDoubleLT(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
@@ -222,7 +223,7 @@ static void bnStdDoubleLE(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
@@ -234,7 +235,7 @@ static void bnStdDoubleEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
@@ -246,7 +247,7 @@ static void bnStdDoubleNotEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
@@ -258,7 +259,7 @@ static void bnStdDoubleNotEqual(bnInterpreter* bone, bnFrame* frame) {
 static void bnStdDoubleToString(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_DOUBLE) {
-                bnFormatThrow(bone, "internal error");
+                bnFormatThrow(bone, message());
         }
         char buf[100];
         sprintf(buf, "%lf", ((bnDouble*)a)->value);
