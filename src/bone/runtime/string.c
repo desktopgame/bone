@@ -6,6 +6,7 @@
 #include "lambda.h"
 
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
+#define message() ("should be parameter is string")
 
 static void bnStdStringFuncCall(bnInterpreter* bone, bnFrame* frame);
 static void bnStdStringPositive(bnInterpreter* bone, bnFrame* frame);
@@ -108,8 +109,7 @@ static void bnStdStringEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING || b->type != BN_OBJECT_STRING) {
-                _throw(bone, frame,
-                       "overload of equality on string is compare for string.");
+                _throw(bone, frame, message());
         }
         bnStringView ai = ((bnString*)a)->value;
         bnStringView bi = ((bnString*)b)->value;
@@ -121,8 +121,7 @@ static void bnStdStringNotEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING || b->type != BN_OBJECT_STRING) {
-                _throw(bone, frame,
-                       "overload of equality on string is compare for string.");
+                _throw(bone, frame, message());
         }
         bnStringView ai = ((bnString*)a)->value;
         bnStringView bi = ((bnString*)b)->value;
