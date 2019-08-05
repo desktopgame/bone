@@ -7,12 +7,11 @@
 #include "object.h"
 #include "snapshot.h"
 
-static GRecMutex gHeapMtx;
-
 typedef struct bnHeap {
         GList* objects;
         GList* protected;
         int all;
+        GRecMutex mutex;
 } bnHeap;
 
 static void gc_clear(bnHeap* self, bnFrame* frame);
@@ -29,20 +28,21 @@ bnHeap* bnNewHeap() {
         ret->objects = NULL;
         ret->protected = NULL;
         ret->all = 0;
+        g_rec_mutex_init(&ret->mutex);
         return ret;
 }
 
 void bnAddToHeap(bnHeap* self, bnObject* obj) {
-        g_rec_mutex_lock(&gHeapMtx);
+        g_rec_mutex_lock(&self->mutex);
         self->objects = g_list_append(self->objects, obj);
         self->all++;
-        g_rec_mutex_unlock(&gHeapMtx);
+        g_rec_mutex_unlock(&self->mutex);
 }
 
 void bnGC(bnInterpreter* bone) {
         bnHeap* self = bone->heap;
         bnFrame* frame = bone->frame;
-        g_rec_mutex_lock(&gHeapMtx);
+        g_rec_mutex_lock(&self->mutex);
         BN_CHECK_MEM();
         gc_clear(self, frame);
         gc_mark(self, frame);
@@ -50,7 +50,7 @@ void bnGC(bnInterpreter* bone) {
         gc_mark_native(bone);
         gc_sweep(self, frame);
         BN_CHECK_MEM();
-        g_rec_mutex_unlock(&gHeapMtx);
+        g_rec_mutex_unlock(&self->mutex);
 }
 
 void bnDrop(bnHeap* self, bnObject* obj) { g_list_remove(self->objects, obj); }
@@ -66,10 +66,10 @@ void bnRelease(bnHeap* self) {
 }
 
 void bnDeleteHeap(bnHeap* self) {
-        g_rec_mutex_lock(&gHeapMtx);
+        g_rec_mutex_lock(&self->mutex);
         g_list_free(self->objects);
         BN_FREE(self);
-        g_rec_mutex_unlock(&gHeapMtx);
+        g_rec_mutex_unlock(&self->mutex);
 }
 
 static void gc_clear(bnHeap* self, bnFrame* frame) {
