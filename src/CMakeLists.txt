@@ -108,6 +108,7 @@ add_custom_target(
     WORKING_DIRECTORY ../bin
 )
 
+install(CODE "execute_process(COMMAND doxygen)")
 install(DIRECTORY DESTINATION ${BONE_INSTALL_DIR})
 install(
     DIRECTORY ./../bin
