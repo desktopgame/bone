@@ -3,6 +3,7 @@
 #include "../parse/ast.h"
 #include "../parse/ast2il.h"
 #include "../parse/parser.h"
+#include "../util/io.h"
 #include "array.h"
 #include "bool.h"
 #include "enviroment.h"
@@ -18,7 +19,6 @@
 #include "std.h"
 #include "string.h"
 #include "vm.h"
-#include "../util/io.h"
 
 static void free_gstr(void* v);
 static void load_plugins(bnInterpreter* self, const char* currentdir);
@@ -49,9 +49,9 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
                 }
         }
 #if DEBUG
-        ret->stdout = bnStdout();
-        ret->stderr = bnStderr();
-        ret->stdin = bnStdin();
+        ret->out = bnStdout();
+        ret->err = bnStderr();
+        ret->in = bnStdin();
 #endif
         bnExternSystem(ret);
         bnExternFile(ret);

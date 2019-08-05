@@ -27,9 +27,9 @@ typedef struct bnInterpreter {
         bnStack* callStack;
         bnJStack* __jstack;
 #if DEBUG
-        FILE* stdout;
-        FILE* stderr;
-        FILE* stdin;
+        FILE* out;
+        FILE* err;
+        FILE* in;
 #endif
 } bnInterpreter;
 
