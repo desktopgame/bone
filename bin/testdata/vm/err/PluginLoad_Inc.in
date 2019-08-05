@@ -1,0 +1,1 @@
+func := extern_def("no t fo un dfun ction", [], []);
