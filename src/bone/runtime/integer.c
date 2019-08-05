@@ -5,6 +5,7 @@
 #include "string.h"
 
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
+#define message() ("should be parameter is int")
 
 // Integer
 static void bnStdIntegerFuncCall(bnInterpreter* bone, bnFrame* frame);
@@ -123,7 +124,7 @@ static void bnStdIntegerPositive(bnInterpreter* bone, bnFrame* frame) {
 static void bnStdIntegerNegative(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "should be `self` is integer");
+                _throw(bone, frame, message());
         }
         int ai = ((bnInteger*)a)->value;
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
@@ -142,7 +143,7 @@ static void bnStdIntegerPlus(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -155,7 +156,7 @@ static void bnStdIntegerMinus(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -168,7 +169,7 @@ static void bnStdIntegerMultiply(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -181,7 +182,7 @@ static void bnStdIntegerDivide(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -194,7 +195,7 @@ static void bnStdIntegerModulo(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -207,7 +208,7 @@ static void bnStdIntegerBitAnd(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -220,7 +221,7 @@ static void bnStdIntegerBitOr(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -239,7 +240,7 @@ static void bnStdIntegerLShift(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnFormatThrow(bone, "Integer#<< is required integer argument");
+                bnFormatThrow(bone, message());
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -251,7 +252,7 @@ static void bnStdIntegerRShift(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnFormatThrow(bone, "Integer#<< is required integer argument");
+                bnFormatThrow(bone, message());
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -263,7 +264,7 @@ static void bnStdIntegerGT(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -276,7 +277,7 @@ static void bnStdIntegerGE(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -289,7 +290,7 @@ static void bnStdIntegerLT(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -302,7 +303,7 @@ static void bnStdIntegerLE(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -315,7 +316,7 @@ static void bnStdIntegerEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -328,7 +329,7 @@ static void bnStdIntegerNotEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
@@ -340,7 +341,7 @@ static void bnStdIntegerNotEqual(bnInterpreter* bone, bnFrame* frame) {
 static void bnStdIntegerToString(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "internal error");
+                _throw(bone, frame, message());
         }
         char buf[100];
         sprintf(buf, "%d", ((bnInteger*)a)->value);
