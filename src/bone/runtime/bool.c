@@ -5,6 +5,7 @@
 #include "lambda.h"
 
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
+#define message() ("should be parameter is bool")
 
 static void bnStdBoolFuncCall(bnInterpreter* bone, bnFrame* frame);
 static void bnStdBoolPositive(bnInterpreter* bone, bnFrame* frame);
@@ -85,10 +86,10 @@ static void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_BOOL) {
-                _throw(bone, frame, "should be `self` is bool");
+                _throw(bone, frame, message());
         }
         if (b->type != BN_OBJECT_BOOL) {
-                _throw(bone, frame, "should be argument is bool");
+                _throw(bone, frame, message());
         }
         bnBool* boolA = a;
         bnBool* boolB = b;
@@ -104,10 +105,10 @@ static void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_BOOL) {
-                _throw(bone, frame, "should be `self` is bool");
+                _throw(bone, frame, message());
         }
         if (b->type != BN_OBJECT_BOOL) {
-                _throw(bone, frame, "should be argument is bool");
+                _throw(bone, frame, message());
         }
         bnBool* boolA = a;
         bnBool* boolB = b;
