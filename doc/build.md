@@ -1,20 +1,20 @@
-# bone のビルド(build of bone)
+# bone のビルド
 
-## MacOS の場合(when on MacOS)
+## MacOS の場合
 
-- まず、homebrew をインストールします。(in first, install homebrew)
+- まず、homebrew をインストールします。
   - [homebrew](https://brew.sh/index_ja.html)
-- 次に、cmake, glib をインストールします。(in next, install the cmake and glib)
+- 次に、cmake, glib をインストールします。
 
 ```
 brew install glib
 brew install cmake
 ```
 
-- 次に CUnit をインストールします。(in next, install cunit)
+- 次に CUnit をインストールします。
   - [CUnit についての備忘録](https://qiita.com/from_chc/items/db771bef1e83fc00783a)
 
-次のコマンドを打ち込みます。(type next command in terminal)
+次のコマンドを打ち込みます。
 
 ```
 cd your_clone_dir/src
@@ -30,11 +30,11 @@ brew install doxygen
 sudo make install
 ```
 
-## WindowsOS の場合(when on WindowsOS)
+## WindowsOS の場合
 
-- まず、cmake をインストールします。(in first, install the cmake)
+- まず、cmake をインストールします。
   - [CMake](https://cmake.org/download/)
-- 次に、visualstudio をインストールします。(in ndex, install the visualstudio)
+- 次に、visualstudio をインストールします。
   - [VisualStudio](https://docs.microsoft.com/ja-jp/visualstudio/install/install-visual-studio?view=vs-2019)
 - ruby をインストールします。
   - https://rubyinstaller.org/downloads/

@@ -1,70 +1,73 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6561b890c2ab43d3a6eef9e77f23d39a)](https://app.codacy.com/app/desktopgame/bone?utm_source=github.com&utm_medium=referral&utm_content=desktopgame/bone&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.org/desktopgame/bone.svg?branch=master)](https://travis-ci.org/desktopgame/bone)
-# 概要(about bone language)
-boneはプロトタイピング言語をベースとしており、  
+
+# 概要
+
+bone はプロトタイピング言語をベースとしており、  
 いくつか独自のアイデアも加えられています。  
 また、この言語は実験的なものなので  
 他の言語にあるような人気のある機能のいくつかは含まれません。  
-(bone is based on prototyping language.  
-and, added some peculiar idea.  
-also, this language is but experiment,
-so, included in other languages popular function is not included in this language.)  
+例:
 
-例(example):
-* class, interface, overload
-* method
-* exception,try-catch
-* null
+- class, interface, overload
+- method
+- exception,try-catch
+- null
 
-# 参考にした言語(affected a language)
-* [crowbar](http://kmaebashi.com/programmer/devlang/crowbar.html)
-* [anko](https://github.com/mattn/anko)
-* [go](https://github.com/golang/go)
-* [ruby](https://github.com/ruby/ruby)
+# 参考にした言語
 
-# 特徴(feature)
+- [crowbar](http://kmaebashi.com/programmer/devlang/crowbar.html)
+- [anko](https://github.com/mattn/anko)
+- [go](https://github.com/golang/go)
+- [ruby](https://github.com/ruby/ruby)
+
+# 特徴
+
 この言語独自のアイデアはオブジェクトインジェクションとスコープインジェクションです。  
 これは名前つき戻り値と関連しています。  
-また、値を返す時は常に名前つき戻り値を使います。  
-(this language peculiar idea is object injection, and scope injection.  
-this idea is related with named return value.  
-and, need always nnamed return value if return a value.)
+また、値を返す時は常に名前つき戻り値を使います。
 
-## 具体例(concrete example)
-名前つき戻り値(named return value)
-````
+## 具体例
+
+名前つき戻り値
+
+```
 f := def()(value, error) {
     value := "value is string";
     error := false;
 };
 
-// オブジェクトインジェクション(object injection)
+// オブジェクトインジェクション
 v := object() <- f();
 println(v.value);
 println(v.error);
 
-// スコープインジェクション(scope injection)
+// スコープインジェクション
 {} <- f();
 println(value);
 println(error);
 
-// ネストした名前つき戻り値(nested named return value)
+// ネストした名前つき戻り値
 f2 := def()(value, error, value2) {
     {}  <- f();
     value2 := "value 2";
 };
-````
-オブジェクトインジェクション(object injection)
-````
+```
+
+オブジェクトインジェクション
+
+```
 std := object() <- load("./std.bn");
 std.printf("hello, world");
-````
-スコープインジェクション(scope injection)
-````
+```
+
+スコープインジェクション
+
+```
 {} <- load("./std.bn");
 printf("hello, world");
-````
+```
 
-# 詳細(more information)
-詳細はdocumentフォルダを参照してください。  
-(visit document folder if read more information)
+# 詳細
+
+詳細は document フォルダを参照してください。

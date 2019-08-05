@@ -1,51 +1,46 @@
-# bone 仕様書(bone language specification)
+# bone 仕様書
+
 bone は動的型付けのプログラミング言語で、  
-プロトタイピングの要素を持っています。  
-(bone is dynamic typing language,  
-have prototyping function)  
-  
-目玉となる機能はインジェクション演算子、名前つき戻り値です。  
-(feature is injection operator)  
+プロトタイピングの要素を持っています。
+
+目玉となる機能はインジェクション演算子、名前つき戻り値です。
 
 ## コマンドライン引数
-````
+
+```
 $ bone
-````
+```
+
 インタラクティブモードで起動。  
 ただし、デバッグビルドではテストを実行する。
 
 ```
 $ bone filename args...
-````
-現在のパスから filename を解決して実行。  
-argsはスクリプト側から `argc` `argv` として参照できます。
+```
 
-## プロトタイピング(prototyping)
-boneでは存在しないメンバーに代入を行うと、  
-その名前のメンバーを作成します。  
-(create new member that name if assigned to not found member)  
-  
-boneではメソッドという概念が存在しません。  
+現在のパスから filename を解決して実行。  
+args はスクリプト側から `argc` `argv` として参照できます。
+
+## プロトタイピング
+
+bone では存在しないメンバーに代入を行うと、  
+その名前のメンバーを作成します。
+
+bone ではメソッドという概念が存在しません。  
 ただし、クロージャーは存在します。  
-これをメンバーに代入することでメソッドの様に使えます。  
-(not exists method on `bone`.
-however, exists closure object.
-by doing assigned to member is useable like method)
+これをメンバーに代入することでメソッドの様に使えます。
 
 ## クロージャ(closure)
-通常、クロージャーはインスタンスではなくスコープに依存するオブジェクトです。  
-この点は他の多くの言語と同様です。  
-(in normal, closure is not depend on instance,
-closure is depend on call scope.
-this point is like other programming launguages.)  
-  
-boneのクロージャが他のプログラム言語と異なるのは、  
-"それを持っているオブジェクトに依存する"宣言ができる点です。  
-(difference of bone closure between other language is
-can declare of depend on assigned instance)
 
-通常のクロージャ(normal closure)
-````
+通常、クロージャーはインスタンスではなくスコープに依存するオブジェクトです。  
+この点は他の多くの言語と同様です。
+
+bone のクロージャが他のプログラム言語と異なるのは、  
+"それを持っているオブジェクトに依存する"宣言ができる点です。
+
+通常のクロージャ
+
+```
 FUNC := def (param, param2,,,) {
     ...
 };
@@ -54,10 +49,11 @@ FUNC("hoge", "huga");
 obj := ...
 obj.func = FUNC;
 obj.func("hoge", "huga");
-````
+```
 
-"それを持っているオブジェクトに依存する"クロージャ(depend on assigned instance)
-````
+"それを持っているオブジェクトに依存する"クロージャ
+
+```
 FUNC := def (self, param, param2,,,) {
     ...
 };
@@ -66,39 +62,34 @@ FUNC("self", "hoge", "huga");
 obj := ...
 obj.func = FUNC;
 obj.func(/* ここにobj(here is obj) */ "hoge", "huga");
-````
+```
 
-この機能は演算子オーバーロードのために追加されました。  
-(this function added for operator overload)
+この機能は演算子オーバーロードのために追加されました。
 
-## クロージャから値を返す(return value from closure)
-クロージャから値を返すためには、名前つき戻り値を使用します。  
-(need named return for use return value from closure)
+## クロージャから値を返す
 
-名前つき戻り値(named return)
-````
+クロージャから値を返すためには、名前つき戻り値を使用します。
+
+名前つき戻り値
+
+```
 a := def() (value) {
     value := "aaa"
 
     // return value;
     // 値を返すreturnはboneでは使えません。
-    // can't use return with value
 
     return;
     // これは大丈夫です。
-    // it's ok
 };
 // "aaa" が val へ代入されます。
-// "aaa" assigned into val
 val := a();
 
 // val へインジェクションを行います。
-// injection to val
 val <- a();
 println(val.value);
 
 // 現在のスコープで "value" という名前の変数が定義されます。
-// declared a value at current scope
 {} <- a();
 println(value)
 
@@ -111,53 +102,44 @@ b := def() (return1, return2) {
 // "value1" assigned into val
 //
 // 複数の名前つき戻り値を持つ関数が呼ばれた時、その最初の要素を返すからです。
-// (return of first value when has multiple "named return")
 // この仕様は、主要なデータを第一の名前つき戻り値にして、
 // エラー情報やそのたオプショナルな情報を第二以降の名前つき戻り値にするといった使い方ができます。
-// (this rule is can useable to return of optional data)
 // 上記の例では戻り値が一つだけでしたが、あれもこの仕様が適用された結果です。
 // 名前つき戻り値が一つの時のみの特例ではありません。
-// (also when example on above "named return" count is one,
-// it is the result of applyed this rule.
-// NOT special specification)
 val := b();
 
 // val へインジェクションを行います。
-// injection to val
 val <- b();
 println(val.return1);
 println(val.return2);
 
 // 現在のスコープで "return1", "return2" という名前の変数が定義されます。
-// declared a value at current scope
 {} <- b();
 println(return1);
 println(return2);
-````
+```
 
-他の多くの言語と異なるのは、値を返すためには常に名前つき戻り値を使わなければいけない点です。  
-(difference of bone between other language is
-use always "named return" for return value from closure)  
-  
+他の多くの言語と異なるのは、値を返すためには常に名前つき戻り値を使わなければいけない点です。
+
 もし通常の値つき return が使えると仮定すると、
-この仕様では曖昧な振る舞いが生じます。  
-(have fuzzy behavior if can use return with value)
-````
+この仕様では曖昧な振る舞いが生じます。
+
+```
 a := def () (retA, retB) {
     retA := "aaa"
     retB := "bbb"
     return ???
 }
-````
+```
 
-## インジェクション(injection)
-インジェクションは上で紹介した以下のコードです。  
-  
+## インジェクション
+
+インジェクションは上で紹介した以下のコードです。
+
 メンバーの定義、もしくはローカル変数の宣言ができます。  
-ローカル変数の宣言は名前つきreturnを行うクロージャの中で有用です。  
-(can declare member or declare local variable.  
-declare local variable by injection is convenient when implement named return)
-````
+ローカル変数の宣言は名前つき return を行うクロージャの中で有用です。
+
+```
 ...
 
 b := def() (return1, return2) {
@@ -168,22 +150,21 @@ b := def() (return1, return2) {
 ...
 
 // val へインジェクションを行います。
-// injection to val
 val <- b();
 println(val.return1);
 println(val.return2);
 
 // 現在のスコープで "return1", "return2" という名前の変数が定義されます。
-// declared a value at current scope
 {} <- b();
 println(return1);
 println(return2);
 
 ...
-````
+```
 
-ネストした名前つき戻り値のサンプル(sample of nested named return)
-````
+ネストした名前つき戻り値のサンプル
+
+```
 a := def() (val, val2) {
     val := "aaa"
     val2 := "bbb"
@@ -193,12 +174,14 @@ b := def() (val, val2, val3) {
     {} <- a()
     val3 = "cccc"
 }
-````
+```
 
 ## 可変長名前つき戻り値
+
 そのスコープで定義された全ての変数を返す場合は、
 次の構文を使用します。
-````
+
+```
 varret := def ()(...) {
     a := "aaa";
     b := "ccc";
@@ -216,70 +199,72 @@ arr := varret();
 println(arr[0]);
 println(arr[1]);
 println(arr[2]);
-````
+```
 
-loadは内部的にこれを使用しています。  
+load は内部的にこれを使用しています。
 
-## エクスポートされない変数(not export variable)
-loadやincludeなどの可変長名前つき戻り値によって実装される関数は、  
-公開されるべきでない変数を公開してしまう可能性があります。  
-(in function such as `load` and `include` implemented by multiple named return value,  it will be done export all variable)
-````
+## エクスポートされない変数
+
+load や include などの可変長名前つき戻り値によって実装される関数は、  
+公開されるべきでない変数を公開してしまう可能性があります。
+
+```
 temp := 0;
 
 work := def()() {
     ...
     tempを使って何か処理をする
-    (do something use a `temp`)
 };
-````
-これは一貫性を欠きますが、以下の様な仕様を採用しました。  
-(this is chipped a consistency,
-but it became specification.)
-````
+```
+
+これは一貫性を欠きますが、以下の様な仕様を採用しました。
+
+```
 _temp := 0;
 //これは公開されない
-//this variable will not export
 
 hoge := def()(_value) {
     _value := ...
 };
 //この様に数が決まっている戻り値では _ を使える。
-//(no problem, if it is fixed named return value count)
 
 {} <- hoge();
 //ただし、トップレベルにエクスポートされると、
 //それをload, includeするファイルからは見えない
-````
+```
 
+## クロージャーのオーバーロード
 
-## クロージャーのオーバーロード(overload of closure)
 できません。
-(can't)
 
-## 組み込み変数(built-in variable)
+## 組み込み変数
+
 VALUE:
-* true
-* false
-* argc
-* argv
+
+- true
+- false
+- argc
+- argv
 
 CLOSURE:
-* include
-* load
-* object
-* array
-* string
-* panic
-* recover
-* extern_var
-* extern_def
+
+- include
+- load
+- object
+- array
+- string
+- panic
+- recover
+- extern_var
+- extern_def
 
 詳細は[こちら](blt.md)
 
 ## 予約語
+
 いくつかの名前は演算子オーバーロードのために予約されています。
-````
+
+```
 opCall
 opPositive
 opNegative
@@ -303,77 +288,75 @@ opEqual
 opNotEqual
 opArraySet
 opArrayGet
-````
+```
 
 演算子オーバーロードの使用例
-````
+
+```
 a := 10;
 a.opPlus := def(self, other)(ret) {
     ret := "hello";
 };
 println(a + 1);
 //hello
-````
+```
 
-## 真偽値型(boolean type)
-boneにはif文, while文が存在しており、
-その仕様はCを踏襲しています。  
-(bone have if and while statement.
-it specification is like C)  
-  
-if文, while文で "true" として扱われるのは
-* false, 0以外のオブジェクト全て
+## 真偽値型
 
-if文, while文で "false" として扱われるのは
-* false
-* 0
+bone には if 文, while 文が存在しており、
+その仕様は C を踏襲しています。
 
-例えば、次のコードは完全に合法です。  
-(in example, next code is just completly no problem)
-````
+if 文, while 文で "true" として扱われるのは
+
+- false, 0 以外のオブジェクト全て
+
+if 文, while 文で "false" として扱われるのは
+
+- false
+- 0
+
+例えば、次のコードは完全に合法です。
+
+```
 count := 10;
 while(count) {
     println(count.toString());
     count -= 1;
 }
-````
+```
 
-## 短絡評価(short-circuit evaluation)
-rubyの仕様に近いです。  
-(specification like a ruby)  
-  
-最後に評価された値を返します。  
-(return a evaluated last)  
-  
-````
+## 短絡評価
+
+ruby の仕様に近いです。
+
+最後に評価された値を返します。
+
+```
 a := "aaa" && "bbb";
 //aは"bbb"
-//(a is "bbb")
 
 a := "aaa" || "bbb";
 //aは"aaa"
-//(a is "aaa")
 
 a := false && "aaa";
 //aはfalse
-//(a is false)
-````
+```
 
 ## null
-ありません。(bone is'nt have a null)  
-代わりに存在しない要素が参照された時にはpanicします。  
-````
+
+ありません。  
+代わりに存在しない要素が参照された時には panic します。
+
+```
 example A:
     a := object();
-    println(a.key); // ここでpanic(panic on here)
+    println(a.key); // ここでpanic
 
 exampleB:
     a := def()(x, y) {
         x := 10;
         // yにはデフォルトオブジェクトが入ります。
         // つまり次のコードと等価です。
-        // (y is default object.
-        // equality to next code.)
         // y := object();
         return;
     }
@@ -382,29 +365,33 @@ exampleC:
     a := def()() {
 
     };
-    b := a(); // ここでpanic(panic on here)
-````
+    b := a(); // ここでpanic
+```
 
-## Cとのバインディング(binding with c)
-boneからCの変数、関数を参照するには次の関数を使用します。  
-(use next function for reference to function in C from bone)
-````
+## C とのバインディング
+
+bone から C の変数、関数を参照するには次の関数を使用します。
+
+```
 stdout := extern_var("stdout");
 fopen := extern_def("fopen", ["path", "mode"], ["file", "exists"]);
-````
+```
 
-extern_defの代わりにextern_varを使うこともできます。  
-extern_defを使うことの利点は関数の引数,戻り値をソースコードで表明できる点です。
-````
+extern_def の代わりに extern_var を使うこともできます。  
+extern_def を使うことの利点は関数の引数,戻り値をソースコードで表明できる点です。
+
+```
 fopen := extern_var("fopen");
-````
+```
 
-## 例外処理(exception handling)
-boneでは、二種類の例外処理の方法が存在します。  
-一つはboneが複数の戻り値を返すことを活かしたものです。
+## 例外処理
 
-戻り値が一つの場合(when in number of return value one)
-````
+bone では、二種類の例外処理の方法が存在します。  
+一つは bone が複数の戻り値を返すことを活かしたものです。
+
+戻り値が一つの場合
+
+```
 unsafe := def(index)(error) {
     if(index == 0) {
         error := "index is zero";
@@ -414,10 +401,11 @@ error := unsafe(0);
 if(error) {
     println(error);
 }
-````
+```
 
-戻り値が二つ以上の場合(when in number of return value greater than equal one)
-````
+戻り値が二つ以上の場合
+
+```
 unsafe := def(index)(value, error) {
     value := "not error";
     error := false;
@@ -430,9 +418,11 @@ a := object() <- unsafe(0);
 if(a.error) {
     println(a.value);
 }
-````
-戻り値が二つ以上の場合(when in number of return value greater than equal one)
-````
+```
+
+戻り値が二つ以上の場合
+
+```
 unsafe := def(index)(value, error) {
     value := "not error";
     error := false;
@@ -445,39 +435,43 @@ unsafe := def(index)(value, error) {
 if(error) {
     println(value);
 }
-````
+```
 
 二つ目はパニックを使ったものです。  
-これはgo言語に習った仕様になっています。  
-(the second is by panic.
-it is like a go language)
-````
+これは go 言語に習った仕様になっています。
+
+```
 p := def()() {
     defer println(recover());
     panic("recover");
 };
 p();
-````
+```
 
-## エラーメッセージ(error message)
+## エラーメッセージ
 
-パニックによる終了の時(when on abort by panic)
-````
+パニックによる終了の時
+
+```
 panic:error message
-````
+```
 
-それ以外による終了の時(when on abort by other case)
-````
+それ以外による終了の時
+
+```
 abort:error message
-````
+```
 
-## 実装が保留されているもの(pending function)
+## 実装が保留されているもの
+
 実装が難しいか、言語を汚くする可能性があるために保留されているもの。  
-もしくは必要性が疑わしいもの。  
+もしくは必要性が疑わしいもの。
 
-### パターンマッチ(pattern match)
-インジェクションする要素を選択する  
-````
+### パターンマッチ
+
+インジェクションする要素を選択する
+
+```
 windowから始まる名前で、かつscreenが含まれる名前だけをインジェクションする。
 
 {} <- injection() match (elem) a && b {
@@ -493,27 +487,30 @@ windowから始まる名前で、かつscreenが含まれる名前だけをイ�
     case ケースの名前:
         bool を返す式
 }
-````
+```
 
-### パターンマッチ2(pattern match2)
+### パターンマッチ 2
+
 よりシンプルなもの。
 
-````
+```
 fullName, hogeのみをインジェクションする。
 
 {} <- injection() match ["fullName", "hoge"]
-````
+```
 
-### パターンマッチ3(pattern match3)
-````
+### パターンマッチ 3
+
+```
 fun := def()(a, b, c, d, error) {
     ...
 };
 {a, b, error} := fun();
-````
+```
 
 ### 配列の展開
-````
+
+```
 fun := def(a, b, c)() {
     ...
 }
@@ -524,4 +521,4 @@ ary[2] := 3;
 fun(ary...)
 //オブジェクト... で、その中身を一段階展開する。
 //C++のパラメータパック展開のようなもの
-````
+```
