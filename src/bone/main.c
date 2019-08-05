@@ -50,7 +50,8 @@ int main(int argc, char* argv[]) {
         } else if (argc >= 2) {
                 //$ bone file, args...
                 GString* input = g_string_new(argv[1]);
-                if (!g_str_has_suffix(input->str, ".bn")) {
+                if (!g_str_has_suffix(input->str, ".bn") &&
+                    !g_str_has_suffix(input->str, ".in")) {
                         g_string_append(input, ".bn");
                 }
                 bnInterpreter* bone = bnNewInterpreter(input->str, argc, argv);
