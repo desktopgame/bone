@@ -159,7 +159,8 @@ static int bnVM(GPtrArray* dest, const char* dir, int flag) {
         while (iter != NULL) {
                 // do process only a suffix .in
                 gchar* path = iter->data;
-                if (!g_str_has_suffix(path, ".in") || strstr(path, "_R")) {
+                if (!g_str_has_suffix(path, ".in") || strstr(path, "_R") ||
+                    strstr(path, "_Inc")) {
                         iter = iter->next;
                         continue;
                 }
