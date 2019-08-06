@@ -18,10 +18,9 @@ static GList* ast2params(bnAST* a, GList* dest) {
                 return dest;
         }
         if (a->tag == BN_AST_PARAMETER_LIST) {
-                GList* iter = a->children;
-                while (iter != NULL) {
-                        dest = ast2params(iter->data, dest);
-                        iter = iter->next;
+                for (int i = 0; i < a->Xchildren->len; i++) {
+                        dest = ast2params(g_ptr_array_index(a->Xchildren, i),
+                                          dest);
                 }
                 return dest;
         } else {
@@ -35,10 +34,9 @@ static GList* ast2args(bnAST* a, GList* dest) {
                 return dest;
         }
         if (a->tag == BN_AST_ARGUMENT_LIST) {
-                GList* iter = a->children;
-                while (iter != NULL) {
-                        dest = ast2args(iter->data, dest);
-                        iter = iter->next;
+                for (int i = 0; i < a->Xchildren->len; i++) {
+                        dest =
+                            ast2args(g_ptr_array_index(a->Xchildren, i), dest);
                 }
                 return dest;
         } else {
@@ -275,10 +273,9 @@ static bnILStatement* ast2stmt(bnAST* a) {
 
 static GList* ast2stmts(bnAST* a, GList* dest) {
         if (a->tag == BN_AST_STATEMENT_LIST) {
-                GList* iter = a->children;
-                while (iter != NULL) {
-                        dest = ast2stmts(iter->data, dest);
-                        iter = iter->next;
+                for (int i = 0; i < a->Xchildren->len; i++) {
+                        dest =
+                            ast2stmts(g_ptr_array_index(a->Xchildren, i), dest);
                 }
                 return dest;
         } else {
@@ -289,16 +286,14 @@ static GList* ast2stmts(bnAST* a, GList* dest) {
 bnILToplevel* bnAST2IL(bnAST* a) {
         assert(a != NULL);
         bnILToplevel* ret = bnNewILTopLevel();
-        GList* iter = a->children;
-        while (iter != NULL) {
-                bnAST* child = iter->data;
+        for (int i = 0; i < a->Xchildren->len; i++) {
+                bnAST* child = g_ptr_array_index(a->Xchildren, i);
                 if (child->tag == BN_AST_STATEMENT_LIST) {
                         ret->statements = ast2stmts(child, ret->statements);
                 } else {
                         ret->statements =
                             g_list_append(ret->statements, ast2stmt(child));
                 }
-                iter = iter->next;
         }
         return ret;
 }

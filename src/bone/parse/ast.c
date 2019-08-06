@@ -22,7 +22,7 @@ void bnCleanAST(bool error) {
         GList* iter = gAllAST;
         while (iter != NULL) {
                 bnAST* a = iter->data;
-                g_list_free(a->children);
+                g_ptr_array_free(a->Xchildren, FALSE);
                 BN_FREE(a);
                 iter = iter->next;
         }
@@ -33,7 +33,7 @@ void bnCleanAST(bool error) {
 bnAST* bnNewAST(bnASTTag tag) {
         bnAST* ret = (bnAST*)BN_MALLOC(sizeof(bnAST));
         ret->tag = tag;
-        ret->children = NULL;
+        ret->Xchildren = NULL;
         ret->line = bnGetParseLine();
         ret->u.ivalue = 0;
         bnPushParseLine(ret->line);
@@ -219,7 +219,10 @@ bnAST* bnNewBinaryAST(bnASTTag tag, bnAST* left, bnAST* right) {
 
 void bnPushAST(bnAST* self, bnAST* a) {
         assert(self != NULL && a != NULL);
-        self->children = g_list_append(self->children, a);
+        if (self->Xchildren == NULL) {
+                self->Xchildren = g_ptr_array_new_full(2, ast_child_delete);
+        }
+        g_ptr_array_add(self->Xchildren, a);
         self->line = bnPopParseLine();
 }
 
@@ -343,15 +346,19 @@ void bnDeleteAST(bnAST* self) {
         if (self == NULL) {
                 return;
         }
-        g_list_free_full(self->children, ast_child_delete);
+        if (self->Xchildren != NULL) {
+                g_ptr_array_free(self->Xchildren, TRUE);
+        }
         BN_FREE(self);
 }
 
-bnAST* bnFirstAST(bnAST* self) { return self->children->data; }
+bnAST* bnFirstAST(bnAST* self) { return g_ptr_array_index(self->Xchildren, 0); }
 
-bnAST* bnSecondAST(bnAST* self) { return self->children->next->data; }
+bnAST* bnSecondAST(bnAST* self) {
+        return g_ptr_array_index(self->Xchildren, 1);
+}
 
-bnAST* bnThirdAST(bnAST* self) { return self->children->next->next->data; }
+bnAST* bnThirdAST(bnAST* self) { return g_ptr_array_index(self->Xchildren, 2); }
 
 double bnEvalAST(bnAST* self) {
         if (self->tag == BN_AST_INT_LIT) {
@@ -455,10 +462,8 @@ static void bnDumpASTImpl(FILE* fp, struct bnStringPool* pool, bnAST* self,
         }
         bnPrintAST(fp, pool, self);
         fprintf(fp, "\n");
-        GList* iter = self->children;
-        while (iter != NULL) {
-                bnAST* e = iter->data;
+        for (int i = 0; i < self->Xchildren->len; i++) {
+                bnAST* e = g_ptr_array_index(self->Xchildren, i);
                 bnDumpASTImpl(fp, pool, e, depth + 1);
-                iter = iter->next;
         }
 }
