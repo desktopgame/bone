@@ -225,8 +225,7 @@ static bnILExpression* ast2expr(bnAST* a) {
         } else if (a->tag == BN_AST_ARRAY_LITERAL) {
                 ret->type = BN_IL_EXPR_ARRAY_LIT;
                 ret->u.vArrayLit = bnNewILExprArrayLit();
-                ast2argsArray(bnFirstAST(a),
-                              ret->u.vArrayLit->arrayLit_expressions);
+                ast2argsArray(bnFirstAST(a), ret->u.vArrayLit->expressions);
         } else {
                 assert(false);
         }
