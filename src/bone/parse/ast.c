@@ -22,7 +22,7 @@ void bnCleanAST(bool error) {
         GList* iter = gAllAST;
         while (iter != NULL) {
                 bnAST* a = iter->data;
-                g_ptr_array_free(a->Xchildren, FALSE);
+                g_ptr_array_free(a->children, FALSE);
                 BN_FREE(a);
                 iter = iter->next;
         }
@@ -33,7 +33,7 @@ void bnCleanAST(bool error) {
 bnAST* bnNewAST(bnASTTag tag) {
         bnAST* ret = (bnAST*)BN_MALLOC(sizeof(bnAST));
         ret->tag = tag;
-        ret->Xchildren = NULL;
+        ret->children = NULL;
         ret->line = bnGetParseLine();
         ret->u.ivalue = 0;
         bnPushParseLine(ret->line);
@@ -219,10 +219,10 @@ bnAST* bnNewBinaryAST(bnASTTag tag, bnAST* left, bnAST* right) {
 
 void bnPushAST(bnAST* self, bnAST* a) {
         assert(self != NULL && a != NULL);
-        if (self->Xchildren == NULL) {
-                self->Xchildren = g_ptr_array_new_full(2, ast_child_delete);
+        if (self->children == NULL) {
+                self->children = g_ptr_array_new_full(2, ast_child_delete);
         }
-        g_ptr_array_add(self->Xchildren, a);
+        g_ptr_array_add(self->children, a);
         self->line = bnPopParseLine();
 }
 
@@ -346,19 +346,17 @@ void bnDeleteAST(bnAST* self) {
         if (self == NULL) {
                 return;
         }
-        if (self->Xchildren != NULL) {
-                g_ptr_array_free(self->Xchildren, TRUE);
+        if (self->children != NULL) {
+                g_ptr_array_free(self->children, TRUE);
         }
         BN_FREE(self);
 }
 
-bnAST* bnFirstAST(bnAST* self) { return g_ptr_array_index(self->Xchildren, 0); }
+bnAST* bnFirstAST(bnAST* self) { return g_ptr_array_index(self->children, 0); }
 
-bnAST* bnSecondAST(bnAST* self) {
-        return g_ptr_array_index(self->Xchildren, 1);
-}
+bnAST* bnSecondAST(bnAST* self) { return g_ptr_array_index(self->children, 1); }
 
-bnAST* bnThirdAST(bnAST* self) { return g_ptr_array_index(self->Xchildren, 2); }
+bnAST* bnThirdAST(bnAST* self) { return g_ptr_array_index(self->children, 2); }
 
 double bnEvalAST(bnAST* self) {
         if (self->tag == BN_AST_INT_LIT) {
@@ -462,8 +460,8 @@ static void bnDumpASTImpl(FILE* fp, struct bnStringPool* pool, bnAST* self,
         }
         bnPrintAST(fp, pool, self);
         fprintf(fp, "\n");
-        for (int i = 0; i < self->Xchildren->len; i++) {
-                bnAST* e = g_ptr_array_index(self->Xchildren, i);
+        for (int i = 0; i < self->children->len; i++) {
+                bnAST* e = g_ptr_array_index(self->children, i);
                 bnDumpASTImpl(fp, pool, e, depth + 1);
         }
 }

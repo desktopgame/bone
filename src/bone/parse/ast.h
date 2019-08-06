@@ -83,7 +83,7 @@ typedef struct bnAST {
                 char cvalue;
                 bnStringView svvalue;
         } u;
-        GPtrArray* Xchildren;
+        GPtrArray* children;
         bnASTTag tag;
         int line;
 } bnAST;
