@@ -6,7 +6,7 @@
 bnILStmtWhile* bnNewILStmtWhile(bnILExpression* cond) {
         bnILStmtWhile* ret = BN_MALLOC(sizeof(bnILStmtWhile));
         ret->cond = cond;
-        ret->Xstatements = g_ptr_array_new_full(2, bnDeleteILStatement);
+        ret->statements = g_ptr_array_new_full(2, bnDeleteILStatement);
         return ret;
 }
 
@@ -15,9 +15,9 @@ void bnDumpILStmtWhile(FILE* fp, struct bnStringPool* pool, bnILStmtWhile* self,
         bnFindent(fp, depth);
         fprintf(fp, "while\n");
         bnDumpILExpression(fp, pool, self->cond, depth + 1);
-        for (int i = 0; i < self->Xstatements->len; i++) {
+        for (int i = 0; i < self->statements->len; i++) {
                 bnDumpILStatement(fp, pool,
-                                  g_ptr_array_index(self->Xstatements, i),
+                                  g_ptr_array_index(self->statements, i),
                                   depth + 1);
         }
 }
@@ -31,9 +31,9 @@ void bnGenerateILStmtWhile(struct bnInterpreter* bone, bnILStmtWhile* self,
         bnLabel* loopEnd = bnGenerateLabel(env, 0);
         bnPushStack(ccache->whileStartStack, loopStart);
         bnPushStack(ccache->whileEndStack, loopEnd);
-        for (int i = 0; i < self->Xstatements->len; i++) {
+        for (int i = 0; i < self->statements->len; i++) {
                 bnGenerateILStatement(
-                    bone, g_ptr_array_index(self->Xstatements, i), env, ccache);
+                    bone, g_ptr_array_index(self->statements, i), env, ccache);
         }
         g_ptr_array_add(env->codeArray, BN_OP_GOTO);
         // bnGenerateLabel(env, pos);
@@ -47,6 +47,6 @@ void bnGenerateILStmtWhile(struct bnInterpreter* bone, bnILStmtWhile* self,
 
 void bnDeleteILStmtWhile(bnILStmtWhile* self) {
         bnDeleteILExpression(self->cond);
-        g_ptr_array_free(self->Xstatements, TRUE);
+        g_ptr_array_free(self->statements, TRUE);
         BN_FREE(self);
 }

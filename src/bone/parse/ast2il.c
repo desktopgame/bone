@@ -268,7 +268,7 @@ static bnILStatement* ast2stmt(bnAST* a) {
                 bnAST* aCond = bnFirstAST(a);
                 bnAST* aBody = bnSecondAST(a);
                 ret->u.vWhile = bnNewILStmtWhile(ast2expr(aCond));
-                ast2stmtsArray(aBody, ret->u.vWhile->Xstatements);
+                ast2stmtsArray(aBody, ret->u.vWhile->statements);
         } else if (a->tag == BN_AST_RETURN) {
                 ret->type = BN_IL_STMT_RETURN;
                 bnAST* aExpr = bnFirstAST(a);
