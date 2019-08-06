@@ -262,8 +262,7 @@ static bnILStatement* ast2stmt(bnAST* a) {
                 bnILStmtIf* ilIf = bnNewILStmtIf(ast2expr(bnFirstAST(aif)));
                 ast2stmtsArray(bnSecondAST(aif), ilIf->statements);
                 ret->u.vIfElse = bnNewILStmtIfElse(ilIf);
-                ret->u.vIfElse->statements =
-                    ast2stmts(aElseBody, ret->u.vIfElse->statements);
+                ast2stmtsArray(aElseBody, ret->u.vIfElse->Xstatements);
         } else if (a->tag == BN_AST_WHILE) {
                 ret->type = BN_IL_STMT_WHILE;
                 bnAST* aCond = bnFirstAST(a);
