@@ -8,8 +8,8 @@
 #include "snapshot.h"
 
 typedef struct bnHeap {
-        GPtrArray* Xobjects;
-        GPtrArray* Xprotected;
+        GPtrArray* objects;
+        GPtrArray* protected;
         int all;
         GRecMutex mutex;
 } bnHeap;
@@ -25,8 +25,8 @@ static void gc_sweep(bnHeap* self, bnFrame* frame);
 
 bnHeap* bnNewHeap() {
         bnHeap* ret = BN_MALLOC(sizeof(bnHeap));
-        ret->Xobjects = g_ptr_array_new_full(2, NULL);
-        ret->Xprotected = g_ptr_array_new_full(2, NULL);
+        ret->objects = g_ptr_array_new_full(2, NULL);
+        ret->protected = g_ptr_array_new_full(2, NULL);
         ret->all = 0;
         g_rec_mutex_init(&ret->mutex);
         return ret;
@@ -34,7 +34,7 @@ bnHeap* bnNewHeap() {
 
 void bnAddToHeap(bnHeap* self, bnObject* obj) {
         g_rec_mutex_lock(&self->mutex);
-        g_ptr_array_add(self->Xobjects, obj);
+        g_ptr_array_add(self->objects, obj);
         self->all++;
         g_rec_mutex_unlock(&self->mutex);
 }
@@ -54,36 +54,36 @@ void bnGC(bnInterpreter* bone) {
 }
 
 void bnDrop(bnHeap* self, bnObject* obj) {
-        g_ptr_array_remove(self->Xobjects, obj);
+        g_ptr_array_remove(self->objects, obj);
 }
 
 bnObject* bnProtect(bnHeap* self, bnObject* obj) {
-        if (self->Xprotected == NULL) {
-                self->Xprotected = g_ptr_array_new_full(2, NULL);
+        if (self->protected == NULL) {
+                self->protected = g_ptr_array_new_full(2, NULL);
         }
-        g_ptr_array_add(self->Xprotected, obj);
+        g_ptr_array_add(self->protected, obj);
         return obj;
 }
 
 void bnRelease(bnHeap* self) {
-        g_ptr_array_free(self->Xprotected, TRUE);
-        self->Xprotected = NULL;
+        g_ptr_array_free(self->protected, TRUE);
+        self->protected = NULL;
 }
 
 void bnDeleteHeap(bnHeap* self) {
         g_rec_mutex_lock(&self->mutex);
-        g_ptr_array_free(self->Xobjects, TRUE);
-        if (self->Xprotected != NULL) {
-                g_ptr_array_free(self->Xprotected, TRUE);
-                self->Xprotected = NULL;
+        g_ptr_array_free(self->objects, TRUE);
+        if (self->protected != NULL) {
+                g_ptr_array_free(self->protected, TRUE);
+                self->protected = NULL;
         }
         BN_FREE(self);
         g_rec_mutex_unlock(&self->mutex);
 }
 
 static void gc_clear(bnHeap* self, bnFrame* frame) {
-        for (int i = 0; i < self->Xobjects->len; i++) {
-                bnObject* obj = g_ptr_array_index(self->Xobjects, i);
+        for (int i = 0; i < self->objects->len; i++) {
+                bnObject* obj = g_ptr_array_index(self->objects, i);
                 obj->mark = false;
         }
 }
@@ -122,9 +122,9 @@ static void gc_mark(bnHeap* self, bnFrame* frame) {
                 gc_mark_rec(frame->panic);
         }
         // mark protected
-        if (self->Xprotected != NULL) {
-                for (int i = 0; i < self->Xprotected->len; i++) {
-                        bnObject* obj = g_ptr_array_index(self->Xprotected, i);
+        if (self->protected != NULL) {
+                for (int i = 0; i < self->protected->len; i++) {
+                        bnObject* obj = g_ptr_array_index(self->protected, i);
                         gc_mark_rec(obj);
                 }
         }
@@ -188,8 +188,8 @@ static void gc_mark_lambda(bnLambda* lambda) {
 static void gc_sweep(bnHeap* self, bnFrame* frame) {
         GPtrArray* ret = g_ptr_array_new_full(2, NULL);
         int sweep = 0;
-        for (int i = 0; i < self->Xobjects->len; i++) {
-                bnObject* a = g_ptr_array_index(self->Xobjects, i);
+        for (int i = 0; i < self->objects->len; i++) {
+                bnObject* a = g_ptr_array_index(self->objects, i);
                 if (a->mark) {
                         g_ptr_array_add(ret, a);
                 } else {
@@ -197,7 +197,7 @@ static void gc_sweep(bnHeap* self, bnFrame* frame) {
                         bnDeleteObject(a);
                 }
         }
-        g_ptr_array_free(self->Xobjects, TRUE);
-        self->Xobjects = ret;
+        g_ptr_array_free(self->objects, TRUE);
+        self->objects = ret;
         self->all -= sweep;
 }
