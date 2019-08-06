@@ -8,7 +8,7 @@
  */
 typedef struct bnILStmtIf {
         bnILExpression* cond;
-        GPtrArray* Xstatements;
+        GPtrArray* statements;
 } bnILStmtIf;
 
 /**

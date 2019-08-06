@@ -6,7 +6,7 @@
 bnILStmtIf* bnNewILStmtIf(bnILExpression* cond) {
         bnILStmtIf* ret = BN_MALLOC(sizeof(bnILStmtIf));
         ret->cond = cond;
-        ret->Xstatements = g_ptr_array_new_full(2, bnDeleteILStatement);
+        ret->statements = g_ptr_array_new_full(2, bnDeleteILStatement);
         return ret;
 }
 
@@ -15,9 +15,9 @@ void bnDumpILStmtIf(FILE* fp, struct bnStringPool* pool, bnILStmtIf* self,
         bnFindent(fp, depth);
         fprintf(fp, "If\n");
         bnDumpILExpression(fp, pool, self->cond, depth + 1);
-        for (int i = 0; i < self->Xstatements->len; i++) {
+        for (int i = 0; i < self->statements->len; i++) {
                 bnDumpILStatement(fp, pool,
-                                  g_ptr_array_index(self->Xstatements, i),
+                                  g_ptr_array_index(self->statements, i),
                                   depth + 1);
         }
 }
@@ -28,16 +28,16 @@ void bnGenerateILStmtIf(struct bnInterpreter* bone, bnILStmtIf* self,
         bnGenerateILExpression(bone, self->cond, env, ccache);
         g_ptr_array_add(env->codeArray, BN_OP_GOTO_ELSE);
         bnLabel* ifFalse = bnGenerateLabel(env, -1);
-        for (int i = 0; i < self->Xstatements->len; i++) {
+        for (int i = 0; i < self->statements->len; i++) {
                 bnGenerateILStatement(
-                    bone, g_ptr_array_index(self->Xstatements, i), env, ccache);
+                    bone, g_ptr_array_index(self->statements, i), env, ccache);
         }
         ifFalse->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
 }
 
 void bnDeleteILStmtIf(bnILStmtIf* self) {
         bnDeleteILExpression(self->cond);
-        g_ptr_array_free(self->Xstatements, TRUE);
+        g_ptr_array_free(self->statements, TRUE);
         BN_FREE(self);
 }
 
@@ -66,10 +66,10 @@ void bnGenerateILStmtIfElse(struct bnInterpreter* bone, bnILStmtIfElse* self,
         bnGenerateILExpression(bone, self->trueCase->cond, env, ccache);
         g_ptr_array_add(env->codeArray, BN_OP_GOTO_ELSE);
         bnLabel* ifFalse = bnGenerateLabel(env, -1);
-        for (int i = 0; i < self->trueCase->Xstatements->len; i++) {
+        for (int i = 0; i < self->trueCase->statements->len; i++) {
                 bnGenerateILStatement(
-                    bone, g_ptr_array_index(self->trueCase->Xstatements, i),
-                    env, ccache);
+                    bone, g_ptr_array_index(self->trueCase->statements, i), env,
+                    ccache);
         }
         g_ptr_array_add(env->codeArray, BN_OP_GOTO);
         bnLabel* ifTrue = bnGenerateLabel(env, -1);
