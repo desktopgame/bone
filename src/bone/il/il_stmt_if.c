@@ -44,7 +44,7 @@ void bnDeleteILStmtIf(bnILStmtIf* self) {
 bnILStmtIfElse* bnNewILStmtIfElse(bnILStmtIf* trueCase) {
         bnILStmtIfElse* ret = BN_MALLOC(sizeof(bnILStmtIfElse));
         ret->trueCase = trueCase;
-        ret->Xstatements = g_ptr_array_new_full(2, bnDeleteILStatement);
+        ret->statements = g_ptr_array_new_full(2, bnDeleteILStatement);
         return ret;
 }
 
@@ -53,9 +53,9 @@ void bnDumpILStmtIfElse(FILE* fp, struct bnStringPool* pool,
         bnFindent(fp, depth);
         fprintf(fp, "if else\n");
         bnDumpILStmtIf(fp, pool, self->trueCase, depth + 1);
-        for (int i = 0; i < self->Xstatements->len; i++) {
+        for (int i = 0; i < self->statements->len; i++) {
                 bnDumpILStatement(fp, pool,
-                                  g_ptr_array_index(self->Xstatements, i),
+                                  g_ptr_array_index(self->statements, i),
                                   depth + 1);
         }
 }
@@ -75,15 +75,15 @@ void bnGenerateILStmtIfElse(struct bnInterpreter* bone, bnILStmtIfElse* self,
         bnLabel* ifTrue = bnGenerateLabel(env, -1);
         // if(cond) { ... } else { ... }
         ifFalse->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
-        for (int i = 0; i < self->Xstatements->len; i++) {
+        for (int i = 0; i < self->statements->len; i++) {
                 bnGenerateILStatement(
-                    bone, g_ptr_array_index(self->Xstatements, i), env, ccache);
+                    bone, g_ptr_array_index(self->statements, i), env, ccache);
         }
         ifTrue->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
 }
 
 void bnDeleteILStmtIfElse(bnILStmtIfElse* self) {
         bnDeleteILStmtIf(self->trueCase);
-        g_ptr_array_free(self->Xstatements, TRUE);
+        g_ptr_array_free(self->statements, TRUE);
         BN_FREE(self);
 }

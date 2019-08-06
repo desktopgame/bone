@@ -42,7 +42,7 @@ void bnDeleteILStmtIf(bnILStmtIf* self);
  */
 typedef struct bnILStmtIfElse {
         bnILStmtIf* trueCase;
-        GPtrArray* Xstatements;
+        GPtrArray* statements;
 } bnILStmtIfElse;
 
 /**
