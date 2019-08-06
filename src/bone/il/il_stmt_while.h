@@ -8,7 +8,7 @@
  */
 typedef struct bnILStmtWhile {
         bnILExpression* cond;
-        GList* statements;
+        GPtrArray* Xstatements;
 } bnILStmtWhile;
 
 /**
