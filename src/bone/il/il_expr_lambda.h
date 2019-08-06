@@ -9,9 +9,9 @@ struct bnInterpreter;
  * bnILExprLambda is lambda.
  */
 typedef struct bnILExprLambda {
-        GList* parameters;
-        GList* returns;
-        GList* statements;
+        GPtrArray* Xparameters;
+        GPtrArray* Xreturns;
+        GPtrArray* Xstatements;
         bnStringView filename;
         int lineno;
 } bnILExprLambda;

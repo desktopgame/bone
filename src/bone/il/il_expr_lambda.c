@@ -8,9 +8,9 @@ static bool is_instance_base(struct bnStringPool* pool, bnILExprLambda* self);
 
 bnILExprLambda* bnNewILExprLambda(bnStringView filename, int lineno) {
         bnILExprLambda* ret = BN_MALLOC(sizeof(bnILExprLambda));
-        ret->parameters = NULL;
-        ret->returns = NULL;
-        ret->statements = NULL;
+        ret->Xparameters = g_ptr_array_new_full(2, NULL);
+        ret->Xreturns = g_ptr_array_new_full(2, NULL);
+        ret->Xstatements = g_ptr_array_new_full(2, bnDeleteILStatement);
         ret->filename = filename;
         ret->lineno = lineno;
         return ret;
@@ -23,31 +23,25 @@ void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
         // parameters
         bnFindent(fp, depth + 1);
         fprintf(fp, "parameters\n");
-        GList* iter = self->parameters;
-        while (iter != NULL) {
-                bnStringView param = iter->data;
+        for (int i = 0; i < self->Xparameters->len; i++) {
+                bnStringView param = g_ptr_array_index(self->Xparameters, i);
                 bnFindent(fp, depth + 2);
                 fprintf(fp, "%s\n", bnView2Str(pool, param));
-                iter = iter->next;
         }
         // returns
         bnFindent(fp, depth + 1);
         fprintf(fp, "returns\n");
-        iter = self->returns;
-        while (iter != NULL) {
-                bnStringView param = iter->data;
+        for (int i = 0; i < self->Xreturns->len; i++) {
+                bnStringView param = g_ptr_array_index(self->Xreturns, i);
                 bnFindent(fp, depth + 2);
                 fprintf(fp, "%s\n", bnView2Str(pool, param));
-                iter = iter->next;
         }
         // statements
         bnFindent(fp, depth + 1);
         fprintf(fp, "statements\n");
-        iter = self->statements;
-        while (iter != NULL) {
-                bnILStatement* stmt = iter->data;
+        for (int i = 0; i < self->Xstatements->len; i++) {
+                bnILStatement* stmt = g_ptr_array_index(self->Xstatements, i);
                 bnDumpILStatement(fp, pool, stmt, depth + 2);
-                iter = iter->next;
         }
 }
 
@@ -55,33 +49,25 @@ void bnGenerateILExprLambda(bnInterpreter* bone, bnILExprLambda* self,
                             bnEnviroment* env, bnCompileCache* ccache) {
         g_ptr_array_add(env->codeArray, BN_OP_GEN_LAMBDA_BEGIN);
         g_ptr_array_add(env->codeArray, self->lineno);
-        g_ptr_array_add(env->codeArray, g_list_length(self->parameters));
-        GList* iter = self->parameters;
-        while (iter != NULL) {
-                bnStringView name = iter->data;
+        g_ptr_array_add(env->codeArray, self->Xparameters->len);
+        for (int i = 0; i < self->Xparameters->len; i++) {
+                bnStringView name = g_ptr_array_index(self->Xparameters, i);
                 g_ptr_array_add(env->codeArray, name);
-                iter = iter->next;
         }
-        g_ptr_array_add(env->codeArray, g_list_length(self->returns));
-        iter = self->returns;
-        while (iter != NULL) {
-                bnStringView name = iter->data;
+        g_ptr_array_add(env->codeArray, self->Xreturns->len);
+        for (int i = 0; i < self->Xreturns->len; i++) {
+                bnStringView name = g_ptr_array_index(self->Xreturns, i);
                 g_ptr_array_add(env->codeArray, name);
-                iter = iter->next;
         }
         bnGenerateEnterLambda(env);
-        iter = self->parameters;
-        while (iter != NULL) {
-                bnStringView name = iter->data;
+        for (int i = 0; i < self->Xparameters->len; i++) {
+                bnStringView name = g_ptr_array_index(self->Xparameters, i);
                 g_ptr_array_add(env->codeArray, BN_OP_STORE);
                 g_ptr_array_add(env->codeArray, name);
-                iter = iter->next;
         }
-        iter = self->statements;
-        while (iter != NULL) {
-                bnILStatement* ilstmt = iter->data;
+        for (int i = 0; i < self->Xstatements->len; i++) {
+                bnILStatement* ilstmt = g_ptr_array_index(self->Xstatements, i);
                 bnGenerateILStatement(bone, ilstmt, env, ccache);
-                iter = iter->next;
         }
         g_ptr_array_add(env->codeArray, BN_OP_DEFER_NEXT);
         bnGenerateExitLambda(env);
@@ -89,17 +75,17 @@ void bnGenerateILExprLambda(bnInterpreter* bone, bnILExprLambda* self,
 }
 
 void bnDeleteILExprLambda(bnILExprLambda* self) {
-        g_list_free(self->parameters);
-        g_list_free(self->returns);
-        g_list_free_full(self->statements, bnDeleteILStatement);
+        g_ptr_array_free(self->Xparameters, TRUE);
+        g_ptr_array_free(self->Xreturns, TRUE);
+        g_ptr_array_free(self->Xstatements, TRUE);
         BN_FREE(self);
 }
 
 static bool is_instance_base(struct bnStringPool* pool, bnILExprLambda* self) {
-        guint len = g_list_length(self->parameters);
+        guint len = g_list_length(self->Xparameters);
         if (len == 0) {
                 return false;
         }
-        bnStringView name = self->parameters->data;
+        bnStringView name = g_ptr_array_index(self->Xparameters, 0);
         return name == bnIntern(pool, BN_KWD_SELF);
 }

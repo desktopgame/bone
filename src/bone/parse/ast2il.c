@@ -5,6 +5,7 @@
 #include "../il/il_toplevel.h"
 
 static GList* ast2params(bnAST* a, GList* dest);
+static void ast2paramsArray(bnAST* a, GPtrArray* dest);
 static GList* ast2args(bnAST* a, GList* dest);
 static void ast2argsArray(bnAST* a, GPtrArray* dest);
 static bnILExprBinOp* ast2ilbinop(bnAST* a, bnILBinOpType type);
@@ -13,6 +14,7 @@ static void ast2assign(bnILExpression* expr, bnAST* a, bnILBinOpType type);
 static bnILExpression* ast2expr(bnAST* a);
 static bnILStatement* ast2stmt(bnAST* a);
 static GList* ast2stmts(bnAST* a, GList* dest);
+static void ast2stmtsArray(bnAST* a, GPtrArray* dest);
 
 static GList* ast2params(bnAST* a, GList* dest) {
         if (a->tag == BN_AST_BLANK) {
@@ -26,6 +28,19 @@ static GList* ast2params(bnAST* a, GList* dest) {
                 return dest;
         } else {
                 return g_list_append(dest, a->u.svvalue);
+        }
+}
+static void ast2paramsArray(bnAST* a, GPtrArray* dest) {
+        if (a->tag == BN_AST_BLANK) {
+                return;
+        }
+        if (a->tag == BN_AST_PARAMETER_LIST) {
+                for (int i = 0; i < a->children->len; i++) {
+                        ast2paramsArray(g_ptr_array_index(a->children, i),
+                                        dest);
+                }
+        } else {
+                g_ptr_array_add(dest, a->u.svvalue);
         }
 }
 
@@ -164,10 +179,9 @@ static bnILExpression* ast2expr(bnAST* a) {
                 bnAST* aparams = bnFirstAST(a);
                 bnAST* areturns = bnSecondAST(a);
                 bnAST* astmt = bnThirdAST(a);
-                illambda->parameters =
-                    ast2params(aparams, illambda->parameters);
-                illambda->returns = ast2params(areturns, illambda->returns);
-                illambda->statements = ast2stmts(astmt, illambda->statements);
+                ast2paramsArray(aparams, illambda->Xparameters);
+                ast2paramsArray(areturns, illambda->Xreturns);
+                ast2stmtsArray(astmt, illambda->Xstatements);
                 ret->u.vLambda = illambda;
         } else if (a->tag == BN_AST_OBJECT_INJECTION) {
                 ret->type = BN_IL_EXPR_OBJECT_INJECTION;
@@ -292,6 +306,16 @@ static GList* ast2stmts(bnAST* a, GList* dest) {
                 return dest;
         } else {
                 return g_list_append(dest, ast2stmt(a));
+        }
+}
+
+static void ast2stmtsArray(bnAST* a, GPtrArray* dest) {
+        if (a->tag == BN_AST_STATEMENT_LIST) {
+                for (int i = 0; i < a->children->len; i++) {
+                        ast2stmtsArray(g_ptr_array_index(a->children, i), dest);
+                }
+        } else {
+                g_ptr_array_add(dest, ast2stmt(a));
         }
 }
 
