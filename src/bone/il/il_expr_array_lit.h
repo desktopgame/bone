@@ -7,7 +7,7 @@
  * bnILExprArrayLit is {...}.
  */
 typedef struct bnILExprArrayLit {
-        GList* expressions;
+        GPtrArray* arrayLit_expressions;
 } bnILExprArrayLit;
 
 /**

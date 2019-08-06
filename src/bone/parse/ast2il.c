@@ -6,6 +6,7 @@
 
 static GList* ast2params(bnAST* a, GList* dest);
 static GList* ast2args(bnAST* a, GList* dest);
+static void ast2argsArray(bnAST* a, GPtrArray* dest);
 static bnILExprBinOp* ast2ilbinop(bnAST* a, bnILBinOpType type);
 static bnILExprUOp* ast2iluop(bnAST* a, bnILUOpType type);
 static void ast2assign(bnILExpression* expr, bnAST* a, bnILBinOpType type);
@@ -42,6 +43,19 @@ static GList* ast2args(bnAST* a, GList* dest) {
         } else {
                 bnAST* aexpr = bnFirstAST(a);
                 return g_list_append(dest, ast2expr(aexpr));
+        }
+}
+static void ast2argsArray(bnAST* a, GPtrArray* dest) {
+        if (a->tag == BN_AST_BLANK) {
+                return;
+        }
+        if (a->tag == BN_AST_ARGUMENT_LIST) {
+                for (int i = 0; i < a->children->len; i++) {
+                        ast2argsArray(g_ptr_array_index(a->children, i), dest);
+                }
+        } else {
+                bnAST* aexpr = bnFirstAST(a);
+                g_ptr_array_add(dest, ast2expr(aexpr));
         }
 }
 
@@ -211,8 +225,8 @@ static bnILExpression* ast2expr(bnAST* a) {
         } else if (a->tag == BN_AST_ARRAY_LITERAL) {
                 ret->type = BN_IL_EXPR_ARRAY_LIT;
                 ret->u.vArrayLit = bnNewILExprArrayLit();
-                ret->u.vArrayLit->expressions =
-                    ast2args(bnFirstAST(a), ret->u.vArrayLit->expressions);
+                ast2argsArray(bnFirstAST(a),
+                              ret->u.vArrayLit->arrayLit_expressions);
         } else {
                 assert(false);
         }
