@@ -5,12 +5,12 @@
 
 bnILToplevel* bnNewILTopLevel() {
         bnILToplevel* ret = BN_MALLOC(sizeof(bnILToplevel));
-        ret->statements = NULL;
+        ret->Xstatements = g_ptr_array_new_full(2, bnDeleteILStatement);
         return ret;
 }
 
 void bnDeleteILTopLevel(bnILToplevel* self) {
-        g_list_free_full(self->statements, bnDeleteILStatement);
+        g_ptr_array_free(self->Xstatements, TRUE);
         BN_FREE(self);
 }
 
@@ -18,22 +18,18 @@ void bnDumpILTopLevel(FILE* fp, struct bnStringPool* pool, bnILToplevel* self,
                       int depth) {
         bnFindent(fp, depth);
         fprintf(fp, "TopLevel\n");
-        GList* iter = self->statements;
-        while (iter != NULL) {
-                bnILStatement* ilstmt = iter->data;
+        for (int i = 0; i < self->Xstatements->len; i++) {
+                bnILStatement* ilstmt = g_ptr_array_index(self->Xstatements, i);
                 bnDumpILStatement(fp, pool, ilstmt, depth + 1);
-                iter = iter->next;
         }
 }
 
 void bnGenerateILTopLevel(struct bnInterpreter* bone, bnILToplevel* self,
                           bnEnviroment* env) {
         bnCompileCache* ccache = bnNewCompileCache();
-        GList* iter = self->statements;
-        while (iter != NULL) {
-                bnILStatement* ilstmt = iter->data;
+        for (int i = 0; i < self->Xstatements->len; i++) {
+                bnILStatement* ilstmt = g_ptr_array_index(self->Xstatements, i);
                 bnGenerateILStatement(bone, ilstmt, env, ccache);
-                iter = iter->next;
         }
         bnDeleteCompileCache(ccache);
 }

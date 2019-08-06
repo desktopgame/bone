@@ -7,7 +7,7 @@ struct bnInterpreter;
  * bnILToplevel is structure of toplevel of source code.
  */
 typedef struct bnILToplevel {
-        GList* statements;
+        GPtrArray* Xstatements;
 } bnILToplevel;
 
 /**
