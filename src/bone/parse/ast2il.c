@@ -321,9 +321,9 @@ bnILToplevel* bnAST2IL(bnAST* a) {
         for (int i = 0; i < a->children->len; i++) {
                 bnAST* child = g_ptr_array_index(a->children, i);
                 if (child->tag == BN_AST_STATEMENT_LIST) {
-                        ast2stmtsArray(child, ret->Xstatements);
+                        ast2stmtsArray(child, ret->statements);
                 } else {
-                        g_ptr_array_add(ret->Xstatements, ast2stmt(child));
+                        g_ptr_array_add(ret->statements, ast2stmt(child));
                 }
         }
         return ret;
