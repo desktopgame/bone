@@ -179,9 +179,9 @@ static bnILExpression* ast2expr(bnAST* a) {
                 bnAST* aparams = bnFirstAST(a);
                 bnAST* areturns = bnSecondAST(a);
                 bnAST* astmt = bnThirdAST(a);
-                ast2paramsArray(aparams, illambda->Xparameters);
-                ast2paramsArray(areturns, illambda->Xreturns);
-                ast2stmtsArray(astmt, illambda->Xstatements);
+                ast2paramsArray(aparams, illambda->parameters);
+                ast2paramsArray(areturns, illambda->returns);
+                ast2stmtsArray(astmt, illambda->statements);
                 ret->u.vLambda = illambda;
         } else if (a->tag == BN_AST_OBJECT_INJECTION) {
                 ret->type = BN_IL_EXPR_OBJECT_INJECTION;

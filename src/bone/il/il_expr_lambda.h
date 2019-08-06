@@ -1,5 +1,5 @@
-#ifndef $INCLUDE
-#define $INCLUDE
+#ifndef BONE_IL_ILEXPRLAMBDA_H
+#define BONE_IL_ILEXPRLAMBDA_H
 #include "../bone.h"
 #include "compile_cache.h"
 struct bnEnviroment;
@@ -9,9 +9,9 @@ struct bnInterpreter;
  * bnILExprLambda is lambda.
  */
 typedef struct bnILExprLambda {
-        GPtrArray* Xparameters;
-        GPtrArray* Xreturns;
-        GPtrArray* Xstatements;
+        GPtrArray* parameters;
+        GPtrArray* returns;
+        GPtrArray* statements;
         bnStringView filename;
         int lineno;
 } bnILExprLambda;
