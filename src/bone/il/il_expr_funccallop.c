@@ -6,7 +6,7 @@
 bnILExprFuncCallOp* bnNewILExprFuncCallOp(bnILExpression* expr) {
         bnILExprFuncCallOp* ret = BN_MALLOC(sizeof(bnILExprFuncCallOp));
         ret->expr = expr;
-        ret->Xarguments = g_ptr_array_new_full(2, bnDeleteILExpression);
+        ret->arguments = g_ptr_array_new_full(2, bnDeleteILExpression);
         return ret;
 }
 
@@ -15,10 +15,9 @@ void bnDumpILExprFuncCallOp(FILE* fp, struct bnStringPool* pool,
         bnFindent(fp, depth);
         fprintf(fp, "()\n");
         bnDumpILExpression(fp, pool, self->expr, depth + 1);
-        for (int i = 0; i < self->Xarguments->len; i++) {
-                bnDumpILExpression(fp, pool,
-                                   g_ptr_array_index(self->Xarguments, i),
-                                   depth + 1);
+        for (int i = 0; i < self->arguments->len; i++) {
+                bnDumpILExpression(
+                    fp, pool, g_ptr_array_index(self->arguments, i), depth + 1);
         }
 }
 
@@ -26,10 +25,10 @@ void bnGenerateILExprFuncCallOp(struct bnInterpreter* bone,
                                 bnILExprFuncCallOp* self, bnEnviroment* env,
                                 bnCompileCache* ccache) {
         int count = 0;
-        for (int i = 0; i < self->Xarguments->len; i++) {
+        for (int i = 0; i < self->arguments->len; i++) {
                 count++;
                 bnGenerateILExpression(
-                    bone, g_ptr_array_index(self->Xarguments, i), env, ccache);
+                    bone, g_ptr_array_index(self->arguments, i), env, ccache);
                 g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
         }
         bnGenerateILExpression(bone, self->expr, env, ccache);
@@ -47,6 +46,6 @@ void bnGenerateILExprFuncCallOp(struct bnInterpreter* bone,
 
 void bnDeleteILExprFuncCallOp(bnILExprFuncCallOp* self) {
         bnDeleteILExpression(self->expr);
-        g_ptr_array_free(self->Xarguments, TRUE);
+        g_ptr_array_free(self->arguments, TRUE);
         BN_FREE(self);
 }
