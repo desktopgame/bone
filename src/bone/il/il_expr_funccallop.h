@@ -10,7 +10,7 @@ struct bnInterpreter;
  */
 typedef struct bnILExprFuncCallOp {
         bnILExpression* expr;
-        GList* arguments;
+        GPtrArray* Xarguments;
 } bnILExprFuncCallOp;
 
 /**

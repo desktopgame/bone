@@ -6,7 +6,7 @@
 bnILExprFuncCallOp* bnNewILExprFuncCallOp(bnILExpression* expr) {
         bnILExprFuncCallOp* ret = BN_MALLOC(sizeof(bnILExprFuncCallOp));
         ret->expr = expr;
-        ret->arguments = NULL;
+        ret->Xarguments = g_ptr_array_new_full(2, bnDeleteILExpression);
         return ret;
 }
 
@@ -15,10 +15,10 @@ void bnDumpILExprFuncCallOp(FILE* fp, struct bnStringPool* pool,
         bnFindent(fp, depth);
         fprintf(fp, "()\n");
         bnDumpILExpression(fp, pool, self->expr, depth + 1);
-        GList* iter = self->arguments;
-        while (iter != NULL) {
-                bnDumpILExpression(fp, pool, iter->data, depth + 1);
-                iter = iter->next;
+        for (int i = 0; i < self->Xarguments->len; i++) {
+                bnDumpILExpression(fp, pool,
+                                   g_ptr_array_index(self->Xarguments, i),
+                                   depth + 1);
         }
 }
 
@@ -26,12 +26,11 @@ void bnGenerateILExprFuncCallOp(struct bnInterpreter* bone,
                                 bnILExprFuncCallOp* self, bnEnviroment* env,
                                 bnCompileCache* ccache) {
         int count = 0;
-        GList* iter = self->arguments;
-        while (iter != NULL) {
+        for (int i = 0; i < self->Xarguments->len; i++) {
                 count++;
-                bnGenerateILExpression(bone, iter->data, env, ccache);
+                bnGenerateILExpression(
+                    bone, g_ptr_array_index(self->Xarguments, i), env, ccache);
                 g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
-                iter = iter->next;
         }
         bnGenerateILExpression(bone, self->expr, env, ccache);
         // instance based closure?
@@ -48,6 +47,6 @@ void bnGenerateILExprFuncCallOp(struct bnInterpreter* bone,
 
 void bnDeleteILExprFuncCallOp(bnILExprFuncCallOp* self) {
         bnDeleteILExpression(self->expr);
-        g_list_free_full(self->arguments, bnDeleteILExpression);
+        g_ptr_array_free(self->Xarguments, TRUE);
         BN_FREE(self);
 }
