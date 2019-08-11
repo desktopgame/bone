@@ -113,6 +113,11 @@ install(
     DIRECTORY ./../lib
     DESTINATION ${BONE_INSTALL_DIR}
 )
+add_custom_target(_add_path
+    COMMAND printf "%s %s" export PATH=${BONE_INSTALL_DIR}/bin:$$ >> ~/.bash_profile
+    COMMAND echo "PATH" >> ~/.bash_profile
+    COMMAND source ~/.bash_profile
+)
 add_custom_target(_uninstall rm -r ${BONE_INSTALL_DIR})
 add_custom_target(_clean rm -rf ./CMakeCache.txt && rm -r CMakeFiles)
 
