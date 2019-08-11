@@ -1,0 +1,8 @@
+a := def(str)() {
+    panic(str);
+};
+b := def()() {
+    a("string");
+};
+
+b();
