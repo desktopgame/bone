@@ -91,15 +91,6 @@ message(STATUS "HAVE_WINDOWS=${HAVE_WINDOWS}")
 message(STATUS "CMAKE_C_FLAGS_DEBUG=${CMAKE_C_FLAGS_DEBUG}")
 message(STATUS "CMAKE_C_FLAGS_RELEASE=${CMAKE_C_FLAGS_RELEASE}")
 
-
-# enable_testing()
-# add_test(
-#     NAME test
-#     COMMAND ruby auto/test.rb
-#     #CONFIGURATIONS Debug
-#     WORKING_DIRECTORY .
-# )
-
 add_custom_target(
     myTest
     COMMAND pwd
