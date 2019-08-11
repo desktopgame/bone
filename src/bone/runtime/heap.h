@@ -19,29 +19,32 @@ struct bnHeap* bnNewHeap();
 void bnAddToHeap(struct bnHeap* self, struct bnObject* obj);
 
 /**
- * @param bone
- */
-void bnGC(struct bnInterpreter* bone);
-
-/**
+ * bnPushStage is push new stage.
+ * bnStaging is will record objects to created last stage by this function.
  * @param self
- * @param obj
  */
-void bnDrop(struct bnHeap* self, struct bnObject* obj);
+void bnPushStage(struct bnHeap* self);
 
 /**
- * protect `obj`.
+ * bnStaging is will register object to last stage.
+ * was registered object is not collect by GC until it stage poped.
  * @param self
  * @param obj
  * @return
  */
-struct bnObject* bnProtect(struct bnHeap* self, struct bnObject* obj);
+struct bnObject* bnStaging(struct bnHeap* self, struct bnObject* obj);
 
 /**
- * release protected all object.
+ * bnPopStage is pop last stage.
+ * should be call at finished all staging process.
  * @param self
  */
-void bnRelease(struct bnHeap* self);
+void bnPopStage(struct bnHeap* self);
+
+/**
+ * @param bone
+ */
+void bnGC(struct bnInterpreter* bone);
 
 /**
  * @param self

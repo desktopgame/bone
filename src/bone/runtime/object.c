@@ -119,7 +119,13 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                 while (g_hash_table_iter_next(&iter, &k, &v)) {
                         g_hash_table_replace(sub->variableTable, k, v);
                 }
-
+                // staging all arguments.
+                bnPushStage(bone->heap);
+                bnStackElement* stackIter = sub->vStack->head;
+                while (stackIter != NULL) {
+                        bnStaging(bone->heap, stackIter->value);
+                        stackIter = stackIter->next;
+                }
                 int code = BN_JMP_PUSH(bone->__jstack);
                 if (code == 0) {
                         lambda->u.vFunc(bone, sub);
@@ -135,6 +141,7 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                         }
                 }
                 BN_JMP_POP(bone->__jstack);
+                bnPopStage(bone->heap);
         } else {
                 // write captured vatiable
                 GHashTableIter iter;

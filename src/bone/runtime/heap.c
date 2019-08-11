@@ -6,27 +6,33 @@
 #include "lambda.h"
 #include "object.h"
 #include "snapshot.h"
+typedef struct stage {
+        GPtrArray* objects;
+} stage;
 
 typedef struct bnHeap {
         GPtrArray* objects;
-        GPtrArray* protected;
+        bnStack* stages;
         int all;
         GRecMutex mutex;
 } bnHeap;
 
 static void gc_clear(bnHeap* self, bnFrame* frame);
-static void gc_mark(bnHeap* self, bnFrame* frame);
+static void gc_mark_stage(bnHeap* self);
+static void gc_mark_frame(bnHeap* self, bnFrame* frame);
 static void gc_mark_extern(bnInterpreter* bone);
 static void gc_mark_native(bnInterpreter* bone);
 static void gc_mark_rec(bnObject* obj);
 static void gc_mark_array(bnArray* array);
 static void gc_mark_lambda(bnLambda* lambda);
 static void gc_sweep(bnHeap* self, bnFrame* frame);
+static stage* new_stage();
+static void delete_stage(stage* self);
 
 bnHeap* bnNewHeap() {
         bnHeap* ret = BN_MALLOC(sizeof(bnHeap));
         ret->objects = g_ptr_array_new_full(2, NULL);
-        ret->protected = g_ptr_array_new_full(2, NULL);
+        ret->stages = bnNewStack();
         ret->all = 0;
         g_rec_mutex_init(&ret->mutex);
         return ret;
@@ -39,13 +45,24 @@ void bnAddToHeap(bnHeap* self, bnObject* obj) {
         g_rec_mutex_unlock(&self->mutex);
 }
 
+void bnPushStage(bnHeap* self) { bnPushStack(self->stages, new_stage()); }
+
+bnObject* bnStaging(bnHeap* self, bnObject* obj) {
+        stage* st = bnPeekStack(self->stages);
+        g_ptr_array_add(st->objects, obj);
+        return obj;
+}
+
+void bnPopStage(bnHeap* self) { delete_stage(bnPopStack(self->stages)); }
+
 void bnGC(bnInterpreter* bone) {
         bnHeap* self = bone->heap;
         bnFrame* frame = bone->frame;
         g_rec_mutex_lock(&self->mutex);
         BN_CHECK_MEM();
         gc_clear(self, frame);
-        gc_mark(self, frame);
+        gc_mark_stage(self);
+        gc_mark_frame(self, frame);
         gc_mark_extern(bone);
         gc_mark_native(bone);
         gc_sweep(self, frame);
@@ -53,30 +70,10 @@ void bnGC(bnInterpreter* bone) {
         g_rec_mutex_unlock(&self->mutex);
 }
 
-void bnDrop(bnHeap* self, bnObject* obj) {
-        g_ptr_array_remove(self->objects, obj);
-}
-
-bnObject* bnProtect(bnHeap* self, bnObject* obj) {
-        if (self->protected == NULL) {
-                self->protected = g_ptr_array_new_full(2, NULL);
-        }
-        g_ptr_array_add(self->protected, obj);
-        return obj;
-}
-
-void bnRelease(bnHeap* self) {
-        g_ptr_array_free(self->protected, TRUE);
-        self->protected = NULL;
-}
-
 void bnDeleteHeap(bnHeap* self) {
         g_rec_mutex_lock(&self->mutex);
         g_ptr_array_free(self->objects, TRUE);
-        if (self->protected != NULL) {
-                g_ptr_array_free(self->protected, TRUE);
-                self->protected = NULL;
-        }
+        bnDeleteStack(self->stages, NULL);
         BN_FREE(self);
         g_rec_mutex_unlock(&self->mutex);
 }
@@ -88,12 +85,23 @@ static void gc_clear(bnHeap* self, bnFrame* frame) {
         }
 }
 
-static void gc_mark(bnHeap* self, bnFrame* frame) {
+static void gc_mark_stage(bnHeap* self) {
+        bnStackElement* stackIter = self->stages->head;
+        while (stackIter != NULL) {
+                GPtrArray* ary = ((stage*)stackIter->value)->objects;
+                for (int i = 0; i < ary->len; i++) {
+                        gc_mark_rec(g_ptr_array_index(ary, i));
+                }
+                stackIter = stackIter->next;
+        }
+}
+
+static void gc_mark_frame(bnHeap* self, bnFrame* frame) {
         if (frame == NULL) {
                 return;
         }
         if (frame->next != NULL) {
-                gc_mark(self, frame->next);
+                gc_mark_frame(self, frame->next);
         }
         // mark local variable
         GHashTableIter hashIter;
@@ -120,13 +128,6 @@ static void gc_mark(bnHeap* self, bnFrame* frame) {
         }
         if (frame->panic != NULL) {
                 gc_mark_rec(frame->panic);
-        }
-        // mark protected
-        if (self->protected != NULL) {
-                for (int i = 0; i < self->protected->len; i++) {
-                        bnObject* obj = g_ptr_array_index(self->protected, i);
-                        gc_mark_rec(obj);
-                }
         }
 }
 
@@ -200,4 +201,14 @@ static void gc_sweep(bnHeap* self, bnFrame* frame) {
         g_ptr_array_free(self->objects, TRUE);
         self->objects = ret;
         self->all -= sweep;
+}
+static stage* new_stage() {
+        stage* ret = BN_MALLOC(sizeof(stage));
+        ret->objects = g_ptr_array_new();
+        return ret;
+}
+
+static void delete_stage(stage* self) {
+        g_ptr_array_free(self->objects, FALSE);
+        BN_FREE(self);
 }

@@ -93,7 +93,7 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
                                 return;
                         }
                         bnArray* chary =
-                            bnProtect(bone->heap, bnPopStack(frame->vStack));
+                            bnStaging(bone->heap, bnPopStack(frame->vStack));
                         bnFillString(bone, path, chary);
                         // create string
                         bnPushStack(frame->vStack, chary);
@@ -104,7 +104,7 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
                                 return;
                         }
                         bnString* bnstr =
-                            bnProtect(bone->heap, bnPopStack(frame->vStack));
+                            bnStaging(bone->heap, bnPopStack(frame->vStack));
                         files = g_list_append(files, bnstr);
                         bnDeleteFrame(sub);
                 }
@@ -118,7 +118,7 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
                 frame->panic = sub->panic;
                 return;
         }
-        bnArray* ary = bnProtect(bone->heap, bnPopStack(frame->vStack));
+        bnArray* ary = bnStaging(bone->heap, bnPopStack(frame->vStack));
         GList* filesIter = files;
         for (int i = 0; i < ary->size; i++) {
                 g_ptr_array_index(ary->arr, i) = filesIter->data;
@@ -128,5 +128,4 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              ary);
         bnDeleteFrame(sub);
-        bnRelease(bone->heap);
 }
