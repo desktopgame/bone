@@ -1,0 +1,1 @@
+open := extern_def("fopen", ["aaa", "bbb"], ["file", "error"]);

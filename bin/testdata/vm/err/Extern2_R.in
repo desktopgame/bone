@@ -1,0 +1,2 @@
+{} <- load("./testdata/vm/err/Extern_R.in");
+open(0, 1);
