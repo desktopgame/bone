@@ -28,6 +28,7 @@ make
 cd your_clone_dir/src
 brew install doxygen
 sudo make install
+sudo make _add_path
 ```
 
 ## WindowsOS の場合

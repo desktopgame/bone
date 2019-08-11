@@ -116,6 +116,7 @@ install(
 add_custom_target(_add_path
     COMMAND printf "%s %s" export PATH=${BONE_INSTALL_DIR}/bin:$$ >> ~/.bash_profile
     COMMAND echo "PATH" >> ~/.bash_profile
+    COMMAND sudo chmod +x ${BONE_INSTALL_DIR}/bin/bone
     COMMAND source ~/.bash_profile
 )
 add_custom_target(_uninstall rm -r ${BONE_INSTALL_DIR})
