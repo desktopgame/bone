@@ -65,19 +65,6 @@ static void writeIL(const gchar* out, struct bnStringPool* pool,
         fclose(fp);
 }
 
-static void writeAST(const gchar* out, struct bnStringPool* pool, bnAST* a) {
-        if (a == NULL) {
-                return;
-        }
-        FILE* fp = fopen(out, "w");
-        if (fp == NULL) {
-                perror("writeAST");
-                return;
-        }
-        bnDumpAST(fp, pool, a);
-        fclose(fp);
-}
-
 static void writeFile(const gchar* out) {
         FILE* fp = fopen(out, "r");
         if (fp == NULL) {
