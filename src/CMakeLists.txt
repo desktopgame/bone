@@ -23,7 +23,7 @@ endif()
 # build option
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
 if(APPLE)
-  set(CMAKE_C_FLAGS_DEBUG "-g -fsanitize=address -O0 -DDEBUG -DVMDEBUG -MMD -Wall")
+  set(CMAKE_C_FLAGS_DEBUG "-g -fsanitize=address -O0 -DDEBUG -DVMDEBUG -MMD -Wall -Werror")
 elseif(LINUX)
   set(CMAKE_C_FLAGS_DEBUG "-d -O0 -std=c99 -DDEBUG -DVMDEBUG -MMD -Wall")
 endif()
