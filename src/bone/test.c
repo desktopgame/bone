@@ -313,6 +313,8 @@ int bnTest(const char* dir) {
         while (iter != NULL) {
                 gchar* path = iter->data;
                 if (!g_str_has_suffix(path, ".in")) {
+                        g_free(path);
+                        iter->data = NULL;
                         iter = iter->next;
                         continue;
                 }
