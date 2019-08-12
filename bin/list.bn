@@ -48,10 +48,15 @@ toArray := def(self)(ret) {
     }
 };
 
+opLeftShift := def(self, a)() {
+    append(self, a);
+};
+
 new := def()(ret) {
     ret.head := element_class.new();
     ret.append := append;
     ret.length := length;
     ret.foreach := foreach;
     ret.toArray := toArray;
+    ret.opLeftShift := opLeftShift;
 };
