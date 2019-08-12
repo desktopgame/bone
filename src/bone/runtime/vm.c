@@ -179,10 +179,6 @@ void bnObjectInjection(bnInterpreter* bone, bnObject* src, bnObject* dst) {
 }
 
 int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
-        bnObject* BN_TRUE = g_hash_table_lookup(frame->variableTable,
-                                                bnIntern(bone->pool, "true"));
-        bnObject* BN_FALSE = g_hash_table_lookup(frame->variableTable,
-                                                 bnIntern(bone->pool, "false"));
         GList* snapshotIter = NULL;
         bool inDefer = false;
         for (int PC = 0; PC < env->codeArray->len; PC++) {
