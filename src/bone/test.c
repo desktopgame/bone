@@ -269,8 +269,9 @@ typedef enum test_mask {
         test_mask_parse = 1 << 0,
         test_mask_vm = 1 << 1,
         test_mask_run = 1 << 2,
-        test_mask_expect_pass = 1 << 3,
-        test_mask_expect_fail = 1 << 4,
+        test_mask_panic = 1 << 3,
+        test_mask_expect_pass = 1 << 4,
+        test_mask_expect_fail = 1 << 5,
 } test_mask;
 
 typedef enum test_result {
@@ -344,7 +345,7 @@ static test_result test_check_vm(const char* testDir, const char* testName,
 }
 static test_result test_check_run(const char* testDir, const char* testName,
                                   const gchar* path, int flags) {
-        bool panicTest = strstr(path, "_P");
+        bool panicTest = flags & test_mask_panic;
         test_result res = test_result_pass;
         // clear run result file
         char out[512];
@@ -457,6 +458,11 @@ static test_result test_run(const char* testDir, const gchar* path) {
         } else {
                 printf("no matches to rule: %s\n", path);
                 abort();
+        }
+        // check panic
+        if (*type != '\0' && g_str_has_prefix(type, "Panic")) {
+                flags |= test_mask_panic;
+                type += 5;
         }
         printf("test: %s\n", filename);
         test_result result = test_check(testDir, filename_wext, path, flags);
