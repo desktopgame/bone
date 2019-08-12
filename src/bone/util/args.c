@@ -10,4 +10,4 @@ void bnInitArgs(int argc, char* argv[]) {
 
 int bnArgc() { return _argc; }
 
-char** bnArgv() { _argv; }
+char** bnArgv() { return _argv; }
