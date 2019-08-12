@@ -18,27 +18,6 @@
 
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
 
-static void bnStdObjectFuncCall(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectPositive(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectNegative(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectChilda(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectNot(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectPlus(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectMinus(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectMultiply(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectDivide(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectModulo(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectBitAnd(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectBitOr(bnInterpreter* bone, bnFrame* frame);
-// static void bnStdObjectLogicAnd(bnInterpreter* bone, bnFrame* frame);
-// static void bnStdObjectLogicOr(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectExcOr(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectLShift(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectRShift(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectGT(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectGE(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectLT(bnInterpreter* bone, bnFrame* frame);
-static void bnStdObjectLE(bnInterpreter* bone, bnFrame* frame);
 static void bnStdObjectEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdObjectNotEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdObjectToString(bnInterpreter* bone, bnFrame* frame);
@@ -251,48 +230,6 @@ void bnDeleteObject(bnObject* self) {
         }
 }
 // Object
-
-static void bnStdObjectFuncCall(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectPositive(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectNegative(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectChilda(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectNot(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectPlus(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectMinus(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectMultiply(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectDivide(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectModulo(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectBitAnd(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectBitOr(bnInterpreter* bone, bnFrame* frame) {}
-
-// static void bnStdObjectLogicAnd(bnInterpreter* bone, bnFrame* frame){}
-
-// static void bnStdObjectLogicOr(bnInterpreter* bone, bnFrame* frame){}
-
-static void bnStdObjectExcOr(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectLShift(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectRShift(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectGT(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectGE(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectLT(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdObjectLE(bnInterpreter* bone, bnFrame* frame) {}
 
 static void bnStdObjectEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
