@@ -8,27 +8,6 @@
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
 #define message() ("should be parameter is string")
 
-static void bnStdStringFuncCall(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringPositive(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringNegative(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringChilda(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringNot(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringPlus(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringMinus(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringMultiply(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringDivide(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringModulo(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringBitAnd(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringBitOr(bnInterpreter* bone, bnFrame* frame);
-// static void bnStdStringLogicAnd(bnInterpreter* bone, bnFrame* frame);
-// static void bnStdStringLogicOr(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringExcOr(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringLShift(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringRShift(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringGT(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringGE(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringLT(bnInterpreter* bone, bnFrame* frame);
-static void bnStdStringLE(bnInterpreter* bone, bnFrame* frame);
 static void bnStdStringEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdStringNotEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdStringAt(bnInterpreter* bone, bnFrame* frame);
@@ -62,48 +41,6 @@ bnString* bnNewString2(bnInterpreter* bone, const char* str) {
 }
 
 // String
-
-static void bnStdStringFuncCall(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringPositive(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringNegative(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringChilda(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringNot(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringPlus(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringMinus(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringMultiply(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringDivide(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringModulo(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringBitAnd(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringBitOr(bnInterpreter* bone, bnFrame* frame) {}
-
-// static void bnStdStringLogicAnd(bnInterpreter* bone, bnFrame* frame){}
-
-// static void bnStdStringLogicOr(bnInterpreter* bone, bnFrame* frame){}
-
-static void bnStdStringExcOr(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringLShift(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringRShift(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringGT(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringGE(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringLT(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdStringLE(bnInterpreter* bone, bnFrame* frame) {}
 
 static void bnStdStringEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
