@@ -175,7 +175,6 @@ void bnDumpMemoryLeaks(FILE* fp) {
 static bnMemInfo* new_mem_info(size_t size, const char* filename, int lineno) {
         bnMemInfo* ret = bnSafeMalloc(sizeof(bnMemInfo));
         char* data = bnSafeMalloc(fixed_size(size));
-        void* vdata = data;
         memset(data, BN_MEM_CLEAR, fixed_size(size));
         memset(data, BN_MEM_OVER_DATA, BN_MEM_OVER_SIZE);
         memset(data + size + BN_MEM_OVER_SIZE, BN_MEM_OVER_DATA,
