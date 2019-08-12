@@ -293,7 +293,6 @@ static test_result test_run(const char* testDir, const gchar* path) {
 
 int bnTest(const char* dir) {
         int status = 0;
-        GError* err = NULL;
         GPtrArray* fails = g_ptr_array_new_full(2, string_destroy);
         GList* files = get_files(dir);
         GList* iter = files;
