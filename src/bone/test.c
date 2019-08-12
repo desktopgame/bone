@@ -315,7 +315,9 @@ static test_result test_check_vm(const char* testDir, const char* testName,
         bnInterpreter* bone = bnNewInterpreter("", bnArgc(), bnArgv());
         test_result ret = test_result_pass;
         // clear parse result file
-        gchar* out = g_strconcat(path, ".out", NULL);
+        char out[512];
+        memset(out, '\0', 512);
+        sprintf(out, "%s/out/%s.out", testDir, testName);
         if (g_file_test(out, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
                 g_remove(out);
         }
@@ -337,7 +339,6 @@ static test_result test_check_vm(const char* testDir, const char* testName,
                         ret = test_result_fail;
                 }
         }
-        g_free(out);
         bnDeleteInterpreter(bone);
         return ret;
 }
@@ -346,12 +347,14 @@ static test_result test_check_run(const char* testDir, const char* testName,
         bool panicTest = strstr(path, "_P");
         test_result res = test_result_pass;
         // clear run result file
-        gchar* sout = g_strconcat(path, ".std.out", NULL);
-        if (g_file_test(sout, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
-                g_remove(sout);
+        char out[512];
+        memset(out, '\0', 512);
+        sprintf(out, "%s/out/%s.std.out", testDir, testName);
+        if (g_file_test(out, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
+                g_remove(out);
         }
 #if !defined(_WIN32)
-        FILE* soutfp = fopen(sout, "w");
+        FILE* soutfp = fopen(out, "w");
         FILE* _stdout = stdout;
         stdout = soutfp;
 #endif
@@ -366,7 +369,7 @@ static test_result test_check_run(const char* testDir, const char* testName,
 #if !defined(_WIN32)
         stdout = _stdout;
         fclose(soutfp);
-        writeFile(sout);
+        writeFile(out);
 #endif
         if (flags & test_mask_expect_pass) {
                 if (ret != 0 && !panicTest) {
