@@ -15,6 +15,9 @@
 #include "util/args.h"
 #include "util/string.h"
 #include "util/string_pool.h"
+static int string_compare(const void* a, const void* b) {
+        return strcmp((const char*)a, (const char*)b);
+}
 
 static GList* get_files(const char* dir) {
         GError* err = NULL;
@@ -26,7 +29,7 @@ static GList* get_files(const char* dir) {
                 gchar* path = g_build_filename(cwd, dir, file, NULL);
                 ret = g_list_append(ret, path);
         }
-        ret = g_list_sort(ret, strcmp);
+        ret = g_list_sort(ret, string_compare);
         g_dir_close(dirp);
         g_free(cwd);
         return ret;
