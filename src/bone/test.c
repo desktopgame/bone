@@ -2,7 +2,6 @@
 #include <assert.h>
 #include <string.h>
 #include "bone.h"
-#include "cunit.h"
 #include "il/il_toplevel.h"
 #include "parse/ast2il.h"
 #include "parse/parser.h"
