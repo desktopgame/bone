@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
                 //$ bone
                 // start interactive mode
 #if DEBUG
-                bnTest("testdata");
+                status = bnTest("testdata");
 #else
                 bnInteractive(stdin);
 #endif

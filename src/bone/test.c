@@ -79,6 +79,11 @@ static void writeFile(const gchar* out) {
         fclose(fp);
 }
 
+static void string_destroy(gpointer data) {
+        GString* str = data;
+        g_string_free(str, TRUE);
+}
+
 typedef enum test_mask {
         test_mask_parse = 1 << 0,
         test_mask_vm = 1 << 1,
@@ -284,9 +289,11 @@ static test_result test_run(const char* testDir, const gchar* path) {
         return result;
 }
 
-void bnTest(const char* dir) {
+int bnTest(const char* dir) {
+        int status = 0;
         GError* err = NULL;
         GDir* dirp = g_dir_open(dir, 0, &err);
+        GPtrArray* fails = g_ptr_array_new_full(2, string_destroy);
         gchar* file = ".";
         gchar* cwd = g_get_current_dir();
         while ((file = g_dir_read_name(dirp)) != NULL) {
@@ -294,9 +301,23 @@ void bnTest(const char* dir) {
                 if (!g_str_has_suffix(path, ".in")) {
                         continue;
                 }
-                test_run(dir, path);
+                if (test_run(dir, path) == test_result_fail) {
+                        g_ptr_array_add(fails, g_string_new(path));
+                }
                 g_free(path);
         }
         g_dir_close(dirp);
         g_free(cwd);
+        if (fails->len) {
+                printf("failed %d:\n", fails->len);
+                for (int i = 0; i < fails->len; i++) {
+                        GString* str = g_ptr_array_index(fails, i);
+                        printf("    %s", str->str);
+                }
+                status = 1;
+        } else {
+                printf("Successful completion\n");
+        }
+        g_ptr_array_free(fails, TRUE);
+        return status;
 }
