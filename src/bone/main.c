@@ -13,25 +13,6 @@
 #include "util/io.h"
 #include "util/memory.h"
 
-static void runTest() {
-#if __APPLE__
-        CU_pSuite testSuite;
-
-        CU_initialize_registry();
-        testSuite = CU_add_suite("boneTestSuite", NULL, NULL);
-        CU_add_test(testSuite, "bnParseTest", bnParseTest);
-        CU_add_test(testSuite, "bnVMTest", bnVMTest);
-        CU_add_test(testSuite, "bnRunTest", bnRunTest);
-        CU_basic_set_mode(CU_BRM_VERBOSE);
-        CU_basic_run_tests();
-        CU_cleanup_registry();
-#else
-        bnParseTest();
-        bnVMTest();
-        bnRunTest();
-#endif
-}
-
 int main(int argc, char* argv[]) {
 #if _MSC_VER && DEBUG
         _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -43,7 +24,6 @@ int main(int argc, char* argv[]) {
                 //$ bone
                 // start interactive mode
 #if DEBUG
-                // runTest();
                 bnTest("testdata");
 #else
                 bnInteractive(stdin);

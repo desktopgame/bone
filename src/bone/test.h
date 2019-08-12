@@ -3,9 +3,4 @@
 
 void bnTest();
 
-void bnParseTest();
-
-void bnVMTest();
-
-void bnRunTest();
 #endif
