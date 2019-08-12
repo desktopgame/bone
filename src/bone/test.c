@@ -22,7 +22,7 @@ static int string_compare(const void* a, const void* b) {
 static GList* get_files(const char* dir) {
         GError* err = NULL;
         GDir* dirp = g_dir_open(dir, 0, &err);
-        gchar* file = ".";
+        const gchar* file = ".";
         gchar* cwd = g_get_current_dir();
         GList* ret = NULL;
         while ((file = g_dir_read_name(dirp)) != NULL) {
