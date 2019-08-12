@@ -17,11 +17,6 @@
 #include "util/string.h"
 #include "util/string_pool.h"
 
-static void free_gstring_with_segment(gpointer pdata) {
-        GString* str = pdata;
-        g_string_free(str, TRUE);
-}
-
 static void writeEnv(const gchar* out, struct bnStringPool* pool,
                      bnEnviroment* env) {
         if (env == NULL) {
