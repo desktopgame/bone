@@ -242,7 +242,7 @@ static test_result test_run(const char* testDir, const gchar* path) {
         // testdata/file_type.in
         int pos = bnLastPathComponent(path);
         // file_type.in
-        gchar* filename = path + pos;
+        const gchar* filename = path + pos;
         // file_type
         gchar* filename_wext = g_strdup(filename);
         int dotpos = strlen(filename_wext) - 3;
