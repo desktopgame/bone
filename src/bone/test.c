@@ -16,6 +16,22 @@
 #include "util/string.h"
 #include "util/string_pool.h"
 
+static GList* get_files(const char* dir) {
+        GError* err = NULL;
+        GDir* dirp = g_dir_open(dir, 0, &err);
+        gchar* file = ".";
+        gchar* cwd = g_get_current_dir();
+        GList* ret = NULL;
+        while ((file = g_dir_read_name(dirp)) != NULL) {
+                gchar* path = g_build_filename(cwd, dir, file, NULL);
+                ret = g_list_append(ret, path);
+        }
+        ret = g_list_sort(ret, strcmp);
+        g_dir_close(dirp);
+        g_free(cwd);
+        return ret;
+}
+
 static void writeEnv(const gchar* out, struct bnStringPool* pool,
                      bnEnviroment* env) {
         if (env == NULL) {
@@ -291,22 +307,22 @@ static test_result test_run(const char* testDir, const gchar* path) {
 int bnTest(const char* dir) {
         int status = 0;
         GError* err = NULL;
-        GDir* dirp = g_dir_open(dir, 0, &err);
         GPtrArray* fails = g_ptr_array_new_full(2, string_destroy);
-        gchar* file = ".";
-        gchar* cwd = g_get_current_dir();
-        while ((file = g_dir_read_name(dirp)) != NULL) {
-                gchar* path = g_build_filename(cwd, dir, file, NULL);
+        GList* files = get_files(dir);
+        GList* iter = files;
+        while (iter != NULL) {
+                gchar* path = iter->data;
                 if (!g_str_has_suffix(path, ".in")) {
+                        iter = iter->next;
                         continue;
                 }
                 if (test_run(dir, path) == test_result_fail) {
                         g_ptr_array_add(fails, g_string_new(path));
                 }
                 g_free(path);
+                iter->data = NULL;
+                iter = iter->next;
         }
-        g_dir_close(dirp);
-        g_free(cwd);
         if (fails->len) {
                 printf("failed %d:\n", fails->len);
                 for (int i = 0; i < fails->len; i++) {
@@ -317,6 +333,7 @@ int bnTest(const char* dir) {
         } else {
                 printf("Successful completion\n");
         }
+        g_list_free(files);
         g_ptr_array_free(fails, TRUE);
         return status;
 }
