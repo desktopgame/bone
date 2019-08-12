@@ -35,7 +35,8 @@ bnStringView bnIntern(bnStringPool* self, const char* str) {
         }
         const char* dupstr = strdup(str);
         bnStringView ret = self->count;
-        g_hash_table_insert(self->table, dupstr, GINT_TO_POINTER(self->count));
+        g_hash_table_insert(self->table, (gpointer)dupstr,
+                            GINT_TO_POINTER(self->count));
         g_ptr_array_add(self->map, (gpointer)dupstr);
         self->count++;
         BN_CHECK_MEM();
