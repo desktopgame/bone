@@ -32,6 +32,14 @@ static GList* get_files(const char* dir) {
         return ret;
 }
 
+static void xremove(const gchar* path) {
+#if defined(__APPLE__) || defined(__linux__)
+        remove(path);
+#else
+        g_remove(path);
+#endif
+}
+
 static void writeEnv(const gchar* out, struct bnStringPool* pool,
                      bnEnviroment* env) {
         if (env == NULL) {
@@ -111,7 +119,7 @@ static test_result test_check_parse(const char* testDir, const char* testName,
         sprintf(out, "%s/out/%s.out", testDir, testName);
         // gchar* out = g_strconcat(testDir, ".out", NULL);
         if (g_file_test(out, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
-                g_remove(out);
+                xremove(out);
         }
         // parse and test
         bnAST* a = bnParseFile(pool, path);
@@ -141,7 +149,7 @@ static test_result test_check_vm(const char* testDir, const char* testName,
         memset(out, '\0', 512);
         sprintf(out, "%s/out/%s.out", testDir, testName);
         if (g_file_test(out, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
-                g_remove(out);
+                xremove(out);
         }
         // parse and test
         bnAST* a = bnParseFile(bone->pool, path);
@@ -173,7 +181,7 @@ static test_result test_check_run(const char* testDir, const char* testName,
         memset(out, '\0', 512);
         sprintf(out, "%s/out/%s.std.out", testDir, testName);
         if (g_file_test(out, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
-                g_remove(out);
+                xremove(out);
         }
 #if !defined(_WIN32)
         FILE* soutfp = fopen(out, "w");
