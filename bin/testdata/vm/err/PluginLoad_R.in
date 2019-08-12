@@ -1,2 +1,0 @@
-{} <- load("./testdata/vm/err/PluginLoad_Inc.in");
-func();
