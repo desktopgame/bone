@@ -14,6 +14,7 @@
 #include "runtime/opcode.h"
 #include "runtime/vm.h"
 #include "util/args.h"
+#include "util/string.h"
 #include "util/string_pool.h"
 
 #if defined(_MSC_VER)
@@ -262,6 +263,219 @@ static void dump_result(const char* header, GPtrArray* src) {
         }
         g_ptr_array_set_free_func(src, free_gstring_with_segment);
         g_ptr_array_free(src, TRUE);
+}
+
+typedef enum test_mask {
+        test_mask_parse = 1 << 0,
+        test_mask_vm = 1 << 1,
+        test_mask_run = 1 << 2,
+        test_mask_expect_pass = 1 << 3,
+        test_mask_expect_fail = 1 << 4,
+} test_mask;
+
+typedef enum test_result {
+        test_result_pass,
+        test_result_fail,
+        test_result_unknown,
+} test_result;
+
+static test_result test_check_parse(const char* testDir, const char* testName,
+                                    const gchar* path, int flags) {
+        struct bnStringPool* pool = bnNewStringPool();
+        test_result ret = test_result_pass;
+        // clear parse result file
+        char out[512];
+        memset(out, '\0', 512);
+        sprintf(out, "%s/out/%s.out", testDir, testName);
+        // gchar* out = g_strconcat(testDir, ".out", NULL);
+        if (g_file_test(out, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
+                g_remove(out);
+        }
+        // parse and test
+        bnAST* a = bnParseFile(pool, path);
+        if (flags & test_mask_expect_pass) {
+                bnILToplevel* iltop = bnAST2IL(a);
+                writeIL(out, pool, iltop);
+                if (a == NULL) {
+                        ret = test_result_fail;
+                }
+                bnDeleteAST(a);
+                bnDeleteILTopLevel(iltop);
+        } else if (flags & test_mask_expect_fail) {
+                if (a != NULL) {
+                        ret = test_result_fail;
+                }
+        }
+        bnDeleteStringPool(pool);
+        return ret;
+}
+
+static test_result test_check_vm(const char* testDir, const char* testName,
+                                 const gchar* path, int flags) {
+        bnInterpreter* bone = bnNewInterpreter("", bnArgc(), bnArgv());
+        test_result ret = test_result_pass;
+        // clear parse result file
+        gchar* out = g_strconcat(path, ".out", NULL);
+        if (g_file_test(out, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
+                g_remove(out);
+        }
+        // parse and test
+        bnAST* a = bnParseFile(bone->pool, path);
+        if (flags & test_mask_expect_pass) {
+                bnILToplevel* iltop = bnAST2IL(a);
+                bnEnviroment* env = bnNewEnviroment(bnIntern(bone->pool, path));
+                bnGenerateILTopLevel(bone, iltop, env);
+                writeEnv(out, bone->pool, env);
+                if (a == NULL) {
+                        ret = test_result_fail;
+                }
+                bnDeleteAST(a);
+                bnDeleteILTopLevel(iltop);
+                bnDeleteEnviroment(env);
+        } else if (flags & test_mask_expect_fail) {
+                if (a != NULL) {
+                        ret = test_result_fail;
+                }
+        }
+        g_free(out);
+        bnDeleteInterpreter(bone);
+        return ret;
+}
+static test_result test_check_run(const char* testDir, const char* testName,
+                                  const gchar* path, int flags) {
+        bool panicTest = strstr(path, "_P");
+        test_result res = test_result_pass;
+        // clear run result file
+        gchar* sout = g_strconcat(path, ".std.out", NULL);
+        if (g_file_test(sout, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
+                g_remove(sout);
+        }
+#if !defined(_WIN32)
+        FILE* soutfp = fopen(sout, "w");
+        FILE* _stdout = stdout;
+        stdout = soutfp;
+#endif
+        // parse and test
+        bnInterpreter* bone = bnNewInterpreter(path, bnArgc(), bnArgv());
+#if _WIN32
+        bnLink(bone, "testdata\\plugins");
+#else
+        bnLink(bone, "./testdata/plugins");
+#endif
+        int ret = bnEval(bone);
+#if !defined(_WIN32)
+        stdout = _stdout;
+        fclose(soutfp);
+        writeFile(sout);
+#endif
+        if (flags & test_mask_expect_pass) {
+                if (ret != 0 && !panicTest) {
+                        res = test_result_fail;
+                }
+        } else if (flags & test_mask_expect_fail) {
+                if (ret == 0) {
+                        res = test_result_fail;
+                }
+        }
+        BN_CHECK_MEM();
+        bnDeleteInterpreter(bone);
+        return res;
+}
+
+static test_result test_check(const char* testDir, const char* testName,
+                              const gchar* path, int flags) {
+        if (flags & test_mask_parse) {
+                return test_check_parse(testDir, testName, path, flags);
+        } else if (flags & test_mask_vm) {
+                return test_check_vm(testDir, testName, path, flags);
+        } else if (flags & test_mask_run) {
+                return test_check_run(testDir, testName, path, flags);
+        } else {
+                abort();
+        }
+        return test_result_unknown;
+}
+
+static test_result test_run(const char* testDir, const gchar* path) {
+        /*
+        // filename rule: file_TypeExpect
+        // examples
+        //
+        // file_ParsePass:
+        // parse test.
+        // expect pass.
+        //
+        // file_VMFail:
+        // code generate test.
+        // expect fail.
+        //
+        // file_RunPass:
+        // run test:
+        // expect pass.
+        //
+        */
+        // testdata/file_type.in
+        int pos = bnLastPathComponent(path);
+        // file_type.in
+        gchar* filename = path + pos;
+        // file_type
+        gchar* filename_wext = g_strdup(filename);
+        int dotpos = strlen(filename_wext) - 3;
+        memset(filename_wext + dotpos, '\0', 3);
+        // file type
+        char* underbar = strstr(filename_wext, "_");
+        gchar* type = NULL;
+        if (underbar != NULL) {
+                int underbarPos = underbar - filename_wext;
+                type = filename_wext + underbarPos + 1;
+        }
+        int flags = 0;
+        // check test type
+        if (g_str_has_prefix(type, "Parse")) {
+                flags |= test_mask_parse;
+                type += 5;
+        } else if (g_str_has_prefix(type, "VM")) {
+                flags |= test_mask_vm;
+                type += 2;
+        } else if (g_str_has_prefix(type, "Run")) {
+                flags |= test_mask_run;
+                type += 3;
+        } else {
+                printf("no matches to rule: %s\n", path);
+                abort();
+        }
+        // check expect type
+        if (g_str_has_prefix(type, "Pass")) {
+                flags |= test_mask_expect_pass;
+                type += 4;
+        } else if (g_str_has_prefix(type, "Fail")) {
+                flags |= test_mask_expect_fail;
+                type += 4;
+        } else {
+                printf("no matches to rule: %s\n", path);
+                abort();
+        }
+        printf("test: %s\n", filename);
+        test_result result = test_check(testDir, filename_wext, path, flags);
+        g_free(filename_wext);
+        return result;
+}
+
+void bnTest(const char* dir) {
+        GError* err = NULL;
+        GDir* dirp = g_dir_open(dir, 0, &err);
+        gchar* file = ".";
+        gchar* cwd = g_get_current_dir();
+        while ((file = g_dir_read_name(dirp)) != NULL) {
+                gchar* path = g_build_filename(cwd, dir, file, NULL);
+                if (!g_str_has_suffix(path, ".in")) {
+                        continue;
+                }
+                test_run(dir, path);
+                g_free(path);
+        }
+        g_dir_close(dirp);
+        g_free(cwd);
 }
 
 void bnParseTest() {

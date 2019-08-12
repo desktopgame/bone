@@ -43,7 +43,8 @@ int main(int argc, char* argv[]) {
                 //$ bone
                 // start interactive mode
 #if DEBUG
-                runTest();
+                // runTest();
+                bnTest("testdata");
 #else
                 bnInteractive(stdin);
 #endif
