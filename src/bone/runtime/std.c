@@ -242,7 +242,7 @@ void bnStdSystemArray(bnInterpreter* bone, bnFrame* frame) {
                 _throw(bone, frame, "should be `length` is integer");
         }
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewArray(bone, ((bnInteger*)a)->value));
+                             bnNewArray(bone, bnGetIntegerValue(a)));
 }
 
 void bnStdSystemExternVar(bnInterpreter* bone, bnFrame* frame) {

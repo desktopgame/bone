@@ -84,9 +84,7 @@ static void bnStdArrayArraySet(bnInterpreter* bone, bnFrame* frame) {
                 _throw(bone, frame, "should be `index` is integer");
         }
         bnArray* arr = a;
-        bnInteger* idx = b;
-        bnInteger* val = c;
-        g_ptr_array_index(arr->arr, idx->value) = c;
+        g_ptr_array_index(arr->arr, bnGetIntegerValue(b)) = c;
 }
 
 static void bnStdArrayArrayGet(bnInterpreter* bone, bnFrame* frame) {
@@ -99,9 +97,8 @@ static void bnStdArrayArrayGet(bnInterpreter* bone, bnFrame* frame) {
                 _throw(bone, frame, "should be `index` is integer");
         }
         bnArray* arr = a;
-        bnInteger* idx = b;
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             g_ptr_array_index(arr->arr, idx->value));
+                             g_ptr_array_index(arr->arr, bnGetIntegerValue(b)));
 }
 
 static void free_array(bnObject* obj) {

@@ -76,13 +76,13 @@ static void bnStdStringAt(bnInterpreter* bone, bnFrame* frame) {
                 _throw(bone, frame, "should be `index` is string");
         }
         bnStringView ai = ((bnString*)a)->value;
-        bnInteger* bi = b;
         const char* astr = bnView2Str(bone->pool, ai);
         int astrlen = strlen(astr);
-        if (bi->value < 0 || bi->value >= astrlen) {
+        int bv = bnGetIntegerValue(b);
+        if (bv < 0 || bv >= astrlen) {
                 bnFormatThrow(bone, "over index in bounds: %d~%d[%d]", 0,
-                              astrlen, bi->value);
+                              astrlen, bv);
         }
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewChar(bone, astr[bi->value]));
+                             bnNewChar(bone, astr[bv]));
 }

@@ -4,19 +4,22 @@
 #include "object.h"
 
 /**
- * bnInteger is bone integer.
- */
-typedef struct bnInteger {
-        bnObject base;
-        int value;
-} bnInteger;
-
-/**
  * return new instance of bnInteger.
  * @param bone
  * @param name
  * @return
  */
-bnInteger* bnNewInteger(bnInterpreter* bone, int value);
+bnObject* bnNewInteger(bnInterpreter* bone, int value);
 
+/**
+ * @param obj
+ * @return
+ */
+int bnGetIntegerValue(bnObject* obj);
+
+/**
+ * @param obj
+ * @param value
+ */
+void bnSetIntegerValue(bnObject* obj, int value);
 #endif

@@ -59,7 +59,7 @@ bool bnGetBoolValue(bnObject* obj) {
         if (obj->type == BN_OBJECT_BOOL) {
                 return ((bnBool*)obj)->value;
         } else if (obj->type == BN_OBJECT_INTEGER) {
-                return ((bnInteger*)obj)->value != 0;
+                return bnGetIntegerValue(obj) != 0;
         }
         return true;
 }

@@ -163,7 +163,7 @@ void bnPrintObject(FILE* fp, bnInterpreter* bone, bnObject* self) {
                         fprintf(fp, "proto %p", (void*)self);
                         break;
                 case BN_OBJECT_INTEGER:
-                        fprintf(fp, "int %d", ((bnInteger*)self)->value);
+                        fprintf(fp, "int %d", bnGetIntegerValue(self));
                         break;
                 case BN_OBJECT_DOUBLE:
                         fprintf(fp, "double %lf", bnGetDoubleValue(self));

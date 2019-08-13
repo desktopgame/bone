@@ -37,8 +37,7 @@ void bnExtSystemExit(bnInterpreter* bone, bnFrame* frame) {
                         bnNewString2(bone, "should be `status` is integer"),
                         BN_JMP_CODE_EXCEPTION);
         }
-        bnInteger* statusInt = statusObj;
-        exit(statusInt->value);
+        exit(bnGetIntegerValue(statusObj));
 }
 
 void bnExtSystemAbort(bnInterpreter* bone, bnFrame* frame) { abort(); }

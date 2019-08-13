@@ -32,8 +32,15 @@ static void bnStdIntegerLE(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerNotEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerToString(bnInterpreter* bone, bnFrame* frame);
+/**
+ * bnInteger is bone integer.
+ */
+typedef struct bnInteger {
+        bnObject base;
+        int value;
+} bnInteger;
 
-bnInteger* bnNewInteger(bnInterpreter* bone, int value) {
+bnObject* bnNewInteger(bnInterpreter* bone, int value) {
         bnInteger* ret = BN_MALLOC(sizeof(bnInteger));
         bnInitObject(bone, &ret->base, BN_OBJECT_INTEGER);
         ret->value = value;
@@ -110,8 +117,14 @@ bnInteger* bnNewInteger(bnInterpreter* bone, int value) {
                  bnNewLambdaFromCFunc(bone, bnStdIntegerToString, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN,
                                       "ret", BN_C_ADD_EXIT));
-        return ret;
+        return (bnObject*)ret;
 }
+
+int bnGetIntegerValue(bnObject* obj) { return ((bnInteger*)obj)->value; }
+void bnSetIntegerValue(bnObject* obj, int value) {
+        ((bnInteger*)obj)->value = value;
+}
+
 // private
 static void bnStdIntegerFuncCall(bnInterpreter* bone, bnFrame* frame) {
         _throw(bone, frame, "internal error");
