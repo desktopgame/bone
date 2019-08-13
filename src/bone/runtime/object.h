@@ -5,7 +5,7 @@
 struct bnInterpreter;
 struct bnFrame;
 struct bnHeap;
-
+struct bnObject;
 /**
  * bnFreeObjectFunc is for free a object.
  */

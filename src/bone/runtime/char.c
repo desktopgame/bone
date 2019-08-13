@@ -46,10 +46,10 @@ static void bnStdCharEqual(bnInterpreter* bone, bnFrame* frame) {
         if (a->type != BN_OBJECT_CHAR || b->type != BN_OBJECT_CHAR) {
                 _throw(bone, frame, message());
         }
-        bnChar* aChar = a;
-        bnChar* bChar = b;
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(bone->pool, "ret"),
+        bnChar* aChar = (bnChar*)a;
+        bnChar* bChar = (bnChar*)b;
+        bnWriteVariable2(
+            frame, bone->pool, "ret",
             bnGetBool(bone->pool, frame, aChar->value == bChar->value));
 }
 
@@ -59,9 +59,9 @@ static void bnStdCharNotEqual(bnInterpreter* bone, bnFrame* frame) {
         if (a->type != BN_OBJECT_CHAR || b->type != BN_OBJECT_CHAR) {
                 _throw(bone, frame, message());
         }
-        bnChar* aChar = a;
-        bnChar* bChar = b;
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(bone->pool, "ret"),
+        bnChar* aChar = (bnChar*)a;
+        bnChar* bChar = (bnChar*)b;
+        bnWriteVariable2(
+            frame, bone->pool, "ret",
             bnGetBool(bone->pool, frame, aChar->value != bChar->value));
 }

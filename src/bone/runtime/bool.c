@@ -70,9 +70,8 @@ static void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame) {
         if (a->type != BN_OBJECT_BOOL) {
                 _throw(bone, frame, "should be `self` is bool");
         }
-        bnBool* b = a;
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             b->r);
+        bnBool* b = (bnBool*)a;
+        bnWriteVariable2(frame, bone->pool, "ret", b->r);
 }
 
 static void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame) {
@@ -84,14 +83,13 @@ static void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame) {
         if (b->type != BN_OBJECT_BOOL) {
                 _throw(bone, frame, message());
         }
-        bnBool* boolA = a;
-        bnBool* boolB = b;
+        bnBool* boolA = (bnBool*)a;
+        bnBool* boolB = (bnBool*)b;
         bnObject* c = g_hash_table_lookup(
             frame->variableTable,
             bnIntern(bone->pool,
                      (boolA->value & boolB->value) ? "true" : "false"));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             c);
+        bnWriteVariable2(frame, bone->pool, "ret", c);
 }
 
 static void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame) {
@@ -103,14 +101,13 @@ static void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame) {
         if (b->type != BN_OBJECT_BOOL) {
                 _throw(bone, frame, message());
         }
-        bnBool* boolA = a;
-        bnBool* boolB = b;
+        bnBool* boolA = (bnBool*)a;
+        bnBool* boolB = (bnBool*)b;
         bnObject* c = g_hash_table_lookup(
             frame->variableTable,
             bnIntern(bone->pool,
                      (boolA->value | boolB->value) ? "true" : "false"));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             c);
+        bnWriteVariable2(frame, bone->pool, "ret", c);
 }
 
 static void bnStdBoolEqual(bnInterpreter* bone, bnFrame* frame);

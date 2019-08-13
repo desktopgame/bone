@@ -83,7 +83,7 @@ static void bnStdArrayArraySet(bnInterpreter* bone, bnFrame* frame) {
         if (b->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, "should be `index` is integer");
         }
-        bnArray* arr = a;
+        bnArray* arr = (bnArray*)a;
         g_ptr_array_index(arr->arr, bnGetIntegerValue(b)) = c;
 }
 
@@ -96,14 +96,14 @@ static void bnStdArrayArrayGet(bnInterpreter* bone, bnFrame* frame) {
         if (b->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, "should be `index` is integer");
         }
-        bnArray* arr = a;
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             g_ptr_array_index(arr->arr, bnGetIntegerValue(b)));
+        bnArray* arr = (bnArray*)a;
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         g_ptr_array_index(arr->arr, bnGetIntegerValue(b)));
 }
 
 static void free_array(bnObject* obj) {
         obj->freeFunc = NULL;
-        bnArray* arr = obj;
+        bnArray* arr = (bnArray*)obj;
         g_ptr_array_unref(arr->arr);
         bnDeleteObject(obj);
 }

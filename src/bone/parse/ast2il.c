@@ -23,7 +23,7 @@ static void ast2paramsArray(bnAST* a, GPtrArray* dest) {
                                         dest);
                 }
         } else {
-                g_ptr_array_add(dest, a->u.svvalue);
+                g_ptr_array_add(dest, (gpointer)a->u.svvalue);
         }
 }
 

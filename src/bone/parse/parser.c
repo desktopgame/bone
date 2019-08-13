@@ -117,7 +117,7 @@ int bnPopParseLine() {
         if (len == 0) {
                 return -1;
         }
-        return g_queue_pop_head(gLineQ);
+        return (int)g_queue_pop_head(gLineQ);
 }
 
 // private
