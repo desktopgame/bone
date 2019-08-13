@@ -60,10 +60,8 @@ void bnExtFileOpen(bnInterpreter* bone, bnFrame* frame) {
         if (b->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "should be `mode` is string");
         }
-        bnString* astr = a;
-        bnString* bstr = b;
-        FILE* fp = fopen(bnView2Str(bone->pool, astr->value),
-                         bnView2Str(bone->pool, bstr->value));
+        FILE* fp = fopen(bnView2Str(bone->pool, bnGetStringValue(a)),
+                         bnView2Str(bone->pool, bnGetStringValue(b)));
         g_hash_table_replace(frame->variableTable,
                              bnIntern(bone->pool, "error"),
                              bnGetFalse(bone->pool, frame));

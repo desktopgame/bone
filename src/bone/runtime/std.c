@@ -47,8 +47,7 @@ void bnStdDebugPrint(bnInterpreter* bone, bnFrame* frame) {
         if (a->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "internal error");
         }
-        bnString* str = a;
-        const char* cstr = bnView2Str(bone->pool, str->value);
+        const char* cstr = bnView2Str(bone->pool, bnGetStringValue(a));
         printf("> %s", cstr);
         fflush(stdout);
 }
@@ -115,7 +114,7 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
         if (a->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "should be path is string");
         }
-        bnStringView pathView = ((bnString*)a)->value;
+        bnStringView pathView = bnGetStringValue(a);
         const char* pathStr = bnView2Str(bone->pool, pathView);
         if (!file_exists(pathStr)) {
                 bnFormatThrow(bone, "`%s` is not found", pathStr);
@@ -145,7 +144,7 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
         if (a->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "should be path is string");
         }
-        bnStringView pathView = ((bnString*)a)->value;
+        bnStringView pathView = bnGetStringValue(a);
         const char* pathStr = bnView2Str(bone->pool, pathView);
         if (!file_exists(pathStr)) {
                 bnFormatThrow(bone, "`%s` is not found", pathStr);
@@ -190,7 +189,7 @@ void bnStdSystemEval(bnInterpreter* bone, bnFrame* frame) {
         if (a->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "should be path is string");
         }
-        bnStringView srcView = ((bnString*)a)->value;
+        bnStringView srcView = bnGetStringValue(a);
         const char* srcStr = bnView2Str(bone->pool, srcView);
         // parse file
         bnAST* ast = bnParseString(bone->pool, srcStr);
@@ -251,10 +250,10 @@ void bnStdSystemExternVar(bnInterpreter* bone, bnFrame* frame) {
                 _throw(bone, frame, "should be `name` is string");
         }
         gpointer v =
-            g_hash_table_lookup(bone->externTable, ((bnString*)name)->value);
+            g_hash_table_lookup(bone->externTable, bnGetStringValue(name));
         if (v == NULL) {
                 bnFormatThrow(bone, "not bound variable: `%s`",
-                              bnView2Str(bone->pool, ((bnString*)name)->value));
+                              bnView2Str(bone->pool, bnGetStringValue(name)));
         }
         bnObject* obj = v;
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
@@ -276,10 +275,10 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
         }
         // find from extern table
         gpointer v =
-            g_hash_table_lookup(bone->externTable, ((bnString*)name)->value);
+            g_hash_table_lookup(bone->externTable, bnGetStringValue(name));
         if (v == NULL) {
                 bnFormatThrow(bone, "not bound variable: `%s`",
-                              bnView2Str(bone->pool, ((bnString*)name)->value));
+                              bnView2Str(bone->pool, bnGetStringValue(name)));
         }
         bnObject* obj = v;
         if (obj->type != BN_OBJECT_LAMBDA) {
@@ -341,8 +340,8 @@ static bool compare_list_array(GList* a, bnObject* b) {
                 return false;
         }
         for (int i = 0; i < bnGetArrayLength(b); i++) {
-                bnString* e = bnGetArrayElementAt(b, i);
-                if (e->value != (bnStringView)a->data) {
+                bnObject* e = bnGetArrayElementAt(b, i);
+                if (bnGetStringValue(e) != (bnStringView)a->data) {
                         return false;
                 }
                 a = a->next;

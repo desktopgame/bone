@@ -12,7 +12,15 @@ static void bnStdStringEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdStringNotEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdStringAt(bnInterpreter* bone, bnFrame* frame);
 
-bnString* bnNewString(bnInterpreter* bone, bnStringView value) {
+/**
+ * bnString is bone string.
+ */
+typedef struct bnString {
+        bnObject base;
+        bnStringView value;
+} bnString;
+
+bnObject* bnNewString(bnInterpreter* bone, bnStringView value) {
         bnString* ret = BN_MALLOC(sizeof(bnString));
         bnInitObject(bone, &ret->base, BN_OBJECT_STRING);
         ret->value = value;
@@ -33,12 +41,14 @@ bnString* bnNewString(bnInterpreter* bone, bnStringView value) {
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "index", BN_C_ADD_RETURN, "ret",
                                       BN_C_ADD_EXIT));
-        return ret;
+        return (bnObject*)ret;
 }
 
-bnString* bnNewString2(bnInterpreter* bone, const char* str) {
+bnObject* bnNewString2(bnInterpreter* bone, const char* str) {
         return bnNewString(bone, bnIntern(bone->pool, str));
 }
+
+bnStringView bnGetStringValue(bnObject* obj) { return ((bnString*)obj)->value; }
 
 // String
 

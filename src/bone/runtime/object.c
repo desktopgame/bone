@@ -172,9 +172,8 @@ void bnPrintObject(FILE* fp, bnInterpreter* bone, bnObject* self) {
                         fprintf(fp, "char %c", bnGetCharValue(self));
                         break;
                 case BN_OBJECT_STRING:
-                        fprintf(
-                            fp, "\"%s\"",
-                            bnView2Str(bone->pool, ((bnString*)self)->value));
+                        fprintf(fp, "\"%s\"",
+                                bnView2Str(bone->pool, bnGetStringValue(self)));
                         break;
                 case BN_OBJECT_BOOL:
                         fprintf(fp, "bool %s",

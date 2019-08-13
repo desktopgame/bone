@@ -49,8 +49,7 @@ void bnExtDirDelete(bnInterpreter* bone, bnFrame* frame) {
         if (a->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "should be `path` is string");
         }
-        bnString* aStr = a;
-        g_rmdir(bnView2Str(bone->pool, aStr->value));
+        g_rmdir(bnView2Str(bone->pool, bnGetStringValue(a)));
 }
 
 void bnExtDirCreate(bnInterpreter* bone, bnFrame* frame) {
@@ -58,8 +57,7 @@ void bnExtDirCreate(bnInterpreter* bone, bnFrame* frame) {
         if (a->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "should be `path` is string");
         }
-        bnString* aStr = a;
-        g_mkdir(bnView2Str(bone->pool, aStr->value), 0755);
+        g_mkdir(bnView2Str(bone->pool, bnGetStringValue(a)), 0755);
 }
 
 static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
@@ -71,8 +69,7 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
         if (a->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "should be `path` is string");
         }
-        bnString* aStr = a;
-        const char* dirname = bnView2Str(bone->pool, aStr->value);
+        const char* dirname = bnView2Str(bone->pool, bnGetStringValue(a));
         GDir* dp = g_dir_open(dirname, 0, NULL);
         if (dp == NULL) {
                 bnFormatThrow(bone, "can't open directory");
@@ -103,7 +100,7 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
                                 frame->panic = sub->panic;
                                 return;
                         }
-                        bnString* bnstr =
+                        bnObject* bnstr =
                             bnStaging(bone->heap, bnPopStack(frame->vStack));
                         files = g_list_append(files, bnstr);
                         bnDeleteFrame(sub);

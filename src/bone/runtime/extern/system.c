@@ -59,7 +59,7 @@ void bnExtSystemSystem(bnInterpreter* bone, bnFrame* frame) {
                         bnFormatThrow(bone, "should be [%d] i string", i);
                 }
                 g_string_append(gbuf,
-                                bnView2Str(bone->pool, ((bnString*)e)->value));
+                                bnView2Str(bone->pool, bnGetStringValue(e)));
                 g_string_append(gbuf, " ");
         }
         g_string_erase(gbuf, gbuf->len - 1, 1);

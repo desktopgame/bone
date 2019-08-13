@@ -4,25 +4,23 @@
 #include "object.h"
 
 /**
- * bnString is bone string.
- */
-typedef struct bnString {
-        bnObject base;
-        bnStringView value;
-} bnString;
-
-/**
  * return new instance of bnString.
  * @param bone
  * @param name
  * @return
  */
-bnString* bnNewString(bnInterpreter* bone, bnStringView value);
+bnObject* bnNewString(bnInterpreter* bone, bnStringView value);
 
 /**
  * @param bone
  * @param str
  * @return
  */
-bnString* bnNewString2(bnInterpreter* bone, const char* str);
+bnObject* bnNewString2(bnInterpreter* bone, const char* str);
+
+/**
+ * @param obj
+ * @return
+ */
+bnStringView bnGetStringValue(bnObject* obj);
 #endif
