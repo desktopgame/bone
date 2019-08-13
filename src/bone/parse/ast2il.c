@@ -4,32 +4,15 @@
 #include "../il/il_stmt_all.h"
 #include "../il/il_toplevel.h"
 
-static GList* ast2params(bnAST* a, GList* dest);
 static void ast2paramsArray(bnAST* a, GPtrArray* dest);
-static GList* ast2args(bnAST* a, GList* dest);
 static void ast2argsArray(bnAST* a, GPtrArray* dest);
 static bnILExprBinOp* ast2ilbinop(bnAST* a, bnILBinOpType type);
 static bnILExprUOp* ast2iluop(bnAST* a, bnILUOpType type);
 static void ast2assign(bnILExpression* expr, bnAST* a, bnILBinOpType type);
 static bnILExpression* ast2expr(bnAST* a);
 static bnILStatement* ast2stmt(bnAST* a);
-static GList* ast2stmts(bnAST* a, GList* dest);
 static void ast2stmtsArray(bnAST* a, GPtrArray* dest);
 
-static GList* ast2params(bnAST* a, GList* dest) {
-        if (a->tag == BN_AST_BLANK) {
-                return dest;
-        }
-        if (a->tag == BN_AST_PARAMETER_LIST) {
-                for (int i = 0; i < a->children->len; i++) {
-                        dest =
-                            ast2params(g_ptr_array_index(a->children, i), dest);
-                }
-                return dest;
-        } else {
-                return g_list_append(dest, a->u.svvalue);
-        }
-}
 static void ast2paramsArray(bnAST* a, GPtrArray* dest) {
         if (a->tag == BN_AST_BLANK) {
                 return;
@@ -44,22 +27,6 @@ static void ast2paramsArray(bnAST* a, GPtrArray* dest) {
         }
 }
 
-static GList* ast2args(bnAST* a, GList* dest) {
-        if (a->tag == BN_AST_BLANK) {
-                // empty arguments
-                return dest;
-        }
-        if (a->tag == BN_AST_ARGUMENT_LIST) {
-                for (int i = 0; i < a->children->len; i++) {
-                        dest =
-                            ast2args(g_ptr_array_index(a->children, i), dest);
-                }
-                return dest;
-        } else {
-                bnAST* aexpr = bnFirstAST(a);
-                return g_list_append(dest, ast2expr(aexpr));
-        }
-}
 static void ast2argsArray(bnAST* a, GPtrArray* dest) {
         if (a->tag == BN_AST_BLANK) {
                 return;
@@ -291,18 +258,6 @@ static bnILStatement* ast2stmt(bnAST* a) {
         }
         ret->line = a->line;
         return ret;
-}
-
-static GList* ast2stmts(bnAST* a, GList* dest) {
-        if (a->tag == BN_AST_STATEMENT_LIST) {
-                for (int i = 0; i < a->children->len; i++) {
-                        dest =
-                            ast2stmts(g_ptr_array_index(a->children, i), dest);
-                }
-                return dest;
-        } else {
-                return g_list_append(dest, ast2stmt(a));
-        }
 }
 
 static void ast2stmtsArray(bnAST* a, GPtrArray* dest) {
