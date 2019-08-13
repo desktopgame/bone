@@ -1,5 +1,6 @@
 #include "bool.h"
 #include "frame.h"
+#include "integer.h"
 #include "interpreter.h"
 #include "keyword.h"
 #include "lambda.h"
@@ -54,7 +55,14 @@ void bnSetFlipValue(bnObject* t, bnObject* f) {
 
 bnObject* bnGetFlipValue(bnObject* obj) { return ((bnBool*)obj)->r; }
 
-bool bnGetBoolValue(bnObject* obj) { return ((bnBool*)obj)->value; }
+bool bnGetBoolValue(bnObject* obj) {
+        if (obj->type == BN_OBJECT_BOOL) {
+                return ((bnBool*)obj)->value;
+        } else if (obj->type == BN_OBJECT_INTEGER) {
+                return ((bnInteger*)obj)->value != 0;
+        }
+        return true;
+}
 // Bool
 
 static void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame) {
