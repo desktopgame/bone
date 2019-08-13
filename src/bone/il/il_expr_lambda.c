@@ -5,12 +5,13 @@
 #include "il_statement.h"
 
 static bool is_instance_base(struct bnStringPool* pool, bnILExprLambda* self);
+static void delete_il_statement(gpointer data);
 
 bnILExprLambda* bnNewILExprLambda(bnStringView filename, int lineno) {
         bnILExprLambda* ret = BN_MALLOC(sizeof(bnILExprLambda));
         ret->parameters = g_ptr_array_new_full(2, NULL);
         ret->returns = g_ptr_array_new_full(2, NULL);
-        ret->statements = g_ptr_array_new_full(2, bnDeleteILStatement);
+        ret->statements = g_ptr_array_new_full(2, delete_il_statement);
         ret->filename = filename;
         ret->lineno = lineno;
         return ret;
@@ -88,4 +89,8 @@ static bool is_instance_base(struct bnStringPool* pool, bnILExprLambda* self) {
         }
         bnStringView name = g_ptr_array_index(self->parameters, 0);
         return name == bnIntern(pool, BN_KWD_SELF);
+}
+
+static void delete_il_statement(gpointer data) {
+        bnDeleteILStatement((bnILStatement*)data);
 }
