@@ -41,5 +41,9 @@ static bnStringView opToView(struct bnStringPool* pool, bnILExprUOp* self) {
                         return bnIntern(pool, BN_KWD_NOT);
                 case BN_IL_UNOP_NEGATIVE:
                         return bnIntern(pool, BN_KWD_NEGATIVE);
+		case BN_IL_UNOP_CHILDA:
+		        return bnIntern(pool, BN_KWD_CHILDA);
         }
+	abort();
+	return 0;
 }
