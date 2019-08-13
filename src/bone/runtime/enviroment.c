@@ -28,6 +28,10 @@ int bnReadCode(bnEnviroment* self, int pc) {
         return (int)g_ptr_array_index(self->codeArray, pc);
 }
 
+bnLabel* bnReadLabel(bnEnviroment* self, int pc) {
+        return (bnLabel*)g_ptr_array_index(self->codeArray, pc);
+}
+
 void bnWriteLabel(bnEnviroment* self, bnLabel* label) {
         g_ptr_array_add(self->codeArray, (gpointer)label);
 }

@@ -38,6 +38,13 @@ int bnReadCode(bnEnviroment* self, int pc);
 
 /**
  * @param self
+ * @param pc
+ * @return
+ */
+bnLabel* bnReadLabel(bnEnviroment* self, int pc);
+
+/**
+ * @param self
  * @param label
  */
 void bnWriteLabel(bnEnviroment* self, bnLabel* label);
