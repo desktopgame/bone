@@ -2,6 +2,7 @@
 #include "../glib.h"
 #include "../util/string.h"
 #include "array.h"
+#include "bool.h"
 #include "char.h"
 #include "double.h"
 #include "heap.h"
