@@ -5,12 +5,7 @@
 
 #define FILE_T ("bone.lang.file")
 
-typedef struct bnFile {
-        bnAny base;
-        FILE* fp;
-} bnFile;
-
-bnFile* bnNewFile(struct bnInterpreter* bone, FILE* fp);
+bnObject* bnNewFile(struct bnInterpreter* bone, FILE* fp);
 
 void bnExternFile(struct bnInterpreter* bone);
 

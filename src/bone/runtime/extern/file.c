@@ -7,11 +7,16 @@
 #include "../lambda.h"
 #include "../string.h"
 
-bnFile* bnNewFile(bnInterpreter* bone, FILE* fp) {
+typedef struct bnFile {
+        bnAny base;
+        FILE* fp;
+} bnFile;
+
+bnObject* bnNewFile(bnInterpreter* bone, FILE* fp) {
         bnFile* ret = BN_MALLOC(sizeof(bnFile));
         bnInitAny(bone, &ret->base, FILE_T);
         ret->fp = fp;
-        return ret;
+        return (bnObject*)ret;
 }
 
 void bnExternFile(bnInterpreter* bone) {
