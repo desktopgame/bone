@@ -13,23 +13,11 @@
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
 #define message() ("should be parameter is double")
 
-static void bnStdDoubleFuncCall(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoublePositive(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoubleNegative(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoubleChilda(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoubleNot(bnInterpreter* bone, bnFrame* frame);
 static void bnStdDoublePlus(bnInterpreter* bone, bnFrame* frame);
 static void bnStdDoubleMinus(bnInterpreter* bone, bnFrame* frame);
 static void bnStdDoubleMultiply(bnInterpreter* bone, bnFrame* frame);
 static void bnStdDoubleDivide(bnInterpreter* bone, bnFrame* frame);
 static void bnStdDoubleModulo(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoubleBitAnd(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoubleBitOr(bnInterpreter* bone, bnFrame* frame);
-// static void bnStdDoubleLogicAnd(bnInterpreter* bone, bnFrame* frame);
-// static void bnStdDoubleLogicOr(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoubleExcOr(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoubleLShift(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoubleRShift(bnInterpreter* bone, bnFrame* frame);
 static void bnStdDoubleGT(bnInterpreter* bone, bnFrame* frame);
 static void bnStdDoubleGE(bnInterpreter* bone, bnFrame* frame);
 static void bnStdDoubleLT(bnInterpreter* bone, bnFrame* frame);
@@ -37,8 +25,15 @@ static void bnStdDoubleLE(bnInterpreter* bone, bnFrame* frame);
 static void bnStdDoubleEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdDoubleNotEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdDoubleToString(bnInterpreter* bone, bnFrame* frame);
+/**
+ * bnDouble is double.
+ */
+typedef struct bnDouble {
+        bnObject base;
+        double value;
+} bnDouble;
 
-bnDouble* bnNewDouble(bnInterpreter* bone, double value) {
+bnObject* bnNewDouble(bnInterpreter* bone, double value) {
         bnDouble* ret = BN_MALLOC(sizeof(bnDouble));
         bnInitObject(bone, &ret->base, BN_OBJECT_DOUBLE);
         ret->value = value;
@@ -105,11 +100,11 @@ bnDouble* bnNewDouble(bnInterpreter* bone, double value) {
         return ret;
 }
 
-static void bnStdDoubleFuncCall(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoublePositive(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoubleNegative(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoubleChilda(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoubleNot(bnInterpreter* bone, bnFrame* frame);
+void bnSetDoubleValue(bnObject* obj, double value) {
+        ((bnDouble*)obj)->value = value;
+}
+
+double bnGetDoubleValue(bnObject* obj) { return ((bnDouble*)obj)->value; }
 
 static void bnStdDoublePlus(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
@@ -175,13 +170,7 @@ static void bnStdDoubleModulo(bnInterpreter* bone, bnFrame* frame) {
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              bnNewDouble(bone, fmod(ai, bi)));
 }
-static void bnStdDoubleBitAnd(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoubleBitOr(bnInterpreter* bone, bnFrame* frame);
-// static void bnStdDoubleLogicAnd(bnInterpreter* bone, bnFrame* frame);
-// static void bnStdDoubleLogicOr(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoubleExcOr(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoubleLShift(bnInterpreter* bone, bnFrame* frame);
-static void bnStdDoubleRShift(bnInterpreter* bone, bnFrame* frame);
+
 static void bnStdDoubleGT(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);

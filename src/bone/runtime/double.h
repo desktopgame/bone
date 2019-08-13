@@ -5,19 +5,22 @@ struct bnFrame;
 struct bnInterpreter;
 
 /**
- * bnDouble is double.
- */
-typedef struct bnDouble {
-        bnObject base;
-        double value;
-} bnDouble;
-
-/**
  * return new instance of bnDouble.
  * @param bone
  * @param name
  * @return
  */
-bnDouble* bnNewDouble(struct bnInterpreter* bone, double value);
+bnObject* bnNewDouble(struct bnInterpreter* bone, double value);
 
+/**
+ * @param obj
+ * @param value
+ */
+void bnSetDoubleValue(bnObject* obj, double value);
+
+/**
+ * @param obj
+ * @return
+ */
+double bnGetDoubleValue(bnObject* obj);
 #endif
