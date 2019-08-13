@@ -169,7 +169,7 @@ void bnPrintObject(FILE* fp, bnInterpreter* bone, bnObject* self) {
                         fprintf(fp, "double %lf", ((bnDouble*)self)->value);
                         break;
                 case BN_OBJECT_CHAR:
-                        fprintf(fp, "char %c", ((bnChar*)self)->value);
+                        fprintf(fp, "char %c", bnGetCharValue(self));
                         break;
                 case BN_OBJECT_STRING:
                         fprintf(

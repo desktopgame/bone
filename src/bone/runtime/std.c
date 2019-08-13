@@ -229,8 +229,7 @@ void bnStdSystemString(bnInterpreter* bone, bnFrame* frame) {
                 if (e->type != BN_OBJECT_CHAR) {
                         bnFormatThrow(bone, "should be `array[%d]` is char", i);
                 }
-                bnChar* eChar = e;
-                bnGStringAppendC(gbuf, eChar->value);
+                bnGStringAppendC(gbuf, bnGetCharValue(e));
         }
         bnStringView gview = bnIntern(bone->pool, gbuf->str);
         g_string_free(gbuf, TRUE);

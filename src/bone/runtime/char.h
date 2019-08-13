@@ -3,19 +3,22 @@
 #include "object.h"
 
 /**
- * bnChar is char.
- */
-typedef struct bnChar {
-        bnObject base;
-        char value;
-} bnChar;
-
-/**
  * return new instance of bnChar.
  * @param bone
  * @param name
  * @return
  */
-bnChar* bnNewChar(struct bnInterpreter* bone, char value);
+bnObject* bnNewChar(struct bnInterpreter* bone, char value);
 
+/**
+ * @param obj
+ * @return
+ */
+char bnGetCharValue(bnObject* obj);
+
+/**
+ * @param obj
+ * @param c
+ */
+void bnSetCharValue(bnObject* obj, char c);
 #endif

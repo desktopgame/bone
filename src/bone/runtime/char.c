@@ -7,31 +7,17 @@
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
 #define message() ("should be parameter is char")
 
-static void bnStdCharFuncCall(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharPositive(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharNegative(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharChilda(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharNot(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharPlus(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharMinus(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharMultiply(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharDivide(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharModulo(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharBitAnd(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharBitOr(bnInterpreter* bone, bnFrame* frame);
-// static void bnStdCharLogicAnd(bnInterpreter* bone, bnFrame* frame);
-// static void bnStdCharLogicOr(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharExcOr(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharLShift(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharRShift(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharGT(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharGE(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharLT(bnInterpreter* bone, bnFrame* frame);
-static void bnStdCharLE(bnInterpreter* bone, bnFrame* frame);
 static void bnStdCharEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdCharNotEqual(bnInterpreter* bone, bnFrame* frame);
+/**
+ * bnChar is char.
+ */
+typedef struct bnChar {
+        bnObject base;
+        char value;
+} bnChar;
 
-bnChar* bnNewChar(bnInterpreter* bone, char value) {
+bnObject* bnNewChar(bnInterpreter* bone, char value) {
         bnChar* ret = BN_MALLOC(sizeof(bnChar));
         bnInitObject(bone, &ret->base, BN_OBJECT_CHAR);
         ret->value = value;
@@ -48,49 +34,11 @@ bnChar* bnNewChar(bnInterpreter* bone, char value) {
         return ret;
 }
 
+char bnGetCharValue(bnObject* obj) { return ((bnChar*)obj)->value; }
+
+void bnSetCharValue(bnObject* obj, char c) { ((bnChar*)obj)->value = c; }
+
 // Char
-
-static void bnStdCharFuncCall(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharPositive(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharNegative(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharChilda(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharNot(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharPlus(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharMinus(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharMultiply(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharDivide(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharModulo(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharBitAnd(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharBitOr(bnInterpreter* bone, bnFrame* frame) {}
-
-// static void bnStdCharLogicAnd(bnInterpreter* bone, bnFrame* frame){}
-
-// static void bnStdCharLogicOr(bnInterpreter* bone, bnFrame* frame){}
-
-static void bnStdCharExcOr(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharLShift(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharRShift(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharGT(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharGE(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharLT(bnInterpreter* bone, bnFrame* frame) {}
-
-static void bnStdCharLE(bnInterpreter* bone, bnFrame* frame) {}
 
 static void bnStdCharEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);

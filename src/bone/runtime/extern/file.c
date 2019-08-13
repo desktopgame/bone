@@ -94,7 +94,7 @@ void bnExtFilePutc(bnInterpreter* bone, bnFrame* frame) {
                              bnIntern(bone->pool, "error"),
                              bnGetFalse(bone->pool, frame));
         FILE* fp = afile->fp;
-        char c = ((bnChar*)b)->value;
+        char c = bnGetCharValue(b);
         int code = fputc(c, fp);
         if (code == EOF) {
                 g_hash_table_replace(frame->variableTable,
