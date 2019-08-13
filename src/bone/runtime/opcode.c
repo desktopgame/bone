@@ -20,7 +20,7 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, bnEnviroment* env,
                         fprintf(fp, "swap");
                         break;
                 case BN_OP_GEN_INT: {
-                        int num = g_ptr_array_index(ary, ++pos);
+                        int num = (int)g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "gen int(%d)", num);
                         break;
                 }
@@ -28,25 +28,26 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, bnEnviroment* env,
                         fprintf(fp, "gen double");
                         break;
                 case BN_OP_GEN_CHAR: {
-                        char c = g_ptr_array_index(ary, ++pos);
+                        char c = (char)g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "gen char(%c)", c);
                         break;
                 }
                 case BN_OP_GEN_STRING: {
-                        bnStringView str = g_ptr_array_index(ary, ++pos);
+                        bnStringView str =
+                            (bnStringView)g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "gen string(%s)", bnView2Str(pool, str));
                         break;
                 }
                 case BN_OP_GEN_ARRAY: {
-                        int size = g_ptr_array_index(ary, ++pos);
+                        int size = (int)g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "gen array(%d)", size);
                         break;
                 }
                 case BN_OP_GEN_LAMBDA_BEGIN: {
-                        int line = g_ptr_array_index(ary, ++pos);
-                        int parameterLen = g_ptr_array_index(ary, ++pos);
+                        int line = (int)g_ptr_array_index(ary, ++pos);
+                        int parameterLen = (int)g_ptr_array_index(ary, ++pos);
                         pos += parameterLen;
-                        int returnLen = g_ptr_array_index(ary, ++pos);
+                        int returnLen = (int)g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "gen lambda-begin((%d) <-(%d))",
                                 parameterLen, returnLen);
                         pos += returnLen;
@@ -74,27 +75,31 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, bnEnviroment* env,
                         fprintf(fp, "object injection");
                         break;
                 case BN_OP_STORE: {
-                        bnStringView name = g_ptr_array_index(ary, ++pos);
+                        bnStringView name =
+                            (bnStringView)g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "store %s", bnView2Str(pool, name));
                         break;
                 }
                 case BN_OP_LOAD: {
-                        bnStringView name = g_ptr_array_index(ary, ++pos);
+                        bnStringView name =
+                            (bnStringView)g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "load %s", bnView2Str(pool, name));
                         break;
                 }
                 case BN_OP_PUT: {
-                        bnStringView name = g_ptr_array_index(ary, ++pos);
+                        bnStringView name =
+                            (bnStringView)g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "put %s", bnView2Str(pool, name));
                         break;
                 }
                 case BN_OP_GET: {
-                        bnStringView name = g_ptr_array_index(ary, ++pos);
+                        bnStringView name =
+                            (bnStringView)g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "get %s", bnView2Str(pool, name));
                         break;
                 }
                 case BN_OP_GOTO: {
-                        bnLabel* jmp = g_ptr_array_index(ary, ++pos);
+                        bnLabel* jmp = (bnLabel*)g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "goto %d", jmp->pos);
                         break;
                 }
@@ -104,7 +109,7 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, bnEnviroment* env,
                         break;
                 }
                 case BN_OP_GOTO_ELSE: {
-                        bnLabel* jmp = g_ptr_array_index(ary, ++pos);
+                        bnLabel* jmp = (bnLabel*)g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "goto else %d", jmp->pos);
                         break;
                 }
@@ -118,7 +123,7 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, bnEnviroment* env,
                         break;
                 }
                 case BN_OP_DEFER_PUSH: {
-                        bnLabel* jmp = g_ptr_array_index(ary, ++pos);
+                        bnLabel* jmp = (bnLabel*)g_ptr_array_index(ary, ++pos);
                         fprintf(fp, "defer push %d", jmp->pos);
                         break;
                 }
