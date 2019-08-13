@@ -18,7 +18,7 @@ typedef enum bnILStatementType {
         BN_IL_STMT_BREAK,
 } bnILStatementType;
 
-struct bnILStmtExprStmt;
+struct bnILStmtExpr;
 struct bnILStmtIf;
 struct bnILStmtIfElse;
 struct bnILStmtWhile;
@@ -31,7 +31,7 @@ struct bnILStmtDefer;
 typedef struct bnILStatement {
         bnILStatementType type;
         union {
-                struct bnILStmtExprStmt* vExprStmt;
+                struct bnILStmtExpr* vExprStmt;
                 struct bnILStmtIf* vIf;
                 struct bnILStmtIfElse* vIfElse;
                 struct bnILStmtWhile* vWhile;
