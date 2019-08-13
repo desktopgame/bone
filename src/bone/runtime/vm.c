@@ -412,7 +412,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnLabel* jmp =
                                     g_ptr_array_index(env->codeArray, ++PC);
                                 bnObject* cond = bnPopStack(frame->vStack);
-                                if (bnObject2CBool(cond)) {
+                                if (bnGetBoolValue(cond)) {
                                         PC = jmp->pos;
                                 }
                                 break;
@@ -421,7 +421,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnLabel* jmp =
                                     g_ptr_array_index(env->codeArray, ++PC);
                                 bnObject* cond = bnPopStack(frame->vStack);
-                                if (!bnObject2CBool(cond)) {
+                                if (!bnGetBoolValue(cond)) {
                                         PC = jmp->pos;
                                 }
                                 break;

@@ -87,12 +87,6 @@ struct bnFrame* bnFuncCall(bnObject* self, struct bnInterpreter* bone,
 void bnPrintObject(FILE* fp, struct bnInterpreter* bone, bnObject* self);
 
 /**
- * @param self
- * @return
- */
-bool bnObject2CBool(bnObject* self);
-
-/**
  * @param pool
  * @param self
  */

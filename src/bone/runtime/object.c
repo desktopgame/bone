@@ -178,7 +178,7 @@ void bnPrintObject(FILE* fp, bnInterpreter* bone, bnObject* self) {
                         break;
                 case BN_OBJECT_BOOL:
                         fprintf(fp, "bool %s",
-                                ((bnBool*)self)->value ? "true" : "false");
+                                bnGetBoolValue(self) ? "true" : "false");
                         break;
                 case BN_OBJECT_LAMBDA:
                         fprintf(fp, "lambda");
@@ -187,16 +187,6 @@ void bnPrintObject(FILE* fp, bnInterpreter* bone, bnObject* self) {
                         fprintf(fp, "array[%d]", ((bnArray*)self)->size);
                         break;
         }
-}
-
-bool bnObject2CBool(bnObject* self) {
-        assert(self != NULL);
-        if (self->type == BN_OBJECT_BOOL) {
-                return ((bnBool*)self)->value;
-        } else if (self->type == BN_OBJECT_INTEGER) {
-                return ((bnInteger*)self)->value != 0;
-        }
-        return true;
 }
 
 void bnCleanupInjectionBuffer(struct bnStringPool* pool, bnObject* self) {

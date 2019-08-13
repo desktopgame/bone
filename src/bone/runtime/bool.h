@@ -3,19 +3,28 @@
 #include "object.h"
 
 /**
- * bnBool is bool.
- */
-typedef struct bnBool {
-        bnObject base;
-        bool value;
-        struct bnBool* r;
-} bnBool;
-
-/**
  * return new instance of bnBool.
  * @param bone
  * @param name
  * @return
  */
-bnBool* bnNewBool(struct bnInterpreter* bone, bool value);
+bnObject* bnNewBool(struct bnInterpreter* bone, bool value);
+
+/**
+ * @param t
+ * @param f
+ */
+void bnSetFlipValue(bnObject* t, bnObject* f);
+
+/**
+ * @param obj
+ * @return
+ */
+bnObject* bnGetFlipValue(bnObject* obj);
+
+/**
+ * @param obj
+ * @return
+ */
+bool bnGetBoolValue(bnObject* obj);
 #endif

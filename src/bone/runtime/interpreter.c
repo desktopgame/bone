@@ -110,10 +110,9 @@ int bnEval(bnInterpreter* self) {
 void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
                      struct bnStringPool* pool) {
         // declare true, false
-        bnBool* t = bnNewBool(self, true);
-        bnBool* f = bnNewBool(self, false);
-        t->r = f;
-        f->r = t;
+        bnObject* t = bnNewBool(self, true);
+        bnObject* f = bnNewBool(self, false);
+        bnSetFlipValue(t, f);
         g_hash_table_replace(frame->variableTable, bnIntern(pool, "true"), t);
         g_hash_table_replace(frame->variableTable, bnIntern(pool, "false"), f);
 #if DEBUG

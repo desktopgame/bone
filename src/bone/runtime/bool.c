@@ -7,31 +7,23 @@
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
 #define message() ("should be parameter is bool")
 
-static void bnStdBoolFuncCall(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolPositive(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolNegative(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolChilda(bnInterpreter* bone, bnFrame* frame);
 static void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolPlus(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolMinus(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolMultiply(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolDivide(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolModulo(bnInterpreter* bone, bnFrame* frame);
 static void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame);
 static void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame);
-// static void bnStdBoolLogicAnd(bnInterpreter* bone, bnFrame* frame);
-// static void bnStdBoolLogicOr(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolExcOr(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolLShift(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolRShift(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolGT(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolGE(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolLT(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolLE(bnInterpreter* bone, bnFrame* frame);
+
 static void bnStdBoolEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdBoolNotEqual(bnInterpreter* bone, bnFrame* frame);
 
-bnBool* bnNewBool(bnInterpreter* bone, bool value) {
+/**
+ * bnBool is bool.
+ */
+typedef struct bnBool {
+        bnObject base;
+        bool value;
+        struct bnBool* r;
+} bnBool;
+
+bnObject* bnNewBool(bnInterpreter* bone, bool value) {
         bnBool* ret = BN_MALLOC(sizeof(bnBool));
         bnInitObject(bone, &ret->base, BN_OBJECT_BOOL);
         ret->value = value;
@@ -50,17 +42,20 @@ bnBool* bnNewBool(bnInterpreter* bone, bool value) {
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "other", BN_C_ADD_RETURN, "ret",
                                       BN_C_ADD_EXIT));
-        return ret;
+        return (bnObject*)ret;
 }
+
+void bnSetFlipValue(bnObject* t, bnObject* f) {
+        bnBool* bt = (bnBool*)t;
+        bnBool* bf = (bnBool*)f;
+        bt->r = bf;
+        bf->r = bt;
+}
+
+bnObject* bnGetFlipValue(bnObject* obj) { return ((bnBool*)obj)->r; }
+
+bool bnGetBoolValue(bnObject* obj) { return ((bnBool*)obj)->value; }
 // Bool
-
-static void bnStdBoolFuncCall(bnInterpreter* bone, bnFrame* frame);
-
-static void bnStdBoolPositive(bnInterpreter* bone, bnFrame* frame);
-
-static void bnStdBoolNegative(bnInterpreter* bone, bnFrame* frame);
-
-static void bnStdBoolChilda(bnInterpreter* bone, bnFrame* frame);
 
 static void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
@@ -71,16 +66,6 @@ static void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame) {
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              b->r);
 }
-
-static void bnStdBoolPlus(bnInterpreter* bone, bnFrame* frame);
-
-static void bnStdBoolMinus(bnInterpreter* bone, bnFrame* frame);
-
-static void bnStdBoolMultiply(bnInterpreter* bone, bnFrame* frame);
-
-static void bnStdBoolDivide(bnInterpreter* bone, bnFrame* frame);
-
-static void bnStdBoolModulo(bnInterpreter* bone, bnFrame* frame);
 
 static void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
@@ -119,26 +104,6 @@ static void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame) {
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
                              c);
 }
-
-// static void bnStdBoolLogicAnd(struct bnInterpreter* bone, struct bnFrame*
-// frame);
-
-// static void bnStdBoolLogicOr(struct bnInterpreter* bone, struct bnFrame*
-// frame);
-
-static void bnStdBoolExcOr(bnInterpreter* bone, bnFrame* frame);
-
-static void bnStdBoolLShift(bnInterpreter* bone, bnFrame* frame);
-
-static void bnStdBoolRShift(bnInterpreter* bone, bnFrame* frame);
-
-static void bnStdBoolGT(bnInterpreter* bone, bnFrame* frame);
-
-static void bnStdBoolGE(bnInterpreter* bone, bnFrame* frame);
-
-static void bnStdBoolLT(bnInterpreter* bone, bnFrame* frame);
-
-static void bnStdBoolLE(bnInterpreter* bone, bnFrame* frame);
 
 static void bnStdBoolEqual(bnInterpreter* bone, bnFrame* frame);
 

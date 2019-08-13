@@ -34,8 +34,7 @@ void bnStdDebugAssert(bnInterpreter* bone, bnFrame* frame) {
         if (a->type != BN_OBJECT_BOOL) {
                 _throw(bone, frame, "internal error");
         }
-        bnBool* cond = a;
-        if (!cond->value) {
+        if (!bnGetBoolValue(a)) {
                 // abort();
                 _throw(bone, frame, "assertion failed");
         }
