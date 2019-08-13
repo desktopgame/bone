@@ -3,10 +3,12 @@
 #include "il_expression.h"
 #include "il_statement.h"
 
+static void delete_il_statement(gpointer data);
+
 bnILStmtIf* bnNewILStmtIf(bnILExpression* cond) {
         bnILStmtIf* ret = BN_MALLOC(sizeof(bnILStmtIf));
         ret->cond = cond;
-        ret->statements = g_ptr_array_new_full(2, bnDeleteILStatement);
+        ret->statements = g_ptr_array_new_full(2, delete_il_statement);
         return ret;
 }
 
@@ -44,7 +46,7 @@ void bnDeleteILStmtIf(bnILStmtIf* self) {
 bnILStmtIfElse* bnNewILStmtIfElse(bnILStmtIf* trueCase) {
         bnILStmtIfElse* ret = BN_MALLOC(sizeof(bnILStmtIfElse));
         ret->trueCase = trueCase;
-        ret->statements = g_ptr_array_new_full(2, bnDeleteILStatement);
+        ret->statements = g_ptr_array_new_full(2, delete_il_statement);
         return ret;
 }
 
@@ -86,4 +88,8 @@ void bnDeleteILStmtIfElse(bnILStmtIfElse* self) {
         bnDeleteILStmtIf(self->trueCase);
         g_ptr_array_free(self->statements, TRUE);
         BN_FREE(self);
+}
+
+static void delete_il_statement(gpointer data) {
+        bnDeleteILStatement((bnILStatement*)data);
 }
