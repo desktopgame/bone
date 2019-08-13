@@ -3,10 +3,12 @@
 #include "../runtime/keyword.h"
 #include "il_expr_all.h"
 
+static void delete_il_expression(gpointer data);
+
 bnILExprFuncCallOp* bnNewILExprFuncCallOp(bnILExpression* expr) {
         bnILExprFuncCallOp* ret = BN_MALLOC(sizeof(bnILExprFuncCallOp));
         ret->expr = expr;
-        ret->arguments = g_ptr_array_new_full(2, bnDeleteILExpression);
+        ret->arguments = g_ptr_array_new_full(2, delete_il_expression);
         return ret;
 }
 
@@ -48,4 +50,8 @@ void bnDeleteILExprFuncCallOp(bnILExprFuncCallOp* self) {
         bnDeleteILExpression(self->expr);
         g_ptr_array_free(self->arguments, TRUE);
         BN_FREE(self);
+}
+
+static void delete_il_expression(gpointer data) {
+        bnDeleteILExpression((bnILExpression*)data);
 }
