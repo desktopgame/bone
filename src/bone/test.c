@@ -326,7 +326,7 @@ int bnTest(const char* dir) {
                 printf("failed %d:\n", fails->len);
                 for (int i = 0; i < fails->len; i++) {
                         GString* str = g_ptr_array_index(fails, i);
-                        printf("    %s", str->str);
+                        printf("    %s\n", str->str);
                 }
                 status = 1;
         } else {
