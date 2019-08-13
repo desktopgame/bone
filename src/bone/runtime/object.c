@@ -184,6 +184,8 @@ void bnPrintObject(FILE* fp, bnInterpreter* bone, bnObject* self) {
                         break;
                 case BN_OBJECT_ARRAY:
                         fprintf(fp, "array[%d]", bnGetArrayLength(self));
+                case BN_OBJECT_ANY:
+                        fprintf(fp, "any %p", self);
                         break;
         }
 }
