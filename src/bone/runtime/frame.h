@@ -53,6 +53,22 @@ void bnInjectFrame(GHashTable* src, bnFrame* dst);
 struct bnObject* bnExportAllVariable(struct bnInterpreter* bone, bnFrame* self);
 
 /**
+ * @param frame
+ * @param name
+ * @param obj
+ */
+void bnWriteVariable(bnFrame* frame, bnStringView name, struct bnObject* obj);
+
+/**
+ * @param frame
+ * @param pool
+ * @param name
+ * @param obj
+ */
+void bnWriteVariable2(bnFrame* frame, struct bnStringPool* pool,
+                      const char* name, struct bnObject* obj);
+
+/**
  * free a bnFrame.
  * @param self
  */

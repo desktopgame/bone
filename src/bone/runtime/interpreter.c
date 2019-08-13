@@ -113,35 +113,37 @@ void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
         bnObject* t = bnNewBool(self, true);
         bnObject* f = bnNewBool(self, false);
         bnSetFlipValue(t, f);
-        g_hash_table_replace(frame->variableTable, bnIntern(pool, "true"), t);
-        g_hash_table_replace(frame->variableTable, bnIntern(pool, "false"), f);
+        bnWriteVariable2(frame, pool, "true", t);
+        bnWriteVariable2(frame, pool, "false", f);
 #if DEBUG
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "assert"),
+        bnWriteVariable2(
+            frame, pool, "assert",
             bnNewLambdaFromCFunc(self, bnStdDebugAssert, pool, BN_C_ADD_PARAM,
                                  "cond", BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "die"),
+        bnWriteVariable2(
+            frame, pool, "die",
             bnNewLambdaFromCFunc(self, bnStdDebugDie, pool, BN_C_ADD_EXIT));
 
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "print"),
+        bnWriteVariable2(
+            frame, pool, "print",
             bnNewLambdaFromCFunc(self, bnStdDebugPrint, pool, BN_C_ADD_PARAM,
                                  "str", BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "println"),
+        bnWriteVariable2(
+            frame, pool, "println",
             bnNewLambdaFromCFunc(self, bnStdDebugPrintln, pool, BN_C_ADD_PARAM,
                                  "str", BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "debugBreak"),
+        bnWriteVariable2(
+            frame, pool, "debugBreak",
             bnNewLambdaFromCFunc(self, bnStdDebugBreak, pool, BN_C_ADD_EXIT));
-        g_hash_table_replace(frame->variableTable, bnIntern(pool, "dumpTable"),
-                             bnNewLambdaFromCFunc(self, bnStdDebugDumpTable,
-                                                  pool, BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "showInfo"),
+
+        bnWriteVariable2(frame, pool, "dumpTable",
+                         bnNewLambdaFromCFunc(self, bnStdDebugDumpTable, pool,
+                                              BN_C_ADD_EXIT));
+        bnWriteVariable2(
+            frame, pool, "showInfo",
             bnNewLambdaFromCFunc(self, bnStdDebugShowInfo, pool, BN_C_ADD_PARAM,
                                  "obj", BN_C_ADD_EXIT));
+
 #endif
         g_hash_table_replace(frame->variableTable, bnIntern(pool, "argc"),
                              bnNewInteger(self, BN_MAX(self->argc - 2, 0)));

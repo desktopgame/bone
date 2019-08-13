@@ -1,4 +1,5 @@
 #include "frame.h"
+#include "../util/string_pool.h"
 #include "array.h"
 #include "interpreter.h"
 #include "object.h"
@@ -66,6 +67,16 @@ bnObject* bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
                 arrI++;
         }
         return arr;
+}
+
+void bnWriteVariable(bnFrame* frame, bnStringView name, bnObject* obj) {
+        g_hash_table_replace(frame->variableTable, (gpointer)name, obj);
+}
+
+void bnWriteVariable2(bnFrame* frame, struct bnStringPool* pool,
+                      const char* name, bnObject* obj) {
+        g_hash_table_replace(frame->variableTable,
+                             (gpointer)bnIntern(pool, name), obj);
 }
 
 void bnDeleteFrame(bnFrame* self) {
