@@ -57,20 +57,20 @@ struct bnObject* bnCreateLambdaInActiveCode(bnInterpreter* bone,
                                             bnEnviroment* env, bnFrame* frame,
                                             int* pPC) {
         bnObject* lmb = bnNewLambda(bone, BN_LAMBDA_SCRIPT);
-        int line = g_ptr_array_index(env->codeArray, ++(*pPC));
+        int line = bnReadCode(env, ++(*pPC));
         bnSetLambdaFileName(lmb, env->filename);
         bnSetLambdaLineNumber(lmb, line);
         bnEnviroment* lmbEnv = bnNewEnviroment(env->filename);
         lmbEnv->lineOffset = line;
         bnSetEnviroment(lmb, lmbEnv);
         // is instance base?
-        int parameterLen = g_ptr_array_index(env->codeArray, ++(*pPC));
+        int parameterLen = bnReadCode(env, ++(*pPC));
         for (int i = 0; i < parameterLen; i++) {
                 bnAddParameter(lmb,
                                g_ptr_array_index(env->codeArray, ++(*pPC)));
         }
         // length of named return
-        int namedReturnLen = g_ptr_array_index(env->codeArray, ++(*pPC));
+        int namedReturnLen = bnReadCode(env, ++(*pPC));
         g_ptr_array_add(bnGetEnviroment(lmb)->codeArray, BN_OP_NOP);
         for (int i = 0; i < namedReturnLen; i++) {
                 bnAddReturnValue(lmb,
@@ -87,7 +87,7 @@ struct bnObject* bnCreateLambdaInActiveCode(bnInterpreter* bone,
         // generate code
         while (1) {
                 assert(*pPC < env->codeArray->len);
-                gpointer data = g_ptr_array_index(env->codeArray, ++(*pPC));
+                gpointer data = bnReadCode(env, ++(*pPC));
                 // bug if index of string view equal
                 // BN_OP_GEN_LAMBDA_END
                 if (bnOperands((bnOpcode)data) == 1) {
@@ -114,7 +114,7 @@ struct bnObject* bnCreateLambdaInActiveCode(bnInterpreter* bone,
                 }
                 if (data == BN_OP_GEN_LAMBDA_BEGIN) {
                         g_ptr_array_add(bnGetEnviroment(lmb)->codeArray, data);
-                        line = g_ptr_array_index(env->codeArray, ++(*pPC));
+                        line = bnReadCode(env, ++(*pPC));
                         g_ptr_array_add(bnGetEnviroment(lmb)->codeArray, line);
                         // add params
                         parameterLen =
