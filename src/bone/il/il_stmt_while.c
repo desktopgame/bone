@@ -3,10 +3,12 @@
 #include "il_expression.h"
 #include "il_statement.h"
 
+static void delete_il_statement(gpointer data);
+
 bnILStmtWhile* bnNewILStmtWhile(bnILExpression* cond) {
         bnILStmtWhile* ret = BN_MALLOC(sizeof(bnILStmtWhile));
         ret->cond = cond;
-        ret->statements = g_ptr_array_new_full(2, bnDeleteILStatement);
+        ret->statements = g_ptr_array_new_full(2, delete_il_statement);
         return ret;
 }
 
@@ -49,4 +51,8 @@ void bnDeleteILStmtWhile(bnILStmtWhile* self) {
         bnDeleteILExpression(self->cond);
         g_ptr_array_free(self->statements, TRUE);
         BN_FREE(self);
+}
+
+static void delete_il_statement(gpointer data) {
+        bnDeleteILStatement((bnILStatement*)data);
 }
