@@ -20,6 +20,14 @@ bnEnviroment* bnNewEnviroment(bnStringView filename) {
         return ret;
 }
 
+void bnWriteCode(bnEnviroment* self, int code) {
+        g_ptr_array_add(self->codeArray, (gpointer)code);
+}
+
+void bnWriteLabel(bnEnviroment* self, bnLabel* label) {
+        g_ptr_array_add(self->codeArray, (gpointer)label);
+}
+
 void bnAddLineRange(bnEnviroment* self, int lineno) {
         if (self->ranges->len == 0) {
                 bnLineRange* lr = bnNewLineRange();

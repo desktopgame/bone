@@ -26,6 +26,18 @@ bnEnviroment* bnNewEnviroment(bnStringView filename);
 
 /**
  * @param self
+ * @param code
+ */
+void bnWriteCode(bnEnviroment* self, int code);
+
+/**
+ * @param self
+ * @param label
+ */
+void bnWriteLabel(bnEnviroment* self, bnLabel* label);
+
+/**
+ * @param self
  * @param lineno
  */
 void bnAddLineRange(bnEnviroment* self, int lineno);
