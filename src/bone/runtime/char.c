@@ -31,7 +31,7 @@ bnObject* bnNewChar(bnInterpreter* bone, char value) {
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "other", BN_C_ADD_RETURN, "ret",
                                       BN_C_ADD_EXIT));
-        return ret;
+        return (bnObject*)ret;
 }
 
 char bnGetCharValue(bnObject* obj) { return ((bnChar*)obj)->value; }
