@@ -3,9 +3,11 @@
 #include "../runtime/enviroment.h"
 #include "../runtime/interpreter.h"
 
+static void delete_il_expression(gpointer data);
+
 bnILExprArrayLit* bnNewILExprArrayLit() {
         bnILExprArrayLit* ret = BN_MALLOC(sizeof(bnILExprArrayLit));
-        ret->expressions = g_ptr_array_new_full(2, bnDeleteILExpression);
+        ret->expressions = g_ptr_array_new_full(2, delete_il_expression);
         return ret;
 }
 
@@ -33,4 +35,8 @@ void bnGenerateILExprArrayLit(bnInterpreter* bone, bnILExprArrayLit* self,
 void bnDeleteILExprArrayLit(bnILExprArrayLit* self) {
         g_ptr_array_free(self->expressions, TRUE);
         BN_FREE(self);
+}
+
+static void delete_il_expression(gpointer data) {
+        bnDeleteILExpression((bnILExpression*)data);
 }
