@@ -469,11 +469,10 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 int deferNest = 1;
                                 while (1) {
                                         assert(PC < env->codeArray->len);
-                                        gpointer data = g_ptr_array_index(
-                                            env->codeArray, ++PC);
+                                        bnOpcode data = bnReadCode(env, ++PC);
                                         // bug if index of string view equal
                                         // BN_OP_GEN_LAMBDA_END
-                                        if (bnOperands((bnOpcode)data) == 1) {
+                                        if (bnOperands(data) == 1) {
                                                 ++PC;
                                                 continue;
                                         }
