@@ -52,10 +52,10 @@ void bnExtSystemSystem(bnInterpreter* bone, bnFrame* frame) {
                                                "should be `args` is array")),
                     BN_JMP_CODE_EXCEPTION);
         }
-        bnArray* args = a;
+        bnObject* args = a;
         GString* gbuf = g_string_new("");
-        for (int i = 0; i < args->arr->len; i++) {
-                bnObject* e = g_ptr_array_index(args->arr, i);
+        for (int i = 0; i < bnGetArrayLength(args); i++) {
+                bnObject* e = bnGetArrayElementAt(args, i);
                 if (e->type != BN_OBJECT_STRING) {
                         bnFormatThrow(bone, "should be [%d] i string", i);
                 }

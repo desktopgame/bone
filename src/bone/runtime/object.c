@@ -184,7 +184,7 @@ void bnPrintObject(FILE* fp, bnInterpreter* bone, bnObject* self) {
                         fprintf(fp, "lambda");
                         break;
                 case BN_OBJECT_ARRAY:
-                        fprintf(fp, "array[%d]", ((bnArray*)self)->size);
+                        fprintf(fp, "array[%d]", bnGetArrayLength(self));
                         break;
         }
 }
@@ -255,9 +255,9 @@ static void to_string(bnInterpreter* bone, GString* str, bnObject* root,
                 to_string(bone, str, entry, depth + 1);
         }
         if (root->type == BN_OBJECT_ARRAY) {
-                bnArray* ary = root;
-                for (int n = 0; n < ary->arr->len; n++) {
-                        bnObject* v = g_ptr_array_index(ary->arr, n);
+                bnObject* ary = root;
+                for (int n = 0; n < bnGetArrayLength(ary); n++) {
+                        bnObject* v = bnGetArrayElementAt(ary, n);
 
                         for (int i = 0; i < depth; i++) {
                                 g_string_append(str, "    ");

@@ -46,7 +46,8 @@ void bnInjectFrame(GHashTable* src, bnFrame* dst) {
 }
 
 bnObject* bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
-        bnArray* arr = bnNewArray(bone, g_hash_table_size(self->variableTable));
+        bnObject* arr =
+            bnNewArray(bone, g_hash_table_size(self->variableTable));
         GHashTableIter iter;
         g_hash_table_iter_init(&iter, self->variableTable);
         gpointer k, v;
@@ -60,8 +61,8 @@ bnObject* bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
                 bnStringView exportName =
                     bnGetExportVariableName(bone->pool, retName);
                 // create private member
-                g_hash_table_replace(arr->base.table, exportName, v);
-                g_ptr_array_index(arr->arr, arrI) = v;
+                g_hash_table_replace(arr->table, exportName, v);
+                bnSetArrayElementAt(arr, arrI, v);
                 arrI++;
         }
         return arr;

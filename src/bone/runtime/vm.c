@@ -241,10 +241,10 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                         break;
                                 }
                                 // fill by char
-                                bnArray* ary = bnPopStack(frame->vStack);
+                                bnObject* ary = bnPopStack(frame->vStack);
                                 for (int i = 0; i < slen; i++) {
-                                        g_ptr_array_index(ary->arr, i) =
-                                            bnNewChar(bone, str[i]);
+                                        bnSetArrayElementAt(
+                                            ary, i, bnNewChar(bone, str[i]));
                                 }
                                 bnPushStack(frame->vStack, ary);
                                 bnDeleteFrame(sub);
@@ -277,11 +277,11 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                         frame->panic = sub->panic;
                                         break;
                                 }
-                                bnArray* ary = bnPopStack(frame->vStack);
+                                bnObject* ary = bnPopStack(frame->vStack);
                                 for (int i = 0; i < size; i++) {
-                                        g_ptr_array_index(ary->arr,
-                                                          size - (i + 1)) =
-                                            bnPopStack(frame->vStack);
+                                        bnSetArrayElementAt(
+                                            ary, size - (i + 1),
+                                            bnPopStack(frame->vStack));
                                 }
                                 bnDeleteFrame(sub);
                                 bnPushStack(frame->vStack, ary);

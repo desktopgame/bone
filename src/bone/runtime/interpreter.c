@@ -145,10 +145,11 @@ void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
 #endif
         g_hash_table_replace(frame->variableTable, bnIntern(pool, "argc"),
                              bnNewInteger(self, BN_MAX(self->argc - 2, 0)));
-        bnArray* argv = bnNewArray(self, BN_MAX(self->argc - 2, 0));
+        bnObject* argv = bnNewArray(self, BN_MAX(self->argc - 2, 0));
         for (int i = 2; i < self->argc; i++) {
-                g_ptr_array_index(argv->arr, i - 2) =
-                    bnNewString(self, g_ptr_array_index(self->argv, i));
+                bnSetArrayElementAt(
+                    argv, i - 2,
+                    bnNewString(self, g_ptr_array_index(self->argv, i)));
         }
         g_hash_table_replace(frame->variableTable, bnIntern(pool, "argv"),
                              argv);

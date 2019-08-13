@@ -23,7 +23,7 @@ static void gc_mark_frame(bnHeap* self, bnFrame* frame);
 static void gc_mark_extern(bnInterpreter* bone);
 static void gc_mark_native(bnInterpreter* bone);
 static void gc_mark_rec(bnObject* obj);
-static void gc_mark_array(bnArray* array);
+static void gc_mark_array(bnObject* array);
 static void gc_mark_lambda(bnLambda* lambda);
 static void gc_sweep(bnHeap* self, bnFrame* frame);
 static stage* new_stage();
@@ -168,9 +168,9 @@ static void gc_mark_rec(bnObject* obj) {
         }
 }
 
-static void gc_mark_array(bnArray* array) {
-        for (int i = 0; i < array->size; i++) {
-                gc_mark_rec(g_ptr_array_index(array->arr, i));
+static void gc_mark_array(bnObject* array) {
+        for (int i = 0; i < bnGetArrayLength(array); i++) {
+                gc_mark_rec(bnGetArrayElementAt(array, i));
         }
 }
 

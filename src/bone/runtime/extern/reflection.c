@@ -113,11 +113,11 @@ void bnExtReflectionEntries(bnInterpreter* bone, bnFrame* frame) {
         bnPushStack(frame->vStack, bnNewInteger(bone, g_list_length(entries)));
         bnFrame* sub = bnFuncCall(arrayFunc, bone, frame, 1);
         bnDeleteFrame(sub);
-        bnArray* arrayInst = bnPopStack(frame->vStack);
+        bnObject* arrayInst = bnPopStack(frame->vStack);
         GList* iter = entries;
-        for (int i = 0; i < arrayInst->arr->len; i++) {
-                g_ptr_array_index(arrayInst->arr, i) =
-                    bnNewString(bone, iter->data);
+        for (int i = 0; i < bnGetArrayLength(arrayInst); i++) {
+                bnSetArrayElementAt(arrayInst, i,
+                                    bnNewString(bone, iter->data));
                 iter = iter->next;
         }
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),

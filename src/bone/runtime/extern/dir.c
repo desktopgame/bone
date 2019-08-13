@@ -92,7 +92,7 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
                                 frame->panic = sub->panic;
                                 return;
                         }
-                        bnArray* chary =
+                        bnObject* chary =
                             bnStaging(bone->heap, bnPopStack(frame->vStack));
                         bnFillString(bone, path, chary);
                         // create string
@@ -118,10 +118,10 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
                 frame->panic = sub->panic;
                 return;
         }
-        bnArray* ary = bnStaging(bone->heap, bnPopStack(frame->vStack));
+        bnObject* ary = bnStaging(bone->heap, bnPopStack(frame->vStack));
         GList* filesIter = files;
-        for (int i = 0; i < ary->size; i++) {
-                g_ptr_array_index(ary->arr, i) = filesIter->data;
+        for (int i = 0; i < bnGetArrayLength(ary); i++) {
+                bnSetArrayElementAt(ary, i, (bnObject*)filesIter->data);
                 filesIter = filesIter->next;
         }
         g_list_free(files);

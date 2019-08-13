@@ -25,7 +25,7 @@
 
 static void _throw(bnInterpreter* bone, bnFrame* frame, const char* str);
 static bool file_exists(const char* path);
-static bool compare_list_array(GList* a, GPtrArray* b);
+static bool compare_list_array(GList* a, bnObject* b);
 
 // only in debug build
 #if DEBUG
@@ -221,10 +221,10 @@ void bnStdSystemString(bnInterpreter* bone, bnFrame* frame) {
         if (a->type != BN_OBJECT_ARRAY) {
                 bnFormatThrow(bone, "should be `array` is array");
         }
-        bnArray* aArr = a;
+        bnObject* aArr = a;
         GString* gbuf = g_string_new("");
-        for (int i = 0; i < aArr->arr->len; i++) {
-                bnObject* e = g_ptr_array_index(aArr->arr, i);
+        for (int i = 0; i < bnGetArrayLength(aArr); i++) {
+                bnObject* e = bnGetArrayElementAt(aArr, i);
                 if (e->type != BN_OBJECT_CHAR) {
                         bnFormatThrow(bone, "should be `array[%d]` is char", i);
                 }
@@ -287,23 +287,23 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
         }
         // check parameters
         bnLambda* lambda = obj;
-        bnArray* paraArr = params;
-        if (paraArr->arr->len != g_list_length(lambda->parameters)) {
+        bnObject* paraArr = params;
+        if (bnGetArrayLength(paraArr) != g_list_length(lambda->parameters)) {
                 bnFormatThrow(bone, "illegal parameter length: %d != %d",
-                              paraArr->arr->len,
+                              bnGetArrayLength(paraArr),
                               g_list_length(lambda->parameters));
         }
-        if (!compare_list_array(lambda->parameters, paraArr->arr)) {
+        if (!compare_list_array(lambda->parameters, paraArr)) {
                 bnFormatThrow(bone, "missing parameter");
         }
         // check returns
-        bnArray* retuArr = returns;
-        if (retuArr->arr->len != g_list_length(lambda->returns)) {
+        bnObject* retuArr = returns;
+        if (bnGetArrayLength(retuArr) != g_list_length(lambda->returns)) {
                 bnFormatThrow(bone, "illegal return length: %d != %d",
-                              retuArr->arr->len,
+                              bnGetArrayLength(retuArr),
                               g_list_length(lambda->returns));
         }
-        if (!compare_list_array(lambda->returns, retuArr->arr)) {
+        if (!compare_list_array(lambda->returns, retuArr)) {
                 bnFormatThrow(bone, "missing return");
         }
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
@@ -336,12 +336,12 @@ static void _throw(bnInterpreter* bone, bnFrame* frame, const char* str) {
 
 static bool file_exists(const char* path) { return bnExists(path); }
 
-static bool compare_list_array(GList* a, GPtrArray* b) {
-        if (g_list_length(a) != b->len) {
+static bool compare_list_array(GList* a, bnObject* b) {
+        if (g_list_length(a) != bnGetArrayLength(b)) {
                 return false;
         }
-        for (int i = 0; i < b->len; i++) {
-                bnString* e = g_ptr_array_index(b, i);
+        for (int i = 0; i < bnGetArrayLength(b); i++) {
+                bnString* e = bnGetArrayElementAt(b, i);
                 if (e->value != (bnStringView)a->data) {
                         return false;
                 }
