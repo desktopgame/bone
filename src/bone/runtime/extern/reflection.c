@@ -106,7 +106,7 @@ void bnExtReflectionEntries(bnInterpreter* bone, bnFrame* frame) {
                 }
                 entries = g_list_append(entries, k);
         }
-        bnLambda* arrayFunc = g_hash_table_lookup(
+        bnObject* arrayFunc = g_hash_table_lookup(
             frame->variableTable, bnIntern(bone->pool, "array"));
         bnPushStack(frame->vStack, bnNewInteger(bone, g_list_length(entries)));
         bnFrame* sub = bnFuncCall(arrayFunc, bone, frame, 1);

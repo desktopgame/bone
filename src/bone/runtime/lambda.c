@@ -3,7 +3,24 @@
 
 static void free_lambda(bnObject* obj);
 
-bnLambda* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
+/**
+ * bnLambda is function pointer in bone.
+ */
+typedef struct bnLambda {
+        bnObject base;
+        bnLambdaType type;
+        GHashTable* outer;
+        GList* parameters;
+        GList* returns;
+        bnStringView filename;
+        int lineno;
+        union {
+                bnEnviroment* vEnv;
+                bnNativeFunc vFunc;
+        } u;
+} bnLambda;
+
+bnObject* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
                           const char* filename, int lineno) {
         bnLambda* ret = bnMallocFunc(sizeof(bnLambda), filename, lineno);
         bnInitObject(bone, &ret->base, BN_OBJECT_LAMBDA);
@@ -18,7 +35,7 @@ bnLambda* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
         return ret;
 }
 
-bnLambda* bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
+bnObject* bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
                                    bnNativeFunc func, struct bnStringPool* pool,
                                    const char* filename, int lineno, ...) {
         va_list ap;
@@ -48,21 +65,69 @@ bnLambda* bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
         return ret;
 }
 
-bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnLambda* self) {
-        if (g_list_length(self->parameters) > 0 &&
-            self->parameters->data == bnIntern(pool, "self")) {
+bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnObject* self) {
+        bnLambda* lmb = (bnLambda*)self;
+        if (g_list_length(lmb->parameters) > 0 &&
+            lmb->parameters->data == bnIntern(pool, "self")) {
                 return true;
         }
         return false;
 }
 
-bool bnIsVariadicReturn(struct bnStringPool* pool, bnLambda* self) {
-        if (g_list_length(self->returns) > 0 &&
-            self->returns->data == bnIntern(pool, "...")) {
+bool bnIsVariadicReturn(struct bnStringPool* pool, bnObject* self) {
+        bnLambda* lmb = (bnLambda*)self;
+        if (g_list_length(lmb->returns) > 0 &&
+            lmb->returns->data == bnIntern(pool, "...")) {
                 return true;
         }
         return false;
 }
+
+void bnSetEnviroment(bnObject* obj, bnEnviroment* env) {
+        ((bnLambda*)obj)->u.vEnv = env;
+}
+
+bnEnviroment* bnGetEnviroment(bnObject* obj) {
+        return ((bnLambda*)obj)->u.vEnv;
+}
+
+bnNativeFunc bnGetNativeFunc(bnObject* obj) {
+        return ((bnLambda*)obj)->u.vFunc;
+}
+
+void bnAddParameter(bnObject* obj, gpointer param) {
+        ((bnLambda*)obj)->parameters =
+            g_list_append(((bnLambda*)obj)->parameters, param);
+}
+
+GList* bnGetParameterList(bnObject* obj) {
+        return ((bnLambda*)obj)->parameters;
+}
+
+void bnAddReturnValue(bnObject* obj, gpointer retval) {
+        ((bnLambda*)obj)->returns =
+            g_list_append(((bnLambda*)obj)->returns, retval);
+}
+
+GList* bnGetReturnValueList(bnObject* obj) { return ((bnLambda*)obj)->returns; }
+
+GHashTable* bnGetCapturedMap(bnObject* obj) { return ((bnLambda*)obj)->outer; }
+
+void bnSetLambdaFileName(bnObject* obj, bnStringView filename) {
+        ((bnLambda*)obj)->filename = filename;
+}
+
+bnStringView bnGetLambdaFileName(bnObject* obj) {
+        return ((bnLambda*)obj)->filename;
+}
+
+void bnSetLambdaLineNumber(bnObject* obj, int line) {
+        ((bnLambda*)obj)->lineno = line;
+}
+
+int bnGetLambdaLineNumber(bnObject* obj) { return ((bnLambda*)obj)->lineno; }
+
+bnLambdaType bnGetLambdaType(bnObject* obj) { return ((bnLambda*)obj)->type; }
 
 static void free_lambda(bnObject* obj) {
         obj->freeFunc = NULL;
@@ -70,7 +135,7 @@ static void free_lambda(bnObject* obj) {
         g_hash_table_destroy(lmb->outer);
         g_list_free(lmb->parameters);
         g_list_free(lmb->returns);
-        if (lmb->type == BN_LAMBDA_SCRIPT) {
+        if (bnGetLambdaType(lmb) == BN_LAMBDA_SCRIPT) {
                 bnDeleteEnviroment(lmb->u.vEnv);
         }
         bnDeleteObject(obj);

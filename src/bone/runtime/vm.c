@@ -13,7 +13,7 @@
 #include "string.h"
 
 GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
-                                  bnLambda* lambda, int PC) {
+                                  bnObject* lambda, int PC) {
         int line = bnFindLineRange(env, PC);
         GString* gbuf = g_string_new("");
         const char* caller = bnView2Str(bone->pool, env->filename);
@@ -21,12 +21,13 @@ GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
         g_string_append_printf(gbuf, "call at %s<%d>, ",
                                caller + bnLastPathComponent(caller),
                                bnFindLineRange(env, PC) + env->lineOffset);
-        const char* definer = bnView2Str(bone->pool, lambda->filename);
+        const char* definer =
+            bnView2Str(bone->pool, bnGetLambdaFileName(lambda));
         assert(definer != NULL);
-        GList* iter = ((bnLambda*)lambda)->parameters;
+        GList* iter = bnGetParameterList(lambda);
         g_string_append_printf(gbuf, "defined at %s<%d>, ",
                                definer + bnLastPathComponent(definer),
-                               lambda->lineno);
+                               bnGetLambdaLineNumber(lambda));
 
         g_string_append(gbuf, " #");
         bnGStringAppendC(gbuf, '(');
@@ -38,7 +39,7 @@ GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
                 }
         }
         bnGStringAppendC(gbuf, ')');
-        iter = ((bnLambda*)lambda)->returns;
+        iter = bnGetReturnValueList(lambda);
         bnGStringAppendC(gbuf, '(');
         while (iter != NULL) {
                 g_string_append(gbuf, bnView2Str(bone->pool, iter->data));
@@ -52,35 +53,35 @@ GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
         return gbuf;
 }
 
-struct bnLambda* bnCreateLambdaInActiveCode(bnInterpreter* bone,
+struct bnObject* bnCreateLambdaInActiveCode(bnInterpreter* bone,
                                             bnEnviroment* env, bnFrame* frame,
                                             int* pPC) {
-        bnLambda* lmb = bnNewLambda(bone, BN_LAMBDA_SCRIPT);
+        bnObject* lmb = bnNewLambda(bone, BN_LAMBDA_SCRIPT);
         int line = g_ptr_array_index(env->codeArray, ++(*pPC));
-        lmb->filename = env->filename;
-        lmb->lineno = line;
-        lmb->u.vEnv = bnNewEnviroment(env->filename);
-        lmb->u.vEnv->lineOffset = line;
+        bnSetLambdaFileName(lmb, env->filename);
+        bnSetLambdaLineNumber(lmb, line);
+        bnEnviroment* lmbEnv = bnNewEnviroment(env->filename);
+        lmbEnv->lineOffset = line;
+        bnSetEnviroment(lmb, lmbEnv);
         // is instance base?
         int parameterLen = g_ptr_array_index(env->codeArray, ++(*pPC));
         for (int i = 0; i < parameterLen; i++) {
-                lmb->parameters =
-                    g_list_append(lmb->parameters,
-                                  g_ptr_array_index(env->codeArray, ++(*pPC)));
+                bnAddParameter(lmb,
+                               g_ptr_array_index(env->codeArray, ++(*pPC)));
         }
         // length of named return
         int namedReturnLen = g_ptr_array_index(env->codeArray, ++(*pPC));
-        g_ptr_array_add(lmb->u.vEnv->codeArray, BN_OP_NOP);
+        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray, BN_OP_NOP);
         for (int i = 0; i < namedReturnLen; i++) {
-                lmb->returns = g_list_append(
-                    lmb->returns, g_ptr_array_index(env->codeArray, ++(*pPC)));
+                bnAddReturnValue(lmb,
+                                 g_ptr_array_index(env->codeArray, ++(*pPC)));
         }
         // collect all variables
         GHashTableIter hashIter;
         g_hash_table_iter_init(&hashIter, frame->variableTable);
         gpointer k, v;
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
-                g_hash_table_replace(lmb->outer, k, v);
+                g_hash_table_replace(bnGetCapturedMap(lmb), k, v);
         }
         int lambdaNest = 1;
         // generate code
@@ -92,54 +93,60 @@ struct bnLambda* bnCreateLambdaInActiveCode(bnInterpreter* bone,
                 if (bnOperands((bnOpcode)data) == 1) {
                         if (data == BN_OP_GOTO || data == BN_OP_GOTO_IF ||
                             data == BN_OP_GOTO_ELSE) {
-                                g_ptr_array_add(lmb->u.vEnv->codeArray, data);
+                                g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
+                                                data);
                                 bnLabel* clone =
                                     bnNewLabel(((bnLabel*)g_ptr_array_index(
                                                     env->codeArray, ++(*pPC)))
                                                    ->pos);
-                                g_ptr_array_add(lmb->u.vEnv->codeArray, clone);
-                                g_ptr_array_add(lmb->u.vEnv->labels, clone);
+                                g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
+                                                clone);
+                                g_ptr_array_add(bnGetEnviroment(lmb)->labels,
+                                                clone);
                         } else {
-                                g_ptr_array_add(lmb->u.vEnv->codeArray, data);
-                                g_ptr_array_add(lmb->u.vEnv->codeArray,
+                                g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
+                                                data);
+                                g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
                                                 g_ptr_array_index(
                                                     env->codeArray, ++(*pPC)));
                         }
                         continue;
                 }
                 if (data == BN_OP_GEN_LAMBDA_BEGIN) {
-                        g_ptr_array_add(lmb->u.vEnv->codeArray, data);
+                        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray, data);
                         line = g_ptr_array_index(env->codeArray, ++(*pPC));
-                        g_ptr_array_add(lmb->u.vEnv->codeArray, line);
+                        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray, line);
                         // add params
                         parameterLen =
                             g_ptr_array_index(env->codeArray, ++(*pPC));
-                        g_ptr_array_add(lmb->u.vEnv->codeArray, parameterLen);
+                        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
+                                        parameterLen);
                         for (int i = 0; i < parameterLen; i++) {
-                                g_ptr_array_add(lmb->u.vEnv->codeArray,
+                                g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
                                                 g_ptr_array_index(
                                                     env->codeArray, ++(*pPC)));
                         }
                         // add returns
                         namedReturnLen =
                             g_ptr_array_index(env->codeArray, ++(*pPC));
-                        g_ptr_array_add(lmb->u.vEnv->codeArray, namedReturnLen);
-                        g_ptr_array_add(lmb->u.vEnv->codeArray, BN_OP_NOP);
+                        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
+                                        namedReturnLen);
+                        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
+                                        BN_OP_NOP);
                         for (int i = 0; i < namedReturnLen; i++) {
-                                lmb->returns = g_list_append(
-                                    lmb->returns,
-                                    g_ptr_array_index(env->codeArray,
-                                                      ++(*pPC)));
+                                bnAddReturnValue(
+                                    lmb, g_ptr_array_index(env->codeArray,
+                                                           ++(*pPC)));
                         }
                         lambdaNest++;
                 } else if (data == BN_OP_GEN_LAMBDA_END) {
                         if (--lambdaNest == 0) {
                                 break;
                         }
-                        g_ptr_array_add(lmb->u.vEnv->codeArray, data);
+                        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray, data);
 
                 } else {
-                        g_ptr_array_add(lmb->u.vEnv->codeArray, data);
+                        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray, data);
                 }
         }
         return lmb;

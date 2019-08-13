@@ -63,7 +63,7 @@ void bnDefine(bnObject* self, bnStringView name, bnObject* value) {
 bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                     int argc) {
         assert(self != NULL && self->type == BN_OBJECT_LAMBDA);
-        bnLambda* lambda = self;
+        bnObject* lambda = self;
         // int paramLen = g_list_length(lambda->parameters);
         // assert(paramLen == argc);
         // create new frame
@@ -77,20 +77,20 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                 bnPushStack(sub->vStack, bnPeekStack(frame->hierarcySelf));
                 argc++;
         }
-        int paramc = g_list_length(lambda->parameters);
+        int paramc = g_list_length(bnGetParameterList(lambda));
         if (paramc != argc) {
                 sub->panic = frame->panic = bnNewString(
                     bone, bnIntern(bone->pool, "illegal arguments"));
                 return sub;
         }
         // set default return value
-        GList* retIter = lambda->returns;
+        GList* retIter = bnGetReturnValueList(lambda);
         while (retIter != NULL) {
                 g_hash_table_replace(sub->variableTable, retIter->data,
                                      bnNewObject(bone));
                 retIter = retIter->next;
         }
-        if (lambda->type == BN_LAMBDA_NATIVE) {
+        if (bnGetLambdaType(lambda) == BN_LAMBDA_NATIVE) {
                 // write captured vatiable
                 GHashTableIter iter;
                 gpointer k, v;
@@ -107,7 +107,7 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                 }
                 int code = BN_JMP_PUSH(bone->__jstack);
                 if (code == 0) {
-                        lambda->u.vFunc(bone, sub);
+                        bnGetNativeFunc(lambda)(bone, sub);
                         if (sub->panic != NULL) {
                                 frame->panic = sub->panic;
                         }
@@ -125,21 +125,21 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                 // write captured vatiable
                 GHashTableIter iter;
                 gpointer k, v;
-                g_hash_table_iter_init(&iter, lambda->outer);
+                g_hash_table_iter_init(&iter, bnGetCapturedMap(lambda));
                 while (g_hash_table_iter_next(&iter, &k, &v)) {
                         g_hash_table_replace(sub->variableTable, k, v);
                 }
-                bnExecute(bone, lambda->u.vEnv, sub);
+                bnExecute(bone, bnGetEnviroment(lambda), sub);
         }
         if (bnIsVariadicReturn(bone->pool, lambda)) {
                 bnObject* arr = bnExportAllVariable(bone, sub);
                 bnPushStack(frame->vStack, arr);
-        } else if (g_list_length(lambda->returns) > 0) {
-                assert(lambda->returns->data != NULL);
-                bnObject* body = g_hash_table_lookup(sub->variableTable,
-                                                     lambda->returns->data);
+        } else if (g_list_length(bnGetReturnValueList(lambda)) > 0) {
+                // assert(lambda->returns->data != NULL);
+                bnObject* body = g_hash_table_lookup(
+                    sub->variableTable, bnGetReturnValueList(lambda)->data);
                 assert(body != NULL);
-                GList* iter = lambda->returns;
+                GList* iter = bnGetReturnValueList(lambda);
                 while (iter != NULL) {
                         bnStringView retName = iter->data;
                         // create private member

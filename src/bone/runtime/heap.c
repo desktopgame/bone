@@ -24,7 +24,7 @@ static void gc_mark_extern(bnInterpreter* bone);
 static void gc_mark_native(bnInterpreter* bone);
 static void gc_mark_rec(bnObject* obj);
 static void gc_mark_array(bnObject* array);
-static void gc_mark_lambda(bnLambda* lambda);
+static void gc_mark_lambda(bnObject* lambda);
 static void gc_sweep(bnHeap* self, bnFrame* frame);
 static stage* new_stage();
 static void delete_stage(stage* self);
@@ -174,12 +174,12 @@ static void gc_mark_array(bnObject* array) {
         }
 }
 
-static void gc_mark_lambda(bnLambda* lambda) {
-        if (lambda->type != BN_LAMBDA_SCRIPT) {
+static void gc_mark_lambda(bnObject* lambda) {
+        if (bnGetLambdaType(lambda) != BN_LAMBDA_SCRIPT) {
                 return;
         }
         GHashTableIter hashIter;
-        g_hash_table_iter_init(&hashIter, lambda->outer);
+        g_hash_table_iter_init(&hashIter, bnGetCapturedMap(lambda));
         gpointer k, v;
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
                 gc_mark_rec(v);

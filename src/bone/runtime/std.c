@@ -285,24 +285,26 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
                 _throw(bone, frame, "C value is not lambda");
         }
         // check parameters
-        bnLambda* lambda = obj;
+        bnObject* lambda = obj;
         bnObject* paraArr = params;
-        if (bnGetArrayLength(paraArr) != g_list_length(lambda->parameters)) {
+        if (bnGetArrayLength(paraArr) !=
+            g_list_length(bnGetParameterList(lambda))) {
                 bnFormatThrow(bone, "illegal parameter length: %d != %d",
                               bnGetArrayLength(paraArr),
-                              g_list_length(lambda->parameters));
+                              g_list_length(bnGetParameterList(lambda)));
         }
-        if (!compare_list_array(lambda->parameters, paraArr)) {
+        if (!compare_list_array(bnGetParameterList(lambda), paraArr)) {
                 bnFormatThrow(bone, "missing parameter");
         }
         // check returns
         bnObject* retuArr = returns;
-        if (bnGetArrayLength(retuArr) != g_list_length(lambda->returns)) {
+        if (bnGetArrayLength(retuArr) !=
+            g_list_length(bnGetReturnValueList(lambda))) {
                 bnFormatThrow(bone, "illegal return length: %d != %d",
                               bnGetArrayLength(retuArr),
-                              g_list_length(lambda->returns));
+                              g_list_length(bnGetReturnValueList(lambda)));
         }
-        if (!compare_list_array(lambda->returns, retuArr)) {
+        if (!compare_list_array(bnGetReturnValueList(lambda), retuArr)) {
                 bnFormatThrow(bone, "missing return");
         }
         g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),

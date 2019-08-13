@@ -21,23 +21,6 @@ typedef enum bnLambdaType {
         BN_LAMBDA_NATIVE,
 } bnLambdaType;
 
-/**
- * bnLambda is function pointer in bone.
- */
-typedef struct bnLambda {
-        bnObject base;
-        bnLambdaType type;
-        GHashTable* outer;
-        GList* parameters;
-        GList* returns;
-        bnStringView filename;
-        int lineno;
-        union {
-                bnEnviroment* vEnv;
-                bnNativeFunc vFunc;
-        } u;
-} bnLambda;
-
 #define bnNewLambda(bone, type) \
         (bnNewLambdaFunc(bone, type, __FILE__, __LINE__))
 /**
@@ -48,7 +31,7 @@ typedef struct bnLambda {
  * @param lineno
  * @return
  */
-bnLambda* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
+bnObject* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
                           const char* filename, int lineno);
 
 #define bnNewLambdaFromCFunc(bone, func, pool, ...)                     \
@@ -64,7 +47,7 @@ bnLambda* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
  * @param ... (parameter, named returns)
  * @return
  */
-bnLambda* bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
+bnObject* bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
                                    bnNativeFunc func, struct bnStringPool* pool,
                                    const char* filename, int lineno, ...);
 
@@ -74,7 +57,7 @@ bnLambda* bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
  * @param self
  * @return
  */
-bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnLambda* self);
+bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnObject* self);
 
 /**
  * return true, if variadic return value.
@@ -82,6 +65,83 @@ bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnLambda* self);
  * @param self
  * @return
  */
-bool bnIsVariadicReturn(struct bnStringPool* pool, bnLambda* self);
+bool bnIsVariadicReturn(struct bnStringPool* pool, bnObject* self);
 
+/**
+ * @param obj
+ * @param env
+ */
+void bnSetEnviroment(bnObject* obj, bnEnviroment* env);
+
+/**
+ * @param obj
+ * @return
+ */
+bnEnviroment* bnGetEnviroment(bnObject* obj);
+
+/**
+ * @param obj
+ * @return
+ */
+bnNativeFunc bnGetNativeFunc(bnObject* obj);
+
+/**
+ * @param obj
+ * @param param
+ */
+void bnAddParameter(bnObject* obj, gpointer param);
+
+/**
+ * @param obj
+ * @return
+ */
+GList* bnGetParameterList(bnObject* obj);
+
+/**
+ * @param obj
+ * @param retval
+ */
+void bnAddReturnValue(bnObject* obj, gpointer retval);
+
+/**
+ * @param obj
+ * @return
+ */
+GList* bnGetReturnValueList(bnObject* obj);
+
+/**
+ * @param obj
+ * @return
+ */
+GHashTable* bnGetCapturedMap(bnObject* obj);
+
+/**
+ * @param obj
+ * @param filename
+ */
+void bnSetLambdaFileName(bnObject* obj, bnStringView filename);
+
+/**
+ * @param obj
+ * @return
+ */
+bnStringView bnGetLambdaFileName(bnObject* obj);
+
+/**
+ * @param obj
+ * @param line
+ */
+void bnSetLambdaLineNumber(bnObject* obj, int line);
+
+/**
+ * @param obj
+ * @return
+ */
+int bnGetLambdaLineNumber(bnObject* obj);
+
+/**
+ * @param obj
+ * @return
+ */
+bnLambdaType bnGetLambdaType(bnObject* obj);
 #endif
