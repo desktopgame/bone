@@ -3,9 +3,11 @@
 #include "compile_cache.h"
 #include "il_stmt_all.h"
 
+static void delete_il_statement(gpointer data);
+
 bnILToplevel* bnNewILTopLevel() {
         bnILToplevel* ret = BN_MALLOC(sizeof(bnILToplevel));
-        ret->statements = g_ptr_array_new_full(2, bnDeleteILStatement);
+        ret->statements = g_ptr_array_new_full(2, delete_il_statement);
         return ret;
 }
 
@@ -32,4 +34,8 @@ void bnGenerateILTopLevel(struct bnInterpreter* bone, bnILToplevel* self,
                 bnGenerateILStatement(bone, ilstmt, env, ccache);
         }
         bnDeleteCompileCache(ccache);
+}
+
+static void delete_il_statement(gpointer data) {
+        bnDeleteILStatement((bnILStatement*)data);
 }
