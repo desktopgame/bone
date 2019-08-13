@@ -15,8 +15,8 @@ void bnDumpILExprInt(FILE* fp, struct bnStringPool* pool, bnILExprInt* self,
 
 void bnGenerateILExprInt(struct bnInterpreter* bone, bnILExprInt* self,
                          bnEnviroment* env, bnCompileCache* ccache) {
-        g_ptr_array_add(env->codeArray, BN_OP_GEN_INT);
-        g_ptr_array_add(env->codeArray, GINT_TO_POINTER(self->value));
+        bnWriteCode(env, BN_OP_GEN_INT);
+        bnWriteCode(env, self->value);
 }
 
 void bnDeleteILExprInt(bnILExprInt* self) { BN_FREE(self); }

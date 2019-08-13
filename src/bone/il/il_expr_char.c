@@ -15,8 +15,8 @@ void bnDumpILExprChar(FILE* fp, struct bnStringPool* pool, bnILExprChar* self,
 
 void bnGenerateILExprChar(struct bnInterpreter* bone, bnILExprChar* self,
                           bnEnviroment* env, bnCompileCache* ccache) {
-        g_ptr_array_add(env->codeArray, BN_OP_GEN_CHAR);
-        g_ptr_array_add(env->codeArray, self->value);
+        bnWriteCode(env, BN_OP_GEN_CHAR);
+        bnWriteCode(env, self->value);
 }
 
 void bnDeleteILExprChar(bnILExprChar* self) { BN_FREE(self); }

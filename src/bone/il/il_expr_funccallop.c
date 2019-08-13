@@ -29,18 +29,18 @@ void bnGenerateILExprFuncCallOp(struct bnInterpreter* bone,
                 count++;
                 bnGenerateILExpression(
                     bone, g_ptr_array_index(self->arguments, i), env, ccache);
-                g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
+                bnWriteCode(env, BN_OP_CLEANUP_INJBUF);
         }
         bnGenerateILExpression(bone, self->expr, env, ccache);
         // instance based closure?
         if (self->expr->type == BN_IL_EXPR_MEMBEROP) {
-                g_ptr_array_add(env->codeArray, BN_OP_GET_REGISTER_0);
-                g_ptr_array_add(env->codeArray, BN_OP_PUSH_SELF);
+                bnWriteCode(env, BN_OP_GET_REGISTER_0);
+                bnWriteCode(env, BN_OP_PUSH_SELF);
         }
-        g_ptr_array_add(env->codeArray, BN_OP_FUNCCALL);
-        g_ptr_array_add(env->codeArray, count);
+        bnWriteCode(env, BN_OP_FUNCCALL);
+        bnWriteCode(env, count);
         if (self->expr->type == BN_IL_EXPR_MEMBEROP) {
-                g_ptr_array_add(env->codeArray, BN_OP_POP_SELF);
+                bnWriteCode(env, BN_OP_POP_SELF);
         }
 }
 

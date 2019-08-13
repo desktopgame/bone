@@ -22,12 +22,12 @@ void bnDumpILExprUOp(FILE* fp, struct bnStringPool* pool, bnILExprUOp* self,
 void bnGenerateILExprUOp(bnInterpreter* bone, bnILExprUOp* self,
                          bnEnviroment* env, bnCompileCache* ccache) {
         bnGenerateILExpression(bone, self->a, env, ccache);
-        g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
-        g_ptr_array_add(env->codeArray, BN_OP_DUP);
-        g_ptr_array_add(env->codeArray, BN_OP_GET);
-        g_ptr_array_add(env->codeArray, opToView(bone->pool, self));
-        g_ptr_array_add(env->codeArray, BN_OP_FUNCCALL);
-        g_ptr_array_add(env->codeArray, 1);
+        bnWriteCode(env, BN_OP_CLEANUP_INJBUF);
+        bnWriteCode(env, BN_OP_DUP);
+        bnWriteCode(env, BN_OP_GET);
+        bnWriteCode(env, opToView(bone->pool, self));
+        bnWriteCode(env, BN_OP_FUNCCALL);
+        bnWriteCode(env, 1);
 }
 
 void bnDeleteILExprUOp(bnILExprUOp* self) {

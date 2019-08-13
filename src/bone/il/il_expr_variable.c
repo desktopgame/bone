@@ -17,8 +17,8 @@ void bnDumpILExprVariable(FILE* fp, struct bnStringPool* pool,
 void bnGenerateILExprVariable(struct bnInterpreter* bone,
                               bnILExprVariable* self, bnEnviroment* env,
                               bnCompileCache* ccache) {
-        g_ptr_array_add(env->codeArray, BN_OP_LOAD);
-        g_ptr_array_add(env->codeArray, self->name);
+        bnWriteCode(env, BN_OP_LOAD);
+        bnWriteCode(env, self->name);
 }
 
 void bnDeleteILExprVariable(bnILExprVariable* self) { BN_FREE(self); }

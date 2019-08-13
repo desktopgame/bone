@@ -26,8 +26,8 @@ void bnGenerateILExprArrayLit(bnInterpreter* bone, bnILExprArrayLit* self,
                 bnGenerateILExpression(
                     bone, g_ptr_array_index(self->expressions, i), env, ccache);
         }
-        g_ptr_array_add(env->codeArray, BN_OP_GEN_ARRAY);
-        g_ptr_array_add(env->codeArray, self->expressions->len);
+        bnWriteCode(env, BN_OP_GEN_ARRAY);
+        bnWriteCode(env, self->expressions->len);
 }
 
 void bnDeleteILExprArrayLit(bnILExprArrayLit* self) {

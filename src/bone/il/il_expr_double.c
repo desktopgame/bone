@@ -17,8 +17,8 @@ void bnGenerateILExprDouble(struct bnInterpreter* bone, bnILExprDouble* self,
                             bnEnviroment* env, bnCompileCache* ccache) {
         int len = env->doubleConstants->len;
         g_array_append_val(env->doubleConstants, self->value);
-        g_ptr_array_add(env->codeArray, BN_OP_GEN_DOUBLE);
-        g_ptr_array_add(env->codeArray, len);
+        bnWriteCode(env, BN_OP_GEN_DOUBLE);
+        bnWriteCode(env, len);
 }
 
 void bnDeleteILExprDouble(bnILExprDouble* self) { BN_FREE(self); }

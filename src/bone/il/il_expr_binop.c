@@ -29,35 +29,35 @@ void bnGenerateILExprBinOp(bnInterpreter* bone, bnILExprBinOp* self,
                 if (L->type == BN_IL_EXPR_VARIABLE) {
                         bnILExprVariable* var = L->u.vVariable;
                         bnGenerateILExpression(bone, self->right, env, ccache);
-                        g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
-                        g_ptr_array_add(env->codeArray, BN_OP_STORE);
-                        g_ptr_array_add(env->codeArray, var->name);
+                        bnWriteCode(env, BN_OP_CLEANUP_INJBUF);
+                        bnWriteCode(env, BN_OP_STORE);
+                        bnWriteCode(env, var->name);
                 } else if (L->type == BN_IL_EXPR_MEMBEROP) {
                         bnGenerateILExpression(bone, self->right, env, ccache);
-                        g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
+                        bnWriteCode(env, BN_OP_CLEANUP_INJBUF);
                         bnILExprMemberOp* ilmem = L->u.vMemberOp;
                         bnGenerateILExpression(bone, ilmem->expr, env, ccache);
-                        g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
-                        g_ptr_array_add(env->codeArray, BN_OP_PUT);
-                        g_ptr_array_add(env->codeArray, ilmem->name);
+                        bnWriteCode(env, BN_OP_CLEANUP_INJBUF);
+                        bnWriteCode(env, BN_OP_PUT);
+                        bnWriteCode(env, ilmem->name);
                 } else if (L->type == BN_IL_EXPR_ARRAY_SUBSCRIPT) {
                         bnILExprArraySubscript* arr = L->u.vArraySub;
                         bnGenerateILExpression(bone, arr->arrayExpr, env,
                                                ccache);
-                        g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
-                        g_ptr_array_add(env->codeArray, BN_OP_DUP);
-                        g_ptr_array_add(env->codeArray, BN_OP_GET);
-                        g_ptr_array_add(env->codeArray,
-                                        bnIntern(bone->pool, BN_KWD_ARRAY_SET));
+                        bnWriteCode(env, BN_OP_CLEANUP_INJBUF);
+                        bnWriteCode(env, BN_OP_DUP);
+                        bnWriteCode(env, BN_OP_GET);
+                        bnWriteCode(env,
+                                    bnIntern(bone->pool, BN_KWD_ARRAY_SET));
                         bnGenerateILExpression(bone, arr->indexExpr, env,
                                                ccache);
-                        g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
-                        g_ptr_array_add(env->codeArray, BN_OP_SWAP);
+                        bnWriteCode(env, BN_OP_CLEANUP_INJBUF);
+                        bnWriteCode(env, BN_OP_SWAP);
                         bnGenerateILExpression(bone, self->right, env, ccache);
-                        g_ptr_array_add(env->codeArray, BN_OP_CLEANUP_INJBUF);
-                        g_ptr_array_add(env->codeArray, BN_OP_SWAP);
-                        g_ptr_array_add(env->codeArray, BN_OP_FUNCCALL);
-                        g_ptr_array_add(env->codeArray, 3);
+                        bnWriteCode(env, BN_OP_CLEANUP_INJBUF);
+                        bnWriteCode(env, BN_OP_SWAP);
+                        bnWriteCode(env, BN_OP_FUNCCALL);
+                        bnWriteCode(env, 3);
                 } else {
                         abort();
                 }
@@ -68,14 +68,14 @@ void bnGenerateILExprBinOp(bnInterpreter* bone, bnILExprBinOp* self,
                 g_ptr_array_add(env->labels, iflazy);
 
                 bnGenerateILExpression(bone, self->left, env, ccache);
-                g_ptr_array_add(env->codeArray, BN_OP_DUP);
-                g_ptr_array_add(env->codeArray, BN_OP_GOTO_IF);
-                g_ptr_array_add(env->codeArray, ifshort);
-                g_ptr_array_add(env->codeArray, BN_OP_POP);
+                bnWriteCode(env, BN_OP_DUP);
+                bnWriteCode(env, BN_OP_GOTO_IF);
+                bnWriteLabel(env, ifshort);
+                bnWriteCode(env, BN_OP_POP);
                 bnGenerateILExpression(bone, self->right, env, ccache);
-                g_ptr_array_add(env->codeArray, BN_OP_DUP);
-                g_ptr_array_add(env->codeArray, BN_OP_GOTO);
-                g_ptr_array_add(env->codeArray, iflazy);
+                bnWriteCode(env, BN_OP_DUP);
+                bnWriteCode(env, BN_OP_GOTO);
+                bnWriteLabel(env, iflazy);
                 bnGenerateNOP(env);
                 ifshort->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
                 bnGenerateNOP(env);
@@ -87,27 +87,27 @@ void bnGenerateILExprBinOp(bnInterpreter* bone, bnILExprBinOp* self,
                 g_ptr_array_add(env->labels, iflazy);
 
                 bnGenerateILExpression(bone, self->left, env, ccache);
-                g_ptr_array_add(env->codeArray, BN_OP_DUP);
-                g_ptr_array_add(env->codeArray, BN_OP_GOTO_ELSE);
-                g_ptr_array_add(env->codeArray, ifshort);
-                g_ptr_array_add(env->codeArray, BN_OP_POP);
+                bnWriteCode(env, BN_OP_DUP);
+                bnWriteCode(env, BN_OP_GOTO_ELSE);
+                bnWriteLabel(env, ifshort);
+                bnWriteCode(env, BN_OP_POP);
                 bnGenerateILExpression(bone, self->right, env, ccache);
-                g_ptr_array_add(env->codeArray, BN_OP_DUP);
-                g_ptr_array_add(env->codeArray, BN_OP_GOTO);
-                g_ptr_array_add(env->codeArray, iflazy);
+                bnWriteCode(env, BN_OP_DUP);
+                bnWriteCode(env, BN_OP_GOTO);
+                bnWriteLabel(env, iflazy);
                 bnGenerateNOP(env);
                 ifshort->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
                 bnGenerateNOP(env);
                 iflazy->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
         } else {
                 bnGenerateILExpression(bone, self->left, env, ccache);
-                g_ptr_array_add(env->codeArray, BN_OP_DUP);
-                g_ptr_array_add(env->codeArray, BN_OP_GET);
-                g_ptr_array_add(env->codeArray, opToView(bone->pool, self));
+                bnWriteCode(env, BN_OP_DUP);
+                bnWriteCode(env, BN_OP_GET);
+                bnWriteCode(env, opToView(bone->pool, self));
                 bnGenerateILExpression(bone, self->right, env, ccache);
-                g_ptr_array_add(env->codeArray, BN_OP_SWAP);
-                g_ptr_array_add(env->codeArray, BN_OP_FUNCCALL);
-                g_ptr_array_add(env->codeArray, 2);
+                bnWriteCode(env, BN_OP_SWAP);
+                bnWriteCode(env, BN_OP_FUNCCALL);
+                bnWriteCode(env, 2);
         }
 }
 

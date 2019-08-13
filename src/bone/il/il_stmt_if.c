@@ -26,7 +26,7 @@ void bnGenerateILStmtIf(struct bnInterpreter* bone, bnILStmtIf* self,
                         bnEnviroment* env, bnCompileCache* ccache) {
         // generate condition
         bnGenerateILExpression(bone, self->cond, env, ccache);
-        g_ptr_array_add(env->codeArray, BN_OP_GOTO_ELSE);
+        bnWriteCode(env, BN_OP_GOTO_ELSE);
         bnLabel* ifFalse = bnGenerateLabel(env, -1);
         for (int i = 0; i < self->statements->len; i++) {
                 bnGenerateILStatement(
@@ -64,14 +64,14 @@ void bnGenerateILStmtIfElse(struct bnInterpreter* bone, bnILStmtIfElse* self,
                             bnEnviroment* env, bnCompileCache* ccache) {
         // if(cond) { ... }
         bnGenerateILExpression(bone, self->trueCase->cond, env, ccache);
-        g_ptr_array_add(env->codeArray, BN_OP_GOTO_ELSE);
+        bnWriteCode(env, BN_OP_GOTO_ELSE);
         bnLabel* ifFalse = bnGenerateLabel(env, -1);
         for (int i = 0; i < self->trueCase->statements->len; i++) {
                 bnGenerateILStatement(
                     bone, g_ptr_array_index(self->trueCase->statements, i), env,
                     ccache);
         }
-        g_ptr_array_add(env->codeArray, BN_OP_GOTO);
+        bnWriteCode(env, BN_OP_GOTO);
         bnLabel* ifTrue = bnGenerateLabel(env, -1);
         // if(cond) { ... } else { ... }
         ifFalse->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);

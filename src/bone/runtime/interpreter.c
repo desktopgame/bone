@@ -80,7 +80,7 @@ int bnEval(bnInterpreter* self) {
         self->frame = bnNewFrame();
         bnWriteDefaults(self, self->frame, self->pool);
         bnGenerateILTopLevel(self, iltop, env);
-        g_ptr_array_add(env->codeArray, BN_OP_DEFER_NEXT);
+        bnWriteCode(env, BN_OP_DEFER_NEXT);
         bnDeleteAST(ret);
         bnExecute(self, env, self->frame);
         while (bnGetStackSize(self->callStack) > 0) {

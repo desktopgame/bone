@@ -47,31 +47,31 @@ void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
 
 void bnGenerateILExprLambda(bnInterpreter* bone, bnILExprLambda* self,
                             bnEnviroment* env, bnCompileCache* ccache) {
-        g_ptr_array_add(env->codeArray, BN_OP_GEN_LAMBDA_BEGIN);
-        g_ptr_array_add(env->codeArray, self->lineno);
-        g_ptr_array_add(env->codeArray, self->parameters->len);
+        bnWriteCode(env, BN_OP_GEN_LAMBDA_BEGIN);
+        bnWriteCode(env, self->lineno);
+        bnWriteCode(env, self->parameters->len);
         for (int i = 0; i < self->parameters->len; i++) {
                 bnStringView name = g_ptr_array_index(self->parameters, i);
-                g_ptr_array_add(env->codeArray, name);
+                bnWriteCode(env, name);
         }
-        g_ptr_array_add(env->codeArray, self->returns->len);
+        bnWriteCode(env, self->returns->len);
         for (int i = 0; i < self->returns->len; i++) {
                 bnStringView name = g_ptr_array_index(self->returns, i);
-                g_ptr_array_add(env->codeArray, name);
+                bnWriteCode(env, name);
         }
         bnGenerateEnterLambda(env);
         for (int i = 0; i < self->parameters->len; i++) {
                 bnStringView name = g_ptr_array_index(self->parameters, i);
-                g_ptr_array_add(env->codeArray, BN_OP_STORE);
-                g_ptr_array_add(env->codeArray, name);
+                bnWriteCode(env, BN_OP_STORE);
+                bnWriteCode(env, name);
         }
         for (int i = 0; i < self->statements->len; i++) {
                 bnILStatement* ilstmt = g_ptr_array_index(self->statements, i);
                 bnGenerateILStatement(bone, ilstmt, env, ccache);
         }
-        g_ptr_array_add(env->codeArray, BN_OP_DEFER_NEXT);
+        bnWriteCode(env, BN_OP_DEFER_NEXT);
         bnGenerateExitLambda(env);
-        g_ptr_array_add(env->codeArray, BN_OP_GEN_LAMBDA_END);
+        bnWriteCode(env, BN_OP_GEN_LAMBDA_END);
 }
 
 void bnDeleteILExprLambda(bnILExprLambda* self) {

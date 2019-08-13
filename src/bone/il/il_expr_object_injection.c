@@ -24,7 +24,7 @@ void bnGenerateILExprObjectInjection(struct bnInterpreter* bone,
                                      bnCompileCache* ccache) {
         bnGenerateILExpression(bone, self->leftExpr, env, ccache);
         bnGenerateILExpression(bone, self->rightExpr, env, ccache);
-        g_ptr_array_add(env->codeArray, BN_OP_OBJECT_INJECTION);
+        bnWriteCode(env, BN_OP_OBJECT_INJECTION);
 }
 
 void bnDeleteILExprObjectInjection(bnILExprObjectInjection* self) {

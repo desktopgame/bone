@@ -110,7 +110,7 @@ int bnInteractive(FILE* in) {
                 bnEnviroment* env =
                     bnNewEnviroment(bnIntern(bone->pool, "stdin"));
                 bnGenerateILTopLevel(bone, top, env);
-                g_ptr_array_add(env->codeArray, BN_OP_DEFER_NEXT);
+                bnWriteCode(env, BN_OP_DEFER_NEXT);
                 // run code
                 bnFrame* fr = bnNewFrame();
                 bnWriteDefaults(bone, fr, bone->pool);

@@ -17,14 +17,14 @@ void bnDumpILStmtDefer(FILE* fp, struct bnStringPool* pool, bnILStmtDefer* self,
 void bnGenerateILStmtDefer(struct bnInterpreter* bone, bnILStmtDefer* self,
                            bnEnviroment* env, bnCompileCache* ccache) {
         bnLabel* lab = bnAutoNewLabel(env, 0);
-        g_ptr_array_add(env->codeArray, BN_OP_DEFER_PUSH);
-        g_ptr_array_add(env->codeArray, lab);
-        g_ptr_array_add(env->codeArray, BN_OP_DEFER_BEGIN);
+        bnWriteCode(env, BN_OP_DEFER_PUSH);
+        bnWriteLabel(env, lab);
+        bnWriteCode(env, BN_OP_DEFER_BEGIN);
         lab->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
         bnGenerateNOP(env);
         bnGenerateILStatement(bone, self->stmt, env, ccache);
-        g_ptr_array_add(env->codeArray, BN_OP_DEFER_NEXT);
-        g_ptr_array_add(env->codeArray, BN_OP_DEFER_END);
+        bnWriteCode(env, BN_OP_DEFER_NEXT);
+        bnWriteCode(env, BN_OP_DEFER_END);
 }
 
 void bnDeleteILStmtDefer(bnILStmtDefer* self) {

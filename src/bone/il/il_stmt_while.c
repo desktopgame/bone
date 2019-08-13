@@ -27,7 +27,7 @@ void bnGenerateILStmtWhile(struct bnInterpreter* bone, bnILStmtWhile* self,
         int pos = bnGenerateNOP(env);
         bnLabel* loopStart = bnNewLabel(0);
         bnGenerateILExpression(bone, self->cond, env, ccache);
-        g_ptr_array_add(env->codeArray, BN_OP_GOTO_ELSE);
+        bnWriteCode(env, BN_OP_GOTO_ELSE);
         bnLabel* loopEnd = bnGenerateLabel(env, 0);
         bnPushStack(ccache->whileStartStack, loopStart);
         bnPushStack(ccache->whileEndStack, loopEnd);
@@ -35,9 +35,9 @@ void bnGenerateILStmtWhile(struct bnInterpreter* bone, bnILStmtWhile* self,
                 bnGenerateILStatement(
                     bone, g_ptr_array_index(self->statements, i), env, ccache);
         }
-        g_ptr_array_add(env->codeArray, BN_OP_GOTO);
+        bnWriteCode(env, BN_OP_GOTO);
         // bnGenerateLabel(env, pos);
-        g_ptr_array_add(env->codeArray, loopStart);
+        bnWriteLabel(env, loopStart);
         g_ptr_array_add(env->labels, loopStart);
         loopStart->pos = pos - bnGetLambdaOffset(env);
         loopEnd->pos = bnGenerateNOP(env) - bnGetLambdaOffset(env);
