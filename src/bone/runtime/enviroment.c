@@ -3,6 +3,7 @@
 #include "line_range.h"
 
 static void delete_label(gpointer data);
+static void delete_line_range(gpointer data);
 
 bnEnviroment* bnNewEnviroment(bnStringView filename) {
         bnEnviroment* ret = BN_MALLOC(sizeof(bnEnviroment));
@@ -16,7 +17,7 @@ bnEnviroment* bnNewEnviroment(bnStringView filename) {
             g_array_sized_new(FALSE, TRUE, sizeof(double), 10);
         g_ptr_array_set_free_func(ret->codeArray, NULL);
         g_ptr_array_set_free_func(ret->labels, delete_label);
-        g_ptr_array_set_free_func(ret->ranges, bnDeleteLineRange);
+        g_ptr_array_set_free_func(ret->ranges, delete_line_range);
         return ret;
 }
 
@@ -130,4 +131,8 @@ void bnDeleteEnviroment(bnEnviroment* self) {
 static void delete_label(gpointer data) {
         bnLabel* l = data;
         bnDeleteLabel(l);
+}
+
+static void delete_line_range(gpointer data) {
+        bnDeleteLineRange((bnLineRange*)data);
 }
