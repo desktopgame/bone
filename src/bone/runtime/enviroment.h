@@ -29,6 +29,12 @@ bnEnviroment* bnNewEnviroment(bnStringView filename);
  * @param code
  */
 void bnWriteCode(bnEnviroment* self, int code);
+/**
+ * @param self
+ * @param @c
+ * @return
+ */
+int bnReadCode(bnEnviroment* self, int pc);
 
 /**
  * @param self
