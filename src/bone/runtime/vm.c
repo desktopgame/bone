@@ -87,10 +87,10 @@ struct bnObject* bnCreateLambdaInActiveCode(bnInterpreter* bone,
         // generate code
         while (1) {
                 assert(*pPC < env->codeArray->len);
-                gpointer data = bnReadCode(env, ++(*pPC));
+                bnOpcode data = bnReadCode(env, ++(*pPC));
                 // bug if index of string view equal
                 // BN_OP_GEN_LAMBDA_END
-                if (bnOperands((bnOpcode)data) == 1) {
+                if (bnOperands(data) == 1) {
                         if (data == BN_OP_GOTO || data == BN_OP_GOTO_IF ||
                             data == BN_OP_GOTO_ELSE) {
                                 g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
