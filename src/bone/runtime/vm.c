@@ -209,15 +209,13 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_GEN_INT: {
-                                int data =
-                                    g_ptr_array_index(env->codeArray, ++PC);
+                                int data = bnReadCode(env, ++PC);
                                 bnPushStack(frame->vStack,
                                             bnNewInteger(bone, data));
                                 break;
                         }
                         case BN_OP_GEN_DOUBLE: {
-                                int idx =
-                                    g_ptr_array_index(env->codeArray, ++PC);
+                                int idx = bnReadCode(env, ++PC);
                                 double dv = g_array_index(env->doubleConstants,
                                                           double, idx);
                                 bnPushStack(frame->vStack,
@@ -225,14 +223,12 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_GEN_CHAR: {
-                                char c =
-                                    g_ptr_array_index(env->codeArray, ++PC);
+                                char c = bnReadCode(env, ++PC);
                                 bnPushStack(frame->vStack, bnNewChar(bone, c));
                                 break;
                         }
                         case BN_OP_GEN_STRING: {
-                                bnStringView name =
-                                    g_ptr_array_index(env->codeArray, ++PC);
+                                bnStringView name = bnReadCode(env, ++PC);
                                 // create array for string
                                 const char* str = bnView2Str(bone->pool, name);
                                 int slen = strlen(str);
@@ -271,8 +267,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_GEN_ARRAY: {
-                                int size =
-                                    g_ptr_array_index(env->codeArray, ++PC);
+                                int size = bnReadCode(env, ++PC);
                                 bnPushStack(frame->vStack,
                                             bnNewInteger(bone, size));
                                 bnFrame* sub = bnFuncCall(
@@ -333,8 +328,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_STORE: {
-                                bnStringView name =
-                                    g_ptr_array_index(env->codeArray, ++PC);
+                                bnStringView name = bnReadCode(env, ++PC);
                                 bnObject* value = bnPopStack(frame->vStack);
                                 g_hash_table_replace(frame->variableTable,
                                                      GINT_TO_POINTER((int)name),
@@ -343,8 +337,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_LOAD: {
-                                bnStringView name =
-                                    g_ptr_array_index(env->codeArray, ++PC);
+                                bnStringView name = bnReadCode(env, ++PC);
                                 bnObject* value = g_hash_table_lookup(
                                     frame->variableTable,
                                     GINT_TO_POINTER((int)name));
@@ -375,8 +368,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                         break;
                                 }
                                 bnObject* value = bnPopStack(frame->vStack);
-                                bnStringView name =
-                                    g_ptr_array_index(env->codeArray, ++PC);
+                                bnStringView name = bnReadCode(env, ++PC);
                                 g_hash_table_replace(container->table, name,
                                                      value);
                                 break;
@@ -389,8 +381,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                     bone, "receiver is null"));
                                         break;
                                 }
-                                bnStringView name =
-                                    g_ptr_array_index(env->codeArray, ++PC);
+                                bnStringView name = bnReadCode(env, ++PC);
                                 gpointer data =
                                     g_hash_table_lookup(container->table, name);
                                 bnObject* obj = data;
@@ -411,14 +402,12 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_GOTO: {
-                                bnLabel* jmp =
-                                    g_ptr_array_index(env->codeArray, ++PC);
+                                bnLabel* jmp = bnReadLabel(env, ++PC);
                                 PC = jmp->pos;
                                 break;
                         }
                         case BN_OP_GOTO_IF: {
-                                bnLabel* jmp =
-                                    g_ptr_array_index(env->codeArray, ++PC);
+                                bnLabel* jmp = bnReadLabel(env, ++PC);
                                 bnObject* cond = bnPopStack(frame->vStack);
                                 if (bnGetBoolValue(cond)) {
                                         PC = jmp->pos;
@@ -426,8 +415,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_GOTO_ELSE: {
-                                bnLabel* jmp =
-                                    g_ptr_array_index(env->codeArray, ++PC);
+                                bnLabel* jmp = bnReadLabel(env, ++PC);
                                 bnObject* cond = bnPopStack(frame->vStack);
                                 if (!bnGetBoolValue(cond)) {
                                         PC = jmp->pos;
@@ -447,8 +435,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                          "closure object");
                                         break;
                                 }
-                                int argc =
-                                    g_ptr_array_index(env->codeArray, ++PC);
+                                int argc = bnReadCode(env, ++PC);
 
                                 bnPushStack(bone->callStack,
                                             bnCreateStackFrameString(bone, env,
@@ -464,8 +451,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_DEFER_PUSH: {
-                                bnLabel* jmp =
-                                    g_ptr_array_index(env->codeArray, ++PC);
+                                bnLabel* jmp = bnReadLabel(env, ++PC);
                                 bnSnapShot* sn = bnNewSnapShot(jmp->pos);
                                 GHashTableIter hashIter;
                                 gpointer k, v;
