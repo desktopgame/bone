@@ -145,62 +145,54 @@ void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
                                  "obj", BN_C_ADD_EXIT));
 
 #endif
-        g_hash_table_replace(frame->variableTable, bnIntern(pool, "argc"),
-                             bnNewInteger(self, BN_MAX(self->argc - 2, 0)));
+        bnWriteVariable2(frame, pool, "argc",
+                         bnNewInteger(self, BN_MAX(self->argc - 2, 0)));
         bnObject* argv = bnNewArray(self, BN_MAX(self->argc - 2, 0));
         for (int i = 2; i < self->argc; i++) {
                 bnSetArrayElementAt(
                     argv, i - 2,
                     bnNewString(self, g_ptr_array_index(self->argv, i)));
         }
-        g_hash_table_replace(frame->variableTable, bnIntern(pool, "argv"),
-                             argv);
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "object"),
+        bnWriteVariable2(frame, pool, "argv", argv);
+        bnWriteVariable2(
+            frame, pool, "object",
             bnNewLambdaFromCFunc(self, bnStdSystemObject, pool, BN_C_ADD_RETURN,
                                  "ret", BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "string"),
-            bnNewLambdaFromCFunc(self, bnStdSystemString, pool, BN_C_ADD_PARAM,
-                                 "array", BN_C_ADD_RETURN, "ret",
-                                 BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "array"),
-            bnNewLambdaFromCFunc(self, bnStdSystemArray, pool, BN_C_ADD_PARAM,
-                                 "length", BN_C_ADD_RETURN, "ret",
-                                 BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "include"),
-            bnNewLambdaFromCFunc(self, bnStdSystemInclude, pool, BN_C_ADD_PARAM,
-                                 "path", BN_C_ADD_RETURN, "...",
-                                 BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "load"),
-            bnNewLambdaFromCFunc(self, bnStdSystemLoad, pool, BN_C_ADD_PARAM,
-                                 "path", BN_C_ADD_RETURN, "...",
-                                 BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "eval"),
-            bnNewLambdaFromCFunc(self, bnStdSystemEval, pool, BN_C_ADD_PARAM,
-                                 "path", BN_C_ADD_RETURN, "...",
-                                 BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "extern_var"),
-            bnNewLambdaFromCFunc(self, bnStdSystemExternVar, pool,
-                                 BN_C_ADD_PARAM, "name", BN_C_ADD_RETURN, "ret",
-                                 BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "extern_def"),
-            bnNewLambdaFromCFunc(self, bnStdSystemExternDef, pool,
-                                 BN_C_ADD_PARAM, "name", BN_C_ADD_PARAM,
-                                 "params", BN_C_ADD_PARAM, "returns",
-                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "panic"),
+        bnWriteVariable2(frame, pool, "string",
+                         bnNewLambdaFromCFunc(
+                             self, bnStdSystemString, pool, BN_C_ADD_PARAM,
+                             "array", BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
+        bnWriteVariable2(frame, pool, "array",
+                         bnNewLambdaFromCFunc(
+                             self, bnStdSystemArray, pool, BN_C_ADD_PARAM,
+                             "length", BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
+        bnWriteVariable2(frame, pool, "include",
+                         bnNewLambdaFromCFunc(
+                             self, bnStdSystemInclude, pool, BN_C_ADD_PARAM,
+                             "path", BN_C_ADD_RETURN, "...", BN_C_ADD_EXIT));
+        bnWriteVariable2(frame, pool, "load",
+                         bnNewLambdaFromCFunc(
+                             self, bnStdSystemLoad, pool, BN_C_ADD_PARAM,
+                             "path", BN_C_ADD_RETURN, "...", BN_C_ADD_EXIT));
+        bnWriteVariable2(frame, pool, "eval",
+                         bnNewLambdaFromCFunc(
+                             self, bnStdSystemEval, pool, BN_C_ADD_PARAM,
+                             "path", BN_C_ADD_RETURN, "...", BN_C_ADD_EXIT));
+        bnWriteVariable2(frame, pool, "extern_var",
+                         bnNewLambdaFromCFunc(
+                             self, bnStdSystemExternVar, pool, BN_C_ADD_PARAM,
+                             "name", BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
+        bnWriteVariable2(frame, pool, "extern_def",
+                         bnNewLambdaFromCFunc(
+                             self, bnStdSystemExternDef, pool, BN_C_ADD_PARAM,
+                             "name", BN_C_ADD_PARAM, "params", BN_C_ADD_PARAM,
+                             "returns", BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
+        bnWriteVariable2(
+            frame, pool, "panic",
             bnNewLambdaFromCFunc(self, bnStdSystemPanic, pool, BN_C_ADD_PARAM,
                                  "error", BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(pool, "recover"),
+        bnWriteVariable2(
+            frame, pool, "recover",
             bnNewLambdaFromCFunc(self, bnStdSystemRecover, pool,
                                  BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
 }
