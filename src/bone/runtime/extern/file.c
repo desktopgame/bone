@@ -55,17 +55,14 @@ void bnExtFileOpen(bnInterpreter* bone, bnFrame* frame) {
         }
         FILE* fp = fopen(bnView2Str(bone->pool, bnGetStringValue(a)),
                          bnView2Str(bone->pool, bnGetStringValue(b)));
-        g_hash_table_replace(frame->variableTable,
-                             bnIntern(bone->pool, "error"),
-                             bnGetFalse(bone->pool, frame));
+        bnWriteVariable2(frame, bone->pool, "error",
+                         bnGetFalse(bone->pool, frame));
         if (fp == NULL) {
-                g_hash_table_replace(frame->variableTable,
-                                     bnIntern(bone->pool, "error"),
-                                     bnNewString2(bone, strerror(errno)));
+                bnWriteVariable2(frame, bone->pool, "error",
+                                 bnNewString2(bone, strerror(errno)));
                 return;
         }
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewFile(bone, fp));
+        bnWriteVariable2(frame, bone->pool, "ret", bnNewFile(bone, fp));
 }
 
 void bnExtFilePutc(bnInterpreter* bone, bnFrame* frame) {
@@ -81,16 +78,14 @@ void bnExtFilePutc(bnInterpreter* bone, bnFrame* frame) {
         if (afile->fp == NULL) {
                 bnFormatThrow(bone, "file is already closed");
         }
-        g_hash_table_replace(frame->variableTable,
-                             bnIntern(bone->pool, "error"),
-                             bnGetFalse(bone->pool, frame));
+        bnWriteVariable2(frame, bone->pool, "error",
+                         bnGetFalse(bone->pool, frame));
         FILE* fp = afile->fp;
         char c = bnGetCharValue(b);
         int code = fputc(c, fp);
         if (code == EOF) {
-                g_hash_table_replace(frame->variableTable,
-                                     bnIntern(bone->pool, "error"),
-                                     bnGetTrue(bone->pool, frame));
+                bnWriteVariable2(frame, bone->pool, "error",
+                                 bnGetTrue(bone->pool, frame));
         }
 }
 
@@ -103,21 +98,18 @@ void bnExtFileGetc(bnInterpreter* bone, bnFrame* frame) {
         if (afile->fp == NULL) {
                 bnFormatThrow(bone, "file is already closed");
         }
-        g_hash_table_replace(frame->variableTable,
-                             bnIntern(bone->pool, "error"),
-                             bnGetFalse(bone->pool, frame));
+        bnWriteVariable2(frame, bone->pool, "error",
+                         bnGetFalse(bone->pool, frame));
         FILE* fp = afile->fp;
         int c = fgetc(fp);
         fpos_t pos;
         if (c == EOF || feof(fp) || fgetpos(fp, &pos)) {
-                g_hash_table_replace(frame->variableTable,
-                                     bnIntern(bone->pool, "error"),
-                                     bnGetTrue(bone->pool, frame));
+                bnWriteVariable2(frame, bone->pool, "error",
+                                 bnGetTrue(bone->pool, frame));
                 clearerr(fp);
                 return;
         }
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewChar(bone, c));
+        bnWriteVariable2(frame, bone->pool, "ret", bnNewChar(bone, c));
 }
 
 void bnExtFileClose(bnInterpreter* bone, bnFrame* frame) {
