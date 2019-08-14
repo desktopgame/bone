@@ -23,7 +23,10 @@ static void ast2paramsArray(bnAST* a, GPtrArray* dest) {
                                         dest);
                 }
         } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
                 g_ptr_array_add(dest, (gpointer)a->u.svvalue);
+#pragma clang diagnostic pop
         }
 }
 

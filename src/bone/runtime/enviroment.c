@@ -22,7 +22,10 @@ bnEnviroment* bnNewEnviroment(bnStringView filename) {
 }
 
 void bnWriteCode(bnEnviroment* self, int code) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
         g_ptr_array_add(self->codeArray, (gpointer)code);
+#pragma clang diagnostic pop
 }
 
 int bnReadCode(bnEnviroment* self, int pc) {
@@ -87,12 +90,15 @@ bnLabel* bnGenerateLabel(bnEnviroment* self, int pos) {
 
 int bnGenerateNOP(bnEnviroment* self) {
         int ret = self->codeArray->len;
-        g_ptr_array_add(self->codeArray, BN_OP_NOP);
+        bnWriteCode(self, BN_OP_NOP);
         return ret;
 }
 
 void bnGenerateEnterLambda(bnEnviroment* self) {
-        bnPushStack(self->labelFixStack, self->codeArray->len);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+        bnPushStack(self->labelFixStack, (void*)self->codeArray->len);
+#pragma clang diagnostic pop
 }
 
 void bnGenerateExitLambda(bnEnviroment* self) {
@@ -110,7 +116,7 @@ int bnGetPrependPos(bnEnviroment* self) {
         if (bnGetStackSize(self->labelFixStack) == 0) {
                 return 0;
         }
-        return bnPeekStack(self->labelFixStack);
+        return (int)bnPeekStack(self->labelFixStack);
 }
 
 void bnGenerateFillNOP(bnEnviroment* self, int count) {
