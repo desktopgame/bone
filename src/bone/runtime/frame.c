@@ -79,6 +79,15 @@ void bnWriteVariable2(bnFrame* frame, struct bnStringPool* pool,
                              (gpointer)bnIntern(pool, name), obj);
 }
 
+bnObject* bnReadVariable(bnFrame* frame, bnStringView name) {
+        return (bnObject*)g_hash_table_lookup(frame->variableTable, name);
+}
+
+bnObject* bnReadVariable2(bnFrame* frame, struct bnStringPool* pool,
+                          const char* name) {
+        return bnReadVariable(frame, bnIntern(pool, name));
+}
+
 void bnDeleteFrame(bnFrame* self) {
         assert(self->next == NULL);
         if (self->prev != NULL) {

@@ -69,6 +69,22 @@ void bnWriteVariable2(bnFrame* frame, struct bnStringPool* pool,
                       const char* name, struct bnObject* obj);
 
 /**
+ * @param frame
+ * @param name
+ * @return
+ */
+struct bnObject* bnReadVariable(bnFrame* frame, bnStringView name);
+
+/**
+ * @param frame
+ * @param pool
+ * @param name
+ * @return
+ */
+struct bnObject* bnReadVariable2(bnFrame* frame, struct bnStringPool* pool,
+                                 const char* name);
+
+/**
  * free a bnFrame.
  * @param self
  */
