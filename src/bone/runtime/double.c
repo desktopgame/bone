@@ -97,7 +97,7 @@ bnObject* bnNewDouble(bnInterpreter* bone, double value) {
                  bnNewLambdaFromCFunc(bone, bnStdDoubleToString, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN,
                                       "ret", BN_C_ADD_EXIT));
-        return ret;
+        return (bnObject*)ret;
 }
 
 void bnSetDoubleValue(bnObject* obj, double value) {
@@ -115,8 +115,7 @@ static void bnStdDoublePlus(bnInterpreter* bone, bnFrame* frame) {
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
         // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewDouble(bone, ai + bi));
+        bnWriteVariable2(frame, bone->pool, "ret", bnNewDouble(bone, ai + bi));
 }
 
 static void bnStdDoubleMinus(bnInterpreter* bone, bnFrame* frame) {
@@ -128,8 +127,7 @@ static void bnStdDoubleMinus(bnInterpreter* bone, bnFrame* frame) {
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
         // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewDouble(bone, ai - bi));
+        bnWriteVariable2(frame, bone->pool, "ret", bnNewDouble(bone, ai - bi));
 }
 
 static void bnStdDoubleMultiply(bnInterpreter* bone, bnFrame* frame) {
@@ -141,8 +139,7 @@ static void bnStdDoubleMultiply(bnInterpreter* bone, bnFrame* frame) {
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
         // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewDouble(bone, ai * bi));
+        bnWriteVariable2(frame, bone->pool, "ret", bnNewDouble(bone, ai * bi));
 }
 
 static void bnStdDoubleDivide(bnInterpreter* bone, bnFrame* frame) {
@@ -154,8 +151,7 @@ static void bnStdDoubleDivide(bnInterpreter* bone, bnFrame* frame) {
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
         // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewDouble(bone, ai / bi));
+        bnWriteVariable2(frame, bone->pool, "ret", bnNewDouble(bone, ai / bi));
 }
 
 static void bnStdDoubleModulo(bnInterpreter* bone, bnFrame* frame) {
@@ -167,8 +163,8 @@ static void bnStdDoubleModulo(bnInterpreter* bone, bnFrame* frame) {
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
         // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewDouble(bone, fmod(ai, bi)));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnNewDouble(bone, fmod(ai, bi)));
 }
 
 static void bnStdDoubleGT(bnInterpreter* bone, bnFrame* frame) {
@@ -180,8 +176,8 @@ static void bnStdDoubleGT(bnInterpreter* bone, bnFrame* frame) {
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
         // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnGetBool(bone->pool, frame, ai > bi));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnGetBool(bone->pool, frame, ai > bi));
 }
 static void bnStdDoubleGE(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
@@ -192,8 +188,8 @@ static void bnStdDoubleGE(bnInterpreter* bone, bnFrame* frame) {
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
         // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnGetBool(bone->pool, frame, ai >= bi));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnGetBool(bone->pool, frame, ai >= bi));
 }
 
 static void bnStdDoubleLT(bnInterpreter* bone, bnFrame* frame) {
@@ -205,8 +201,8 @@ static void bnStdDoubleLT(bnInterpreter* bone, bnFrame* frame) {
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
         // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnGetBool(bone->pool, frame, ai < bi));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnGetBool(bone->pool, frame, ai < bi));
 }
 static void bnStdDoubleLE(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
@@ -217,8 +213,8 @@ static void bnStdDoubleLE(bnInterpreter* bone, bnFrame* frame) {
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
         // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnGetBool(bone->pool, frame, ai <= bi));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnGetBool(bone->pool, frame, ai <= bi));
 }
 static void bnStdDoubleEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
@@ -229,8 +225,8 @@ static void bnStdDoubleEqual(bnInterpreter* bone, bnFrame* frame) {
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
         // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnGetBool(bone->pool, frame, ai == bi));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnGetBool(bone->pool, frame, ai == bi));
 }
 static void bnStdDoubleNotEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
@@ -241,8 +237,8 @@ static void bnStdDoubleNotEqual(bnInterpreter* bone, bnFrame* frame) {
         double ai = ((bnDouble*)a)->value;
         double bi = ((bnDouble*)b)->value;
         // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnGetBool(bone->pool, frame, ai == bi));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnGetBool(bone->pool, frame, ai == bi));
 }
 
 static void bnStdDoubleToString(bnInterpreter* bone, bnFrame* frame) {
@@ -252,6 +248,6 @@ static void bnStdDoubleToString(bnInterpreter* bone, bnFrame* frame) {
         }
         char buf[100];
         sprintf(buf, "%lf", ((bnDouble*)a)->value);
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewString(bone, bnIntern(bone->pool, buf)));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnNewString(bone, bnIntern(bone->pool, buf)));
 }

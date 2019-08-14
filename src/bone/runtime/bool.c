@@ -12,9 +12,6 @@ static void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame);
 static void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame);
 static void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame);
 
-static void bnStdBoolEqual(bnInterpreter* bone, bnFrame* frame);
-static void bnStdBoolNotEqual(bnInterpreter* bone, bnFrame* frame);
-
 /**
  * bnBool is bool.
  */
@@ -53,7 +50,9 @@ void bnSetFlipValue(bnObject* t, bnObject* f) {
         bf->r = bt;
 }
 
-bnObject* bnGetFlipValue(bnObject* obj) { return ((bnBool*)obj)->r; }
+bnObject* bnGetFlipValue(bnObject* obj) {
+        return (bnObject*)(((bnBool*)obj)->r);
+}
 
 bool bnGetBoolValue(bnObject* obj) {
         if (obj->type == BN_OBJECT_BOOL) {
@@ -71,7 +70,7 @@ static void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame) {
                 _throw(bone, frame, "should be `self` is bool");
         }
         bnBool* b = (bnBool*)a;
-        bnWriteVariable2(frame, bone->pool, "ret", b->r);
+        bnWriteVariable2(frame, bone->pool, "ret", (bnObject*)b->r);
 }
 
 static void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame) {
@@ -85,10 +84,9 @@ static void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame) {
         }
         bnBool* boolA = (bnBool*)a;
         bnBool* boolB = (bnBool*)b;
-        bnObject* c = g_hash_table_lookup(
-            frame->variableTable,
-            bnIntern(bone->pool,
-                     (boolA->value & boolB->value) ? "true" : "false"));
+        bnObject* c =
+            bnReadVariable2(frame, bone->pool,
+                            (boolA->value & boolB->value) ? "true" : "false");
         bnWriteVariable2(frame, bone->pool, "ret", c);
 }
 
@@ -103,13 +101,8 @@ static void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame) {
         }
         bnBool* boolA = (bnBool*)a;
         bnBool* boolB = (bnBool*)b;
-        bnObject* c = g_hash_table_lookup(
-            frame->variableTable,
-            bnIntern(bone->pool,
-                     (boolA->value | boolB->value) ? "true" : "false"));
+        bnObject* c =
+            bnReadVariable2(frame, bone->pool,
+                            (boolA->value | boolB->value) ? "true" : "false");
         bnWriteVariable2(frame, bone->pool, "ret", c);
 }
-
-static void bnStdBoolEqual(bnInterpreter* bone, bnFrame* frame);
-
-static void bnStdBoolNotEqual(bnInterpreter* bone, bnFrame* frame);
