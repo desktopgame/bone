@@ -14,26 +14,23 @@
 static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly);
 
 void bnExternDir(bnInterpreter* bone) {
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "dir.files"),
-            bnNewLambdaFromCFunc(bone, bnExtDirFiles, bone->pool,
-                                 BN_C_ADD_PARAM, "path", BN_C_ADD_RETURN, "ret",
-                                 BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "dir.directories"),
+        bnWriteExtern2(bone, "dir.files",
+                       bnNewLambdaFromCFunc(
+                           bone, bnExtDirFiles, bone->pool, BN_C_ADD_PARAM,
+                           "path", BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
+        bnWriteExtern2(
+            bone, "dir.directories",
             bnNewLambdaFromCFunc(bone, bnExtDirDirectories, bone->pool,
                                  BN_C_ADD_PARAM, "path", BN_C_ADD_RETURN, "ret",
                                  BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "dir.delete"),
-            bnNewLambdaFromCFunc(bone, bnExtDirDelete, bone->pool,
-                                 BN_C_ADD_PARAM, "path", BN_C_ADD_RETURN,
-                                 "error", BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "dir.create"),
-            bnNewLambdaFromCFunc(bone, bnExtDirCreate, bone->pool,
-                                 BN_C_ADD_PARAM, "path", BN_C_ADD_RETURN,
-                                 "error", BN_C_ADD_EXIT));
+        bnWriteExtern2(bone, "dir.delete",
+                       bnNewLambdaFromCFunc(
+                           bone, bnExtDirDelete, bone->pool, BN_C_ADD_PARAM,
+                           "path", BN_C_ADD_RETURN, "error", BN_C_ADD_EXIT));
+        bnWriteExtern2(bone, "dir.create",
+                       bnNewLambdaFromCFunc(
+                           bone, bnExtDirCreate, bone->pool, BN_C_ADD_PARAM,
+                           "path", BN_C_ADD_RETURN, "error", BN_C_ADD_EXIT));
 }
 
 void bnExtDirFiles(bnInterpreter* bone, bnFrame* frame) {
