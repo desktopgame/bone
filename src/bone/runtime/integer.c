@@ -8,21 +8,15 @@
 #define message() ("should be parameter is int")
 
 // Integer
-static void bnStdIntegerFuncCall(bnInterpreter* bone, bnFrame* frame);
-static void bnStdIntegerPositive(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerNegative(bnInterpreter* bone, bnFrame* frame);
-static void bnStdIntegerChilda(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerNot(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerPlus(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerMinus(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerMultiply(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerDivide(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerModulo(bnInterpreter* bone, bnFrame* frame);
-static void bnStdIntegerBitAnd(bnInterpreter* bone, bnFrame* frame);
-static void bnStdIntegerBitOr(bnInterpreter* bone, bnFrame* frame);
 // static void bnStdIntegerLogicAnd(bnInterpreter* bone, bnFrame* frame);
 // static void bnStdIntegerLogicOr(bnInterpreter* bone, bnFrame* frame);
-static void bnStdIntegerExcOr(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerLShift(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerRShift(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerGT(bnInterpreter* bone, bnFrame* frame);
@@ -126,13 +120,6 @@ void bnSetIntegerValue(bnObject* obj, int value) {
 }
 
 // private
-static void bnStdIntegerFuncCall(bnInterpreter* bone, bnFrame* frame) {
-        _throw(bone, frame, "internal error");
-}
-
-static void bnStdIntegerPositive(bnInterpreter* bone, bnFrame* frame) {
-        _throw(bone, frame, "internal error");
-}
 
 static void bnStdIntegerNegative(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
@@ -217,37 +204,9 @@ static void bnStdIntegerModulo(bnInterpreter* bone, bnFrame* frame) {
                              bnNewInteger(bone, ai % bi));
 }
 
-static void bnStdIntegerBitAnd(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
-        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        int bi = ((bnInteger*)b)->value;
-        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewInteger(bone, ai & bi));
-}
-
-static void bnStdIntegerBitOr(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
-        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        int bi = ((bnInteger*)b)->value;
-        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewInteger(bone, ai | bi));
-}
-
 // static void bnStdIntegerLogicAnd(bnInterpreter* bone, bnFrame* frame){}
 
 // static void bnStdIntegerLogicOr(bnInterpreter* bone, bnFrame* frame){}
-
-static void bnStdIntegerExcOr(bnInterpreter* bone, bnFrame* frame) {}
 
 static void bnStdIntegerLShift(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
