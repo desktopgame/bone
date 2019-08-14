@@ -117,7 +117,6 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
                 filesIter = filesIter->next;
         }
         g_list_free(files);
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             ary);
+        bnWriteVariable2(frame, bone->pool, "ret", ary);
         bnDeleteFrame(sub);
 }
