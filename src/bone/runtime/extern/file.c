@@ -20,35 +20,28 @@ bnObject* bnNewFile(bnInterpreter* bone, FILE* fp) {
 }
 
 void bnExternFile(bnInterpreter* bone) {
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "file.fopen"),
-            bnNewLambdaFromCFunc(bone, bnExtFileOpen, bone->pool,
-                                 BN_C_ADD_PARAM, "path", BN_C_ADD_PARAM, "mode",
-                                 BN_C_ADD_RETURN, "ret", BN_C_ADD_RETURN,
-                                 "error", BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "file.fputc"),
+        bnWriteExtern2(bone, "file.fopen",
+                       bnNewLambdaFromCFunc(
+                           bone, bnExtFileOpen, bone->pool, BN_C_ADD_PARAM,
+                           "path", BN_C_ADD_PARAM, "mode", BN_C_ADD_RETURN,
+                           "ret", BN_C_ADD_RETURN, "error", BN_C_ADD_EXIT));
+        bnWriteExtern2(
+            bone, "file.fputc",
             bnNewLambdaFromCFunc(bone, bnExtFilePutc, bone->pool,
                                  BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM, "c",
                                  BN_C_ADD_RETURN, "error", BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "file.fgetc"),
+        bnWriteExtern2(
+            bone, "file.fgetc",
             bnNewLambdaFromCFunc(bone, bnExtFileGetc, bone->pool,
                                  BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN, "ret",
                                  BN_C_ADD_RETURN, "error", BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "file.fclose"),
+        bnWriteExtern2(
+            bone, "file.fclose",
             bnNewLambdaFromCFunc(bone, bnExtFileClose, bone->pool,
                                  BN_C_ADD_PARAM, "self", BN_C_ADD_EXIT));
-        g_hash_table_replace(bone->externTable,
-                             bnIntern(bone->pool, "file.stdout"),
-                             bnNewFile(bone, stdout));
-        g_hash_table_replace(bone->externTable,
-                             bnIntern(bone->pool, "file.stderr"),
-                             bnNewFile(bone, stderr));
-        g_hash_table_replace(bone->externTable,
-                             bnIntern(bone->pool, "file.stdin"),
-                             bnNewFile(bone, stdin));
+        bnWriteExtern2(bone, "file.stdout", bnNewFile(bone, stdout));
+        bnWriteExtern2(bone, "file.stderr", bnNewFile(bone, stderr));
+        bnWriteExtern2(bone, "file.stdin", bnNewFile(bone, stdin));
 }
 
 void bnExtFileOpen(bnInterpreter* bone, bnFrame* frame) {
