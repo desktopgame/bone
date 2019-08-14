@@ -21,5 +21,5 @@ void bnInitAny(struct bnInterpreter* bone, bnAny* self, const char* type);
  * @parram type
  * @return
  */
-bool bnMatchType(struct bnInterpreter* bone, bnAny* self, const char* type);
+bool bnMatchType(struct bnInterpreter* bone, bnObject* self, const char* type);
 #endif

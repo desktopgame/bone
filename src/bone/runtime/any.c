@@ -6,6 +6,10 @@ void bnInitAny(bnInterpreter* bone, bnAny* self, const char* type) {
         self->type = bnIntern(bone->pool, type);
 }
 
-bool bnMatchType(bnInterpreter* bone, bnAny* self, const char* type) {
-        return self->type == bnIntern(bone->pool, type);
+bool bnMatchType(bnInterpreter* bone, bnObject* self, const char* type) {
+        if (self->type != BN_OBJECT_ANY) {
+                return false;
+        }
+        bnAny* a = (bnAny*)self;
+        return a->type == bnIntern(bone->pool, type);
 }
