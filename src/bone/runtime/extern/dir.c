@@ -58,10 +58,8 @@ void bnExtDirCreate(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
-        bnObject* aryFunc = g_hash_table_lookup(frame->variableTable,
-                                                bnIntern(bone->pool, "array"));
-        bnObject* strFunc = g_hash_table_lookup(frame->variableTable,
-                                                bnIntern(bone->pool, "string"));
+        bnObject* aryFunc = bnReadVariable2(frame, bone->pool, "array");
+        bnObject* strFunc = bnReadVariable2(frame, bone->pool, "string");
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "should be `path` is string");
