@@ -115,5 +115,34 @@ struct bnObject* bnGetTrue(struct bnStringPool* pool, struct bnFrame* frame);
  */
 struct bnObject* bnGetFalse(struct bnStringPool* pool, struct bnFrame* frame);
 
+/**
+ * @param self
+ * @param name
+ * @param obj
+ */
+void bnWriteExtern(bnInterpreter* self, bnStringView name,
+                   struct bnObject* obj);
+
+/**
+ * @param self
+ * @param str
+ * @param obj
+ */
+void bnWriteExtern2(bnInterpreter* self, const char* str, struct bnObject* obj);
+
+/**
+ * @param self
+ * @param name
+ * @return
+ */
+struct bnObject* bnReadExtern(bnInterpreter* self, bnStringView name);
+
+/**
+ * @param self
+ * @param str
+ * @return
+ */
+struct bnObject* bnReadExtern2(bnInterpreter* self, const char* str);
+
 void bnDeleteInterpreter(bnInterpreter* self);
 #endif

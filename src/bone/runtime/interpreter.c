@@ -251,6 +251,22 @@ bnObject* bnGetFalse(struct bnStringPool* pool, bnFrame* frame) {
                                    bnIntern(pool, "false"));
 }
 
+void bnWriteExtern(bnInterpreter* self, bnStringView name, bnObject* obj) {
+        g_hash_table_replace(self->externTable, name, (gpointer)obj);
+}
+
+void bnWriteExtern2(bnInterpreter* self, const char* str, bnObject* obj) {
+        bnWriteExtern(self, bnIntern(self->pool, str), obj);
+}
+
+bnObject* bnReadExtern(bnInterpreter* self, bnStringView name) {
+        return g_hash_table_lookup(self->externTable, (gpointer)name);
+}
+
+bnObject* bnReadExtern2(bnInterpreter* self, const char* str) {
+        return bnReadExtern(self, bnIntern(self->pool, str));
+}
+
 void bnDeleteInterpreter(bnInterpreter* self) {
         // free a allocated by bone program
         self->frame = NULL;
