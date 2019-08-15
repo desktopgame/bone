@@ -107,6 +107,21 @@ bool bnUndef(bnObject* self, bnStringView name);
 bool bnUndef2(bnObject* self, struct bnStringPool* pool, const char* str);
 
 /**
+ * @param self
+ * @param name
+ * @return
+ */
+bool bnDefined(bnObject* self, bnStringView name);
+
+/**
+ * @param self
+ * @param pool
+ * @param str
+ * @return
+ */
+bool bnDefined2(bnObject* self, struct bnStringPool* pool, const char* str);
+
+/**
  * bnFuncCall is run a `self` as function pointer.
  * it and, return a subframe used for executed function.
  * @param self

@@ -83,6 +83,14 @@ bool bnUndef2(bnObject* self, struct bnStringPool* pool, const char* str) {
         return bnUndef(self, bnIntern(pool, str));
 }
 
+bool bnDefined(bnObject* self, bnStringView name) {
+        return g_hash_table_contains(self->table, (gpointer)name);
+}
+
+bool bnDefined2(bnObject* self, struct bnStringPool* pool, const char* str) {
+        return bnDefined(self, bnIntern(pool, str));
+}
+
 bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                     int argc) {
         assert(self != NULL && self->type == BN_OBJECT_LAMBDA);
