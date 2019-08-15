@@ -291,6 +291,8 @@ static void load_plugins(bnInterpreter* self, const char* currentdir) {
                 return;
         }
         const gchar* name;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wparentheses"
         while (name = g_dir_read_name(dir)) {
                 gchar* path;
                 path = g_build_filename(currentdir, name, NULL);
@@ -302,6 +304,7 @@ static void load_plugins(bnInterpreter* self, const char* currentdir) {
                 load_plugin(self, path);
                 g_free(path);
         }
+#pragma clang diagnostic pop
         g_dir_close(dir);
 }
 
