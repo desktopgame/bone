@@ -310,7 +310,7 @@ static void bnStdObjectToString(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         GString* str = g_string_new("ROOT\n");
         to_string(bone, str, a, 1);
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewString2(bone, str->str));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnNewString2(bone, str->str));
         g_string_free(str, TRUE);
 }
