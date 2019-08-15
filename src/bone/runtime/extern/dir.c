@@ -72,6 +72,8 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
         const gchar* name = NULL;
         GList* files = NULL;
         // check files
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wparentheses"
         while (name = g_dir_read_name(dp)) {
                 gchar* path = g_build_filename(dirname, name, NULL);
                 gboolean is_dir = g_file_test(path, G_FILE_TEST_IS_DIR);
@@ -102,6 +104,7 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
                 }
                 g_free(path);
         }
+#pragma clang diagnostic pop
         g_dir_close(dp);
         // create new array
         bnPushStack(frame->vStack, bnNewInteger(bone, g_list_length(files)));
