@@ -66,7 +66,10 @@ void bnDefine2(bnObject* self, struct bnStringPool* pool, const char* str,
 }
 
 bnObject* bnLookup(bnObject* self, bnStringView name) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
         return (bnObject*)g_hash_table_lookup(self->table, (gpointer)name);
+#pragma clang diagnostic pop
 }
 
 bnObject* bnLookup2(bnObject* self, struct bnStringPool* pool,
@@ -75,7 +78,10 @@ bnObject* bnLookup2(bnObject* self, struct bnStringPool* pool,
 }
 
 bool bnUndef(bnObject* self, bnStringView name) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
         bool ret = g_hash_table_remove(self->table, (gpointer)name);
+#pragma clang diagnostic pop
         return ret;
 }
 
@@ -84,7 +90,10 @@ bool bnUndef2(bnObject* self, struct bnStringPool* pool, const char* str) {
 }
 
 bool bnDefined(bnObject* self, bnStringView name) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
         return g_hash_table_contains(self->table, (gpointer)name);
+#pragma clang diagnostic pop
 }
 
 bool bnDefined2(bnObject* self, struct bnStringPool* pool, const char* str) {
@@ -176,11 +185,8 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                         // create private member
                         bnStringView exportName =
                             bnGetExportVariableName(bone->pool, retName);
-                        const char* expstr = bnView2Str(bone->pool, exportName);
-                        g_hash_table_replace(
-                            body->table, exportName,
-                            g_hash_table_lookup(sub->variableTable,
-                                                iter->data));
+                        bnDefine(body, exportName,
+                                 bnReadVariable(sub, (bnStringView)iter->data));
                         iter = iter->next;
                 }
                 bnPushStack(frame->vStack, body);
@@ -226,7 +232,7 @@ void bnCleanupInjectionBuffer(struct bnStringPool* pool, bnObject* self) {
         gpointer k, v;
         g_hash_table_iter_init(&hashIter, self->table);
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
-                bnStringView view = k;
+                bnStringView view = (bnStringView)k;
                 const char* str = bnView2Str(pool, view);
                 if (g_str_has_prefix(str, "$$_")) {
                         g_hash_table_iter_remove(&hashIter);
@@ -256,15 +262,15 @@ void bnDeleteObject(bnObject* self) {
 static void bnStdObjectEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnGetBool(bone->pool, frame, a == b));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnGetBool(bone->pool, frame, a == b));
 }
 
 static void bnStdObjectNotEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
         bnObject* b = bnPopStack(frame->vStack);
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnGetBool(bone->pool, frame, a != b));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnGetBool(bone->pool, frame, a != b));
 }
 
 static void to_string(bnInterpreter* bone, GString* str, bnObject* root,
