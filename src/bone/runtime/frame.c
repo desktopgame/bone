@@ -5,6 +5,8 @@
 #include "object.h"
 #include "snapshot.h"
 
+static void delete_snapshot(gpointer data);
+
 bnFrame* bnNewFrame() {
         bnFrame* ret = BN_MALLOC(sizeof(bnFrame));
         ret->prev = NULL;
@@ -62,7 +64,7 @@ bnObject* bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
                 bnStringView exportName =
                     bnGetExportVariableName(bone->pool, retName);
                 // create private member
-                g_hash_table_replace(arr->table, exportName, v);
+                bnDefine(arr, exportName, v);
                 bnSetArrayElementAt(arr, arrI, v);
                 arrI++;
         }
@@ -106,6 +108,10 @@ void bnDeleteFrame(bnFrame* self) {
         bnDeleteStack(self->vStack, NULL);
         bnDeleteStack(self->hierarcySelf, NULL);
         g_hash_table_destroy(self->variableTable);
-        g_list_free_full(self->snapshots, bnDeleteSnapShot);
+        g_list_free_full(self->snapshots, delete_snapshot);
         BN_FREE(self);
+}
+
+static void delete_snapshot(gpointer data) {
+        bnDeleteSnapShot((bnSnapShot*)data);
 }
