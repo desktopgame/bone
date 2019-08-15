@@ -60,8 +60,8 @@ static void bnStdStringEqual(bnInterpreter* bone, bnFrame* frame) {
         }
         bnStringView ai = ((bnString*)a)->value;
         bnStringView bi = ((bnString*)b)->value;
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnGetBool(bone->pool, frame, ai == bi));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnGetBool(bone->pool, frame, ai == bi));
 }
 
 static void bnStdStringNotEqual(bnInterpreter* bone, bnFrame* frame) {
@@ -72,8 +72,8 @@ static void bnStdStringNotEqual(bnInterpreter* bone, bnFrame* frame) {
         }
         bnStringView ai = ((bnString*)a)->value;
         bnStringView bi = ((bnString*)b)->value;
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnGetBool(bone->pool, frame, ai != bi));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnGetBool(bone->pool, frame, ai != bi));
 }
 
 static void bnStdStringAt(bnInterpreter* bone, bnFrame* frame) {
@@ -93,6 +93,5 @@ static void bnStdStringAt(bnInterpreter* bone, bnFrame* frame) {
                 bnFormatThrow(bone, "over index in bounds: %d~%d[%d]", 0,
                               astrlen, bv);
         }
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewChar(bone, astr[bv]));
+        bnWriteVariable2(frame, bone->pool, "ret", bnNewChar(bone, astr[bv]));
 }
