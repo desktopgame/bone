@@ -136,9 +136,7 @@ static void gc_mark_extern(bnInterpreter* bone) {
         gpointer k, v;
         g_hash_table_iter_init(&hashIter, bone->externTable);
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
-                const char* str = bnView2Str(bone->pool, k);
-                bnObject* obj = v;
-                gc_mark_rec(v);
+                gc_mark_rec((bnObject*)v);
         }
 }
 
