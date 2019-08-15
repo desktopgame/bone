@@ -32,7 +32,11 @@ GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
         g_string_append(gbuf, " #");
         bnGStringAppendC(gbuf, '(');
         while (iter != NULL) {
-                g_string_append(gbuf, bnView2Str(bone->pool, iter->data));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+                g_string_append(
+                    gbuf, bnView2Str(bone->pool, (bnStringView)iter->data));
+#pragma clang diagnostic pop
                 iter = iter->next;
                 if (iter != NULL) {
                         bnGStringAppendC(gbuf, ' ');
@@ -93,19 +97,18 @@ struct bnObject* bnCreateLambdaInActiveCode(bnInterpreter* bone,
                 if (bnOperands(data) == 1) {
                         if (data == BN_OP_GOTO || data == BN_OP_GOTO_IF ||
                             data == BN_OP_GOTO_ELSE) {
-                                g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
-                                                data);
+                                bnWriteCode(bnGetEnviroment(lmb), data);
                                 bnLabel* clone =
                                     bnNewLabel(((bnLabel*)g_ptr_array_index(
                                                     env->codeArray, ++(*pPC)))
                                                    ->pos);
-                                g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
-                                                clone);
+
+                                bnWriteLabel(bnGetEnviroment(lmb), clone);
                                 g_ptr_array_add(bnGetEnviroment(lmb)->labels,
                                                 clone);
                         } else {
-                                g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
-                                                data);
+                                bnWriteCode(bnGetEnviroment(lmb), data);
+
                                 g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
                                                 g_ptr_array_index(
                                                     env->codeArray, ++(*pPC)));
@@ -113,26 +116,21 @@ struct bnObject* bnCreateLambdaInActiveCode(bnInterpreter* bone,
                         continue;
                 }
                 if (data == BN_OP_GEN_LAMBDA_BEGIN) {
-                        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray, data);
+                        bnWriteCode(bnGetEnviroment(lmb), data);
                         line = bnReadCode(env, ++(*pPC));
-                        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray, line);
+                        bnWriteCode(bnGetEnviroment(lmb), line);
                         // add params
-                        parameterLen =
-                            g_ptr_array_index(env->codeArray, ++(*pPC));
-                        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
-                                        parameterLen);
+                        parameterLen = bnReadCode(env, ++(*pPC));
+                        bnWriteCode(bnGetEnviroment(lmb), parameterLen);
                         for (int i = 0; i < parameterLen; i++) {
                                 g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
                                                 g_ptr_array_index(
                                                     env->codeArray, ++(*pPC)));
                         }
                         // add returns
-                        namedReturnLen =
-                            g_ptr_array_index(env->codeArray, ++(*pPC));
-                        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
-                                        namedReturnLen);
-                        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray,
-                                        BN_OP_NOP);
+                        namedReturnLen = bnReadCode(env, ++(*pPC));
+                        bnWriteCode(bnGetEnviroment(lmb), namedReturnLen);
+                        bnWriteCode(bnGetEnviroment(lmb), BN_OP_NOP);
                         for (int i = 0; i < namedReturnLen; i++) {
                                 bnAddReturnValue(
                                     lmb, g_ptr_array_index(env->codeArray,
@@ -143,10 +141,10 @@ struct bnObject* bnCreateLambdaInActiveCode(bnInterpreter* bone,
                         if (--lambdaNest == 0) {
                                 break;
                         }
-                        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray, data);
+                        bnWriteCode(bnGetEnviroment(lmb), data);
 
                 } else {
-                        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray, data);
+                        bnWriteCode(bnGetEnviroment(lmb), data);
                 }
         }
         return lmb;
@@ -158,12 +156,12 @@ void bnScopeInjection(bnInterpreter* bone, bnObject* src, bnFrame* dst) {
         g_hash_table_iter_init(&hashIter, src->table);
         gpointer k, v;
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
-                bnStringView kView = k;
+                bnStringView kView = (bnStringView)k;
                 const char* kStr = bnView2Str(bone->pool, kView);
                 if (g_str_has_prefix(kStr, "$$_")) {
                         const char* origName = kStr + 3;
                         bnStringView origView = bnIntern(bone->pool, origName);
-                        g_hash_table_replace(dst->variableTable, origView, v);
+                        bnWriteVariable(dst, origView, v);
                         g_hash_table_iter_remove(&hashIter);
                 }
         }
@@ -175,12 +173,12 @@ void bnObjectInjection(bnInterpreter* bone, bnObject* src, bnObject* dst) {
         g_hash_table_iter_init(&hashIter, src->table);
         gpointer k, v;
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
-                bnStringView kView = k;
+                bnStringView kView = (bnStringView)k;
                 const char* kStr = bnView2Str(bone->pool, kView);
                 if (g_str_has_prefix(kStr, "$$_")) {
                         const char* origName = kStr + 3;
                         bnStringView origView = bnIntern(bone->pool, origName);
-                        g_hash_table_replace(dst->table, origView, v);
+                        bnDefine(dst, origView, v);
                         g_hash_table_iter_remove(&hashIter);
                 }
         }
@@ -234,9 +232,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 int slen = strlen(str);
                                 bnPushStack(frame->vStack,
                                             bnNewInteger(bone, slen));
-                                bnObject* arrFunc = g_hash_table_lookup(
-                                    frame->variableTable,
-                                    bnIntern(bone->pool, "array"));
+                                bnObject* arrFunc =
+                                    bnReadVariable2(frame, bone->pool, "array");
                                 bnFrame* sub =
                                     bnFuncCall(arrFunc, bone, frame, 1);
                                 if (sub->panic) {
@@ -253,11 +250,10 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnDeleteFrame(sub);
                                 bnGC(bone);
                                 // create string by string function
-                                bnFrame* sub2 = bnFuncCall(
-                                    g_hash_table_lookup(
-                                        frame->variableTable,
-                                        bnIntern(bone->pool, "string")),
-                                    bone, frame, 1);
+                                bnFrame* sub2 =
+                                    bnFuncCall(bnReadVariable2(
+                                                   frame, bone->pool, "string"),
+                                               bone, frame, 1);
                                 if (sub2->panic) {
                                         frame->panic = sub->panic;
                                         break;
@@ -271,9 +267,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnPushStack(frame->vStack,
                                             bnNewInteger(bone, size));
                                 bnFrame* sub = bnFuncCall(
-                                    g_hash_table_lookup(
-                                        frame->variableTable,
-                                        bnIntern(bone->pool, "array")),
+                                    bnReadVariable2(frame, bone->pool, "array"),
                                     bone, frame, 1);
                                 if (sub->panic) {
                                         frame->panic = sub->panic;
@@ -363,14 +357,13 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 bnObject* container = bnPopStack(frame->vStack);
                                 if (container == NULL) {
                                         bnPanic(bone,
-                                                bnNewString(
+                                                bnNewString2(
                                                     bone, "receiver is null"));
                                         break;
                                 }
                                 bnObject* value = bnPopStack(frame->vStack);
                                 bnStringView name = bnReadCode(env, ++PC);
-                                g_hash_table_replace(container->table, name,
-                                                     value);
+                                bnDefine(container, name, value);
                                 break;
                         }
                         case BN_OP_GET: {
@@ -382,9 +375,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                         break;
                                 }
                                 bnStringView name = bnReadCode(env, ++PC);
-                                gpointer data =
-                                    g_hash_table_lookup(container->table, name);
-                                bnObject* obj = data;
+                                bnObject* obj = bnLookup(container, name);
                                 const char* str = bnView2Str(bone->pool, name);
                                 assert(str != NULL);
                                 if (obj == NULL) {
@@ -397,8 +388,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                     bnIntern(bone->pool, buf)));
                                         break;
                                 }
-                                assert(data != NULL);
-                                bnPushStack(frame->vStack, data);
+                                assert(obj != NULL);
+                                bnPushStack(frame->vStack, obj);
                                 break;
                         }
                         case BN_OP_GOTO: {
