@@ -68,6 +68,21 @@ bnObject* bnNewObject(struct bnInterpreter* bone);
 void bnDefine(bnObject* self, bnStringView name, bnObject* value);
 
 /**
+ * @param self
+ * @param name
+ * @return
+ */
+bnObject* bnLookup(bnObject* self, bnStringView name);
+
+/**
+ * @param self
+ * @param pool
+ * @param str
+ * @return
+ */
+bnObject* bnLookup2(bnObject* self, struct bnStringPool* pool, const char* str);
+
+/**
  * bnFuncCall is run a `self` as function pointer.
  * it and, return a subframe used for executed function.
  * @param self

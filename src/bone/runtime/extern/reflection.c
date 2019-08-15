@@ -9,34 +9,34 @@
 #include "../string.h"
 
 void bnExternReflection(bnInterpreter* bone) {
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "define"),
+        bnWriteExtern2(
+            bone, "define",
             bnNewLambdaFromCFunc(bone, bnExtReflectionDefine, bone->pool,
                                  BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM, "name",
                                  BN_C_ADD_PARAM, "value", BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "undef"),
+        bnWriteExtern2(
+            bone, "undef",
             bnNewLambdaFromCFunc(bone, bnExtReflectionUndef, bone->pool,
                                  BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM, "name",
                                  BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "defined"),
+        bnWriteExtern2(
+            bone, "defined",
             bnNewLambdaFromCFunc(bone, bnExtReflectionDefined, bone->pool,
                                  BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM, "name",
                                  BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "expand"),
+        bnWriteExtern2(
+            bone, "expand",
             bnNewLambdaFromCFunc(bone, bnExtReflectionExpand, bone->pool,
                                  BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM, "name",
                                  BN_C_ADD_RETURN, "ret", BN_C_ADD_RETURN,
                                  "error", BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "entries"),
+        bnWriteExtern2(
+            bone, "entries",
             bnNewLambdaFromCFunc(bone, bnExtReflectionEntries, bone->pool,
                                  BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN, "ret",
                                  BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "export"),
+        bnWriteExtern2(
+            bone, "export",
             bnNewLambdaFromCFunc(bone, bnExtReflectionExport, bone->pool,
                                  BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN, "...",
                                  BN_C_ADD_EXIT));

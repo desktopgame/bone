@@ -60,6 +60,15 @@ void bnDefine(bnObject* self, bnStringView name, bnObject* value) {
         g_hash_table_replace(self->table, GINT_TO_POINTER(v), value);
 }
 
+bnObject* bnLookup(bnObject* self, bnStringView name) {
+        return (bnObject*)g_hash_table_lookup(self->table, (gpointer)name);
+}
+
+bnObject* bnLookup2(bnObject* self, struct bnStringPool* pool,
+                    const char* str) {
+        return bnLookup(self, bnIntern(pool, str));
+}
+
 bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                     int argc) {
         assert(self != NULL && self->type == BN_OBJECT_LAMBDA);
@@ -141,7 +150,7 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                 assert(body != NULL);
                 GList* iter = bnGetReturnValueList(lambda);
                 while (iter != NULL) {
-                        bnStringView retName = iter->data;
+                        bnStringView retName = (bnStringView)iter->data;
                         // create private member
                         bnStringView exportName =
                             bnGetExportVariableName(bone->pool, retName);

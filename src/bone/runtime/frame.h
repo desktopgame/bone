@@ -12,7 +12,7 @@ typedef struct bnFrame {
         bnStack* vStack;
         bnStack* hierarcySelf;
         GHashTable* variableTable;
-        struct bnLambda* currentCall;
+        struct bnObject* currentCall;
         struct bnObject* panic;
         struct bnObject* register0;
         struct bnFrame* prev;

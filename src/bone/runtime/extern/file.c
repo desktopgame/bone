@@ -117,7 +117,7 @@ void bnExtFileClose(bnInterpreter* bone, bnFrame* frame) {
         if (a->type != BN_OBJECT_ANY || !bnMatchType(bone, a, FILE_T)) {
                 bnFormatThrow(bone, "should be `self` is file");
         }
-        bnFile* afile = a;
+        bnFile* afile = (bnFile*)a;
         if (afile->fp != NULL) {
                 fclose(afile->fp);
                 afile->fp = NULL;
