@@ -16,18 +16,17 @@
 #include "../vm.h"
 
 void bnExternSystem(bnInterpreter* bone) {
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "exit"),
+        bnWriteExtern2(
+            bone, "exit",
             bnNewLambdaFromCFunc(bone, bnExtSystemExit, bone->pool,
                                  BN_C_ADD_PARAM, "status", BN_C_ADD_EXIT));
-        g_hash_table_replace(bone->externTable, bnIntern(bone->pool, "abort"),
-                             bnNewLambdaFromCFunc(bone, bnExtSystemAbort,
-                                                  bone->pool, BN_C_ADD_EXIT));
-        g_hash_table_replace(
-            bone->externTable, bnIntern(bone->pool, "system"),
-            bnNewLambdaFromCFunc(bone, bnExtSystemSystem, bone->pool,
-                                 BN_C_ADD_PARAM, "args", BN_C_ADD_RETURN, "ret",
-                                 BN_C_ADD_EXIT));
+        bnWriteExtern2(bone, "abort",
+                       bnNewLambdaFromCFunc(bone, bnExtSystemAbort, bone->pool,
+                                            BN_C_ADD_EXIT));
+        bnWriteExtern2(bone, "system",
+                       bnNewLambdaFromCFunc(
+                           bone, bnExtSystemSystem, bone->pool, BN_C_ADD_PARAM,
+                           "args", BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
 }
 
 void bnExtSystemExit(bnInterpreter* bone, bnFrame* frame) {
@@ -65,6 +64,5 @@ void bnExtSystemSystem(bnInterpreter* bone, bnFrame* frame) {
         g_string_erase(gbuf, gbuf->len - 1, 1);
         int code = system(gbuf->str);
         g_string_free(gbuf, TRUE);
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewInteger(bone, code));
+        bnWriteVariable2(frame, bone->pool, "ret", bnNewInteger(bone, code));
 }
