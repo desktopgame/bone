@@ -293,7 +293,6 @@ static void load_plugins(bnInterpreter* self, const char* currentdir) {
         const gchar* name;
         while (name = g_dir_read_name(dir)) {
                 gchar* path;
-                gboolean is_dir;
                 path = g_build_filename(currentdir, name, NULL);
                 if (g_file_test(path, G_FILE_TEST_IS_DIR) || !is_dll(path) ||
                     strstr(path, "libbone")) {
