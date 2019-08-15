@@ -92,6 +92,21 @@ bnObject* bnLookup(bnObject* self, bnStringView name);
 bnObject* bnLookup2(bnObject* self, struct bnStringPool* pool, const char* str);
 
 /**
+ * @param self
+ * @param name
+ * @return
+ */
+bnObject* bnUndef(bnObject* self, bnStringView name);
+
+/**
+ * @param self
+ * @param pool
+ * @param str
+ * @return
+ */
+bnObject* bnUndef2(bnObject* self, struct bnStringPool* pool, const char* str);
+
+/**
  * bnFuncCall is run a `self` as function pointer.
  * it and, return a subframe used for executed function.
  * @param self

@@ -74,6 +74,16 @@ bnObject* bnLookup2(bnObject* self, struct bnStringPool* pool,
         return bnLookup(self, bnIntern(pool, str));
 }
 
+bnObject* bnUndef(bnObject* self, bnStringView name) {
+        bnObject* ret = bnLookup(self, name);
+        g_hash_table_remove(self->table, (gpointer)name);
+        return ret;
+}
+
+bnObject* bnUndef2(bnObject* self, struct bnStringPool* pool, const char* str) {
+        return bnUndef(self, bnIntern(pool, str));
+}
+
 bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                     int argc) {
         assert(self != NULL && self->type == BN_OBJECT_LAMBDA);
