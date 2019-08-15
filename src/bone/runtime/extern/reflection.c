@@ -109,8 +109,8 @@ void bnExtReflectionEntries(bnInterpreter* bone, bnFrame* frame) {
         bnObject* arrayInst = bnPopStack(frame->vStack);
         GList* iter = entries;
         for (int i = 0; i < bnGetArrayLength(arrayInst); i++) {
-                bnSetArrayElementAt(arrayInst, i,
-                                    bnNewString(bone, iter->data));
+                bnSetArrayElementAt(
+                    arrayInst, i, bnNewString(bone, (bnStringView)iter->data));
                 iter = iter->next;
         }
         bnWriteVariable2(frame, bone->pool, "ret", arrayInst);
@@ -123,7 +123,7 @@ void bnExtReflectionExport(bnInterpreter* bone, bnFrame* frame) {
         g_hash_table_iter_init(&hashIter, a->table);
         gpointer k, v;
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
-                bnStringView view = k;
+                bnStringView view = (bnStringView)k;
                 const char* str = bnView2Str(bone->pool, view);
                 if (*str == '$') {
                         continue;
