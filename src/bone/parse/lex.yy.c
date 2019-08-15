@@ -1,3 +1,9 @@
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+#pragma clang diagnostic ignored "-Wimplicit-function-declaration"
+#pragma clang diagnostic ignored "-Wextra-tokens"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunneeded-internal-declaration"
 
 #line 3 "lex.yy.c"
 
@@ -2459,3 +2465,4 @@ void yyfree(void *ptr) {
 #define YYTABLES_NAME "yytables"
 
 #line 317 "bone.l"
+#pragma clang diagnostic pop
