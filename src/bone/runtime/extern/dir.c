@@ -46,7 +46,10 @@ void bnExtDirDelete(bnInterpreter* bone, bnFrame* frame) {
         if (a->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "should be `path` is string");
         }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wimplicit-function-declaration"
         g_rmdir(bnView2Str(bone->pool, bnGetStringValue(a)));
+#pragma clang diagnostic pop
 }
 
 void bnExtDirCreate(bnInterpreter* bone, bnFrame* frame) {
@@ -54,7 +57,10 @@ void bnExtDirCreate(bnInterpreter* bone, bnFrame* frame) {
         if (a->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "should be `path` is string");
         }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wimplicit-function-declaration"
         g_mkdir(bnView2Str(bone->pool, bnGetStringValue(a)), 0755);
+#pragma clang diagnostic pop
 }
 
 static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
