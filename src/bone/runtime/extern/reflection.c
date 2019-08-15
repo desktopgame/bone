@@ -49,7 +49,7 @@ void bnExtReflectionDefine(bnInterpreter* bone, bnFrame* frame) {
         if (b->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "shoud be `name` is string");
         }
-        g_hash_table_replace(a->table, bnGetStringValue(b), c);
+        bnDefine(a, bnGetStringValue(b), c);
 }
 
 void bnExtReflectionUndef(bnInterpreter* bone, bnFrame* frame) {
@@ -58,9 +58,9 @@ void bnExtReflectionUndef(bnInterpreter* bone, bnFrame* frame) {
         if (b->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "shoud be `name` is string");
         }
-        gboolean removed = g_hash_table_remove(a->table, bnGetStringValue(b));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnGetBool(bone->pool, frame, removed));
+        bool removed = bnUndef(a, bnGetStringValue(b));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnGetBool(bone->pool, frame, removed));
 }
 
 void bnExtReflectionDefined(bnInterpreter* bone, bnFrame* frame) {
@@ -69,10 +69,9 @@ void bnExtReflectionDefined(bnInterpreter* bone, bnFrame* frame) {
         if (b->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "shoud be `name` is string");
         }
-        gboolean contains =
-            g_hash_table_contains(a->table, bnGetStringValue(b));
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnGetBool(bone->pool, frame, contains));
+        bool contains = bnDefined(a, bnGetStringValue(b));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnGetBool(bone->pool, frame, contains));
 }
 
 void bnExtReflectionExpand(bnInterpreter* bone, bnFrame* frame) {
@@ -81,15 +80,12 @@ void bnExtReflectionExpand(bnInterpreter* bone, bnFrame* frame) {
         if (b->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "shoud be `name` is string");
         }
-        gboolean contains =
-            g_hash_table_contains(a->table, bnGetStringValue(b));
-        g_hash_table_replace(frame->variableTable,
-                             bnIntern(bone->pool, "error"),
-                             bnGetBool(bone->pool, frame, !contains));
+        bool contains = bnDefined(a, bnGetStringValue(b));
+        bnWriteVariable2(frame, bone->pool, "error",
+                         bnGetBool(bone->pool, frame, !contains));
         if (contains) {
-                g_hash_table_replace(
-                    frame->variableTable, bnIntern(bone->pool, "ret"),
-                    g_hash_table_lookup(a->table, bnGetStringValue(b)));
+                bnWriteVariable2(frame, bone->pool, "ret",
+                                 bnLookup(a, bnGetStringValue(b)));
         }
 }
 
@@ -106,8 +102,7 @@ void bnExtReflectionEntries(bnInterpreter* bone, bnFrame* frame) {
                 }
                 entries = g_list_append(entries, k);
         }
-        bnObject* arrayFunc = g_hash_table_lookup(
-            frame->variableTable, bnIntern(bone->pool, "array"));
+        bnObject* arrayFunc = bnReadVariable2(frame, bone->pool, "array");
         bnPushStack(frame->vStack, bnNewInteger(bone, g_list_length(entries)));
         bnFrame* sub = bnFuncCall(arrayFunc, bone, frame, 1);
         bnDeleteFrame(sub);
@@ -118,8 +113,7 @@ void bnExtReflectionEntries(bnInterpreter* bone, bnFrame* frame) {
                                     bnNewString(bone, iter->data));
                 iter = iter->next;
         }
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             arrayInst);
+        bnWriteVariable2(frame, bone->pool, "ret", arrayInst);
         g_list_free(entries);
 }
 
@@ -135,6 +129,6 @@ void bnExtReflectionExport(bnInterpreter* bone, bnFrame* frame) {
                         continue;
                 }
                 // view = bnGetExportVariableName(bone->pool, view);
-                g_hash_table_replace(frame->variableTable, view, v);
+                bnWriteVariable(frame, view, v);
         }
 }
