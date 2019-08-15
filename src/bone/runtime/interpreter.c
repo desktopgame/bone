@@ -25,7 +25,6 @@ static void free_gstr(void* v);
 static void load_plugins(bnInterpreter* self, const char* currentdir);
 static void load_plugin(bnInterpreter* self, gchar* path);
 static void unload_plugins(bnInterpreter* self);
-static void unload_plugin(void* handle);
 static bool is_dll(gchar* path);
 
 bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
