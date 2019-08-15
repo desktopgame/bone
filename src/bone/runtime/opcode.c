@@ -44,7 +44,6 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, bnEnviroment* env,
                         break;
                 }
                 case BN_OP_GEN_LAMBDA_BEGIN: {
-                        int line = (int)g_ptr_array_index(ary, ++pos);
                         int parameterLen = (int)g_ptr_array_index(ary, ++pos);
                         pos += parameterLen;
                         int returnLen = (int)g_ptr_array_index(ary, ++pos);
@@ -141,6 +140,10 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, bnEnviroment* env,
                 }
                 case BN_OP_CLEANUP_INJBUF: {
                         fprintf(fp, "cleanup injbuf");
+                        break;
+                }
+                case BN_OP_POP: {
+                        fprintf(fp, "pop");
                         break;
                 }
         }
