@@ -69,6 +69,15 @@ void bnDefine(bnObject* self, bnStringView name, bnObject* value);
 
 /**
  * @param self
+ * @param pool
+ * @param str
+ * @param value
+ */
+void bnDefine2(bnObject* self, struct bnStringPool* pool, const char* str,
+               bnObject* value);
+
+/**
+ * @param self
  * @param name
  * @return
  */

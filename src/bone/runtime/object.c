@@ -60,6 +60,11 @@ void bnDefine(bnObject* self, bnStringView name, bnObject* value) {
         g_hash_table_replace(self->table, GINT_TO_POINTER(v), value);
 }
 
+void bnDefine2(bnObject* self, struct bnStringPool* pool, const char* str,
+               bnObject* value) {
+        bnDefine(self, bnIntern(pool, str), value);
+}
+
 bnObject* bnLookup(bnObject* self, bnStringView name) {
         return (bnObject*)g_hash_table_lookup(self->table, (gpointer)name);
 }
