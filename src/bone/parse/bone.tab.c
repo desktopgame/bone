@@ -1,3 +1,6 @@
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wimplicit-function-declaration"
+#pragma clang diagnostic ignored "-Wunused-function"
 /* A Bison parser, made by GNU Bison 3.0.5.  */
 
 /* Bison implementation for Yacc-like parsers in C
@@ -2327,3 +2330,4 @@ yyreturn:
         return yyresult;
 }
 #line 380 "bone.y" /* yacc.c:1907  */
+#pragma clang diagnostic pop
