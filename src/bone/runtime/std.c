@@ -71,7 +71,7 @@ void bnStdDebugDumpTable(bnInterpreter* bone, bnFrame* frame) {
         g_hash_table_iter_init(&hashIter, frame->variableTable);
         gpointer k, v;
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
-                const char* kStr = (const char*)bnView2Str(bone->pool, k);
+                const char* kStr = bnView2Str(bone->pool, (bnStringView)k);
                 fprintf(stdout, "%s:", kStr);
                 bnPrintObject(stdout, bone, v);
                 fprintf(stdout, "\n");
@@ -86,7 +86,7 @@ static void showInfo(bnInterpreter* bone, bnObject* a, int depth) {
         gpointer k, v;
         g_hash_table_iter_init(&hashIter, a->table);
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
-                const char* strk = bnView2Str(bone->pool, k);
+                const char* strk = bnView2Str(bone->pool, (bnStringView)k);
                 for (int i = 0; i < depth; i++) fprintf(BN_STDOUT, "    ");
                 // bnFindent(BN_STDOUT, depth);
                 fprintf(BN_STDOUT, "%s", strk);
@@ -211,8 +211,7 @@ void bnStdSystemEval(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnStdSystemObject(bnInterpreter* bone, bnFrame* frame) {
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewObject(bone));
+        bnWriteVariable2(frame, bone->pool, "ret", bnNewObject(bone));
 }
 
 void bnStdSystemString(bnInterpreter* bone, bnFrame* frame) {
@@ -231,8 +230,7 @@ void bnStdSystemString(bnInterpreter* bone, bnFrame* frame) {
         }
         bnStringView gview = bnIntern(bone->pool, gbuf->str);
         g_string_free(gbuf, TRUE);
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewString(bone, gview));
+        bnWriteVariable2(frame, bone->pool, "ret", bnNewString(bone, gview));
 }
 
 void bnStdSystemArray(bnInterpreter* bone, bnFrame* frame) {
@@ -240,8 +238,8 @@ void bnStdSystemArray(bnInterpreter* bone, bnFrame* frame) {
         if (a->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, "should be `length` is integer");
         }
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             bnNewArray(bone, bnGetIntegerValue(a)));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnNewArray(bone, bnGetIntegerValue(a)));
 }
 
 void bnStdSystemExternVar(bnInterpreter* bone, bnFrame* frame) {
@@ -249,15 +247,13 @@ void bnStdSystemExternVar(bnInterpreter* bone, bnFrame* frame) {
         if (name->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "should be `name` is string");
         }
-        gpointer v =
-            g_hash_table_lookup(bone->externTable, bnGetStringValue(name));
+        gpointer v = bnReadExtern(bone, bnGetStringValue(name));
         if (v == NULL) {
                 bnFormatThrow(bone, "not bound variable: `%s`",
                               bnView2Str(bone->pool, bnGetStringValue(name)));
         }
         bnObject* obj = v;
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             obj);
+        bnWriteVariable2(frame, bone->pool, "ret", obj);
 }
 
 void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
@@ -274,8 +270,7 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
                 _throw(bone, frame, "should be `returns` is array");
         }
         // find from extern table
-        gpointer v =
-            g_hash_table_lookup(bone->externTable, bnGetStringValue(name));
+        gpointer v = bnReadExtern(bone, bnGetStringValue(name));
         if (v == NULL) {
                 bnFormatThrow(bone, "not bound variable: `%s`",
                               bnView2Str(bone->pool, bnGetStringValue(name)));
@@ -307,8 +302,7 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
         if (!compare_list_array(bnGetReturnValueList(lambda), retuArr)) {
                 bnFormatThrow(bone, "missing return");
         }
-        g_hash_table_replace(frame->variableTable, bnIntern(bone->pool, "ret"),
-                             obj);
+        bnWriteVariable2(frame, bone->pool, "ret", obj);
 }
 
 void bnStdSystemPanic(bnInterpreter* bone, bnFrame* frame) {
@@ -317,14 +311,11 @@ void bnStdSystemPanic(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnStdSystemRecover(bnInterpreter* bone, bnFrame* frame) {
-        g_hash_table_replace(
-            frame->variableTable, bnIntern(bone->pool, "ret"),
-            g_hash_table_lookup(frame->variableTable,
-                                bnIntern(bone->pool, "false")));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnReadVariable2(frame, bone->pool, "false"));
+
         if (frame->prev->panic != NULL) {
-                g_hash_table_replace(frame->variableTable,
-                                     bnIntern(bone->pool, "ret"),
-                                     frame->prev->panic);
+                bnWriteVariable2(frame, bone->pool, "ret", frame->prev->panic);
                 frame->prev->panic = NULL;
                 g_string_free(bnPopStack(bone->callStack), TRUE);
         }
