@@ -46,7 +46,8 @@ GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
         iter = bnGetReturnValueList(lambda);
         bnGStringAppendC(gbuf, '(');
         while (iter != NULL) {
-                g_string_append(gbuf, bnView2Str(bone->pool, iter->data));
+                g_string_append(
+                    gbuf, bnView2Str(bone->pool, (bnStringView)iter->data));
                 iter = iter->next;
                 if (iter != NULL) {
                         bnGStringAppendC(gbuf, ' ');
@@ -75,7 +76,7 @@ struct bnObject* bnCreateLambdaInActiveCode(bnInterpreter* bone,
         }
         // length of named return
         int namedReturnLen = bnReadCode(env, ++(*pPC));
-        g_ptr_array_add(bnGetEnviroment(lmb)->codeArray, BN_OP_NOP);
+        bnWriteCode(bnGetEnviroment(lmb), BN_OP_NOP);
         for (int i = 0; i < namedReturnLen; i++) {
                 bnAddReturnValue(lmb,
                                  g_ptr_array_index(env->codeArray, ++(*pPC)));
@@ -200,7 +201,6 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         }
                         case BN_OP_SWAP: {
                                 void* a = bnPopStack(frame->vStack);
-                                bnObject* obj = a;
                                 void* b = bnPopStack(frame->vStack);
                                 bnPushStack(frame->vStack, a);
                                 bnPushStack(frame->vStack, b);
