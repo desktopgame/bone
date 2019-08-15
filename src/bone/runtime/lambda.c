@@ -142,7 +142,7 @@ bnLambdaType bnGetLambdaType(bnObject* obj) { return ((bnLambda*)obj)->type; }
 
 static void free_lambda(bnObject* obj) {
         obj->freeFunc = NULL;
-        bnLambda* lmb = obj;
+        bnLambda* lmb = (bnLambda*)obj;
         g_hash_table_destroy(lmb->outer);
         g_list_free(lmb->parameters);
         g_list_free(lmb->returns);
