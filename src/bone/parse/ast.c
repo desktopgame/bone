@@ -22,7 +22,9 @@ void bnCleanAST(bool error) {
         GList* iter = gAllAST;
         while (iter != NULL) {
                 bnAST* a = iter->data;
-                g_ptr_array_free(a->children, FALSE);
+                if (a->children != NULL) {
+                        g_ptr_array_free(a->children, FALSE);
+                }
                 BN_FREE(a);
                 iter = iter->next;
         }
