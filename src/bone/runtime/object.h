@@ -96,7 +96,7 @@ bnObject* bnLookup2(bnObject* self, struct bnStringPool* pool, const char* str);
  * @param name
  * @return
  */
-bnObject* bnUndef(bnObject* self, bnStringView name);
+bool bnUndef(bnObject* self, bnStringView name);
 
 /**
  * @param self
@@ -104,7 +104,7 @@ bnObject* bnUndef(bnObject* self, bnStringView name);
  * @param str
  * @return
  */
-bnObject* bnUndef2(bnObject* self, struct bnStringPool* pool, const char* str);
+bool bnUndef2(bnObject* self, struct bnStringPool* pool, const char* str);
 
 /**
  * bnFuncCall is run a `self` as function pointer.
