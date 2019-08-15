@@ -7,6 +7,7 @@
 #include "array.h"
 #include "bool.h"
 #include "enviroment.h"
+#include "extern/dir.h"
 #include "extern/file.h"
 #include "extern/reflection.h"
 #include "extern/system.h"
@@ -44,8 +45,11 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
         ret->callStack = bnNewStack();
         if (ret->argc > 1) {
                 for (int i = 0; i < ret->argc; i++) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
                         g_ptr_array_add(ret->argv,
-                                        bnIntern(ret->pool, argv[i]));
+                                        (gpointer)bnIntern(ret->pool, argv[i]));
+#pragma clang diagnostic pop
                 }
         }
 #if DEBUG
@@ -151,7 +155,8 @@ void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
         for (int i = 2; i < self->argc; i++) {
                 bnSetArrayElementAt(
                     argv, i - 2,
-                    bnNewString(self, g_ptr_array_index(self->argv, i)));
+                    bnNewString(
+                        self, (bnStringView)g_ptr_array_index(self->argv, i)));
         }
         bnWriteVariable2(frame, pool, "argv", argv);
         bnWriteVariable2(
@@ -234,17 +239,18 @@ bnObject* bnGetBool(struct bnStringPool* pool, bnFrame* frame, bool cond) {
 }
 
 bnObject* bnGetTrue(struct bnStringPool* pool, bnFrame* frame) {
-        return g_hash_table_lookup(frame->variableTable,
-                                   bnIntern(pool, "true"));
+        return bnReadVariable2(frame, pool, "true");
 }
 
 bnObject* bnGetFalse(struct bnStringPool* pool, bnFrame* frame) {
-        return g_hash_table_lookup(frame->variableTable,
-                                   bnIntern(pool, "false"));
+        return bnReadVariable2(frame, pool, "false");
 }
 
 void bnWriteExtern(bnInterpreter* self, bnStringView name, bnObject* obj) {
-        g_hash_table_replace(self->externTable, name, (gpointer)obj);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+        g_hash_table_replace(self->externTable, (gpointer)name, (gpointer)obj);
+#pragma clang diagnostic pop
 }
 
 void bnWriteExtern2(bnInterpreter* self, const char* str, bnObject* obj) {
@@ -252,7 +258,10 @@ void bnWriteExtern2(bnInterpreter* self, const char* str, bnObject* obj) {
 }
 
 bnObject* bnReadExtern(bnInterpreter* self, bnStringView name) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
         return g_hash_table_lookup(self->externTable, (gpointer)name);
+#pragma clang diagnostic pop
 }
 
 bnObject* bnReadExtern2(bnInterpreter* self, const char* str) {
