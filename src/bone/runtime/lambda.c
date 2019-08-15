@@ -32,16 +32,18 @@ bnObject* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
         ret->lineno = -1;
         ret->outer =
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
-        return ret;
+        return (bnObject*)ret;
 }
 
 bnObject* bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
                                    bnNativeFunc func, struct bnStringPool* pool,
                                    const char* filename, int lineno, ...) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
         va_list ap;
         va_start(ap, lineno);
-        bnLambda* ret =
-            bnNewLambdaFunc(bone, BN_LAMBDA_NATIVE, filename, lineno);
+        bnLambda* ret = (bnLambda*)bnNewLambdaFunc(bone, BN_LAMBDA_NATIVE,
+                                                   filename, lineno);
         ret->u.vFunc = func;
         ret->filename = bnIntern(bone->pool, filename);
         ret->lineno = lineno;
@@ -53,33 +55,42 @@ bnObject* bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
                 if (val == BN_C_ADD_PARAM) {
                         const char* name = va_arg(ap, const char*);
                         bnStringView view = bnIntern(pool, name);
-                        ret->parameters = g_list_append(ret->parameters, view);
+                        ret->parameters =
+                            g_list_append(ret->parameters, (gpointer)view);
                 } else if (val == BN_C_ADD_RETURN) {
                         const char* name = va_arg(ap, const char*);
                         bnStringView view = bnIntern(pool, name);
-                        ret->returns = g_list_append(ret->returns, view);
+                        ret->returns =
+                            g_list_append(ret->returns, (gpointer)view);
                 }
         }
 
         va_end(ap);
-        return ret;
+#pragma clang diagnostic pop
+        return (bnObject*)ret;
 }
 
 bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnObject* self) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
         bnLambda* lmb = (bnLambda*)self;
         if (g_list_length(lmb->parameters) > 0 &&
-            lmb->parameters->data == bnIntern(pool, "self")) {
+            (bnStringView)lmb->parameters->data == bnIntern(pool, "self")) {
                 return true;
         }
+#pragma clang diagnostic pop
         return false;
 }
 
 bool bnIsVariadicReturn(struct bnStringPool* pool, bnObject* self) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
         bnLambda* lmb = (bnLambda*)self;
         if (g_list_length(lmb->returns) > 0 &&
-            lmb->returns->data == bnIntern(pool, "...")) {
+            (bnStringView)lmb->returns->data == bnIntern(pool, "...")) {
                 return true;
         }
+#pragma clang diagnostic pop
         return false;
 }
 
@@ -135,7 +146,7 @@ static void free_lambda(bnObject* obj) {
         g_hash_table_destroy(lmb->outer);
         g_list_free(lmb->parameters);
         g_list_free(lmb->returns);
-        if (bnGetLambdaType(lmb) == BN_LAMBDA_SCRIPT) {
+        if (bnGetLambdaType((bnObject*)lmb) == BN_LAMBDA_SCRIPT) {
                 bnDeleteEnviroment(lmb->u.vEnv);
         }
         bnDeleteObject(obj);
