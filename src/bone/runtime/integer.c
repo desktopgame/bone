@@ -9,7 +9,6 @@
 
 // Integer
 static void bnStdIntegerNegative(bnInterpreter* bone, bnFrame* frame);
-static void bnStdIntegerNot(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerPlus(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerMinus(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerMultiply(bnInterpreter* bone, bnFrame* frame);
@@ -128,14 +127,6 @@ static void bnStdIntegerNegative(bnInterpreter* bone, bnFrame* frame) {
         }
         int ai = ((bnInteger*)a)->value;
         bnWriteVariable2(frame, bone->pool, "ret", bnNewInteger(bone, -ai));
-}
-
-static void bnStdIntegerChilda(bnInterpreter* bone, bnFrame* frame) {
-        _throw(bone, frame, "internal error");
-}
-
-static void bnStdIntegerNot(bnInterpreter* bone, bnFrame* frame) {
-        _throw(bone, frame, "internal error");
 }
 
 static void bnStdIntegerPlus(bnInterpreter* bone, bnFrame* frame) {
