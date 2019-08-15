@@ -40,7 +40,7 @@ void* bnGetSymbol(bnModule* self, const char* name) {
         sprintf(funcName, "%s_%s", base, name);
         void* sym = NULL;
 #if HAVE_DLFCN
-        unsigned char* ptr = funcName;
+        char* ptr = funcName;
         if (g_str_has_prefix(funcName, "lib")) {
                 ptr = ptr + (sizeof(char) * 3);
         }
