@@ -6,6 +6,7 @@
 #include "lambda.h"
 #include "object.h"
 #include "snapshot.h"
+#include "storage.h"
 typedef struct stage {
         GPtrArray* objects;
 } stage;
@@ -13,6 +14,7 @@ typedef struct stage {
 typedef struct bnHeap {
         GPtrArray* objects;
         bnStack* stages;
+        bnStorage* storage;
         int all;
         GRecMutex mutex;
 } bnHeap;
@@ -34,8 +36,16 @@ bnHeap* bnNewHeap() {
         ret->objects = g_ptr_array_new_full(2, NULL);
         ret->stages = bnNewStack();
         ret->all = 0;
+        ret->storage = bnNewStorage();
         g_rec_mutex_init(&ret->mutex);
         return ret;
+}
+void* bnAllocObject(bnHeap* self) {
+        return (bnObject*)bnAllocMemory(self->storage);
+}
+
+void bnFreeObject(bnHeap* self, bnObject* obj) {
+        bnFreeMemory(self->storage, obj);
 }
 
 void bnAddToHeap(bnHeap* self, bnObject* obj) {
@@ -74,6 +84,7 @@ void bnDeleteHeap(bnHeap* self) {
         g_rec_mutex_lock(&self->mutex);
         g_ptr_array_free(self->objects, TRUE);
         bnDeleteStack(self->stages, NULL);
+        bnDeleteStorage(self->storage);
         BN_FREE(self);
         g_rec_mutex_unlock(&self->mutex);
 }
@@ -193,7 +204,7 @@ static void gc_sweep(bnHeap* self, bnFrame* frame) {
                         g_ptr_array_add(ret, a);
                 } else {
                         sweep++;
-                        bnDeleteObject(a);
+                        bnDeleteObject(self->storage, a);
                 }
         }
         g_ptr_array_free(self->objects, TRUE);

@@ -4,6 +4,7 @@
 #include "bool.h"
 #include "enviroment.h"
 #include "frame.h"
+#include "heap.h"
 #include "integer.h"
 #include "interpreter.h"
 #include "keyword.h"
@@ -34,7 +35,7 @@ typedef struct bnDouble {
 } bnDouble;
 
 bnObject* bnNewDouble(bnInterpreter* bone, double value) {
-        bnDouble* ret = BN_MALLOC(sizeof(bnDouble));
+        bnDouble* ret = bnAllocObject(bone->heap);
         bnInitObject(bone, &ret->base, BN_OBJECT_DOUBLE);
         ret->value = value;
 

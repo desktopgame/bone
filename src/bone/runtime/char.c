@@ -1,5 +1,6 @@
 #include "char.h"
 #include "frame.h"
+#include "heap.h"
 #include "interpreter.h"
 #include "keyword.h"
 #include "lambda.h"
@@ -18,7 +19,7 @@ typedef struct bnChar {
 } bnChar;
 
 bnObject* bnNewChar(bnInterpreter* bone, char value) {
-        bnChar* ret = BN_MALLOC(sizeof(bnChar));
+        bnChar* ret = bnAllocObject(bone->heap);
         bnInitObject(bone, &ret->base, BN_OBJECT_CHAR);
         ret->value = value;
         bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_EQUAL),

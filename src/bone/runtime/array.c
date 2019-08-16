@@ -1,16 +1,18 @@
 #include "array.h"
 #include "char.h"
 #include "frame.h"
+#include "heap.h"
 #include "integer.h"
 #include "interpreter.h"
 #include "keyword.h"
 #include "lambda.h"
+#include "storage.h"
 
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
 
 static void bnStdArrayArraySet(bnInterpreter* bone, bnFrame* frame);
 static void bnStdArrayArrayGet(bnInterpreter* bone, bnFrame* frame);
-static void free_array(bnObject* obj);
+static void free_array(bnStorage* storage, bnObject* obj);
 /**
  * bnArray is array.
  */
@@ -21,7 +23,7 @@ typedef struct bnArray {
 } bnArray;
 
 bnObject* bnNewArray(bnInterpreter* bone, int size) {
-        bnArray* ret = BN_MALLOC(sizeof(bnArray));
+        bnArray* ret = bnAllocObject(bone->heap);
         bnInitObject(bone, &ret->base, BN_OBJECT_ARRAY);
         ret->base.freeFunc = free_array;
         ret->arr = g_ptr_array_new();
@@ -101,9 +103,9 @@ static void bnStdArrayArrayGet(bnInterpreter* bone, bnFrame* frame) {
                          g_ptr_array_index(arr->arr, bnGetIntegerValue(b)));
 }
 
-static void free_array(bnObject* obj) {
+static void free_array(bnStorage* storage, bnObject* obj) {
         obj->freeFunc = NULL;
         bnArray* arr = (bnArray*)obj;
         g_ptr_array_unref(arr->arr);
-        bnDeleteObject(obj);
+        bnDeleteObject(storage, obj);
 }

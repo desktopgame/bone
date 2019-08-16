@@ -1,5 +1,6 @@
 #include "bool.h"
 #include "frame.h"
+#include "heap.h"
 #include "integer.h"
 #include "interpreter.h"
 #include "keyword.h"
@@ -22,7 +23,7 @@ typedef struct bnBool {
 } bnBool;
 
 bnObject* bnNewBool(bnInterpreter* bone, bool value) {
-        bnBool* ret = BN_MALLOC(sizeof(bnBool));
+        bnBool* ret = bnAllocObject(bone->heap);
         bnInitObject(bone, &ret->base, BN_OBJECT_BOOL);
         ret->value = value;
         ret->r = NULL;

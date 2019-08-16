@@ -1,6 +1,7 @@
 #include "string.h"
 #include "char.h"
 #include "frame.h"
+#include "heap.h"
 #include "integer.h"
 #include "keyword.h"
 #include "lambda.h"
@@ -21,7 +22,7 @@ typedef struct bnString {
 } bnString;
 
 bnObject* bnNewString(bnInterpreter* bone, bnStringView value) {
-        bnString* ret = BN_MALLOC(sizeof(bnString));
+        bnString* ret = bnAllocObject(bone->heap);
         bnInitObject(bone, &ret->base, BN_OBJECT_STRING);
         ret->value = value;
         bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_EQUAL),

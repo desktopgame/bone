@@ -14,6 +14,18 @@ struct bnHeap* bnNewHeap();
 
 /**
  * @param self
+ * @return
+ */
+void* bnAllocObject(struct bnHeap* self);
+
+/**
+ * @parram self
+ * @param obj
+ */
+void bnFreeObject(struct bnHeap* self, struct bnObject* obj);
+
+/**
+ * @param self
  * @param obj
  */
 void bnAddToHeap(struct bnHeap* self, struct bnObject* obj);

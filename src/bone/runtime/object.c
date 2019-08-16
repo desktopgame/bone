@@ -13,6 +13,7 @@
 #include "lambda.h"
 #include "object.h"
 #include "std.h"
+#include "storage.h"
 #include "string.h"
 #include "vm.h"
 
@@ -28,6 +29,7 @@ void bnInitObject(bnInterpreter* bone, bnObject* self, bnObjectType type) {
         self->mark = false;
         self->type = type;
         self->freeFunc = NULL;
+        self->freed = false;
         bnAddToHeap(bone->heap, self);
 }
 
@@ -49,7 +51,7 @@ void bnIncludeKernel(bnInterpreter* bone, bnObject* self) {
 }
 
 bnObject* bnNewObject(bnInterpreter* bone) {
-        bnObject* ret = BN_MALLOC(sizeof(bnObject));
+        bnObject* ret = bnAllocObject(bone->heap);
         bnInitObject(bone, ret, BN_OBJECT_PROTO);
         bnIncludeKernel(bone, ret);
         return ret;
@@ -248,13 +250,13 @@ bnStringView bnGetExportVariableName(struct bnStringPool* pool,
         return bnIntern(pool, buf);
 }
 
-void bnDeleteObject(bnObject* self) {
+void bnDeleteObject(bnStorage* storage, bnObject* self) {
         if (self->freeFunc != NULL) {
                 assert(self->freeFunc != NULL);
-                self->freeFunc(self);
+                self->freeFunc(storage, self);
         } else {
                 g_hash_table_destroy(self->table);
-                BN_FREE(self);
+                bnFreeMemory(storage, self);
         }
 }
 // Object

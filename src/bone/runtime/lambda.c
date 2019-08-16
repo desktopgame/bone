@@ -1,7 +1,8 @@
 #include "lambda.h"
 #include "interpreter.h"
+#include "storage.h"
 
-static void free_lambda(bnObject* obj);
+static void free_lambda(bnStorage* storage, bnObject* obj);
 
 /**
  * bnLambda is function pointer in bone.
@@ -140,7 +141,7 @@ int bnGetLambdaLineNumber(bnObject* obj) { return ((bnLambda*)obj)->lineno; }
 
 bnLambdaType bnGetLambdaType(bnObject* obj) { return ((bnLambda*)obj)->type; }
 
-static void free_lambda(bnObject* obj) {
+static void free_lambda(bnStorage* storage, bnObject* obj) {
         obj->freeFunc = NULL;
         bnLambda* lmb = (bnLambda*)obj;
         g_hash_table_destroy(lmb->outer);
@@ -149,5 +150,5 @@ static void free_lambda(bnObject* obj) {
         if (bnGetLambdaType((bnObject*)lmb) == BN_LAMBDA_SCRIPT) {
                 bnDeleteEnviroment(lmb->u.vEnv);
         }
-        bnDeleteObject(obj);
+        bnDeleteObject(storage, obj);
 }

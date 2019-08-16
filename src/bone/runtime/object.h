@@ -6,10 +6,12 @@ struct bnInterpreter;
 struct bnFrame;
 struct bnHeap;
 struct bnObject;
+struct bnStorage;
 /**
  * bnFreeObjectFunc is for free a object.
  */
-typedef void (*bnFreeObjectFunc)(struct bnObject* self);
+typedef void (*bnFreeObjectFunc)(struct bnStorage* storage,
+                                 struct bnObject* self);
 
 /**
  * bnObjectType is type of object.
@@ -32,6 +34,7 @@ typedef enum bnObjectType {
 typedef struct bnObject {
         GHashTable* table;
         bool mark;
+        bool freed;
         bnObjectType type;
         bnFreeObjectFunc freeFunc;
 } bnObject;
@@ -156,8 +159,9 @@ bnStringView bnGetExportVariableName(struct bnStringPool* pool,
 
 /**
  * return new instance of bnObject.
- * @param name
+ * @param storage
+ * @param self
  * @return
  */
-void bnDeleteObject(bnObject* self);
+void bnDeleteObject(struct bnStorage* storage, bnObject* self);
 #endif

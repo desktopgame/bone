@@ -1,5 +1,6 @@
 #include "integer.h"
 #include "frame.h"
+#include "heap.h"
 #include "keyword.h"
 #include "lambda.h"
 #include "string.h"
@@ -34,7 +35,7 @@ typedef struct bnInteger {
 } bnInteger;
 
 bnObject* bnNewInteger(bnInterpreter* bone, int value) {
-        bnInteger* ret = BN_MALLOC(sizeof(bnInteger));
+        bnInteger* ret = bnAllocObject(bone->heap);
         bnInitObject(bone, &ret->base, BN_OBJECT_INTEGER);
         ret->value = value;
         bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_PLUS),
