@@ -12,7 +12,6 @@ typedef struct stage {
 } stage;
 
 typedef struct bnHeap {
-        GPtrArray* objects;
         bnStack* stages;
         bnStorage* storage;
         int all;
@@ -33,7 +32,6 @@ static void delete_stage(stage* self);
 
 bnHeap* bnNewHeap() {
         bnHeap* ret = BN_MALLOC(sizeof(bnHeap));
-        ret->objects = g_ptr_array_new_full(2, NULL);
         ret->stages = bnNewStack();
         ret->all = 0;
         ret->storage = bnNewStorage();
@@ -46,13 +44,6 @@ void* bnAllocObject(bnHeap* self) {
 
 void bnFreeObject(bnHeap* self, bnObject* obj) {
         bnFreeMemory(self->storage, obj);
-}
-
-void bnAddToHeap(bnHeap* self, bnObject* obj) {
-        g_rec_mutex_lock(&self->mutex);
-        g_ptr_array_add(self->objects, obj);
-        self->all++;
-        g_rec_mutex_unlock(&self->mutex);
 }
 
 void bnPushStage(bnHeap* self) { bnPushStack(self->stages, new_stage()); }
@@ -82,7 +73,6 @@ void bnGC(bnInterpreter* bone) {
 
 void bnDeleteHeap(bnHeap* self) {
         g_rec_mutex_lock(&self->mutex);
-        g_ptr_array_free(self->objects, TRUE);
         bnDeleteStack(self->stages, NULL);
         bnDeleteStorage(self->storage);
         BN_FREE(self);
@@ -90,9 +80,15 @@ void bnDeleteHeap(bnHeap* self) {
 }
 
 static void gc_clear(bnHeap* self, bnFrame* frame) {
-        for (int i = 0; i < self->objects->len; i++) {
-                bnObject* obj = g_ptr_array_index(self->objects, i);
-                obj->mark = false;
+        bnStorage* iter = self->storage;
+        while (iter != NULL) {
+                for (int i = 0; i < OBJECT_COUNT; i++) {
+                        bnObject* obj = iter->pool + (OBJECT_MAXSIZE * i);
+                        if (!obj->freed) {
+                                obj->mark = false;
+                        }
+                }
+                iter = iter->next;
         }
 }
 
@@ -196,6 +192,7 @@ static void gc_mark_lambda(bnObject* lambda) {
 }
 
 static void gc_sweep(bnHeap* self, bnFrame* frame) {
+        /*
         GPtrArray* ret = g_ptr_array_new_full(2, NULL);
         int sweep = 0;
         for (int i = 0; i < self->objects->len; i++) {
@@ -208,8 +205,9 @@ static void gc_sweep(bnHeap* self, bnFrame* frame) {
                 }
         }
         g_ptr_array_free(self->objects, TRUE);
-        self->objects = ret;
-        self->all -= sweep;
+        */
+        // self->objects = ret;
+        // self->all -= sweep;
 }
 static stage* new_stage() {
         stage* ret = BN_MALLOC(sizeof(stage));

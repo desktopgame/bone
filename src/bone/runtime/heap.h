@@ -25,12 +25,6 @@ void* bnAllocObject(struct bnHeap* self);
 void bnFreeObject(struct bnHeap* self, struct bnObject* obj);
 
 /**
- * @param self
- * @param obj
- */
-void bnAddToHeap(struct bnHeap* self, struct bnObject* obj);
-
-/**
  * bnPushStage is push new stage.
  * bnStaging is will record objects to created last stage by this function.
  * @param self

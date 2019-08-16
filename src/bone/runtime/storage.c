@@ -4,6 +4,7 @@
 #include "object.h"
 
 static bnObject* find_free_object(bnStorage* self);
+static bnStorage* append_storage(bnStorage* self);
 
 bnStorage* bnNewStorage() {
         bnStorage* ret = BN_MALLOC(sizeof(bnStorage));
@@ -19,9 +20,7 @@ bnStorage* bnNewStorage() {
 void* bnAllocMemory(bnStorage* self) {
         bnObject* ret = find_free_object(self);
         if (ret == NULL) {
-                bnStorage* storage = bnNewStorage();
-                self->next = storage;
-                return bnAllocMemory(storage);
+                return bnAllocMemory(append_storage(self));
         }
         ret->freed = false;
         return ret;
@@ -53,4 +52,14 @@ static bnObject* find_free_object(bnStorage* self) {
                 iter = iter->next;
         }
         return NULL;
+}
+
+static bnStorage* append_storage(bnStorage* self) {
+        if (self->next == NULL) {
+                bnStorage* storage = bnNewStorage();
+                self->next = storage;
+                return storage;
+        } else {
+                return append_storage(self->next);
+        }
 }

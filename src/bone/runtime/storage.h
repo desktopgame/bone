@@ -7,7 +7,7 @@ typedef struct bnStorage {
 } bnStorage;
 
 #define OBJECT_MAXSIZE (48)
-#define OBJECT_COUNT (100)
+#define OBJECT_COUNT (256)
 
 bnStorage* bnNewStorage();
 

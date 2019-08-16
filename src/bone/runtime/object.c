@@ -30,7 +30,7 @@ void bnInitObject(bnInterpreter* bone, bnObject* self, bnObjectType type) {
         self->type = type;
         self->freeFunc = NULL;
         self->freed = false;
-        bnAddToHeap(bone->heap, self);
+        // bnAddToHeap(bone->heap, self);
 }
 
 void bnIncludeKernel(bnInterpreter* bone, bnObject* self) {
