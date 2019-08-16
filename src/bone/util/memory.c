@@ -171,7 +171,8 @@ void bnDumpMemoryLeaks(FILE* fp) {
         fprintf(fp, "memory leaks: %d\n", items);
 #endif
 }
-
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
 static bnMemInfo* new_mem_info(size_t size, const char* filename, int lineno) {
         bnMemInfo* ret = bnSafeMalloc(sizeof(bnMemInfo));
         char* data = bnSafeMalloc(fixed_size(size));
@@ -206,3 +207,4 @@ static bnMemInfo* find_info(void* block) {
         }
         return NULL;
 }
+#pragma clang diagnostic pop
