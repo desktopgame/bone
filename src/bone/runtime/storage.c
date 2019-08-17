@@ -46,11 +46,8 @@ void* bnGetMemory(bnStorage* self, bnReference index) {
         if (gd > 0) {
                 bnReference vref =
                     bnGetReferenceFromGlobalStorageIndex(self, gd);
-                int i2;
-                bnStorage* str2 = bnGetStorage(self, vref, &i2);
-                bnObject* obj2 =
-                    (bnObject*)(str2->pool + (OBJECT_MAXSIZE * i2));
-                printf("gd:%d:%p:%p\n", gd, vref, obj2);
+                void* mem = bnGetMemory(self, vref);
+                assert(memcmp(mem, index, OBJECT_MAXSIZE));
         }
 #endif
         int i;
