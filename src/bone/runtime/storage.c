@@ -23,13 +23,13 @@ bnStorage* bnNewStorage(int offset) {
         for (int i = 0; i < OBJECT_COUNT; i++) {
                 bnObject* obj = ret->pool + (OBJECT_MAXSIZE * i);
                 obj->freed = true;
-                ret->map[i] = i;
+                ret->map[i] = offset + i;
         }
         return ret;
 }
 
 int* bnAllocMemory(bnStorage* self) {
-        bnObject* ret = use_free_object(self);
+        int* ret = use_free_object(self);
         if (ret == NULL) {
                 return bnAllocMemory(append_storage(self));
         }

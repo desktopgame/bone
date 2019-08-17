@@ -38,13 +38,13 @@ bnHeap* bnNewHeap() {
         g_rec_mutex_init(&ret->mutex);
         return ret;
 }
-void* bnAllocObject(bnHeap* self) {
-        return (bnObject*)bnAllocMemory(self->storage);
+int* bnAllocObject(bnHeap* self) { return bnAllocMemory(self->storage); }
+
+void* bnGetObject(struct bnHeap* self, int* obj) {
+        return bnGetMemory(self->storage, obj);
 }
 
-void bnFreeObject(bnHeap* self, bnObject* obj) {
-        bnFreeMemory(self->storage, obj);
-}
+void bnFreeObject(bnHeap* self, int* obj) { bnFreeMemory(self->storage, obj); }
 
 void bnPushStage(bnHeap* self) { bnPushStack(self->stages, new_stage()); }
 
