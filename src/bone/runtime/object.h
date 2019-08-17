@@ -49,13 +49,6 @@ void bnInitObject(struct bnInterpreter* bone, bnObject* self,
                   bnObjectType type);
 
 /**
- * include a kernel member, into self.
- * @param bonen
- * @param self
- */
-void bnIncludeKernel(struct bnInterpreter* bone, bnObject* self);
-
-/**
  * return new instance of bnObject.
  * @param bone
  * @return

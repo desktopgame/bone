@@ -33,28 +33,27 @@ void bnInitObject(bnInterpreter* bone, bnObject* self, bnObjectType type) {
         // bnAddToHeap(bone->heap, self);
 }
 
-void bnIncludeKernel(bnInterpreter* bone, bnObject* self) {
-        bnDefine(self, bnIntern(bone->pool, BN_KWD_EQUAL),
-                 bnNewLambdaFromCFunc(bone, bnStdObjectEqual, bone->pool,
-                                      BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
-                                      "other", BN_C_ADD_RETURN, "ret",
-                                      BN_C_ADD_EXIT));
-        bnDefine(self, bnIntern(bone->pool, BN_KWD_NOTEQUAL),
-                 bnNewLambdaFromCFunc(bone, bnStdObjectNotEqual, bone->pool,
-                                      BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
-                                      "other", BN_C_ADD_RETURN, "ret",
-                                      BN_C_ADD_EXIT));
-        bnDefine(self, bnIntern(bone->pool, "toString"),
-                 bnNewLambdaFromCFunc(bone, bnStdObjectToString, bone->pool,
-                                      BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN,
-                                      "ret", BN_C_ADD_EXIT));
-}
-
 bnReference bnNewObject(bnInterpreter* bone) {
         bnReference ref = bnAllocObject(bone->heap);
         bnObject* ret = bnGetObject(bone->heap, ref);
         bnInitObject(bone, ret, BN_OBJECT_PROTO);
-        bnIncludeKernel(bone, ret);
+
+        bnDefine(bnGetObject(bone->heap, ref),
+                 bnIntern(bone->pool, BN_KWD_EQUAL),
+                 bnNewLambdaFromCFunc(bone, bnStdObjectEqual, bone->pool,
+                                      BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
+                                      "other", BN_C_ADD_RETURN, "ret",
+                                      BN_C_ADD_EXIT));
+        bnDefine(bnGetObject(bone->heap, ref),
+                 bnIntern(bone->pool, BN_KWD_NOTEQUAL),
+                 bnNewLambdaFromCFunc(bone, bnStdObjectNotEqual, bone->pool,
+                                      BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
+                                      "other", BN_C_ADD_RETURN, "ret",
+                                      BN_C_ADD_EXIT));
+        bnDefine(bnGetObject(bone->heap, ref), bnIntern(bone->pool, "toString"),
+                 bnNewLambdaFromCFunc(bone, bnStdObjectToString, bone->pool,
+                                      BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN,
+                                      "ret", BN_C_ADD_EXIT));
         return ref;
 }
 
