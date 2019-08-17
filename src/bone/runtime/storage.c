@@ -42,7 +42,7 @@ void bnFreeMemory(bnStorage* self, bnReference index) {
 
 void* bnGetMemory(bnStorage* self, bnReference index) {
 #if DEBUG
-        int gd = bnGetGlobalStorageIndex(self, index);
+        int gd = bnGetGlobalStorageIndexFromPointer(self, index);
         printf("gd:%d\n", gd);
 #endif
         int i;
@@ -62,7 +62,7 @@ bnStorage* bnGetStorage(bnStorage* self, bnReference index, int* outFixedPos) {
         return iter;
 }
 
-int bnGetGlobalStorageIndex(bnStorage* self, void* ptr) {
+int bnGetGlobalStorageIndexFromPointer(bnStorage* self, void* ptr) {
         bnStorage* iter = self;
         int ret = -1;
         while (iter != NULL && ret == -1) {
