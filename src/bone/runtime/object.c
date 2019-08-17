@@ -150,6 +150,10 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
                 }
                 int code = BN_JMP_PUSH(bone->__jstack);
                 if (code == 0) {
+                        const char* fn =
+                            bnView2Str(bone->pool, bnGetLambdaFileName(lambda));
+                        int line = bnGetLambdaLineNumber(lambda);
+                        printf("fn: %s<%d>\n", fn, line);
                         bnGetNativeFunc(lambda)(bone, sub);
                         if (sub->panic != NULL) {
                                 frame->panic = sub->panic;
@@ -179,8 +183,9 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
                 bnPushStack(frame->vStack, arrRef);
         } else if (g_list_length(bnGetReturnValueList(lambda)) > 0) {
                 // assert(lambda->returns->data != NULL);
-                bnObject* body = g_hash_table_lookup(
-                    sub->variableTable, bnGetReturnValueList(lambda)->data);
+                bnReference bodyRef = bnReadVariable(
+                    sub, (bnStringView)bnGetReturnValueList(lambda)->data);
+                bnObject* body = bnGetObject(bone->heap, bodyRef);
                 assert(body != NULL);
                 GList* iter = bnGetReturnValueList(lambda);
                 while (iter != NULL) {
@@ -192,7 +197,7 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
                                  bnReadVariable(sub, (bnStringView)iter->data));
                         iter = iter->next;
                 }
-                bnPushStack(frame->vStack, body);
+                bnPushStack(frame->vStack, bodyRef);
         }
         return sub;
 }
@@ -300,19 +305,19 @@ static void to_string(bnInterpreter* bone, GString* str, bnObject* root,
                 bnObject* ary = root;
                 for (int n = 0; n < bnGetArrayLength(ary); n++) {
                         bnReference ref = bnGetArrayElementAt(ary, n);
-                        bnObject* v = bnGetObject(bone->heap, ref);
+                        bnObject* val = bnGetObject(bone->heap, ref);
 
                         for (int i = 0; i < depth; i++) {
                                 g_string_append(str, "    ");
                         }
                         g_string_append_printf(str, "[%d]\n", n);
-                        to_string(bone, str, v, depth + 1);
+                        to_string(bone, str, val, depth + 1);
                 }
         }
 }
 
 static void bnStdObjectToString(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         GString* str = g_string_new("ROOT\n");
         to_string(bone, str, a, 1);
         bnWriteVariable2(frame, bone->pool, "ret",

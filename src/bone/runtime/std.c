@@ -111,7 +111,7 @@ void bnStdDebugShowInfo(bnInterpreter* bone, bnFrame* frame) {
 
 void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
         BN_CHECK_MEM();
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "should be path is string");
         }
@@ -141,7 +141,7 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
 
 void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
         BN_CHECK_MEM();
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "should be path is string");
         }
@@ -186,7 +186,7 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnStdSystemEval(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "should be path is string");
         }
@@ -216,7 +216,7 @@ void bnStdSystemObject(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnStdSystemString(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_ARRAY) {
                 bnFormatThrow(bone, "should be `array` is array");
         }
@@ -236,7 +236,7 @@ void bnStdSystemString(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnStdSystemArray(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, "should be `length` is integer");
         }
@@ -245,7 +245,7 @@ void bnStdSystemArray(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnStdSystemExternVar(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* name = bnPopStack(frame->vStack);
+        bnObject* name = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (name->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "should be `name` is string");
         }
@@ -258,9 +258,9 @@ void bnStdSystemExternVar(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* name = bnPopStack(frame->vStack);
-        bnObject* params = bnPopStack(frame->vStack);
-        bnObject* returns = bnPopStack(frame->vStack);
+        bnObject* name = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* params = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* returns = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (name->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "should be `name` is string");
         }

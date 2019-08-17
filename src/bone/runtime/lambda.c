@@ -108,7 +108,9 @@ bnEnviroment* bnGetEnviroment(bnObject* obj) {
 }
 
 bnNativeFunc bnGetNativeFunc(bnObject* obj) {
-        return ((bnLambda*)obj)->u.vFunc;
+        bnLambda* lambda = ((bnLambda*)obj);
+        bnNativeFunc nf = lambda->u.vFunc;
+        return nf;
 }
 
 void bnAddParameter(bnObject* obj, gpointer param) {

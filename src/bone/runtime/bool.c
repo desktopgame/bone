@@ -52,9 +52,7 @@ void bnSetFlipValue(struct bnHeap* heap, bnReference t, bnReference f) {
         fobj->r = t;
 }
 
-bnObject* bnGetFlipValue(bnObject* obj) {
-        return (bnObject*)(((bnBool*)obj)->r);
-}
+bnReference bnGetFlipValue(bnObject* obj) { return (((bnBool*)obj)->r); }
 
 bool bnGetBoolValue(bnObject* obj) {
         if (obj->type == BN_OBJECT_BOOL) {
@@ -67,7 +65,7 @@ bool bnGetBoolValue(bnObject* obj) {
 // Bool
 
 static void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_BOOL) {
                 _throw(bone, frame, "should be `self` is bool");
         }

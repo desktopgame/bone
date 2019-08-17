@@ -77,22 +77,21 @@ void bnSetArrayElementAt(bnObject* obj, int index, bnReference ref) {
 
 // Array
 static void bnStdArrayArraySet(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
-        bnObject* c = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnReference cRef = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_ARRAY) {
                 _throw(bone, frame, "should be `self` is array");
         }
         if (b->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, "should be `index` is integer");
         }
-        bnArray* arr = (bnArray*)a;
-        g_ptr_array_index(arr->arr, bnGetIntegerValue(b)) = c;
+        bnSetArrayElementAt(a, bnGetIntegerValue(b), cRef);
 }
 
 static void bnStdArrayArrayGet(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_ARRAY) {
                 _throw(bone, frame, "should be `self` is array");
         }

@@ -242,12 +242,13 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                         break;
                                 }
                                 // fill by char
-                                bnObject* ary = bnPopStack(frame->vStack);
+                                bnReference aryRef = bnPopStack(frame->vStack);
+                                bnObject* ary = bnGetObject(bone->heap, aryRef);
                                 for (int i = 0; i < slen; i++) {
                                         bnSetArrayElementAt(
                                             ary, i, bnNewChar(bone, str[i]));
                                 }
-                                bnPushStack(frame->vStack, ary);
+                                bnPushStack(frame->vStack, aryRef);
                                 bnDeleteFrame(sub);
                                 bnGC(bone);
                                 // create string by string function
@@ -311,31 +312,32 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_SCOPE_INJECTION: {
-                                bnObject* obj = bnPopStack(frame->vStack);
+                                bnReference ref = bnPopStack(frame->vStack);
+                                bnObject* obj = bnGetObject(bone->heap, ref);
                                 bnScopeInjection(bone, obj, frame);
                                 break;
                         }
                         case BN_OP_OBJECT_INJECTION: {
-                                bnObject* src = bnPopStack(frame->vStack);
-                                bnObject* dst = bnPopStack(frame->vStack);
-                                bnObjectInjection(bone, src, dst);
+                                bnReference src = bnPopStack(frame->vStack);
+                                bnReference dst = bnPopStack(frame->vStack);
+                                bnObject* srcObj = bnGetObject(bone->heap, src);
+                                bnObject* dstObj = bnGetObject(bone->heap, dst);
+                                bnObjectInjection(bone, srcObj, dstObj);
                                 bnPushStack(frame->vStack, dst);
                                 break;
                         }
                         case BN_OP_STORE: {
                                 bnStringView name = bnReadCode(env, ++PC);
-                                bnObject* value = bnPopStack(frame->vStack);
+                                bnReference ref = bnPopStack(frame->vStack);
                                 g_hash_table_replace(frame->variableTable,
                                                      GINT_TO_POINTER((int)name),
-                                                     value);
-                                assert(value != NULL);
+                                                     ref);
                                 break;
                         }
                         case BN_OP_LOAD: {
                                 bnStringView name = bnReadCode(env, ++PC);
-                                bnObject* value = g_hash_table_lookup(
-                                    frame->variableTable,
-                                    GINT_TO_POINTER((int)name));
+                                bnReference ref = bnReadVariable(frame, name);
+                                bnObject* value = bnGetObject(bone->heap, ref);
                                 const char* str = bnView2Str(bone->pool, name);
                                 assert(str != NULL);
                                 if (value == NULL) {
@@ -351,7 +353,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                         break;
                                 }
                                 assert(value != NULL);
-                                bnPushStack(frame->vStack, value);
+                                bnPushStack(frame->vStack, ref);
                                 break;
                         }
                         case BN_OP_PUT: {
@@ -371,7 +373,11 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_GET: {
-                                bnObject* container = bnPopStack(frame->vStack);
+                                bnReference containerRef =
+                                    bnPopStack(frame->vStack);
+                                bnObject* container =
+                                    bnGetObject(bone->heap, containerRef);
+
                                 if (container == NULL) {
                                         bnPanic(bone,
                                                 bnNewString2(
@@ -503,7 +509,9 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         }
                         case BN_OP_CLEANUP_INJBUF: {
                                 bnCleanupInjectionBuffer(
-                                    bone->pool, bnPeekStack(frame->vStack));
+                                    bone->pool,
+                                    bnGetObject(bone->heap,
+                                                bnPeekStack(frame->vStack)));
                                 break;
                         }
                 }

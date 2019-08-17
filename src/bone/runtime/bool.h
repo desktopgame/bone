@@ -21,7 +21,7 @@ void bnSetFlipValue(struct bnHeap* heap, bnReference t, bnReference f);
  * @param obj
  * @return
  */
-bnObject* bnGetFlipValue(bnObject* obj);
+bnReference bnGetFlipValue(bnObject* obj);
 
 /**
  * @param obj
