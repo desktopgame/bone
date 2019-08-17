@@ -2,6 +2,7 @@
 #define BONE_RUNTIME_FRAME_H
 #include "../bone.h"
 #include "../util/stack.h"
+#include "storage.h"
 struct bnObject;
 struct bnLambda;
 struct bnInterpreter;
@@ -12,9 +13,9 @@ typedef struct bnFrame {
         bnStack* vStack;
         bnStack* hierarcySelf;
         GHashTable* variableTable;
-        struct bnObject* currentCall;
-        struct bnObject* panic;
-        struct bnObject* register0;
+        bnReference currentCall;
+        bnReference panic;
+        bnReference register0;
         struct bnFrame* prev;
         struct bnFrame* next;
         GList* snapshots;
@@ -50,7 +51,7 @@ void bnInjectFrame(GHashTable* src, bnFrame* dst);
  * @param self
  * @return
  */
-struct bnObject* bnExportAllVariable(struct bnInterpreter* bone, bnFrame* self);
+bnReference bnExportAllVariable(struct bnInterpreter* bone, bnFrame* self);
 
 /**
  * @param frame

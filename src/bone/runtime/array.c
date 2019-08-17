@@ -12,7 +12,7 @@
 
 static void bnStdArrayArraySet(bnInterpreter* bone, bnFrame* frame);
 static void bnStdArrayArrayGet(bnInterpreter* bone, bnFrame* frame);
-static void free_array(bnStorage* storage, bnObject* obj);
+static void free_array(bnStorage* storage, bnReference ref, bnObject* obj);
 /**
  * bnArray is array.
  */
@@ -104,9 +104,9 @@ static void bnStdArrayArrayGet(bnInterpreter* bone, bnFrame* frame) {
                          g_ptr_array_index(arr->arr, bnGetIntegerValue(b)));
 }
 
-static void free_array(bnStorage* storage, bnObject* obj) {
+static void free_array(bnStorage* storage, bnReference ref, bnObject* obj) {
         obj->freeFunc = NULL;
         bnArray* arr = (bnArray*)obj;
         g_ptr_array_unref(arr->arr);
-        bnDeleteObject(storage, obj);
+        bnDeleteObject(storage, ref, obj);
 }

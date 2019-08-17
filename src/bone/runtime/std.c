@@ -16,6 +16,7 @@
 #include "char.h"
 #include "enviroment.h"
 #include "frame.h"
+#include "heap.h"
 #include "integer.h"
 #include "interpreter.h"
 #include "lambda.h"
@@ -25,7 +26,7 @@
 
 static void _throw(bnInterpreter* bone, bnFrame* frame, const char* str);
 static bool file_exists(const char* path);
-static bool compare_list_array(GList* a, bnObject* b);
+static bool compare_list_array(bnInterpreter* bone, GList* a, bnObject* b);
 
 // only in debug build
 #if DEBUG
@@ -222,7 +223,8 @@ void bnStdSystemString(bnInterpreter* bone, bnFrame* frame) {
         bnObject* aArr = a;
         GString* gbuf = g_string_new("");
         for (int i = 0; i < bnGetArrayLength(aArr); i++) {
-                bnObject* e = bnGetArrayElementAt(aArr, i);
+                bnReference eRef = bnGetArrayElementAt(aArr, i);
+                bnObject* e = bnGetObject(bone->heap, eRef);
                 if (e->type != BN_OBJECT_CHAR) {
                         bnFormatThrow(bone, "should be `array[%d]` is char", i);
                 }
@@ -247,13 +249,12 @@ void bnStdSystemExternVar(bnInterpreter* bone, bnFrame* frame) {
         if (name->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "should be `name` is string");
         }
-        gpointer v = bnReadExtern(bone, bnGetStringValue(name));
-        if (v == NULL) {
+        bnReference objRef = bnReadExtern(bone, bnGetStringValue(name));
+        if (objRef == NULL) {
                 bnFormatThrow(bone, "not bound variable: `%s`",
                               bnView2Str(bone->pool, bnGetStringValue(name)));
         }
-        bnObject* obj = v;
-        bnWriteVariable2(frame, bone->pool, "ret", obj);
+        bnWriteVariable2(frame, bone->pool, "ret", objRef);
 }
 
 void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
@@ -270,12 +271,12 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
                 _throw(bone, frame, "should be `returns` is array");
         }
         // find from extern table
-        gpointer v = bnReadExtern(bone, bnGetStringValue(name));
-        if (v == NULL) {
+        bnReference objRef = bnReadExtern(bone, bnGetStringValue(name));
+        if (objRef == NULL) {
                 bnFormatThrow(bone, "not bound variable: `%s`",
                               bnView2Str(bone->pool, bnGetStringValue(name)));
         }
-        bnObject* obj = v;
+        bnObject* obj = bnGetObject(bone->heap, objRef);
         if (obj->type != BN_OBJECT_LAMBDA) {
                 _throw(bone, frame, "C value is not lambda");
         }
@@ -288,7 +289,7 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
                               bnGetArrayLength(paraArr),
                               g_list_length(bnGetParameterList(lambda)));
         }
-        if (!compare_list_array(bnGetParameterList(lambda), paraArr)) {
+        if (!compare_list_array(bone, bnGetParameterList(lambda), paraArr)) {
                 bnFormatThrow(bone, "missing parameter");
         }
         // check returns
@@ -299,14 +300,14 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
                               bnGetArrayLength(retuArr),
                               g_list_length(bnGetReturnValueList(lambda)));
         }
-        if (!compare_list_array(bnGetReturnValueList(lambda), retuArr)) {
+        if (!compare_list_array(bone, bnGetReturnValueList(lambda), retuArr)) {
                 bnFormatThrow(bone, "missing return");
         }
-        bnWriteVariable2(frame, bone->pool, "ret", obj);
+        bnWriteVariable2(frame, bone->pool, "ret", objRef);
 }
 
 void bnStdSystemPanic(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnReference a = bnPopStack(frame->vStack);
         bnThrow(bone, a, BN_JMP_CODE_EXCEPTION);
 }
 
@@ -328,12 +329,13 @@ static void _throw(bnInterpreter* bone, bnFrame* frame, const char* str) {
 
 static bool file_exists(const char* path) { return bnExists(path); }
 
-static bool compare_list_array(GList* a, bnObject* b) {
+static bool compare_list_array(bnInterpreter* bone, GList* a, bnObject* b) {
         if (g_list_length(a) != bnGetArrayLength(b)) {
                 return false;
         }
         for (int i = 0; i < bnGetArrayLength(b); i++) {
-                bnObject* e = bnGetArrayElementAt(b, i);
+                bnReference eRef = bnGetArrayElementAt(b, i);
+                bnObject* e = bnGetObject(bone->heap, eRef);
                 if (bnGetStringValue(e) != (bnStringView)a->data) {
                         return false;
                 }

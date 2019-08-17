@@ -23,9 +23,9 @@ static void gc_mark_stage(bnHeap* self);
 static void gc_mark_frame(bnHeap* self, bnFrame* frame);
 static void gc_mark_extern(bnInterpreter* bone);
 static void gc_mark_native(bnInterpreter* bone);
-static void gc_mark_rec(bnObject* obj);
-static void gc_mark_array(bnObject* array);
-static void gc_mark_lambda(bnObject* lambda);
+static void gc_mark_rec(bnHeap* self, bnReference ref);
+static void gc_mark_array(bnHeap* self, bnObject* array);
+static void gc_mark_lambda(bnHeap* self, bnObject* lambda);
 static void gc_sweep(bnHeap* self, bnFrame* frame);
 static stage* new_stage();
 static void delete_stage(stage* self);
@@ -95,7 +95,7 @@ static void gc_mark_stage(bnHeap* self) {
         while (stackIter != NULL) {
                 GPtrArray* ary = ((stage*)stackIter->value)->objects;
                 for (int i = 0; i < ary->len; i++) {
-                        gc_mark_rec(g_ptr_array_index(ary, i));
+                        gc_mark_rec(self, g_ptr_array_index(ary, i));
                 }
                 stackIter = stackIter->next;
         }
@@ -113,7 +113,7 @@ static void gc_mark_frame(bnHeap* self, bnFrame* frame) {
         gpointer k, v;
         g_hash_table_iter_init(&hashIter, frame->variableTable);
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
-                gc_mark_rec(v);
+                gc_mark_rec(self, v);
         }
         // mark defer
         GList* defIter = frame->snapshots;
@@ -121,18 +121,18 @@ static void gc_mark_frame(bnHeap* self, bnFrame* frame) {
                 bnSnapShot* sn = defIter->data;
                 g_hash_table_iter_init(&hashIter, sn->table);
                 while (g_hash_table_iter_next(&hashIter, &k, &v)) {
-                        gc_mark_rec(v);
+                        gc_mark_rec(self, v);
                 }
                 defIter = defIter->next;
         }
         // mark stack
         bnStackElement* stackE = frame->vStack->head;
         while (stackE != NULL) {
-                gc_mark_rec(stackE->value);
+                gc_mark_rec(self, stackE->value);
                 stackE = stackE->next;
         }
         if (frame->panic != NULL) {
-                gc_mark_rec(frame->panic);
+                gc_mark_rec(self, frame->panic);
         }
 }
 
@@ -141,19 +141,20 @@ static void gc_mark_extern(bnInterpreter* bone) {
         gpointer k, v;
         g_hash_table_iter_init(&hashIter, bone->externTable);
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
-                gc_mark_rec((bnObject*)v);
+                gc_mark_rec(bone->heap, v);
         }
 }
 
 static void gc_mark_native(bnInterpreter* bone) {
         GList* iter = bone->nativeAlloc;
         while (iter != NULL) {
-                gc_mark_rec(iter->data);
+                gc_mark_rec(bone->heap, iter->data);
                 iter = iter->next;
         }
 }
 
-static void gc_mark_rec(bnObject* obj) {
+static void gc_mark_rec(bnHeap* self, bnReference ref) {
+        bnObject* obj = bnGetObject(self, ref);
         if (obj->mark || obj == NULL) {
                 return;
         }
@@ -162,22 +163,22 @@ static void gc_mark_rec(bnObject* obj) {
         gpointer k, v;
         g_hash_table_iter_init(&hashIter, obj->table);
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
-                gc_mark_rec(v);
+                gc_mark_rec(self, v);
         }
         if (obj->type == BN_OBJECT_ARRAY) {
-                gc_mark_array(obj);
+                gc_mark_array(self, obj);
         } else if (obj->type == BN_OBJECT_LAMBDA) {
-                gc_mark_lambda(obj);
+                gc_mark_lambda(self, obj);
         }
 }
 
-static void gc_mark_array(bnObject* array) {
+static void gc_mark_array(bnHeap* self, bnObject* array) {
         for (int i = 0; i < bnGetArrayLength(array); i++) {
-                gc_mark_rec(bnGetArrayElementAt(array, i));
+                gc_mark_rec(self, bnGetArrayElementAt(array, i));
         }
 }
 
-static void gc_mark_lambda(bnObject* lambda) {
+static void gc_mark_lambda(bnHeap* self, bnObject* lambda) {
         if (bnGetLambdaType(lambda) != BN_LAMBDA_SCRIPT) {
                 return;
         }
@@ -185,7 +186,7 @@ static void gc_mark_lambda(bnObject* lambda) {
         g_hash_table_iter_init(&hashIter, bnGetCapturedMap(lambda));
         gpointer k, v;
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
-                gc_mark_rec(v);
+                gc_mark_rec(self, v);
         }
 }
 

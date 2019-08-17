@@ -64,10 +64,8 @@ void bnExtDirCreate(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
-        bnObject* aryFunc = bnGetObject(
-            bone->heap, bnReadVariable2(frame, bone->pool, "array"));
-        bnObject* strFunc = bnGetObject(
-            bone->heap, bnReadVariable2(frame, bone->pool, "string"));
+        bnReference aryFuncRef = bnReadVariable2(frame, bone->pool, "array");
+        bnReference strFuncRef = bnReadVariable2(frame, bone->pool, "string");
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "should be `path` is string");
@@ -89,7 +87,7 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
                 if ((!is_dir && fileOnly) || (is_dir && !fileOnly)) {
                         // create new char array
                         bnPushStack(frame->vStack, bnNewInteger(bone, pathlen));
-                        bnFrame* sub = bnFuncCall(aryFunc, bone, frame, 1);
+                        bnFrame* sub = bnFuncCall(aryFuncRef, bone, frame, 1);
                         if (sub->panic) {
                                 frame->panic = sub->panic;
                                 return;
@@ -100,7 +98,7 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
                         // create string
                         bnPushStack(frame->vStack, chary);
                         bnDeleteFrame(sub);
-                        sub = bnFuncCall(strFunc, bone, frame, 1);
+                        sub = bnFuncCall(strFuncRef, bone, frame, 1);
                         if (sub->panic) {
                                 frame->panic = sub->panic;
                                 return;
@@ -116,7 +114,7 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
         g_dir_close(dp);
         // create new array
         bnPushStack(frame->vStack, bnNewInteger(bone, g_list_length(files)));
-        bnFrame* sub = bnFuncCall(aryFunc, bone, frame, 1);
+        bnFrame* sub = bnFuncCall(aryFuncRef, bone, frame, 1);
         if (sub->panic) {
                 frame->panic = sub->panic;
                 return;

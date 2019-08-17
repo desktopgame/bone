@@ -9,7 +9,6 @@ static bnReference find_free_object(bnStorage* self);
 static int rfind_free_object_pos(bnStorage* self, int cur);
 static void realloc_storage(bnStorage* self);
 static void clear_storage(bnStorage* self);
-static bnStorage* append_storage(bnStorage* self);
 static void compact_impl(bnStorage* self);
 
 bnStorage* bnNewStorage() {
@@ -41,7 +40,7 @@ void bnFreeMemory(bnStorage* self, bnReference index) {
 }
 
 void* bnGetMemory(bnStorage* self, bnReference index) {
-        int i;
+        int i = *index;
         return self->pool + (OBJECT_MAXSIZE * self->map[i]);
 }
 

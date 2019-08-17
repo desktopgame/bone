@@ -3,7 +3,7 @@
 #include "interpreter.h"
 #include "storage.h"
 
-static void free_lambda(bnStorage* storage, bnObject* obj);
+static void free_lambda(bnStorage* storage, bnReference ref, bnObject* obj);
 
 /**
  * bnLambda is function pointer in bone.
@@ -35,7 +35,7 @@ bnReference bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
         ret->lineno = -1;
         ret->outer =
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
-        return (bnObject*)ret;
+        return ref;
 }
 
 bnReference bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
@@ -145,7 +145,7 @@ int bnGetLambdaLineNumber(bnObject* obj) { return ((bnLambda*)obj)->lineno; }
 
 bnLambdaType bnGetLambdaType(bnObject* obj) { return ((bnLambda*)obj)->type; }
 
-static void free_lambda(bnStorage* storage, bnObject* obj) {
+static void free_lambda(bnStorage* storage, bnReference ref, bnObject* obj) {
         obj->freeFunc = NULL;
         bnLambda* lmb = (bnLambda*)obj;
         g_hash_table_destroy(lmb->outer);
@@ -154,5 +154,5 @@ static void free_lambda(bnStorage* storage, bnObject* obj) {
         if (bnGetLambdaType((bnObject*)lmb) == BN_LAMBDA_SCRIPT) {
                 bnDeleteEnviroment(lmb->u.vEnv);
         }
-        bnDeleteObject(storage, obj);
+        bnDeleteObject(storage, ref, obj);
 }

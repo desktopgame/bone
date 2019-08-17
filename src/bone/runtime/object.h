@@ -7,12 +7,11 @@ struct bnInterpreter;
 struct bnFrame;
 struct bnHeap;
 struct bnObject;
-struct bnStorage;
 /**
  * bnFreeObjectFunc is for free a object.
  */
-typedef void (*bnFreeObjectFunc)(struct bnStorage* storage,
-                                 struct bnObject* self);
+typedef void (*bnFreeObjectFunc)(bnStorage* storage, bnReference ref,
+                                 struct bnObject* obj);
 
 /**
  * bnObjectType is type of object.
@@ -61,7 +60,7 @@ void bnIncludeKernel(struct bnInterpreter* bone, bnObject* self);
  * @param bone
  * @return
  */
-bnObject* bnNewObject(struct bnInterpreter* bone);
+bnReference bnNewObject(struct bnInterpreter* bone);
 
 /**
  * bnDefine is define new member.
@@ -129,13 +128,13 @@ bool bnDefined2(bnObject* self, struct bnStringPool* pool, const char* str);
 /**
  * bnFuncCall is run a `self` as function pointer.
  * it and, return a subframe used for executed function.
- * @param self
+ * @param ref
  * @param bone
  * @param frame
  * @param argc
  * @return
  */
-struct bnFrame* bnFuncCall(bnObject* self, struct bnInterpreter* bone,
+struct bnFrame* bnFuncCall(bnReference ref, struct bnInterpreter* bone,
                            struct bnFrame* frame, int argc);
 
 /**
@@ -162,8 +161,9 @@ bnStringView bnGetExportVariableName(struct bnStringPool* pool,
 /**
  * return new instance of bnObject.
  * @param storage
- * @param self
+ * @param ref
+ * @param obj
  * @return
  */
-void bnDeleteObject(struct bnStorage* storage, bnObject* self);
+void bnDeleteObject(bnStorage* storage, bnReference ref, struct bnObject* obj);
 #endif

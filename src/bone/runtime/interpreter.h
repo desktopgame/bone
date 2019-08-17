@@ -83,7 +83,7 @@ void bnVFormatThrow(bnInterpreter* self, const char* fmt, va_list ap);
  * @param exception
  * @param code
  */
-void bnThrow(bnInterpreter* self, struct bnObject* exception, int code);
+void bnThrow(bnInterpreter* self, bnReference exception, int code);
 
 /**
  * do a panic in current frame.
@@ -91,7 +91,7 @@ void bnThrow(bnInterpreter* self, struct bnObject* exception, int code);
  * @param self
  * @param exception
  */
-void bnPanic(bnInterpreter* self, struct bnObject* exception);
+void bnPanic(bnInterpreter* self, bnReference exception);
 
 /**
  * @param pool

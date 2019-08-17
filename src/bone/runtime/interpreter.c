@@ -93,7 +93,8 @@ int bnEval(bnInterpreter* self) {
         }
         if (self->frame->panic != NULL) {
                 printf("panic:");
-                bnPrintObject(stdout, self, self->frame->panic);
+                bnPrintObject(stdout, self,
+                              bnGetObject(self->heap, self->frame->panic));
                 printf("\n");
         }
         int status = self->frame->panic ? 1 : 0;
@@ -150,14 +151,15 @@ void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
 #endif
         bnWriteVariable2(frame, pool, "argc",
                          bnNewInteger(self, BN_MAX(self->argc - 2, 0)));
-        bnObject* argv = bnNewArray(self, BN_MAX(self->argc - 2, 0));
+        bnReference argvRef = bnNewArray(self, BN_MAX(self->argc - 2, 0));
+        bnObject* argv = bnGetObject(self->heap, argvRef);
         for (int i = 2; i < self->argc; i++) {
                 bnSetArrayElementAt(
                     argv, i - 2,
                     bnNewString(
                         self, (bnStringView)g_ptr_array_index(self->argv, i)));
         }
-        bnWriteVariable2(frame, pool, "argv", argv);
+        bnWriteVariable2(frame, pool, "argv", argvRef);
         bnWriteVariable2(
             frame, pool, "object",
             bnNewLambdaFromCFunc(self, bnStdSystemObject, pool, BN_C_ADD_RETURN,
@@ -211,16 +213,16 @@ void bnFormatThrow(bnInterpreter* self, const char* fmt, ...) {
 void bnVFormatThrow(bnInterpreter* self, const char* fmt, va_list ap) {
         char buf[100];
         vsprintf(buf, fmt, ap);
-        bnObject* obj = bnNewString(self, bnIntern(self->pool, buf));
-        bnThrow(self, obj, BN_JMP_CODE_EXCEPTION);
+        bnReference ref = bnNewString(self, bnIntern(self->pool, buf));
+        bnThrow(self, ref, BN_JMP_CODE_EXCEPTION);
 }
 
-void bnThrow(bnInterpreter* self, bnObject* exception, int code) {
+void bnThrow(bnInterpreter* self, bnReference exception, int code) {
         bnPanic(self, exception);
         BN_JMP_DO(self->__jstack, code);
 }
 
-void bnPanic(bnInterpreter* self, bnObject* exception) {
+void bnPanic(bnInterpreter* self, bnReference exception) {
         bnFrame* iter = self->frame;
         while (1) {
                 if (iter->next == NULL) {

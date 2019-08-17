@@ -106,9 +106,8 @@ void bnExtReflectionEntries(bnInterpreter* bone, bnFrame* frame) {
                 entries = g_list_append(entries, k);
         }
         bnReference arrayFuncRef = bnReadVariable2(frame, bone->pool, "array");
-        bnObject* arrayFunc = bnGetObject(bone->heap, arrayFuncRef);
         bnPushStack(frame->vStack, bnNewInteger(bone, g_list_length(entries)));
-        bnFrame* sub = bnFuncCall(arrayFunc, bone, frame, 1);
+        bnFrame* sub = bnFuncCall(arrayFuncRef, bone, frame, 1);
         bnDeleteFrame(sub);
         bnReference arrayInstRef = bnPopStack(frame->vStack);
         bnObject* arrayInst = bnGetObject(bone->heap, arrayInstRef);

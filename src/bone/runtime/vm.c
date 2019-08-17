@@ -61,7 +61,8 @@ GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
 struct bnObject* bnCreateLambdaInActiveCode(bnInterpreter* bone,
                                             bnEnviroment* env, bnFrame* frame,
                                             int* pPC) {
-        bnObject* lmb = bnNewLambda(bone, BN_LAMBDA_SCRIPT);
+        bnReference lmbRef = bnNewLambda(bone, BN_LAMBDA_SCRIPT);
+        bnObject* lmb = bnGetObject(bone->heap, lmbRef);
         int line = bnReadCode(env, ++(*pPC));
         bnSetLambdaFileName(lmb, env->filename);
         bnSetLambdaLineNumber(lmb, line);
@@ -232,7 +233,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 int slen = strlen(str);
                                 bnPushStack(frame->vStack,
                                             bnNewInteger(bone, slen));
-                                bnObject* arrFunc =
+                                bnReference arrFunc =
                                     bnReadVariable2(frame, bone->pool, "array");
                                 bnFrame* sub =
                                     bnFuncCall(arrFunc, bone, frame, 1);
@@ -354,14 +355,17 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_PUT: {
-                                bnObject* container = bnPopStack(frame->vStack);
+                                bnReference containerRef =
+                                    bnPopStack(frame->vStack);
+                                bnObject* container =
+                                    bnGetObject(bone->heap, containerRef);
                                 if (container == NULL) {
                                         bnPanic(bone,
                                                 bnNewString2(
                                                     bone, "receiver is null"));
                                         break;
                                 }
-                                bnObject* value = bnPopStack(frame->vStack);
+                                bnReference value = bnPopStack(frame->vStack);
                                 bnStringView name = bnReadCode(env, ++PC);
                                 bnDefine(container, name, value);
                                 break;
@@ -375,7 +379,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                         break;
                                 }
                                 bnStringView name = bnReadCode(env, ++PC);
-                                bnObject* obj = bnLookup(container, name);
+                                bnReference objRef = bnLookup(container, name);
+                                bnObject* obj = bnGetObject(bone->heap, objRef);
                                 const char* str = bnView2Str(bone->pool, name);
                                 assert(str != NULL);
                                 if (obj == NULL) {
@@ -389,7 +394,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                         break;
                                 }
                                 assert(obj != NULL);
-                                bnPushStack(frame->vStack, obj);
+                                bnPushStack(frame->vStack, objRef);
                                 break;
                         }
                         case BN_OP_GOTO: {
@@ -418,7 +423,8 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                 break;
                         }
                         case BN_OP_FUNCCALL: {
-                                bnObject* obj = bnPopStack(frame->vStack);
+                                bnReference objRef = bnPopStack(frame->vStack);
+                                bnObject* obj = bnGetObject(bone->heap, objRef);
                                 if (obj->type != BN_OBJECT_LAMBDA) {
                                         frame->panic =
                                             bnNewString2(bone,
@@ -432,7 +438,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                             bnCreateStackFrameString(bone, env,
                                                                      obj, PC));
                                 bnFrame* sub =
-                                    bnFuncCall(obj, bone, frame, argc);
+                                    bnFuncCall(objRef, bone, frame, argc);
                                 if (sub->panic == NULL) {
                                         g_string_free(
                                             bnPopStack(bone->callStack), TRUE);

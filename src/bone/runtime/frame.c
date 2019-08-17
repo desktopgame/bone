@@ -1,9 +1,11 @@
 #include "frame.h"
 #include "../util/string_pool.h"
 #include "array.h"
+#include "heap.h"
 #include "interpreter.h"
 #include "object.h"
 #include "snapshot.h"
+#include "storage.h"
 
 static void delete_snapshot(gpointer data);
 
@@ -48,9 +50,10 @@ void bnInjectFrame(GHashTable* src, bnFrame* dst) {
         }
 }
 
-bnObject* bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
-        bnObject* arr =
+bnReference bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
+        bnReference arrRef =
             bnNewArray(bone, g_hash_table_size(self->variableTable));
+        bnObject* arr = bnGetObject(bone->heap, arrRef);
         GHashTableIter iter;
         g_hash_table_iter_init(&iter, self->variableTable);
         gpointer k, v;
@@ -68,7 +71,7 @@ bnObject* bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
                 bnSetArrayElementAt(arr, arrI, v);
                 arrI++;
         }
-        return arr;
+        return arrRef;
 }
 
 void bnWriteVariable(bnFrame* frame, bnStringView name, bnReference ref) {

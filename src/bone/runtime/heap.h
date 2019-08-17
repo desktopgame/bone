@@ -1,6 +1,7 @@
 #ifndef BONE_RUNTIME_HEAP_H
 #define BONE_RUNTIME_HEAP_H
 #include "../glib.h"
+#include "storage.h"
 
 struct bnHeap;
 struct bnObject;

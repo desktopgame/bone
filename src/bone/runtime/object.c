@@ -50,11 +50,12 @@ void bnIncludeKernel(bnInterpreter* bone, bnObject* self) {
                                       "ret", BN_C_ADD_EXIT));
 }
 
-bnObject* bnNewObject(bnInterpreter* bone) {
-        bnObject* ret = bnAllocObject(bone->heap);
+bnReference bnNewObject(bnInterpreter* bone) {
+        bnReference ref = bnAllocObject(bone->heap);
+        bnObject* ret = bnGetObject(bone->heap, ref);
         bnInitObject(bone, ret, BN_OBJECT_PROTO);
         bnIncludeKernel(bone, ret);
-        return ret;
+        return ref;
 }
 
 void bnDefine(bnObject* self, bnStringView name, bnReference ref) {
@@ -102,15 +103,15 @@ bool bnDefined2(bnObject* self, struct bnStringPool* pool, const char* str) {
         return bnDefined(self, bnIntern(pool, str));
 }
 
-bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
+bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
                     int argc) {
-        assert(self != NULL && self->type == BN_OBJECT_LAMBDA);
-        bnObject* lambda = self;
+        // assert(self != NULL && self->type == BN_OBJECT_LAMBDA);
+        bnObject* lambda = bnGetObject(bone->heap, ref);
         // int paramLen = g_list_length(lambda->parameters);
         // assert(paramLen == argc);
         // create new frame
         bnFrame* sub = bnSubFrame(frame);
-        sub->currentCall = lambda;
+        sub->currentCall = ref;
         for (int i = 0; i < argc; i++) {
                 bnPushStack(sub->vStack, bnPopStack(frame->vStack));
         }
@@ -174,8 +175,8 @@ bnFrame* bnFuncCall(bnObject* self, bnInterpreter* bone, bnFrame* frame,
                 bnExecute(bone, bnGetEnviroment(lambda), sub);
         }
         if (bnIsVariadicReturn(bone->pool, lambda)) {
-                bnObject* arr = bnExportAllVariable(bone, sub);
-                bnPushStack(frame->vStack, arr);
+                bnReference arrRef = bnExportAllVariable(bone, sub);
+                bnPushStack(frame->vStack, arrRef);
         } else if (g_list_length(bnGetReturnValueList(lambda)) > 0) {
                 // assert(lambda->returns->data != NULL);
                 bnObject* body = g_hash_table_lookup(
@@ -250,13 +251,13 @@ bnStringView bnGetExportVariableName(struct bnStringPool* pool,
         return bnIntern(pool, buf);
 }
 
-void bnDeleteObject(bnStorage* storage, bnObject* self) {
-        if (self->freeFunc != NULL) {
-                assert(self->freeFunc != NULL);
-                self->freeFunc(storage, self);
+void bnDeleteObject(bnStorage* storage, bnReference ref, struct bnObject* obj) {
+        if (obj->freeFunc != NULL) {
+                assert(obj->freeFunc != NULL);
+                obj->freeFunc(storage, ref, obj);
         } else {
-                g_hash_table_destroy(self->table);
-                bnFreeMemory(storage, self);
+                g_hash_table_destroy(obj->table);
+                bnFreeMemory(storage, ref);
         }
 }
 // Object
@@ -286,7 +287,8 @@ static void to_string(bnInterpreter* bone, GString* str, bnObject* root,
                 if (*vname == '$') {
                         continue;
                 }
-                bnObject* entry = (bnObject*)v;
+                bnReference entryRef = v;
+                bnObject* entry = bnGetObject(bone->heap, entryRef);
                 for (int i = 0; i < depth; i++) {
                         g_string_append(str, "    ");
                 }
@@ -297,7 +299,8 @@ static void to_string(bnInterpreter* bone, GString* str, bnObject* root,
         if (root->type == BN_OBJECT_ARRAY) {
                 bnObject* ary = root;
                 for (int n = 0; n < bnGetArrayLength(ary); n++) {
-                        bnObject* v = bnGetArrayElementAt(ary, n);
+                        bnReference ref = bnGetArrayElementAt(ary, n);
+                        bnObject* v = bnGetObject(bone->heap, ref);
 
                         for (int i = 0; i < depth; i++) {
                                 g_string_append(str, "    ");
