@@ -9,7 +9,6 @@ typedef struct bnStorage {
         void* pool;
         int* map;
         int capacity;
-        int offset;
         int use;
 } bnStorage;
 

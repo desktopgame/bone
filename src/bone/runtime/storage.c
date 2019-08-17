@@ -54,7 +54,7 @@ void bnDeleteStorage(bnStorage* self) {
 // private
 static bnReference find_free_object(bnStorage* self) {
         for (int i = 0; i < self->capacity; i++) {
-                int index = self->map[i] - self->offset;
+                int index = self->map[i];
                 bnObject* obj = self->pool + (OBJECT_MAXSIZE * index);
                 if (obj->freed) {
                         return self->map + (sizeof(int) * index);
