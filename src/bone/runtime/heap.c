@@ -80,7 +80,7 @@ void bnDeleteHeap(bnHeap* self) {
 }
 
 static void gc_clear(bnHeap* self, bnFrame* frame) {
-        for (int i = 0; i < OBJECT_COUNT; i++) {
+        for (int i = 0; i < self->storage->capacity; i++) {
                 bnObject* obj = self->storage->pool + (OBJECT_MAXSIZE * i);
                 if (!obj->freed) {
                         obj->mark = false;
