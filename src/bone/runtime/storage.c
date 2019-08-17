@@ -41,6 +41,10 @@ void bnFreeMemory(bnStorage* self, bnReference index) {
 }
 
 void* bnGetMemory(bnStorage* self, bnReference index) {
+#if DEBUG
+        int gd = bnGetGlobalStorageIndex(self, index);
+        printf("gd:%d\n", gd);
+#endif
         int i;
         bnStorage* str = bnGetStorage(self, index, &i);
         bnObject* obj = (bnObject*)(str->pool + (OBJECT_MAXSIZE * i));
@@ -56,6 +60,29 @@ bnStorage* bnGetStorage(bnStorage* self, bnReference index, int* outFixedPos) {
         }
         (*outFixedPos) = i;
         return iter;
+}
+
+int bnGetGlobalStorageIndex(bnStorage* self, void* ptr) {
+        bnStorage* iter = self;
+        int ret = -1;
+        while (iter != NULL && ret == -1) {
+                if (!((char*)ptr >= iter->pool) ||
+                    !((char*)ptr <
+                      iter->pool + (OBJECT_MAXSIZE * OBJECT_COUNT))) {
+                        iter = iter->next;
+                        continue;
+                }
+                for (int i = 0; i < OBJECT_COUNT; i++) {
+                        bnObject* e =
+                            (bnObject*)(iter->pool + (OBJECT_MAXSIZE * i));
+                        if (!memcmp(e, ptr, OBJECT_MAXSIZE)) {
+                                ret = i + iter->offset;
+                                break;
+                        }
+                }
+                iter = iter->next;
+        }
+        return ret;
 }
 
 void bnCompact(bnStorage* self) { compact_impl(self); }
