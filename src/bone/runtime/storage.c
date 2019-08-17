@@ -28,7 +28,9 @@ bnReference bnAllocMemory(bnStorage* self) {
                 return bnAllocMemory(self);
         }
         self->use++;
-        bnObject* obj = self->pool + (OBJECT_MAXSIZE * self->map[*ret]);
+        int i = *ret;
+        bnObject* obj = self->pool + (OBJECT_MAXSIZE * i);
+        assert(obj->freed);
         obj->freed = false;
         return ret;
 }
@@ -41,7 +43,8 @@ void bnFreeMemory(bnStorage* self, bnReference index) {
 
 void* bnGetMemory(bnStorage* self, bnReference index) {
         int i = *index;
-        return self->pool + (OBJECT_MAXSIZE * self->map[i]);
+        bnObject* obj = self->pool + (OBJECT_MAXSIZE * i);
+        return obj;
 }
 
 void bnCompact(bnStorage* self) { compact_impl(self); }
@@ -57,7 +60,10 @@ static bnReference find_free_object(bnStorage* self) {
                 int index = self->map[i];
                 bnObject* obj = self->pool + (OBJECT_MAXSIZE * index);
                 if (obj->freed) {
-                        return self->map + (sizeof(int) * index);
+                        bnReference ref = self->map + i;
+                        int vref = *ref;
+                        assert(vref == index);
+                        return ref;
                 }
         }
         return NULL;
@@ -88,10 +94,14 @@ static void realloc_storage(bnStorage* self) {
         self->pool = newpool;
         self->map = newmap;
         self->capacity = newcapa;
+        memset(self->pool + (OBJECT_MAXSIZE * oldcapa), 0,
+               OBJECT_MAXSIZE * (newcapa - oldcapa));
         for (int i = oldcapa; i < newcapa; i++) {
                 self->map[i] = i;
+                bnObject* obj = self->pool + (OBJECT_MAXSIZE * i);
+                obj->freed = true;
         }
-        bnCompact(self);
+        // bnCompact(self);
 }
 
 static void clear_storage(bnStorage* self) {
