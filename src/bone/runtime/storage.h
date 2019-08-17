@@ -24,6 +24,8 @@ void* bnGetMemory(bnStorage* self, bnReference index);
 
 bnStorage* bnGetStorage(bnStorage* self, bnReference index, int* outFixedPos);
 
+bnReference bnGetReferenceFromGlobalStorageIndex(bnStorage* self, int gindex);
+
 int bnGetGlobalStorageIndexFromPointer(bnStorage* self, void* ptr);
 
 void bnCompact(bnStorage* self);

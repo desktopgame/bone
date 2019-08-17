@@ -43,7 +43,15 @@ void bnFreeMemory(bnStorage* self, bnReference index) {
 void* bnGetMemory(bnStorage* self, bnReference index) {
 #if DEBUG
         int gd = bnGetGlobalStorageIndexFromPointer(self, index);
-        printf("gd:%d\n", gd);
+        if (gd > 0) {
+                bnReference vref =
+                    bnGetReferenceFromGlobalStorageIndex(self, gd);
+                int i2;
+                bnStorage* str2 = bnGetStorage(self, vref, &i2);
+                bnObject* obj2 =
+                    (bnObject*)(str2->pool + (OBJECT_MAXSIZE * i2));
+                printf("gd:%d:%p:%p\n", gd, vref, obj2);
+        }
 #endif
         int i;
         bnStorage* str = bnGetStorage(self, index, &i);
@@ -60,6 +68,22 @@ bnStorage* bnGetStorage(bnStorage* self, bnReference index, int* outFixedPos) {
         }
         (*outFixedPos) = i;
         return iter;
+}
+
+bnReference bnGetReferenceFromGlobalStorageIndex(bnStorage* self, int gindex) {
+        bnStorage* iter = self;
+        while (gindex >= OBJECT_COUNT) {
+                gindex -= OBJECT_COUNT;
+                iter = iter->next;
+        }
+        for (int i = 0; i < OBJECT_COUNT; i++) {
+                int index = iter->map[i];
+                int refTo = (gindex + iter->offset);
+                if (index == refTo) {
+                        return iter->map + gindex;
+                }
+        }
+        return NULL;
 }
 
 int bnGetGlobalStorageIndexFromPointer(bnStorage* self, void* ptr) {
