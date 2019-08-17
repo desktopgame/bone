@@ -31,6 +31,7 @@ bnReference bnNewArray(bnInterpreter* bone, int size) {
         ret->size = size;
         g_ptr_array_set_free_func(ret->arr, NULL);
         for (int i = 0; i < size; i++) {
+                ret = bnGetObject(bone->heap, ref);
                 g_ptr_array_add(ret->arr, bnNewObject(bone));
         }
         bnDefine(&ret->base, bnIntern(bone->pool, "length"),

@@ -82,11 +82,15 @@ void bnDeleteHeap(bnHeap* self) {
 }
 
 static void gc_clear(bnHeap* self, bnFrame* frame) {
-        for (int i = 0; i < self->storage->capacity; i++) {
-                bnObject* obj = self->storage->pool + (OBJECT_MAXSIZE * i);
-                if (!obj->freed) {
-                        obj->mark = false;
+        bnStorage* iter = self->storage;
+        while (iter != NULL) {
+                for (int i = 0; i < OBJECT_COUNT; i++) {
+                        bnObject* obj = iter->pool + (OBJECT_MAXSIZE * i);
+                        if (!obj->freed) {
+                                obj->mark = false;
+                        }
                 }
+                iter = iter->next;
         }
 }
 

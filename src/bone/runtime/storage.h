@@ -2,17 +2,19 @@
 #define BONE_RUNTIME_STORAGE_H
 
 #define OBJECT_MAXSIZE (92)
+#define OBJECT_COUNT (100)
 
 typedef int* bnReference;
 
 typedef struct bnStorage {
         void* pool;
         int* map;
-        int capacity;
         int use;
+        int offset;
+        struct bnStorage* next;
 } bnStorage;
 
-bnStorage* bnNewStorage();
+bnStorage* bnNewStorage(int offset);
 
 bnReference bnAllocMemory(bnStorage* self);
 
