@@ -113,9 +113,9 @@ int bnEval(bnInterpreter* self) {
 void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
                      struct bnStringPool* pool) {
         // declare true, false
-        bnObject* t = bnNewBool(self, true);
-        bnObject* f = bnNewBool(self, false);
-        bnSetFlipValue(t, f);
+        bnReference t = bnNewBool(self, true);
+        bnReference f = bnNewBool(self, false);
+        bnSetFlipValue(self->heap, t, f);
         bnWriteVariable2(frame, pool, "true", t);
         bnWriteVariable2(frame, pool, "false", f);
 #if DEBUG
@@ -231,39 +231,41 @@ void bnPanic(bnInterpreter* self, bnObject* exception) {
         iter->panic = exception;
 }
 
-bnObject* bnGetBool(struct bnStringPool* pool, bnFrame* frame, bool cond) {
-        bnObject* ret = cond ? bnGetTrue(pool, frame) : bnGetFalse(pool, frame);
+bnReference bnGetBool(struct bnStringPool* pool, bnFrame* frame, bool cond) {
+        bnReference ret =
+            cond ? bnGetTrue(pool, frame) : bnGetFalse(pool, frame);
         assert(ret != NULL);
         return ret;
 }
 
-bnObject* bnGetTrue(struct bnStringPool* pool, bnFrame* frame) {
+bnReference bnGetTrue(struct bnStringPool* pool, bnFrame* frame) {
         return bnReadVariable2(frame, pool, "true");
 }
 
-bnObject* bnGetFalse(struct bnStringPool* pool, bnFrame* frame) {
+bnReference bnGetFalse(struct bnStringPool* pool, bnFrame* frame) {
         return bnReadVariable2(frame, pool, "false");
 }
 
-void bnWriteExtern(bnInterpreter* self, bnStringView name, bnObject* obj) {
+void bnWriteExtern(bnInterpreter* self, bnStringView name, bnReference ref) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
-        g_hash_table_replace(self->externTable, (gpointer)name, (gpointer)obj);
+        g_hash_table_replace(self->externTable, (gpointer)name, (gpointer)ref);
 #pragma clang diagnostic pop
 }
 
-void bnWriteExtern2(bnInterpreter* self, const char* str, bnObject* obj) {
-        bnWriteExtern(self, bnIntern(self->pool, str), obj);
+void bnWriteExtern2(bnInterpreter* self, const char* str, bnReference ref) {
+        bnWriteExtern(self, bnIntern(self->pool, str), ref);
 }
 
-bnObject* bnReadExtern(bnInterpreter* self, bnStringView name) {
+bnReference bnReadExtern(bnInterpreter* self, bnStringView name) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
-        return g_hash_table_lookup(self->externTable, (gpointer)name);
+        return (bnReference)g_hash_table_lookup(self->externTable,
+                                                (gpointer)name);
 #pragma clang diagnostic pop
 }
 
-bnObject* bnReadExtern2(bnInterpreter* self, const char* str) {
+bnReference bnReadExtern2(bnInterpreter* self, const char* str) {
         return bnReadExtern(self, bnIntern(self->pool, str));
 }
 

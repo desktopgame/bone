@@ -50,10 +50,10 @@ void bnFreeObject(bnHeap* self, bnReference ref) {
 
 void bnPushStage(bnHeap* self) { bnPushStack(self->stages, new_stage()); }
 
-bnObject* bnStaging(bnHeap* self, bnObject* obj) {
+bnReference bnStaging(bnHeap* self, bnReference ref) {
         stage* st = bnPeekStack(self->stages);
-        g_ptr_array_add(st->objects, obj);
-        return obj;
+        g_ptr_array_add(st->objects, ref);
+        return ref;
 }
 
 void bnPopStage(bnHeap* self) { delete_stage(bnPopStack(self->stages)); }

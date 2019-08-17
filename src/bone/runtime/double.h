@@ -10,7 +10,7 @@ struct bnInterpreter;
  * @param name
  * @return
  */
-bnObject* bnNewDouble(struct bnInterpreter* bone, double value);
+bnReference bnNewDouble(struct bnInterpreter* bone, double value);
 
 /**
  * @param obj

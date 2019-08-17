@@ -9,7 +9,7 @@
  * @param name
  * @return
  */
-bnObject* bnNewInteger(bnInterpreter* bone, int value);
+bnReference bnNewInteger(bnInterpreter* bone, int value);
 
 /**
  * @param obj

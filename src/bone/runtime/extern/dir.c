@@ -64,8 +64,10 @@ void bnExtDirCreate(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
-        bnObject* aryFunc = bnReadVariable2(frame, bone->pool, "array");
-        bnObject* strFunc = bnReadVariable2(frame, bone->pool, "string");
+        bnObject* aryFunc = bnGetObject(
+            bone->heap, bnReadVariable2(frame, bone->pool, "array"));
+        bnObject* strFunc = bnGetObject(
+            bone->heap, bnReadVariable2(frame, bone->pool, "string"));
         bnObject* a = bnPopStack(frame->vStack);
         if (a->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "should be `path` is string");
@@ -92,7 +94,7 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
                                 frame->panic = sub->panic;
                                 return;
                         }
-                        bnObject* chary =
+                        bnReference chary =
                             bnStaging(bone->heap, bnPopStack(frame->vStack));
                         bnFillString(bone, path, chary);
                         // create string
@@ -103,7 +105,7 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
                                 frame->panic = sub->panic;
                                 return;
                         }
-                        bnObject* bnstr =
+                        bnReference bnstr =
                             bnStaging(bone->heap, bnPopStack(frame->vStack));
                         files = g_list_append(files, bnstr);
                         bnDeleteFrame(sub);
@@ -119,13 +121,14 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
                 frame->panic = sub->panic;
                 return;
         }
-        bnObject* ary = bnStaging(bone->heap, bnPopStack(frame->vStack));
+        bnReference aryRef = bnStaging(bone->heap, bnPopStack(frame->vStack));
+        bnObject* ary = bnGetObject(bone->heap, aryRef);
         GList* filesIter = files;
         for (int i = 0; i < bnGetArrayLength(ary); i++) {
-                bnSetArrayElementAt(ary, i, (bnObject*)filesIter->data);
+                bnSetArrayElementAt(ary, i, (bnReference)filesIter->data);
                 filesIter = filesIter->next;
         }
         g_list_free(files);
-        bnWriteVariable2(frame, bone->pool, "ret", ary);
+        bnWriteVariable2(frame, bone->pool, "ret", aryRef);
         bnDeleteFrame(sub);
 }

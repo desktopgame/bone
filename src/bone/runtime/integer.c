@@ -34,8 +34,9 @@ typedef struct bnInteger {
         int value;
 } bnInteger;
 
-bnObject* bnNewInteger(bnInterpreter* bone, int value) {
-        bnInteger* ret = bnAllocObject(bone->heap);
+bnReference bnNewInteger(bnInterpreter* bone, int value) {
+        bnReference ref = bnAllocObject(bone->heap);
+        bnInteger* ret = bnGetObject(bone->heap, ref);
         bnInitObject(bone, &ret->base, BN_OBJECT_INTEGER);
         ret->value = value;
         bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_PLUS),
@@ -111,7 +112,7 @@ bnObject* bnNewInteger(bnInterpreter* bone, int value) {
                  bnNewLambdaFromCFunc(bone, bnStdIntegerToString, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN,
                                       "ret", BN_C_ADD_EXIT));
-        return (bnObject*)ret;
+        return ref;
 }
 
 int bnGetIntegerValue(bnObject* obj) { return ((bnInteger*)obj)->value; }

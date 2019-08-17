@@ -3,6 +3,7 @@
 #include "../array.h"
 #include "../char.h"
 #include "../frame.h"
+#include "../heap.h"
 #include "../integer.h"
 #include "../interpreter.h"
 #include "../lambda.h"
@@ -43,13 +44,15 @@ void bnExternReflection(bnInterpreter* bone) {
 }
 
 void bnExtReflectionDefine(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
-        bnObject* c = bnPopStack(frame->vStack);
-        if (b->type != BN_OBJECT_STRING) {
+        bnReference a = bnPopStack(frame->vStack);
+        bnReference b = bnPopStack(frame->vStack);
+        bnReference c = bnPopStack(frame->vStack);
+        bnObject* aObj = bnGetObject(bone->heap, a);
+        bnObject* bObj = bnGetObject(bone->heap, b);
+        if (bObj->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "shoud be `name` is string");
         }
-        bnDefine(a, bnGetStringValue(b), c);
+        bnDefine(aObj, bnGetStringValue(bObj), c);
 }
 
 void bnExtReflectionUndef(bnInterpreter* bone, bnFrame* frame) {
@@ -102,18 +105,20 @@ void bnExtReflectionEntries(bnInterpreter* bone, bnFrame* frame) {
                 }
                 entries = g_list_append(entries, k);
         }
-        bnObject* arrayFunc = bnReadVariable2(frame, bone->pool, "array");
+        bnReference arrayFuncRef = bnReadVariable2(frame, bone->pool, "array");
+        bnObject* arrayFunc = bnGetObject(bone->heap, arrayFuncRef);
         bnPushStack(frame->vStack, bnNewInteger(bone, g_list_length(entries)));
         bnFrame* sub = bnFuncCall(arrayFunc, bone, frame, 1);
         bnDeleteFrame(sub);
-        bnObject* arrayInst = bnPopStack(frame->vStack);
+        bnReference arrayInstRef = bnPopStack(frame->vStack);
+        bnObject* arrayInst = bnGetObject(bone->heap, arrayInstRef);
         GList* iter = entries;
         for (int i = 0; i < bnGetArrayLength(arrayInst); i++) {
                 bnSetArrayElementAt(
                     arrayInst, i, bnNewString(bone, (bnStringView)iter->data));
                 iter = iter->next;
         }
-        bnWriteVariable2(frame, bone->pool, "ret", arrayInst);
+        bnWriteVariable2(frame, bone->pool, "ret", arrayInstRef);
         g_list_free(entries);
 }
 

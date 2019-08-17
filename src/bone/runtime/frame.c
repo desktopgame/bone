@@ -71,32 +71,32 @@ bnObject* bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
         return arr;
 }
 
-void bnWriteVariable(bnFrame* frame, bnStringView name, bnObject* obj) {
+void bnWriteVariable(bnFrame* frame, bnStringView name, bnReference ref) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
-        g_hash_table_replace(frame->variableTable, (gpointer)name, obj);
+        g_hash_table_replace(frame->variableTable, (gpointer)name, ref);
 #pragma clang diagnostic pop
 }
 
 void bnWriteVariable2(bnFrame* frame, struct bnStringPool* pool,
-                      const char* name, bnObject* obj) {
+                      const char* name, bnReference ref) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
         g_hash_table_replace(frame->variableTable,
-                             (gpointer)bnIntern(pool, name), obj);
+                             (gpointer)bnIntern(pool, name), ref);
 #pragma clang diagnostic pop
 }
 
-bnObject* bnReadVariable(bnFrame* frame, bnStringView name) {
+bnReference bnReadVariable(bnFrame* frame, bnStringView name) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
-        return (bnObject*)g_hash_table_lookup(frame->variableTable,
-                                              (gpointer)name);
+        return (bnReference)g_hash_table_lookup(frame->variableTable,
+                                                (gpointer)name);
 #pragma clang diagnostic pop
 }
 
-bnObject* bnReadVariable2(bnFrame* frame, struct bnStringPool* pool,
-                          const char* name) {
+bnReference bnReadVariable2(bnFrame* frame, struct bnStringPool* pool,
+                            const char* name) {
         return bnReadVariable(frame, bnIntern(pool, name));
 }
 

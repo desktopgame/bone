@@ -8,7 +8,7 @@
  * @param name
  * @return
  */
-bnObject* bnNewChar(struct bnInterpreter* bone, char value);
+bnReference bnNewChar(struct bnInterpreter* bone, char value);
 
 /**
  * @param obj

@@ -8,14 +8,14 @@
  * @param size
  * @return
  */
-bnObject* bnNewArray(struct bnInterpreter* bone, int size);
+bnReference bnNewArray(struct bnInterpreter* bone, int size);
 
 /**
  * @param bone
  * @param str
- * @param obj
+ * @param ref
  */
-void bnFillString(struct bnInterpreter* bone, const char* str, bnObject* obj);
+void bnFillString(struct bnInterpreter* bone, const char* str, bnReference ref);
 
 /**
  * @param obj
@@ -28,12 +28,12 @@ int bnGetArrayLength(bnObject* obj);
  * @param index
  * @return
  */
-bnObject* bnGetArrayElementAt(bnObject* obj, int index);
+bnReference bnGetArrayElementAt(bnObject* obj, int index);
 
 /**
  * @param obj
  * @param index
- * @param value
+ * @param ref
  */
-void bnSetArrayElementAt(bnObject* obj, int index, bnObject* value);
+void bnSetArrayElementAt(bnObject* obj, int index, bnReference ref);
 #endif

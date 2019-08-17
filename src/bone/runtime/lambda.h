@@ -31,8 +31,8 @@ typedef enum bnLambdaType {
  * @param lineno
  * @return
  */
-bnObject* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
-                          const char* filename, int lineno);
+bnReference bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
+                            const char* filename, int lineno);
 
 #define bnNewLambdaFromCFunc(bone, func, pool, ...)                     \
         (bnNewLambdaFromCFuncFunc(bone, func, pool, __FILE__, __LINE__, \
@@ -47,9 +47,10 @@ bnObject* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
  * @param ... (parameter, named returns)
  * @return
  */
-bnObject* bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
-                                   bnNativeFunc func, struct bnStringPool* pool,
-                                   const char* filename, int lineno, ...);
+bnReference bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
+                                     bnNativeFunc func,
+                                     struct bnStringPool* pool,
+                                     const char* filename, int lineno, ...);
 
 /**
  * return true, if first parameter name is self.

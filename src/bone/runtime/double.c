@@ -34,8 +34,9 @@ typedef struct bnDouble {
         double value;
 } bnDouble;
 
-bnObject* bnNewDouble(bnInterpreter* bone, double value) {
-        bnDouble* ret = bnAllocObject(bone->heap);
+bnReference bnNewDouble(bnInterpreter* bone, double value) {
+        bnReference ref = bnAllocObject(bone->heap);
+        bnDouble* ret = bnGetObject(bone->heap, ref);
         bnInitObject(bone, &ret->base, BN_OBJECT_DOUBLE);
         ret->value = value;
 
@@ -98,7 +99,7 @@ bnObject* bnNewDouble(bnInterpreter* bone, double value) {
                  bnNewLambdaFromCFunc(bone, bnStdDoubleToString, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN,
                                       "ret", BN_C_ADD_EXIT));
-        return (bnObject*)ret;
+        return ref;
 }
 
 void bnSetDoubleValue(bnObject* obj, double value) {

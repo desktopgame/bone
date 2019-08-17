@@ -57,25 +57,25 @@ bnObject* bnNewObject(bnInterpreter* bone) {
         return ret;
 }
 
-void bnDefine(bnObject* self, bnStringView name, bnObject* value) {
+void bnDefine(bnObject* self, bnStringView name, bnReference ref) {
         int v = (int)name;
-        g_hash_table_replace(self->table, GINT_TO_POINTER(v), value);
+        g_hash_table_replace(self->table, GINT_TO_POINTER(v), ref);
 }
 
 void bnDefine2(bnObject* self, struct bnStringPool* pool, const char* str,
-               bnObject* value) {
-        bnDefine(self, bnIntern(pool, str), value);
+               bnReference ref) {
+        bnDefine(self, bnIntern(pool, str), ref);
 }
 
-bnObject* bnLookup(bnObject* self, bnStringView name) {
+bnReference bnLookup(bnObject* self, bnStringView name) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
-        return (bnObject*)g_hash_table_lookup(self->table, (gpointer)name);
+        return (bnReference)g_hash_table_lookup(self->table, (gpointer)name);
 #pragma clang diagnostic pop
 }
 
-bnObject* bnLookup2(bnObject* self, struct bnStringPool* pool,
-                    const char* str) {
+bnReference bnLookup2(bnObject* self, struct bnStringPool* pool,
+                      const char* str) {
         return bnLookup(self, bnIntern(pool, str));
 }
 

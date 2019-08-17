@@ -21,8 +21,9 @@ typedef struct bnString {
         bnStringView value;
 } bnString;
 
-bnObject* bnNewString(bnInterpreter* bone, bnStringView value) {
-        bnString* ret = bnAllocObject(bone->heap);
+bnReference bnNewString(bnInterpreter* bone, bnStringView value) {
+        bnReference ref = bnAllocObject(bone->heap);
+        bnString* ret = bnGetObject(bone->heap, ref);
         bnInitObject(bone, &ret->base, BN_OBJECT_STRING);
         ret->value = value;
         bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_EQUAL),
@@ -42,10 +43,10 @@ bnObject* bnNewString(bnInterpreter* bone, bnStringView value) {
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "index", BN_C_ADD_RETURN, "ret",
                                       BN_C_ADD_EXIT));
-        return (bnObject*)ret;
+        return ref;
 }
 
-bnObject* bnNewString2(bnInterpreter* bone, const char* str) {
+bnReference bnNewString2(bnInterpreter* bone, const char* str) {
         return bnNewString(bone, bnIntern(bone->pool, str));
 }
 

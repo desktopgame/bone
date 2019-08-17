@@ -7,6 +7,7 @@
 #include "../util/jump_stack.h"
 #include "../util/stack.h"
 #include "../util/string_pool.h"
+#include "storage.h"
 
 #define BN_JMP_CODE_EXCEPTION (1)
 
@@ -98,51 +99,50 @@ void bnPanic(bnInterpreter* self, struct bnObject* exception);
  * @param cond
  * @return
  */
-struct bnObject* bnGetBool(struct bnStringPool* pool, struct bnFrame* frame,
-                           bool cond);
+bnReference bnGetBool(struct bnStringPool* pool, struct bnFrame* frame,
+                      bool cond);
 
 /**
  * @param pool
  * @param frame
  * @return
  */
-struct bnObject* bnGetTrue(struct bnStringPool* pool, struct bnFrame* frame);
+bnReference bnGetTrue(struct bnStringPool* pool, struct bnFrame* frame);
 
 /**
  * @param pool
  * @param frame
  * @return
  */
-struct bnObject* bnGetFalse(struct bnStringPool* pool, struct bnFrame* frame);
+bnReference bnGetFalse(struct bnStringPool* pool, struct bnFrame* frame);
 
 /**
  * @param self
  * @param name
- * @param obj
+ * @param ref
  */
-void bnWriteExtern(bnInterpreter* self, bnStringView name,
-                   struct bnObject* obj);
+void bnWriteExtern(bnInterpreter* self, bnStringView name, bnReference ref);
 
 /**
  * @param self
  * @param str
- * @param obj
+ * @param ref
  */
-void bnWriteExtern2(bnInterpreter* self, const char* str, struct bnObject* obj);
+void bnWriteExtern2(bnInterpreter* self, const char* str, bnReference ref);
 
 /**
  * @param self
  * @param name
  * @return
  */
-struct bnObject* bnReadExtern(bnInterpreter* self, bnStringView name);
+bnReference bnReadExtern(bnInterpreter* self, bnStringView name);
 
 /**
  * @param self
  * @param str
  * @return
  */
-struct bnObject* bnReadExtern2(bnInterpreter* self, const char* str);
+bnReference bnReadExtern2(bnInterpreter* self, const char* str);
 
 void bnDeleteInterpreter(bnInterpreter* self);
 #endif

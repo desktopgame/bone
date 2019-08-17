@@ -14,6 +14,7 @@
 #include "../object.h"
 #include "../string.h"
 #include "../vm.h"
+#include "../heap.h"
 
 void bnExternSystem(bnInterpreter* bone) {
         bnWriteExtern2(
@@ -53,7 +54,8 @@ void bnExtSystemSystem(bnInterpreter* bone, bnFrame* frame) {
         bnObject* args = a;
         GString* gbuf = g_string_new("");
         for (int i = 0; i < bnGetArrayLength(args); i++) {
-                bnObject* e = bnGetArrayElementAt(args, i);
+                bnReference eRef = bnGetArrayElementAt(args, i);
+                bnObject* e = bnGetObject(bone->heap, eRef);
                 if (e->type != BN_OBJECT_STRING) {
                         bnFormatThrow(bone, "should be [%d] i string", i);
                 }

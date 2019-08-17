@@ -9,14 +9,14 @@
  * @param name
  * @return
  */
-bnObject* bnNewString(bnInterpreter* bone, bnStringView value);
+bnReference bnNewString(bnInterpreter* bone, bnStringView value);
 
 /**
  * @param bone
  * @param str
  * @return
  */
-bnObject* bnNewString2(bnInterpreter* bone, const char* str);
+bnReference bnNewString2(bnInterpreter* bone, const char* str);
 
 /**
  * @param obj

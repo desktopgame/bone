@@ -18,8 +18,9 @@ typedef struct bnChar {
         char value;
 } bnChar;
 
-bnObject* bnNewChar(bnInterpreter* bone, char value) {
-        bnChar* ret = bnAllocObject(bone->heap);
+bnReference bnNewChar(bnInterpreter* bone, char value) {
+        bnReference ref = bnAllocObject(bone->heap);
+        bnChar* ret = bnGetObject(bone->heap, ref);
         bnInitObject(bone, &ret->base, BN_OBJECT_CHAR);
         ret->value = value;
         bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_EQUAL),
@@ -32,7 +33,7 @@ bnObject* bnNewChar(bnInterpreter* bone, char value) {
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "other", BN_C_ADD_RETURN, "ret",
                                       BN_C_ADD_EXIT));
-        return (bnObject*)ret;
+        return ref;
 }
 
 char bnGetCharValue(bnObject* obj) { return ((bnChar*)obj)->value; }

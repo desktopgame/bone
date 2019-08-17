@@ -3,6 +3,7 @@
 #include "../../bone.h"
 #include "../char.h"
 #include "../frame.h"
+#include "../heap.h"
 #include "../interpreter.h"
 #include "../lambda.h"
 #include "../string.h"
@@ -12,11 +13,12 @@ typedef struct bnFile {
         FILE* fp;
 } bnFile;
 
-bnObject* bnNewFile(bnInterpreter* bone, FILE* fp) {
-        bnFile* ret = BN_MALLOC(sizeof(bnFile));
+bnReference bnNewFile(bnInterpreter* bone, FILE* fp) {
+        bnReference ref = bnAllocObject(bone->heap);
+        bnFile* ret = bnGetObject(bone->heap, ref);
         bnInitAny(bone, &ret->base, FILE_T);
         ret->fp = fp;
-        return (bnObject*)ret;
+        return ref;
 }
 
 void bnExternFile(bnInterpreter* bone) {

@@ -1,6 +1,7 @@
 #ifndef BONE_RUNTIME_OBJECT_H
 #define BONE_RUNTIME_OBJECT_H
 #include "../bone.h"
+#include "storage.h"
 
 struct bnInterpreter;
 struct bnFrame;
@@ -66,25 +67,25 @@ bnObject* bnNewObject(struct bnInterpreter* bone);
  * bnDefine is define new member.
  * @param self
  * @param name
- * @param value
+ * @param ref
  */
-void bnDefine(bnObject* self, bnStringView name, bnObject* value);
+void bnDefine(bnObject* self, bnStringView name, bnReference ref);
 
 /**
  * @param self
  * @param pool
  * @param str
- * @param value
+ * @param ref
  */
 void bnDefine2(bnObject* self, struct bnStringPool* pool, const char* str,
-               bnObject* value);
+               bnReference ref);
 
 /**
  * @param self
  * @param name
  * @return
  */
-bnObject* bnLookup(bnObject* self, bnStringView name);
+bnReference bnLookup(bnObject* self, bnStringView name);
 
 /**
  * @param self
@@ -92,7 +93,8 @@ bnObject* bnLookup(bnObject* self, bnStringView name);
  * @param str
  * @return
  */
-bnObject* bnLookup2(bnObject* self, struct bnStringPool* pool, const char* str);
+bnReference bnLookup2(bnObject* self, struct bnStringPool* pool,
+                      const char* str);
 
 /**
  * @param self

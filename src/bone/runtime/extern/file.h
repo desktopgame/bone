@@ -5,7 +5,7 @@
 
 #define FILE_T ("bone.lang.file")
 
-bnObject* bnNewFile(struct bnInterpreter* bone, FILE* fp);
+bnReference bnNewFile(struct bnInterpreter* bone, FILE* fp);
 
 void bnExternFile(struct bnInterpreter* bone);
 

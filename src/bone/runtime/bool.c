@@ -19,11 +19,12 @@ static void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame);
 typedef struct bnBool {
         bnObject base;
         bool value;
-        struct bnBool* r;
+        bnReference r;
 } bnBool;
 
-bnObject* bnNewBool(bnInterpreter* bone, bool value) {
-        bnBool* ret = bnAllocObject(bone->heap);
+bnReference bnNewBool(bnInterpreter* bone, bool value) {
+        bnReference ref = bnAllocObject(bone->heap);
+        bnBool* ret = bnGetObject(bone->heap, ref);
         bnInitObject(bone, &ret->base, BN_OBJECT_BOOL);
         ret->value = value;
         ret->r = NULL;
@@ -41,14 +42,14 @@ bnObject* bnNewBool(bnInterpreter* bone, bool value) {
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "other", BN_C_ADD_RETURN, "ret",
                                       BN_C_ADD_EXIT));
-        return (bnObject*)ret;
+        return ref;
 }
 
-void bnSetFlipValue(bnObject* t, bnObject* f) {
-        bnBool* bt = (bnBool*)t;
-        bnBool* bf = (bnBool*)f;
-        bt->r = bf;
-        bf->r = bt;
+void bnSetFlipValue(struct bnHeap* heap, bnReference t, bnReference f) {
+        bnBool* tobj = bnGetObject(heap, t);
+        bnBool* fobj = bnGetObject(heap, f);
+        tobj->r = f;
+        fobj->r = t;
 }
 
 bnObject* bnGetFlipValue(bnObject* obj) {
@@ -71,7 +72,7 @@ static void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame) {
                 _throw(bone, frame, "should be `self` is bool");
         }
         bnBool* b = (bnBool*)a;
-        bnWriteVariable2(frame, bone->pool, "ret", (bnObject*)b->r);
+        bnWriteVariable2(frame, bone->pool, "ret", b->r);
 }
 
 static void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame) {
@@ -85,7 +86,7 @@ static void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame) {
         }
         bnBool* boolA = (bnBool*)a;
         bnBool* boolB = (bnBool*)b;
-        bnObject* c =
+        bnReference c =
             bnReadVariable2(frame, bone->pool,
                             (boolA->value & boolB->value) ? "true" : "false");
         bnWriteVariable2(frame, bone->pool, "ret", c);
@@ -102,7 +103,7 @@ static void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame) {
         }
         bnBool* boolA = (bnBool*)a;
         bnBool* boolB = (bnBool*)b;
-        bnObject* c =
+        bnReference c =
             bnReadVariable2(frame, bone->pool,
                             (boolA->value | boolB->value) ? "true" : "false");
         bnWriteVariable2(frame, bone->pool, "ret", c);

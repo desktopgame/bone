@@ -42,10 +42,10 @@ void bnPushStage(struct bnHeap* self);
  * bnStaging is will register object to last stage.
  * was registered object is not collect by GC until it stage poped.
  * @param self
- * @param obj
+ * @param ref
  * @return
  */
-struct bnObject* bnStaging(struct bnHeap* self, struct bnObject* obj);
+bnReference bnStaging(struct bnHeap* self, bnReference ref);
 
 /**
  * bnPopStage is pop last stage.

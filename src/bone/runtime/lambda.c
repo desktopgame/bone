@@ -1,4 +1,5 @@
 #include "lambda.h"
+#include "heap.h"
 #include "interpreter.h"
 #include "storage.h"
 
@@ -21,9 +22,10 @@ typedef struct bnLambda {
         } u;
 } bnLambda;
 
-bnObject* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
-                          const char* filename, int lineno) {
-        bnLambda* ret = bnMallocFunc(sizeof(bnLambda), filename, lineno);
+bnReference bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
+                            const char* filename, int lineno) {
+        bnReference ref = bnAllocObject(bone->heap);
+        bnLambda* ret = bnGetObject(bone->heap, ref);
         bnInitObject(bone, &ret->base, BN_OBJECT_LAMBDA);
         ret->base.freeFunc = free_lambda;
         ret->type = type;
@@ -36,15 +38,17 @@ bnObject* bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
         return (bnObject*)ret;
 }
 
-bnObject* bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
-                                   bnNativeFunc func, struct bnStringPool* pool,
-                                   const char* filename, int lineno, ...) {
+bnReference bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
+                                     bnNativeFunc func,
+                                     struct bnStringPool* pool,
+                                     const char* filename, int lineno, ...) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
         va_list ap;
         va_start(ap, lineno);
-        bnLambda* ret = (bnLambda*)bnNewLambdaFunc(bone, BN_LAMBDA_NATIVE,
-                                                   filename, lineno);
+        bnReference ref =
+            bnNewLambdaFunc(bone, BN_LAMBDA_NATIVE, filename, lineno);
+        bnLambda* ret = bnGetObject(bone->heap, ref);
         ret->u.vFunc = func;
         ret->filename = bnIntern(bone->pool, filename);
         ret->lineno = lineno;
@@ -68,7 +72,7 @@ bnObject* bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
 
         va_end(ap);
 #pragma clang diagnostic pop
-        return (bnObject*)ret;
+        return ref;
 }
 
 bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnObject* self) {

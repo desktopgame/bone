@@ -1,7 +1,7 @@
 #ifndef BONE_RUNTIME_STORAGE_H
 #define BONE_RUNTIME_STORAGE_H
 
-#define OBJECT_MAXSIZE (48)
+#define OBJECT_MAXSIZE (92)
 
 typedef int* bnReference;
 

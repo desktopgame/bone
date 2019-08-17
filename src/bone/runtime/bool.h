@@ -8,13 +8,14 @@
  * @param name
  * @return
  */
-bnObject* bnNewBool(struct bnInterpreter* bone, bool value);
+bnReference bnNewBool(struct bnInterpreter* bone, bool value);
 
 /**
+ * @param heap
  * @param t
  * @param f
  */
-void bnSetFlipValue(bnObject* t, bnObject* f);
+void bnSetFlipValue(struct bnHeap* heap, bnReference t, bnReference f);
 
 /**
  * @param obj

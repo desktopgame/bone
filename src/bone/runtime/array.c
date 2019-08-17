@@ -22,8 +22,9 @@ typedef struct bnArray {
         int size;
 } bnArray;
 
-bnObject* bnNewArray(bnInterpreter* bone, int size) {
-        bnArray* ret = bnAllocObject(bone->heap);
+bnReference bnNewArray(bnInterpreter* bone, int size) {
+        bnReference ref = bnAllocObject(bone->heap);
+        bnArray* ret = bnGetObject(bone->heap, ref);
         bnInitObject(bone, &ret->base, BN_OBJECT_ARRAY);
         ret->base.freeFunc = free_array;
         ret->arr = g_ptr_array_new();
@@ -54,11 +55,11 @@ bnObject* bnNewArray(bnInterpreter* bone, int size) {
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "index", BN_C_ADD_RETURN, "ret",
                                       BN_C_ADD_EXIT));
-        return (bnObject*)ret;
+        return ref;
 }
 
-void bnFillString(bnInterpreter* bone, const char* str, bnObject* obj) {
-        bnArray* ary = (bnArray*)obj;
+void bnFillString(bnInterpreter* bone, const char* str, bnReference ref) {
+        bnArray* ary = (bnArray*)bnGetObject(bone->heap, ref);
         for (int i = 0; i < ary->size; i++) {
                 g_ptr_array_index(ary->arr, i) = bnNewChar(bone, str[i]);
         }
@@ -66,12 +67,12 @@ void bnFillString(bnInterpreter* bone, const char* str, bnObject* obj) {
 
 int bnGetArrayLength(bnObject* obj) { return ((bnArray*)obj)->arr->len; }
 
-bnObject* bnGetArrayElementAt(bnObject* obj, int index) {
-        return g_ptr_array_index(((bnArray*)obj)->arr, index);
+bnReference bnGetArrayElementAt(bnObject* obj, int index) {
+        return (bnReference)g_ptr_array_index(((bnArray*)obj)->arr, index);
 }
 
-void bnSetArrayElementAt(bnObject* obj, int index, bnObject* value) {
-        g_ptr_array_index(((bnArray*)obj)->arr, index) = value;
+void bnSetArrayElementAt(bnObject* obj, int index, bnReference ref) {
+        g_ptr_array_index(((bnArray*)obj)->arr, index) = ref;
 }
 
 // Array

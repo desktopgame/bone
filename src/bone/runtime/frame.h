@@ -55,9 +55,9 @@ struct bnObject* bnExportAllVariable(struct bnInterpreter* bone, bnFrame* self);
 /**
  * @param frame
  * @param name
- * @param obj
+ * @param ref
  */
-void bnWriteVariable(bnFrame* frame, bnStringView name, struct bnObject* obj);
+void bnWriteVariable(bnFrame* frame, bnStringView name, bnReference ref);
 
 /**
  * @param frame
@@ -66,14 +66,14 @@ void bnWriteVariable(bnFrame* frame, bnStringView name, struct bnObject* obj);
  * @param obj
  */
 void bnWriteVariable2(bnFrame* frame, struct bnStringPool* pool,
-                      const char* name, struct bnObject* obj);
+                      const char* name, bnReference ref);
 
 /**
  * @param frame
  * @param name
  * @return
  */
-struct bnObject* bnReadVariable(bnFrame* frame, bnStringView name);
+bnReference bnReadVariable(bnFrame* frame, bnStringView name);
 
 /**
  * @param frame
@@ -81,8 +81,8 @@ struct bnObject* bnReadVariable(bnFrame* frame, bnStringView name);
  * @param name
  * @return
  */
-struct bnObject* bnReadVariable2(bnFrame* frame, struct bnStringPool* pool,
-                                 const char* name);
+bnReference bnReadVariable2(bnFrame* frame, struct bnStringPool* pool,
+                            const char* name);
 
 /**
  * free a bnFrame.
