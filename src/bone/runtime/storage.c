@@ -41,14 +41,21 @@ void bnFreeMemory(bnStorage* self, bnReference index) {
 }
 
 void* bnGetMemory(bnStorage* self, bnReference index) {
+        int i;
+        bnStorage* str = bnGetStorage(self, index, &i);
+        bnObject* obj = (bnObject*)(str->pool + (OBJECT_MAXSIZE * i));
+        return obj;
+}
+
+bnStorage* bnGetStorage(bnStorage* self, bnReference index, int* outFixedPos) {
         int i = *index;
         bnStorage* iter = self;
         while (i >= OBJECT_COUNT) {
                 i -= OBJECT_COUNT;
                 iter = iter->next;
         }
-        bnObject* obj = (bnObject*)(iter->pool + (OBJECT_MAXSIZE * i));
-        return obj;
+        (*outFixedPos) = i;
+        return iter;
 }
 
 void bnCompact(bnStorage* self) { compact_impl(self); }

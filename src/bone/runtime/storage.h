@@ -22,6 +22,8 @@ void bnFreeMemory(bnStorage* self, bnReference index);
 
 void* bnGetMemory(bnStorage* self, bnReference index);
 
+bnStorage* bnGetStorage(bnStorage* self, bnReference index, int* outFixedPos);
+
 void bnCompact(bnStorage* self);
 
 void bnDeleteStorage(bnStorage* self);
