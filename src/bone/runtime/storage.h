@@ -7,8 +7,8 @@
 typedef int* bnReference;
 
 typedef struct bnStorage {
-        void* pool;
-        int* map;
+        char pool[OBJECT_MAXSIZE * OBJECT_COUNT];
+        int map[OBJECT_COUNT];
         int use;
         int offset;
         struct bnStorage* next;

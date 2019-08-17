@@ -13,8 +13,6 @@ static void compact_impl(bnStorage* self);
 
 bnStorage* bnNewStorage(int offset) {
         bnStorage* ret = BN_MALLOC(sizeof(bnStorage));
-        ret->pool = BN_MALLOC(OBJECT_MAXSIZE * OBJECT_COUNT);
-        ret->map = BN_MALLOC(sizeof(int) * OBJECT_COUNT);
         ret->use = 0;
         ret->offset = offset;
         ret->next = NULL;
@@ -30,7 +28,7 @@ bnReference bnAllocMemory(bnStorage* self) {
         }
         out->use++;
         int i = *ret - out->offset;
-        bnObject* obj = out->pool + (OBJECT_MAXSIZE * i);
+        bnObject* obj = (bnObject*)(out->pool + (OBJECT_MAXSIZE * i));
         assert(obj->freed);
         obj->freed = false;
         return ret;
@@ -49,15 +47,16 @@ void* bnGetMemory(bnStorage* self, bnReference index) {
                 i -= OBJECT_COUNT;
                 iter = iter->next;
         }
-        bnObject* obj = iter->pool + (OBJECT_MAXSIZE * i);
+        bnObject* obj = (bnObject*)(iter->pool + (OBJECT_MAXSIZE * i));
         return obj;
 }
 
 void bnCompact(bnStorage* self) { compact_impl(self); }
 
 void bnDeleteStorage(bnStorage* self) {
-        BN_FREE(self->pool);
-        BN_FREE(self->map);
+        if (self->next != NULL) {
+                bnDeleteStorage(self->next);
+        }
         BN_FREE(self);
 }
 // private
@@ -67,7 +66,8 @@ static bnReference find_free_object(bnStorage* self, bnStorage** outStorage) {
                 (*outStorage) = iter;
                 for (int i = 0; i < OBJECT_COUNT; i++) {
                         int index = iter->map[i] - iter->offset;
-                        bnObject* obj = iter->pool + (OBJECT_MAXSIZE * index);
+                        bnObject* obj =
+                            (bnObject*)(iter->pool + (OBJECT_MAXSIZE * index));
                         if (obj->freed) {
                                 bnReference ref = iter->map + i;
                                 int vref = *ref - iter->offset;
@@ -84,7 +84,8 @@ static int rfind_free_object_pos(bnStorage* self, int cur) {
         int tailPos = cur;
         // find tail position
         while (tailPos) {
-                bnObject* obj = self->pool + (OBJECT_MAXSIZE * tailPos);
+                bnObject* obj =
+                    (bnObject*)(self->pool + (OBJECT_MAXSIZE * tailPos));
                 if (!obj->freed) {
                         tailPos--;
                 } else {
@@ -110,7 +111,7 @@ static void clear_storage(bnStorage* self) {
         memset(self->pool, 0, OBJECT_MAXSIZE * OBJECT_COUNT);
         memset(self->map, 0, sizeof(int) * OBJECT_COUNT);
         for (int i = 0; i < OBJECT_COUNT; i++) {
-                bnObject* obj = self->pool + (OBJECT_MAXSIZE * i);
+                bnObject* obj = (bnObject*)(self->pool + (OBJECT_MAXSIZE * i));
                 self->map[i] = i + self->offset;
                 obj->freed = true;
         }
@@ -123,11 +124,13 @@ static void compact_impl(bnStorage* self) {
         }
         for (int i = 0; i < OBJECT_COUNT; i++) {
                 int index = self->map[i];
-                bnObject* obj = self->pool + (OBJECT_MAXSIZE * index);
+                bnObject* obj =
+                    (bnObject*)(self->pool + (OBJECT_MAXSIZE * index));
                 if (obj->freed) {
                         continue;
                 }
-                bnObject* tail = self->pool + (OBJECT_MAXSIZE * tailPos);
+                bnObject* tail =
+                    (bnObject*)(self->pool + (OBJECT_MAXSIZE * tailPos));
                 if (tail->freed) {
                         self->map[i] = tailPos;
                         self->map[tailPos] = i;
