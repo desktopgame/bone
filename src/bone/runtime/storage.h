@@ -3,6 +3,8 @@
 
 #define OBJECT_MAXSIZE (48)
 
+typedef int* bnReference;
+
 typedef struct bnStorage {
         void* pool;
         int* map;
@@ -13,11 +15,11 @@ typedef struct bnStorage {
 
 bnStorage* bnNewStorage();
 
-int* bnAllocMemory(bnStorage* self);
+bnReference bnAllocMemory(bnStorage* self);
 
-void bnFreeMemory(bnStorage* self, int* index);
+void bnFreeMemory(bnStorage* self, bnReference index);
 
-void* bnGetMemory(bnStorage* self, int* index);
+void* bnGetMemory(bnStorage* self, bnReference index);
 
 void bnCompact(bnStorage* self);
 

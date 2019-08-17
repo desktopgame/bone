@@ -5,7 +5,7 @@
 #include "memory.h"
 #include "object.h"
 
-static int* find_free_object(bnStorage* self);
+static bnReference find_free_object(bnStorage* self);
 static int rfind_free_object_pos(bnStorage* self, int cur);
 static void realloc_storage(bnStorage* self);
 static void clear_storage(bnStorage* self);
@@ -22,8 +22,8 @@ bnStorage* bnNewStorage() {
         return ret;
 }
 
-int* bnAllocMemory(bnStorage* self) {
-        int* ret = find_free_object(self);
+bnReference bnAllocMemory(bnStorage* self) {
+        bnReference ret = find_free_object(self);
         if (ret == NULL) {
                 realloc_storage(self);
                 return bnAllocMemory(self);
@@ -34,13 +34,13 @@ int* bnAllocMemory(bnStorage* self) {
         return ret;
 }
 
-void bnFreeMemory(bnStorage* self, int* index) {
+void bnFreeMemory(bnStorage* self, bnReference index) {
         bnObject* obj = bnGetMemory(self, index);
         self->use--;
         obj->freed = true;
 }
 
-void* bnGetMemory(bnStorage* self, int* index) {
+void* bnGetMemory(bnStorage* self, bnReference index) {
         int i;
         return self->pool + (OBJECT_MAXSIZE * self->map[i]);
 }
@@ -53,7 +53,7 @@ void bnDeleteStorage(bnStorage* self) {
         BN_FREE(self);
 }
 // private
-static int* find_free_object(bnStorage* self) {
+static bnReference find_free_object(bnStorage* self) {
         for (int i = 0; i < self->capacity; i++) {
                 int index = self->map[i] - self->offset;
                 bnObject* obj = self->pool + (OBJECT_MAXSIZE * index);
@@ -83,7 +83,7 @@ static void realloc_storage(bnStorage* self) {
         int oldcapa = self->capacity;
         int newcapa = self->capacity + (self->capacity / 2);
         void* newpool = BN_REALLOC(self->pool, OBJECT_MAXSIZE * newcapa);
-        int* newmap = BN_REALLOC(self->map, sizeof(int) * newcapa);
+        bnReference newmap = BN_REALLOC(self->map, sizeof(int) * newcapa);
         assert(newpool != NULL);
         assert(newmap != NULL);
         self->pool = newpool;
