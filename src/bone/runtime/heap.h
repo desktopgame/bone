@@ -16,20 +16,20 @@ struct bnHeap* bnNewHeap();
  * @param self
  * @return
  */
-int* bnAllocObject(struct bnHeap* self);
+bnReference bnAllocObject(struct bnHeap* self);
 
 /**
  * @param self
- * @param obj
+ * @param ref
  * @return
  */
-void* bnGetObject(struct bnHeap* self, int* obj);
+void* bnGetObject(struct bnHeap* self, bnReference ref);
 
 /**
  * @parram self
- * @param obj
+ * @param ref
  */
-void bnFreeObject(struct bnHeap* self, int* obj);
+void bnFreeObject(struct bnHeap* self, bnReference ref);
 
 /**
  * bnPushStage is push new stage.

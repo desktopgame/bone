@@ -40,11 +40,13 @@ bnHeap* bnNewHeap() {
 }
 int* bnAllocObject(bnHeap* self) { return bnAllocMemory(self->storage); }
 
-void* bnGetObject(struct bnHeap* self, int* obj) {
-        return bnGetMemory(self->storage, obj);
+void* bnGetObject(struct bnHeap* self, bnReference ref) {
+        return bnGetMemory(self->storage, ref);
 }
 
-void bnFreeObject(bnHeap* self, int* obj) { bnFreeMemory(self->storage, obj); }
+void bnFreeObject(bnHeap* self, bnReference ref) {
+        bnFreeMemory(self->storage, ref);
+}
 
 void bnPushStage(bnHeap* self) { bnPushStack(self->stages, new_stage()); }
 
