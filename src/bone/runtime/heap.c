@@ -34,7 +34,7 @@ bnHeap* bnNewHeap() {
         bnHeap* ret = BN_MALLOC(sizeof(bnHeap));
         ret->stages = bnNewStack();
         ret->all = 0;
-        ret->storage = bnNewStorage(0);
+        ret->storage = bnNewStorage(92, 100);
         g_rec_mutex_init(&ret->mutex);
         return ret;
 }
@@ -87,9 +87,10 @@ void bnDeleteHeap(bnHeap* self) {
 static void gc_clear(bnHeap* self, bnFrame* frame) {
         bnStorage* iter = self->storage;
         while (iter != NULL) {
-                for (int i = 0; i < OBJECT_COUNT; i++) {
+                for (int i = 0; i < self->storage->objectCount; i++) {
                         bnObject* obj =
-                            (bnObject*)(iter->pool + (OBJECT_MAXSIZE * i));
+                            (bnObject*)(iter->pool +
+                                        (self->storage->objectSize * i));
                         if (!obj->freed) {
                                 obj->mark = false;
                         }
@@ -201,11 +202,12 @@ static void gc_mark_lambda(bnHeap* self, bnObject* lambda) {
 static void gc_sweep(bnHeap* self, bnFrame* frame) {
         bnStorage* iter = self->storage;
         while (iter != NULL) {
-                for (int i = 0; i < OBJECT_COUNT; i++) {
+                for (int i = 0; i < self->storage->objectCount; i++) {
                         bnReference ref = iter->map + i;
                         int index = (*ref) - iter->offset;
                         bnObject* obj =
-                            (bnObject*)(iter->pool + (OBJECT_MAXSIZE * index));
+                            (bnObject*)(iter->pool +
+                                        (self->storage->objectSize * index));
                         if (!obj->mark && !obj->freed) {
                                 bnDeleteObject(self->storage, ref, obj);
                         }
