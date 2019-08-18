@@ -140,7 +140,7 @@ void bnShowStorage(bnStorage* self) {
 
 void bnCompact(bnStorage* self) {
 #if DEBUG
-        bnShowStorage(self);
+        // bnShowStorage(self);
 #endif
         bnStorage* iter = self;
         while (iter != NULL) {
@@ -148,8 +148,8 @@ void bnCompact(bnStorage* self) {
                 iter = iter->next;
         }
 #if DEBUG
-        bnShowStorage(self);
-        printf("Compaction Completed\n");
+        // bnShowStorage(self);
+        // printf("Compaction Completed\n");
 #endif
 }
 
@@ -157,6 +157,9 @@ void bnDeleteStorage(bnStorage* self) {
         if (self->next != NULL) {
                 bnDeleteStorage(self->next);
         }
+        BN_FREE(self->bitmap);
+        BN_FREE(self->table);
+        BN_FREE(self->pool);
         BN_FREE(self);
 }
 // private
