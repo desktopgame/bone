@@ -27,7 +27,7 @@ bnReference bnAllocMemory(bnStorage* self) {
                 return bnAllocMemory(append_storage(self));
         }
         out->use++;
-        // assert(*ret != 291);
+        // assert(*ret != 517);
         int i = *ret - out->offset;
         bnObject* obj = (bnObject*)(out->pool + (OBJECT_MAXSIZE * i));
         assert(obj->freed);
@@ -42,6 +42,9 @@ void bnFreeMemory(bnStorage* self, bnReference index) {
 }
 
 void* bnGetMemory(bnStorage* self, bnReference index) {
+        if (index == NULL) {
+                return NULL;
+        }
 #if DEBUG
         int gd = bnGetGlobalStorageIndexFromPointer(self, index);
         if (gd > 0) {
@@ -58,6 +61,7 @@ void* bnGetMemory(bnStorage* self, bnReference index) {
 }
 
 bnStorage* bnGetStorage(bnStorage* self, bnReference index, int* outFixedPos) {
+        assert(index != NULL);
         int i = *index;
         bnStorage* iter = self;
         while (i >= OBJECT_COUNT) {

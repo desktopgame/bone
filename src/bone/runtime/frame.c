@@ -68,7 +68,9 @@ bnReference bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
                     bnGetExportVariableName(bone->pool, retName);
                 // create private member
                 bnDefine(arr, exportName, v);
+                arr = bnGetObject(bone->heap, arrRef);
                 bnSetArrayElementAt(arr, arrI, v);
+                arr = bnGetObject(bone->heap, arrRef);
                 arrI++;
         }
         return arrRef;

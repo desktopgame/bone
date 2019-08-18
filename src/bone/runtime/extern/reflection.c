@@ -93,7 +93,7 @@ void bnExtReflectionExpand(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnExtReflectionEntries(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         GList* entries = NULL;
         GHashTableIter hashIter;
         gpointer k, v;
@@ -122,7 +122,7 @@ void bnExtReflectionEntries(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnExtReflectionExport(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         GHashTableIter hashIter;
         g_hash_table_iter_init(&hashIter, a->table);
         gpointer k, v;

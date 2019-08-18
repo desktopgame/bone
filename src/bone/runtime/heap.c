@@ -85,7 +85,8 @@ static void gc_clear(bnHeap* self, bnFrame* frame) {
         bnStorage* iter = self->storage;
         while (iter != NULL) {
                 for (int i = 0; i < OBJECT_COUNT; i++) {
-                        bnObject* obj = iter->pool + (OBJECT_MAXSIZE * i);
+                        bnObject* obj =
+                            (bnObject*)(iter->pool + (OBJECT_MAXSIZE * i));
                         if (!obj->freed) {
                                 obj->mark = false;
                         }

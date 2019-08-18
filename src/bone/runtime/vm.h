@@ -14,9 +14,8 @@ void bnObjectInjection(bnInterpreter* bone, struct bnObject* src,
 GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
                                   struct bnObject* lambda, int PC);
 
-struct bnObject* bnCreateLambdaInActiveCode(bnInterpreter* bone,
-                                            bnEnviroment* env,
-                                            struct bnFrame* frame, int* pPC);
+bnReference bnCreateLambdaInActiveCode(bnInterpreter* bone, bnEnviroment* env,
+                                       struct bnFrame* frame, int* pPC);
 
 /**
  * bnExecute be run a bone.

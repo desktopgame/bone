@@ -31,7 +31,7 @@ static bool compare_list_array(bnInterpreter* bone, GList* a, bnObject* b);
 // only in debug build
 #if DEBUG
 void bnStdDebugAssert(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_BOOL) {
                 _throw(bone, frame, "internal error");
         }
@@ -44,7 +44,7 @@ void bnStdDebugAssert(bnInterpreter* bone, bnFrame* frame) {
 void bnStdDebugDie(bnInterpreter* bone, bnFrame* frame) { abort(); }
 
 void bnStdDebugPrint(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "internal error");
         }

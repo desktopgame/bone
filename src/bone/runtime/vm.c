@@ -58,9 +58,8 @@ GString* bnCreateStackFrameString(bnInterpreter* bone, bnEnviroment* env,
         return gbuf;
 }
 
-struct bnObject* bnCreateLambdaInActiveCode(bnInterpreter* bone,
-                                            bnEnviroment* env, bnFrame* frame,
-                                            int* pPC) {
+bnReference bnCreateLambdaInActiveCode(bnInterpreter* bone, bnEnviroment* env,
+                                       bnFrame* frame, int* pPC) {
         bnReference lmbRef = bnNewLambda(bone, BN_LAMBDA_SCRIPT);
         bnObject* lmb = bnGetObject(bone->heap, lmbRef);
         int line = bnReadCode(env, ++(*pPC));
@@ -149,7 +148,7 @@ struct bnObject* bnCreateLambdaInActiveCode(bnInterpreter* bone,
                         bnWriteCode(bnGetEnviroment(lmb), data);
                 }
         }
-        return lmb;
+        return lmbRef;
 }
 
 void bnScopeInjection(bnInterpreter* bone, bnObject* src, bnFrame* dst) {
@@ -275,14 +274,15 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                         frame->panic = sub->panic;
                                         break;
                                 }
-                                bnObject* ary = bnPopStack(frame->vStack);
+                                bnReference aryRef = bnPopStack(frame->vStack);
+                                bnObject* ary = bnGetObject(bone->heap, aryRef);
                                 for (int i = 0; i < size; i++) {
                                         bnSetArrayElementAt(
                                             ary, size - (i + 1),
                                             bnPopStack(frame->vStack));
                                 }
                                 bnDeleteFrame(sub);
-                                bnPushStack(frame->vStack, ary);
+                                bnPushStack(frame->vStack, aryRef);
                                 bnGC(bone);
                                 break;
                         }

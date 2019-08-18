@@ -149,10 +149,6 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
                 }
                 int code = BN_JMP_PUSH(bone->__jstack);
                 if (code == 0) {
-                        const char* fn =
-                            bnView2Str(bone->pool, bnGetLambdaFileName(lambda));
-                        int line = bnGetLambdaLineNumber(lambda);
-                        printf("fn: %s<%d>\n", fn, line);
                         bnGetNativeFunc(lambda)(bone, sub);
                         if (sub->panic != NULL) {
                                 frame->panic = sub->panic;

@@ -1,4 +1,5 @@
 #include "array.h"
+#include <assert.h>
 #include "char.h"
 #include "frame.h"
 #include "heap.h"
@@ -32,25 +33,31 @@ bnReference bnNewArray(bnInterpreter* bone, int size) {
         g_ptr_array_set_free_func(ret->arr, NULL);
         for (int i = 0; i < size; i++) {
                 ret = bnGetObject(bone->heap, ref);
+                assert(ret->arr != NULL);
                 g_ptr_array_add(ret->arr, bnNewObject(bone));
         }
+        ret = bnGetObject(bone->heap, ref);
         bnDefine(&ret->base, bnIntern(bone->pool, "length"),
                  bnNewInteger(bone, size));
+        ret = bnGetObject(bone->heap, ref);
         bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_ARRAY_SET),
                  bnNewLambdaFromCFunc(bone, bnStdArrayArraySet, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "index", BN_C_ADD_PARAM, "value",
                                       BN_C_ADD_EXIT));
+        ret = bnGetObject(bone->heap, ref);
         bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_ARRAY_GET),
                  bnNewLambdaFromCFunc(bone, bnStdArrayArrayGet, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "index", BN_C_ADD_RETURN, "ret",
                                       BN_C_ADD_EXIT));
+        ret = bnGetObject(bone->heap, ref);
         bnDefine(&ret->base, bnIntern(bone->pool, "set"),
                  bnNewLambdaFromCFunc(bone, bnStdArrayArraySet, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "index", BN_C_ADD_PARAM, "value",
                                       BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
+        ret = bnGetObject(bone->heap, ref);
         bnDefine(&ret->base, bnIntern(bone->pool, "get"),
                  bnNewLambdaFromCFunc(bone, bnStdArrayArrayGet, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
