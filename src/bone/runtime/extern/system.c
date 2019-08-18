@@ -8,13 +8,13 @@
 #include "../bool.h"
 #include "../enviroment.h"
 #include "../frame.h"
+#include "../heap.h"
 #include "../integer.h"
 #include "../interpreter.h"
 #include "../lambda.h"
 #include "../object.h"
 #include "../string.h"
 #include "../vm.h"
-#include "../heap.h"
 
 void bnExternSystem(bnInterpreter* bone) {
         bnWriteExtern2(
@@ -31,7 +31,8 @@ void bnExternSystem(bnInterpreter* bone) {
 }
 
 void bnExtSystemExit(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* statusObj = bnPopStack(frame->vStack);
+        bnObject* statusObj =
+            bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (statusObj->type != BN_OBJECT_INTEGER) {
                 bnThrow(bone,
                         bnNewString2(bone, "should be `status` is integer"),
@@ -43,7 +44,7 @@ void bnExtSystemExit(bnInterpreter* bone, bnFrame* frame) {
 void bnExtSystemAbort(bnInterpreter* bone, bnFrame* frame) { abort(); }
 
 void bnExtSystemSystem(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_ARRAY) {
                 bnThrow(
                     bone,

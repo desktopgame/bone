@@ -109,8 +109,8 @@ void bnSetDoubleValue(bnObject* obj, double value) {
 double bnGetDoubleValue(bnObject* obj) { return ((bnDouble*)obj)->value; }
 
 static void bnStdDoublePlus(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
                 _throw(bone, frame, message());
         }
@@ -121,8 +121,8 @@ static void bnStdDoublePlus(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdDoubleMinus(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
                 _throw(bone, frame, message());
         }
@@ -133,8 +133,8 @@ static void bnStdDoubleMinus(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdDoubleMultiply(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
                 _throw(bone, frame, message());
         }
@@ -145,8 +145,8 @@ static void bnStdDoubleMultiply(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdDoubleDivide(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
                 _throw(bone, frame, message());
         }
@@ -157,8 +157,8 @@ static void bnStdDoubleDivide(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdDoubleModulo(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
                 _throw(bone, frame, message());
         }
@@ -170,8 +170,8 @@ static void bnStdDoubleModulo(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdDoubleGT(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
                 _throw(bone, frame, message());
         }
@@ -182,8 +182,8 @@ static void bnStdDoubleGT(bnInterpreter* bone, bnFrame* frame) {
                          bnGetBool(bone->pool, frame, ai > bi));
 }
 static void bnStdDoubleGE(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
                 _throw(bone, frame, message());
         }
@@ -195,8 +195,8 @@ static void bnStdDoubleGE(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdDoubleLT(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
                 _throw(bone, frame, message());
         }
@@ -207,8 +207,8 @@ static void bnStdDoubleLT(bnInterpreter* bone, bnFrame* frame) {
                          bnGetBool(bone->pool, frame, ai < bi));
 }
 static void bnStdDoubleLE(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
                 _throw(bone, frame, message());
         }
@@ -219,8 +219,8 @@ static void bnStdDoubleLE(bnInterpreter* bone, bnFrame* frame) {
                          bnGetBool(bone->pool, frame, ai <= bi));
 }
 static void bnStdDoubleEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
                 _throw(bone, frame, message());
         }
@@ -231,8 +231,8 @@ static void bnStdDoubleEqual(bnInterpreter* bone, bnFrame* frame) {
                          bnGetBool(bone->pool, frame, ai == bi));
 }
 static void bnStdDoubleNotEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
                 _throw(bone, frame, message());
         }
@@ -244,7 +244,7 @@ static void bnStdDoubleNotEqual(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdDoubleToString(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_DOUBLE) {
                 bnFormatThrow(bone, message());
         }

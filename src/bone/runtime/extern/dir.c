@@ -42,7 +42,7 @@ void bnExtDirDirectories(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnExtDirDelete(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "should be `path` is string");
         }
@@ -53,7 +53,7 @@ void bnExtDirDelete(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnExtDirCreate(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "should be `path` is string");
         }
@@ -66,7 +66,7 @@ void bnExtDirCreate(bnInterpreter* bone, bnFrame* frame) {
 static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
         bnReference aryFuncRef = bnReadVariable2(frame, bone->pool, "array");
         bnReference strFuncRef = bnReadVariable2(frame, bone->pool, "string");
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "should be `path` is string");
         }

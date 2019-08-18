@@ -410,7 +410,9 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         }
                         case BN_OP_GOTO_IF: {
                                 bnLabel* jmp = bnReadLabel(env, ++PC);
-                                bnObject* cond = bnPopStack(frame->vStack);
+                                bnReference condRef = bnPopStack(frame->vStack);
+                                bnObject* cond =
+                                    bnGetObject(bone->heap, condRef);
                                 if (bnGetBoolValue(cond)) {
                                         PC = jmp->pos;
                                 }
@@ -418,7 +420,9 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         }
                         case BN_OP_GOTO_ELSE: {
                                 bnLabel* jmp = bnReadLabel(env, ++PC);
-                                bnObject* cond = bnPopStack(frame->vStack);
+                                bnReference condRef = bnPopStack(frame->vStack);
+                                bnObject* cond =
+                                    bnGetObject(bone->heap, condRef);
                                 if (!bnGetBoolValue(cond)) {
                                         PC = jmp->pos;
                                 }

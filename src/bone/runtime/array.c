@@ -107,8 +107,8 @@ static void bnStdArrayArrayGet(bnInterpreter* bone, bnFrame* frame) {
                 _throw(bone, frame, "should be `index` is integer");
         }
         bnArray* arr = (bnArray*)a;
-        bnWriteVariable2(frame, bone->pool, "ret",
-                         g_ptr_array_index(arr->arr, bnGetIntegerValue(b)));
+        bnReference r = g_ptr_array_index(arr->arr, bnGetIntegerValue(b));
+        bnWriteVariable2(frame, bone->pool, "ret", r);
 }
 
 static void free_array(bnStorage* storage, bnReference ref, bnObject* obj) {

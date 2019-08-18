@@ -43,8 +43,8 @@ void bnSetCharValue(bnObject* obj, char c) { ((bnChar*)obj)->value = c; }
 // Char
 
 static void bnStdCharEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_CHAR || b->type != BN_OBJECT_CHAR) {
                 _throw(bone, frame, message());
         }
@@ -56,8 +56,8 @@ static void bnStdCharEqual(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdCharNotEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_CHAR || b->type != BN_OBJECT_CHAR) {
                 _throw(bone, frame, message());
         }

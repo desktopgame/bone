@@ -47,8 +47,8 @@ void bnExternFile(bnInterpreter* bone) {
 }
 
 void bnExtFileOpen(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "should be `path` is string");
         }
@@ -68,8 +68,8 @@ void bnExtFileOpen(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnExtFilePutc(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_ANY || !bnMatchType(bone, a, FILE_T)) {
                 bnFormatThrow(bone, "should be `self` is file");
         }
@@ -92,7 +92,7 @@ void bnExtFilePutc(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnExtFileGetc(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_ANY || !bnMatchType(bone, a, FILE_T)) {
                 bnFormatThrow(bone, "should be `self` is file");
         }
@@ -115,7 +115,7 @@ void bnExtFileGetc(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnExtFileClose(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_ANY || !bnMatchType(bone, a, FILE_T)) {
                 bnFormatThrow(bone, "should be `self` is file");
         }

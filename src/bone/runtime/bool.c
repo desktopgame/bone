@@ -74,8 +74,8 @@ static void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_BOOL) {
                 _throw(bone, frame, message());
         }
@@ -91,8 +91,8 @@ static void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_BOOL) {
                 _throw(bone, frame, message());
         }

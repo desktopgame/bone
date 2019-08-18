@@ -56,8 +56,8 @@ void bnExtReflectionDefine(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnExtReflectionUndef(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (b->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "shoud be `name` is string");
         }
@@ -67,8 +67,8 @@ void bnExtReflectionUndef(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnExtReflectionDefined(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (b->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "shoud be `name` is string");
         }
@@ -78,8 +78,8 @@ void bnExtReflectionDefined(bnInterpreter* bone, bnFrame* frame) {
 }
 
 void bnExtReflectionExpand(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (b->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "shoud be `name` is string");
         }

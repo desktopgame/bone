@@ -106,6 +106,9 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
                     int argc) {
         // assert(self != NULL && self->type == BN_OBJECT_LAMBDA);
         bnObject* lambda = bnGetObject(bone->heap, ref);
+        const char* fnstr = bnView2Str(bone->pool, bnGetLambdaFileName(lambda));
+        int line = bnGetLambdaLineNumber(lambda);
+        printf("fn:%s<%d>\n", fnstr, line);
         // int paramLen = g_list_length(lambda->parameters);
         // assert(paramLen == argc);
         // create new frame
