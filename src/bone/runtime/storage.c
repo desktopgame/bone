@@ -27,6 +27,7 @@ bnReference bnAllocMemory(bnStorage* self) {
                 return bnAllocMemory(append_storage(self));
         }
         out->use++;
+        // assert(*ret != 291);
         int i = *ret - out->offset;
         bnObject* obj = (bnObject*)(out->pool + (OBJECT_MAXSIZE * i));
         assert(obj->freed);
@@ -155,6 +156,7 @@ static bnStorage* append_storage(bnStorage* self) {
         while (1) {
                 if (iter->next != NULL) {
                         iter = iter->next;
+                        continue;
                 }
                 iter->next = bnNewStorage(iter->offset + OBJECT_COUNT);
                 break;
