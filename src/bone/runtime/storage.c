@@ -214,6 +214,10 @@ static int int_compare(const void* a, const void* b) {
 }
 
 static void compact_impl(bnStorage* self) {
+        if (self->use >= self->objectCount) {
+                // can't compaction
+                return;
+        }
         int count = 0;
         int lastFree = self->objectCount - 1;
         // sort all objects
