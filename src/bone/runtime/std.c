@@ -44,10 +44,7 @@ void bnStdDebugAssert(bnInterpreter* bone, bnFrame* frame) {
 void bnStdDebugDie(bnInterpreter* bone, bnFrame* frame) { abort(); }
 
 void bnStdDebugPrint(bnInterpreter* bone, bnFrame* frame) {
-        bnStorage* stor = bnGetHeapStorage(bone->heap);
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        int i = bnGetGlobalStorageIndexFromPointer(stor, a);
-        printf("gi %d\n", i);
         if (a->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "internal error");
         }
