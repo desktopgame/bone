@@ -55,8 +55,8 @@ bnStringView bnGetStringValue(bnObject* obj) { return ((bnString*)obj)->value; }
 // String
 
 static void bnStdStringEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_STRING || b->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, message());
         }
@@ -67,8 +67,8 @@ static void bnStdStringEqual(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdStringNotEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_STRING || b->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, message());
         }
@@ -79,8 +79,8 @@ static void bnStdStringNotEqual(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdStringAt(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_STRING) {
                 _throw(bone, frame, "should be `self` is string");
         }

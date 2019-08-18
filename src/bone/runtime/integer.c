@@ -123,7 +123,7 @@ void bnSetIntegerValue(bnObject* obj, int value) {
 // private
 
 static void bnStdIntegerNegative(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, message());
         }
@@ -132,8 +132,8 @@ static void bnStdIntegerNegative(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdIntegerPlus(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, message());
         }
@@ -144,8 +144,8 @@ static void bnStdIntegerPlus(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdIntegerMinus(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, message());
         }
@@ -156,8 +156,8 @@ static void bnStdIntegerMinus(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdIntegerMultiply(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, message());
         }
@@ -168,8 +168,8 @@ static void bnStdIntegerMultiply(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdIntegerDivide(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, message());
         }
@@ -180,8 +180,8 @@ static void bnStdIntegerDivide(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdIntegerModulo(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, message());
         }
@@ -196,8 +196,8 @@ static void bnStdIntegerModulo(bnInterpreter* bone, bnFrame* frame) {
 // static void bnStdIntegerLogicOr(bnInterpreter* bone, bnFrame* frame){}
 
 static void bnStdIntegerLShift(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
                 bnFormatThrow(bone, message());
         }
@@ -208,8 +208,8 @@ static void bnStdIntegerLShift(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdIntegerRShift(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
                 bnFormatThrow(bone, message());
         }
@@ -220,8 +220,8 @@ static void bnStdIntegerRShift(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdIntegerGT(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, message());
         }
@@ -233,8 +233,8 @@ static void bnStdIntegerGT(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdIntegerGE(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, message());
         }
@@ -246,8 +246,8 @@ static void bnStdIntegerGE(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdIntegerLT(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, message());
         }
@@ -259,8 +259,8 @@ static void bnStdIntegerLT(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdIntegerLE(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, message());
         }
@@ -272,8 +272,8 @@ static void bnStdIntegerLE(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdIntegerEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, message());
         }
@@ -285,8 +285,8 @@ static void bnStdIntegerEqual(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdIntegerNotEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, message());
         }
@@ -298,7 +298,7 @@ static void bnStdIntegerNotEqual(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdIntegerToString(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_INTEGER) {
                 _throw(bone, frame, message());
         }
