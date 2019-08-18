@@ -36,8 +36,10 @@ bnReference bnAllocMemory(bnStorage* self) {
 }
 
 void bnFreeMemory(bnStorage* self, bnReference index) {
-        bnObject* obj = bnGetMemory(self, index);
-        self->use--;
+        int i;
+        bnStorage* str = bnGetStorage(self, index, &i);
+        bnObject* obj = (bnObject*)(str->pool + (OBJECT_MAXSIZE * i));
+        str->use--;
         obj->freed = true;
 }
 
