@@ -21,6 +21,7 @@ bnStorage* bnNewStorage(int objectSize, int objectCount) {
         ret->nextFree = 0;
         ret->table = BN_MALLOC(sizeof(int) * objectCount);
         ret->pool = BN_MALLOC(objectSize * objectCount);
+        ret->bitmap = BN_MALLOC(sizeof(bool) * objectCount);
         clear_storage(ret);
         return ret;
 }
@@ -34,19 +35,19 @@ bnReference bnAllocMemory(bnStorage* self) {
         out->use++;
         // assert(*ret != 517);
         int i = *ret - out->offset;
-        bnObject* obj = (bnObject*)(out->pool + (self->objectSize * i));
-        assert(obj->freed);
-        obj->freed = false;
+        bool* bit = out->bitmap + (sizeof(bool) * i);
+        (*bit) = false;
         return ret;
 }
 
 void bnFreeMemory(bnStorage* self, bnReference index) {
         int i;
         bnStorage* str = bnGetStorage(self, index, &i);
-        bnObject* obj = (bnObject*)(str->pool + (self->objectSize * i));
+        char* obj = (char*)(str->pool + (self->objectSize * i));
+        bool* bit = str->bitmap + (sizeof(bool) * i);
         memset(obj, 0, self->objectSize);
         str->use--;
-        obj->freed = true;
+        (*bit) = true;
 }
 
 void* bnGetMemory(bnStorage* self, bnReference index) {
@@ -64,7 +65,7 @@ void* bnGetMemory(bnStorage* self, bnReference index) {
 #endif
         int i;
         bnStorage* str = bnGetStorage(self, index, &i);
-        bnObject* obj = (bnObject*)(str->pool + (self->objectSize * i));
+        char* obj = (char*)(str->pool + (self->objectSize * i));
         return obj;
 }
 
@@ -107,8 +108,7 @@ int bnGetGlobalStorageIndexFromPointer(bnStorage* self, void* ptr) {
                         continue;
                 }
                 for (int i = 0; i < self->objectCount; i++) {
-                        bnObject* e =
-                            (bnObject*)(iter->pool + (self->objectSize * i));
+                        char* e = (char*)(iter->pool + (self->objectSize * i));
                         if (!memcmp(e, ptr, self->objectSize)) {
                                 ret = i + iter->offset;
                                 break;
@@ -125,9 +125,8 @@ void bnShowStorage(bnStorage* self) {
         while (iter != NULL) {
                 printf("%03d. [", count);
                 for (int i = 0; i < self->objectCount; i++) {
-                        bnObject* obj =
-                            (bnObject*)(iter->pool + (self->objectSize * i));
-                        if (obj->freed) {
+                        bool* bit = iter->bitmap + (sizeof(bool) * i);
+                        if (*bit) {
                                 printf("-");
                         } else {
                                 printf("+");
@@ -168,9 +167,8 @@ static bnReference find_free_object(bnStorage* self, bnStorage** outStorage) {
                 for (int i = iter->nextFree; i < self->objectCount; i++) {
                         int index = iter->table[i] - iter->offset;
                         assert(index >= 0 && index < self->objectCount);
-                        bnObject* obj = (bnObject*)(iter->pool +
-                                                    (self->objectSize * index));
-                        if (obj->freed) {
+                        bool* bit = iter->bitmap + (sizeof(bool) * index);
+                        if (*bit) {
                                 iter->nextFree++;
                                 bnReference ref = iter->table + i;
                                 int vref = *ref - iter->offset;
@@ -201,11 +199,9 @@ static bnStorage* append_storage(bnStorage* self) {
 static void clear_storage(bnStorage* self) {
         memset(self->pool, 0, self->objectSize * self->objectCount);
         memset(self->table, 0, sizeof(int) * self->objectCount);
+        memset(self->bitmap, true, sizeof(bool) * self->objectCount);
         for (int i = 0; i < self->objectCount; i++) {
-                bnObject* obj =
-                    (bnObject*)(self->pool + (self->objectSize * i));
                 self->table[i] = i + self->offset;
-                obj->freed = true;
         }
 }
 
@@ -223,8 +219,10 @@ static void compact_impl(bnStorage* self) {
         // sort all objects
         int mapBuf[self->objectCount];
         char poolBuf[self->objectSize * self->objectCount];
+        bool bitmapBuf[sizeof(bool) * self->objectCount];
         memcpy(mapBuf, self->table, sizeof(int) * self->objectCount);
         memset(poolBuf, 0, self->objectSize * self->objectCount);
+        memset(bitmapBuf, true, sizeof(bool) * self->objectCount);
         // sort 0 -> 100
         qsort(self->table, self->objectCount, sizeof(int), int_compare);
         if (memcmp(mapBuf, self->table, sizeof(int) * self->objectCount)) {
@@ -233,35 +231,43 @@ static void compact_impl(bnStorage* self) {
                         int newPos = self->table[i] - self->offset;
                         void* oldObj = self->pool + (self->objectSize * oldPos);
                         void* newObj = poolBuf + (self->objectSize * newPos);
+                        bool* oldBit = self->bitmap + (sizeof(bool) * oldPos);
+                        bool* newBit = bitmapBuf + (sizeof(bool) * newPos);
                         memcpy(newObj, oldObj, self->objectSize);
+                        memcpy(newBit, oldBit, sizeof(bool));
                 }
                 memcpy(self->pool, poolBuf,
                        self->objectSize * self->objectCount);
+                memcpy(self->bitmap, bitmapBuf,
+                       sizeof(bool) * self->objectCount);
         }
         // compaction
         for (int i = 0; i < self->objectCount; i++) {
                 int index = self->table[i];
                 int localIndex = index - self->offset;
-                bnObject* obj =
-                    (bnObject*)(self->pool + (self->objectSize * localIndex));
-                if (obj->freed) {
+                char* obj =
+                    (char*)(self->pool + (self->objectSize * localIndex));
+                bool* bit = self->bitmap + (sizeof(bool) * localIndex);
+                if (*bit) {
                         continue;
                 }
                 count++;
                 for (int j = lastFree; j >= i; j--) {
                         int swapIndex = self->table[j];
                         int swapLocalIndex = swapIndex - self->offset;
-                        bnObject* swapObj =
-                            (bnObject*)(self->pool +
-                                        (self->objectSize * swapLocalIndex));
-                        if (!swapObj->freed) {
+                        char* swapObj = (char*)(self->pool + (self->objectSize *
+                                                              swapLocalIndex));
+                        bool* swapBit =
+                            self->bitmap + (sizeof(bool) * swapLocalIndex);
+                        if (!(*swapBit)) {
                                 continue;
                         }
                         self->table[i] = swapIndex;
                         self->table[j] = index;
                         memmove(swapObj, obj, self->objectSize);
                         memset(obj, 0, self->objectSize);
-                        obj->freed = true;
+                        (*swapBit) = false;
+                        (*bit) = true;
                         lastFree = j - 1;
                         break;
                 }

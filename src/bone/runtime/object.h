@@ -34,7 +34,6 @@ typedef enum bnObjectType {
 typedef struct bnObject {
         GHashTable* table;
         bool mark;
-        bool freed;
         bnObjectType type;
         bnFreeObjectFunc freeFunc;
 } bnObject;

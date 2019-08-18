@@ -1,11 +1,13 @@
 #ifndef BONE_RUNTIME_STORAGE_H
 #define BONE_RUNTIME_STORAGE_H
+#include <stdbool.h>
 
 typedef int* bnReference;
 
 typedef struct bnStorage {
         char* pool;
         int* table;
+        bool* bitmap;
         int objectSize;
         int objectCount;
         int use;

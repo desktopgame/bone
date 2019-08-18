@@ -91,7 +91,8 @@ static void gc_clear(bnHeap* self, bnFrame* frame) {
                         bnObject* obj =
                             (bnObject*)(iter->pool +
                                         (self->storage->objectSize * i));
-                        if (!obj->freed) {
+                        bool* bit = iter->bitmap + (sizeof(bool) * i);
+                        if (!(*bit)) {
                                 obj->mark = false;
                         }
                 }
@@ -208,7 +209,8 @@ static void gc_sweep(bnHeap* self, bnFrame* frame) {
                         bnObject* obj =
                             (bnObject*)(iter->pool +
                                         (self->storage->objectSize * index));
-                        if (!obj->mark && !obj->freed) {
+                        bool* bit = iter->bitmap + (sizeof(bool) * index);
+                        if (!obj->mark && !(*bit)) {
                                 bnDeleteObject(self->storage, ref, obj);
                         }
                 }

@@ -29,7 +29,6 @@ void bnInitObject(bnInterpreter* bone, bnObject* self, bnObjectType type) {
         self->mark = false;
         self->type = type;
         self->freeFunc = NULL;
-        self->freed = false;
         // bnAddToHeap(bone->heap, self);
 }
 
