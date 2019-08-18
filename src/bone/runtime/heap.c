@@ -203,7 +203,7 @@ static void gc_sweep(bnHeap* self, bnFrame* frame) {
         bnStorage* iter = self->storage;
         while (iter != NULL) {
                 for (int i = 0; i < self->storage->objectCount; i++) {
-                        bnReference ref = iter->map + i;
+                        bnReference ref = iter->table + i;
                         int index = (*ref) - iter->offset;
                         bnObject* obj =
                             (bnObject*)(iter->pool +

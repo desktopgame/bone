@@ -19,7 +19,7 @@ bnStorage* bnNewStorage(int objectSize, int objectCount) {
         ret->objectCount = objectCount;
         ret->next = NULL;
         ret->nextFree = 0;
-        ret->map = BN_MALLOC(sizeof(int) * objectCount);
+        ret->table = BN_MALLOC(sizeof(int) * objectCount);
         ret->pool = BN_MALLOC(objectSize * objectCount);
         clear_storage(ret);
         return ret;
@@ -87,10 +87,10 @@ bnReference bnGetReferenceFromGlobalStorageIndex(bnStorage* self, int gindex) {
                 iter = iter->next;
         }
         for (int i = 0; i < self->objectCount; i++) {
-                int index = iter->map[i];
+                int index = iter->table[i];
                 int refTo = (gindex + iter->offset);
                 if (index == refTo) {
-                        return iter->map + gindex;
+                        return iter->table + gindex;
                 }
         }
         return NULL;
@@ -166,13 +166,13 @@ static bnReference find_free_object(bnStorage* self, bnStorage** outStorage) {
         while (iter != NULL) {
                 (*outStorage) = iter;
                 for (int i = iter->nextFree; i < self->objectCount; i++) {
-                        int index = iter->map[i] - iter->offset;
+                        int index = iter->table[i] - iter->offset;
                         assert(index >= 0 && index < self->objectCount);
                         bnObject* obj = (bnObject*)(iter->pool +
                                                     (self->objectSize * index));
                         if (obj->freed) {
                                 iter->nextFree++;
-                                bnReference ref = iter->map + i;
+                                bnReference ref = iter->table + i;
                                 int vref = *ref - iter->offset;
                                 assert(vref == index);
                                 return ref;
@@ -200,11 +200,11 @@ static bnStorage* append_storage(bnStorage* self) {
 
 static void clear_storage(bnStorage* self) {
         memset(self->pool, 0, self->objectSize * self->objectCount);
-        memset(self->map, 0, sizeof(int) * self->objectCount);
+        memset(self->table, 0, sizeof(int) * self->objectCount);
         for (int i = 0; i < self->objectCount; i++) {
                 bnObject* obj =
                     (bnObject*)(self->pool + (self->objectSize * i));
-                self->map[i] = i + self->offset;
+                self->table[i] = i + self->offset;
                 obj->freed = true;
         }
 }
@@ -223,14 +223,14 @@ static void compact_impl(bnStorage* self) {
         // sort all objects
         int mapBuf[self->objectCount];
         char poolBuf[self->objectSize * self->objectCount];
-        memcpy(mapBuf, self->map, sizeof(int) * self->objectCount);
+        memcpy(mapBuf, self->table, sizeof(int) * self->objectCount);
         memset(poolBuf, 0, self->objectSize * self->objectCount);
         // sort 0 -> 100
-        qsort(self->map, self->objectCount, sizeof(int), int_compare);
-        if (memcmp(mapBuf, self->map, sizeof(int) * self->objectCount)) {
+        qsort(self->table, self->objectCount, sizeof(int), int_compare);
+        if (memcmp(mapBuf, self->table, sizeof(int) * self->objectCount)) {
                 for (int i = 0; i < self->objectCount; i++) {
                         int oldPos = mapBuf[i] - self->offset;
-                        int newPos = self->map[i] - self->offset;
+                        int newPos = self->table[i] - self->offset;
                         void* oldObj = self->pool + (self->objectSize * oldPos);
                         void* newObj = poolBuf + (self->objectSize * newPos);
                         memcpy(newObj, oldObj, self->objectSize);
@@ -240,7 +240,7 @@ static void compact_impl(bnStorage* self) {
         }
         // compaction
         for (int i = 0; i < self->objectCount; i++) {
-                int index = self->map[i];
+                int index = self->table[i];
                 int localIndex = index - self->offset;
                 bnObject* obj =
                     (bnObject*)(self->pool + (self->objectSize * localIndex));
@@ -249,7 +249,7 @@ static void compact_impl(bnStorage* self) {
                 }
                 count++;
                 for (int j = lastFree; j >= i; j--) {
-                        int swapIndex = self->map[j];
+                        int swapIndex = self->table[j];
                         int swapLocalIndex = swapIndex - self->offset;
                         bnObject* swapObj =
                             (bnObject*)(self->pool +
@@ -257,8 +257,8 @@ static void compact_impl(bnStorage* self) {
                         if (!swapObj->freed) {
                                 continue;
                         }
-                        self->map[i] = swapIndex;
-                        self->map[j] = index;
+                        self->table[i] = swapIndex;
+                        self->table[j] = index;
                         memmove(swapObj, obj, self->objectSize);
                         memset(obj, 0, self->objectSize);
                         obj->freed = true;

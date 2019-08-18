@@ -5,7 +5,7 @@ typedef int* bnReference;
 
 typedef struct bnStorage {
         char* pool;
-        int* map;
+        int* table;
         int objectSize;
         int objectCount;
         int use;
