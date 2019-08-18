@@ -11,6 +11,7 @@ typedef struct bnStorage {
         int map[OBJECT_COUNT];
         int use;
         int offset;
+        int nextFree;
         struct bnStorage* next;
 } bnStorage;
 

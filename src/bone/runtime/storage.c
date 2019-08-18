@@ -16,6 +16,7 @@ bnStorage* bnNewStorage(int offset) {
         ret->use = 0;
         ret->offset = offset;
         ret->next = NULL;
+        ret->nextFree = 0;
         clear_storage(ret);
         return ret;
 }
@@ -126,11 +127,12 @@ static bnReference find_free_object(bnStorage* self, bnStorage** outStorage) {
         bnStorage* iter = self;
         while (iter != NULL) {
                 (*outStorage) = iter;
-                for (int i = 0; i < OBJECT_COUNT; i++) {
+                for (int i = iter->nextFree; i < OBJECT_COUNT; i++) {
                         int index = iter->map[i] - iter->offset;
                         bnObject* obj =
                             (bnObject*)(iter->pool + (OBJECT_MAXSIZE * index));
                         if (obj->freed) {
+                                iter->nextFree++;
                                 bnReference ref = iter->map + i;
                                 int vref = *ref - iter->offset;
                                 assert(vref == index);
