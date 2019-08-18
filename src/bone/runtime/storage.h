@@ -29,6 +29,8 @@ bnReference bnGetReferenceFromGlobalStorageIndex(bnStorage* self, int gindex);
 
 int bnGetGlobalStorageIndexFromPointer(bnStorage* self, void* ptr);
 
+void bnShowStorage(bnStorage* self);
+
 void bnCompact(bnStorage* self);
 
 void bnDeleteStorage(bnStorage* self);

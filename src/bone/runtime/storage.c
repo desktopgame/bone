@@ -6,9 +6,9 @@
 #include "object.h"
 
 static bnReference find_free_object(bnStorage* self, bnStorage** outStorage);
-static int rfind_free_object_pos(bnStorage* self, int cur);
 static bnStorage* append_storage(bnStorage* self);
 static void clear_storage(bnStorage* self);
+static int int_compare(const void* a, const void* b);
 static void compact_impl(bnStorage* self);
 
 bnStorage* bnNewStorage(int offset) {
@@ -40,6 +40,7 @@ void bnFreeMemory(bnStorage* self, bnReference index) {
         int i;
         bnStorage* str = bnGetStorage(self, index, &i);
         bnObject* obj = (bnObject*)(str->pool + (OBJECT_MAXSIZE * i));
+        memset(obj, 0, OBJECT_MAXSIZE);
         str->use--;
         obj->freed = true;
 }
@@ -114,7 +115,40 @@ int bnGetGlobalStorageIndexFromPointer(bnStorage* self, void* ptr) {
         return ret;
 }
 
-void bnCompact(bnStorage* self) { compact_impl(self); }
+void bnShowStorage(bnStorage* self) {
+        bnStorage* iter = self;
+        int count = 0;
+        while (iter != NULL) {
+                printf("%03d. [", count);
+                for (int i = 0; i < OBJECT_COUNT; i++) {
+                        bnObject* obj =
+                            (bnObject*)(iter->pool + (OBJECT_MAXSIZE * i));
+                        if (obj->freed) {
+                                printf("-");
+                        } else {
+                                printf("+");
+                        }
+                }
+                printf("]\n");
+                count++;
+                iter = iter->next;
+        }
+}
+
+void bnCompact(bnStorage* self) {
+#if DEBUG
+        bnShowStorage(self);
+#endif
+        bnStorage* iter = self;
+        while (iter != NULL) {
+                compact_impl(iter);
+                iter = iter->next;
+        }
+#if DEBUG
+        bnShowStorage(self);
+        printf("Compaction Completed\n");
+#endif
+}
 
 void bnDeleteStorage(bnStorage* self) {
         if (self->next != NULL) {
@@ -129,6 +163,7 @@ static bnReference find_free_object(bnStorage* self, bnStorage** outStorage) {
                 (*outStorage) = iter;
                 for (int i = iter->nextFree; i < OBJECT_COUNT; i++) {
                         int index = iter->map[i] - iter->offset;
+                        assert(index >= 0 && index < OBJECT_COUNT);
                         bnObject* obj =
                             (bnObject*)(iter->pool + (OBJECT_MAXSIZE * index));
                         if (obj->freed) {
@@ -142,21 +177,6 @@ static bnReference find_free_object(bnStorage* self, bnStorage** outStorage) {
                 iter = iter->next;
         }
         return NULL;
-}
-
-static int rfind_free_object_pos(bnStorage* self, int cur) {
-        int tailPos = cur;
-        // find tail position
-        while (tailPos) {
-                bnObject* obj =
-                    (bnObject*)(self->pool + (OBJECT_MAXSIZE * tailPos));
-                if (!obj->freed) {
-                        tailPos--;
-                } else {
-                        break;
-                }
-        }
-        return tailPos;
 }
 
 static bnStorage* append_storage(bnStorage* self) {
@@ -182,32 +202,58 @@ static void clear_storage(bnStorage* self) {
         }
 }
 
+static int int_compare(const void* a, const void* b) {
+        return (*(int*)a) - (*(int*)b);
+}
+
 static void compact_impl(bnStorage* self) {
-        int tailPos = rfind_free_object_pos(self, OBJECT_COUNT - 1);
-        if (!tailPos) {
-                return;
-        }
+        int count = 0;
+        int lastFree = OBJECT_COUNT - 1;
+        // sort all objects
+        int mapBuf[OBJECT_COUNT];
+        char poolBuf[OBJECT_MAXSIZE * OBJECT_COUNT];
+        memcpy(mapBuf, self->map, sizeof(int) * OBJECT_COUNT);
+        memset(poolBuf, 0, OBJECT_MAXSIZE * OBJECT_COUNT);
+        // sort 0 -> 100
+        qsort(self->map, OBJECT_COUNT, sizeof(int), int_compare);
         for (int i = 0; i < OBJECT_COUNT; i++) {
+                int oldPos = mapBuf[i] - self->offset;
+                int newPos = self->map[i] - self->offset;
+                void* oldObj = self->pool + (OBJECT_MAXSIZE * oldPos);
+                void* newObj = poolBuf + (OBJECT_MAXSIZE * newPos);
+                memcpy(newObj, oldObj, OBJECT_MAXSIZE);
+        }
+        memcpy(self->pool, poolBuf, OBJECT_MAXSIZE * OBJECT_COUNT);
+        // compaction
+        for (int i = OBJECT_COUNT - 1; i >= 0; i--) {
                 int index = self->map[i];
+                int localIndex = index - self->offset;
                 bnObject* obj =
-                    (bnObject*)(self->pool + (OBJECT_MAXSIZE * index));
+                    (bnObject*)(self->pool + (OBJECT_MAXSIZE * localIndex));
                 if (obj->freed) {
                         continue;
                 }
-                bnObject* tail =
-                    (bnObject*)(self->pool + (OBJECT_MAXSIZE * tailPos));
-                if (tail->freed) {
-                        self->map[i] = tailPos;
-                        self->map[tailPos] = i;
-                        memcpy(tail, obj, OBJECT_MAXSIZE);
+                count++;
+                for (int j = lastFree; j >= i; j--) {
+                        int swapIndex = self->map[j];
+                        int swapLocalIndex = swapIndex - self->offset;
+                        bnObject* swapObj =
+                            (bnObject*)(self->pool +
+                                        (OBJECT_MAXSIZE * swapLocalIndex));
+                        if (!swapObj->freed) {
+                                continue;
+                        }
+                        self->map[i] = swapIndex;
+                        self->map[j] = index;
+                        memmove(swapObj, obj, OBJECT_MAXSIZE);
                         memset(obj, 0, OBJECT_MAXSIZE);
                         obj->freed = true;
-                } else {
+                        lastFree = j - 1;
                         break;
                 }
-                tailPos = rfind_free_object_pos(self, tailPos);
-                if (!tailPos) {
-                        break;
+                if (count >= self->use) {
+                        //           break;
                 }
         }
+        self->nextFree = 0;
 }
