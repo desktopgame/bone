@@ -59,6 +59,7 @@ bnReference bnNewObject(bnInterpreter* bone) {
 
 void bnDefine(bnObject* self, bnStringView name, bnReference ref) {
         int v = (int)name;
+        assert(ref != NULL);
         g_hash_table_replace(self->table, GINT_TO_POINTER(v), ref);
 }
 
@@ -138,6 +139,7 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
                 gpointer k, v;
                 g_hash_table_iter_init(&iter, frame->variableTable);
                 while (g_hash_table_iter_next(&iter, &k, &v)) {
+                        assert(v != NULL);
                         g_hash_table_replace(sub->variableTable, k, v);
                 }
                 // staging all arguments.
@@ -169,14 +171,18 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
                 gpointer k, v;
                 g_hash_table_iter_init(&iter, bnGetCapturedMap(lambda));
                 while (g_hash_table_iter_next(&iter, &k, &v)) {
+                        assert(v != NULL);
                         g_hash_table_replace(sub->variableTable, k, v);
                 }
                 bnExecute(bone, bnGetEnviroment(lambda), sub);
         }
+        // ... maybe was compactioned
+        lambda = bnGetObject(bone->heap, ref);
+        int retc = g_list_length(bnGetReturnValueList(lambda));
         if (bnIsVariadicReturn(bone->pool, lambda)) {
                 bnReference arrRef = bnExportAllVariable(bone, sub);
                 bnPushStack(frame->vStack, arrRef);
-        } else if (g_list_length(bnGetReturnValueList(lambda)) > 0) {
+        } else if (retc > 0) {
                 // assert(lambda->returns->data != NULL);
                 bnReference bodyRef = bnReadVariable(
                     sub, (bnStringView)bnGetReturnValueList(lambda)->data);

@@ -70,8 +70,11 @@ void bnGC(bnInterpreter* bone) {
         gc_mark_native(bone);
         gc_sweep(self, frame);
         BN_CHECK_MEM();
+        bnCompact(self->storage);
         g_rec_mutex_unlock(&self->mutex);
 }
+
+bnStorage* bnGetHeapStorage(bnHeap* self) { return self->storage; }
 
 void bnDeleteHeap(bnHeap* self) {
         g_rec_mutex_lock(&self->mutex);
@@ -196,22 +199,19 @@ static void gc_mark_lambda(bnHeap* self, bnObject* lambda) {
 }
 
 static void gc_sweep(bnHeap* self, bnFrame* frame) {
-        /*
-        GPtrArray* ret = g_ptr_array_new_full(2, NULL);
-        int sweep = 0;
-        for (int i = 0; i < self->objects->len; i++) {
-                bnObject* a = g_ptr_array_index(self->objects, i);
-                if (a->mark) {
-                        g_ptr_array_add(ret, a);
-                } else {
-                        sweep++;
-                        bnDeleteObject(self->storage, a);
+        bnStorage* iter = self->storage;
+        while (iter != NULL) {
+                for (int i = 0; i < OBJECT_COUNT; i++) {
+                        bnReference ref = iter->map + i;
+                        int index = (*ref) - iter->offset;
+                        bnObject* obj =
+                            (bnObject*)(iter->pool + (OBJECT_MAXSIZE * index));
+                        if (!obj->mark && !obj->freed) {
+                                bnDeleteObject(self->storage, ref, obj);
+                        }
                 }
+                iter = iter->next;
         }
-        g_ptr_array_free(self->objects, TRUE);
-        */
-        // self->objects = ret;
-        // self->all -= sweep;
 }
 static stage* new_stage() {
         stage* ret = BN_MALLOC(sizeof(stage));

@@ -62,6 +62,12 @@ void bnGC(struct bnInterpreter* bone);
 
 /**
  * @param self
+ * @return
+ */
+bnStorage* bnGetHeapStorage(struct bnHeap* self);
+
+/**
+ * @param self
  */
 void bnDeleteHeap(struct bnHeap* self);
 #endif

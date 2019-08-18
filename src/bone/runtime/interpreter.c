@@ -251,6 +251,7 @@ bnReference bnGetFalse(struct bnStringPool* pool, bnFrame* frame) {
 void bnWriteExtern(bnInterpreter* self, bnStringView name, bnReference ref) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+        assert(ref != NULL);
         g_hash_table_replace(self->externTable, (gpointer)name, (gpointer)ref);
 #pragma clang diagnostic pop
 }

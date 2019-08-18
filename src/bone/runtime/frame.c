@@ -46,6 +46,7 @@ void bnInjectFrame(GHashTable* src, bnFrame* dst) {
         gpointer k, v;
         g_hash_table_iter_init(&iter, src);
         while (g_hash_table_iter_next(&iter, &k, &v)) {
+                assert(v != NULL);
                 g_hash_table_replace(dst->variableTable, k, v);
         }
 }
@@ -79,12 +80,14 @@ bnReference bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
 void bnWriteVariable(bnFrame* frame, bnStringView name, bnReference ref) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+        assert(ref != NULL);
         g_hash_table_replace(frame->variableTable, (gpointer)name, ref);
 #pragma clang diagnostic pop
 }
 
 void bnWriteVariable2(bnFrame* frame, struct bnStringPool* pool,
                       const char* name, bnReference ref) {
+        assert(ref != NULL);
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
         g_hash_table_replace(frame->variableTable,

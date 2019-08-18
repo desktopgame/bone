@@ -86,6 +86,7 @@ bnReference bnCreateLambdaInActiveCode(bnInterpreter* bone, bnEnviroment* env,
         g_hash_table_iter_init(&hashIter, frame->variableTable);
         gpointer k, v;
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
+                assert(v != NULL);
                 g_hash_table_replace(bnGetCapturedMap(lmb), k, v);
         }
         int lambdaNest = 1;
@@ -329,6 +330,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                         case BN_OP_STORE: {
                                 bnStringView name = bnReadCode(env, ++PC);
                                 bnReference ref = bnPopStack(frame->vStack);
+                                assert(ref != NULL);
                                 g_hash_table_replace(frame->variableTable,
                                                      GINT_TO_POINTER((int)name),
                                                      ref);
@@ -466,6 +468,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                                                        frame->variableTable);
                                 while (
                                     g_hash_table_iter_next(&hashIter, &k, &v)) {
+                                        assert(v != NULL);
                                         g_hash_table_replace(sn->table, k, v);
                                 }
                                 frame->snapshots = snapshotIter =

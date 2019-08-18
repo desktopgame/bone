@@ -216,16 +216,18 @@ static void compact_impl(bnStorage* self) {
         memset(poolBuf, 0, OBJECT_MAXSIZE * OBJECT_COUNT);
         // sort 0 -> 100
         qsort(self->map, OBJECT_COUNT, sizeof(int), int_compare);
-        for (int i = 0; i < OBJECT_COUNT; i++) {
-                int oldPos = mapBuf[i] - self->offset;
-                int newPos = self->map[i] - self->offset;
-                void* oldObj = self->pool + (OBJECT_MAXSIZE * oldPos);
-                void* newObj = poolBuf + (OBJECT_MAXSIZE * newPos);
-                memcpy(newObj, oldObj, OBJECT_MAXSIZE);
+        if (memcmp(mapBuf, self->map, sizeof(int) * OBJECT_COUNT)) {
+                for (int i = 0; i < OBJECT_COUNT; i++) {
+                        int oldPos = mapBuf[i] - self->offset;
+                        int newPos = self->map[i] - self->offset;
+                        void* oldObj = self->pool + (OBJECT_MAXSIZE * oldPos);
+                        void* newObj = poolBuf + (OBJECT_MAXSIZE * newPos);
+                        memcpy(newObj, oldObj, OBJECT_MAXSIZE);
+                }
+                memcpy(self->pool, poolBuf, OBJECT_MAXSIZE * OBJECT_COUNT);
         }
-        memcpy(self->pool, poolBuf, OBJECT_MAXSIZE * OBJECT_COUNT);
         // compaction
-        for (int i = OBJECT_COUNT - 1; i >= 0; i--) {
+        for (int i = 0; i < OBJECT_COUNT; i++) {
                 int index = self->map[i];
                 int localIndex = index - self->offset;
                 bnObject* obj =
@@ -252,7 +254,7 @@ static void compact_impl(bnStorage* self) {
                         break;
                 }
                 if (count >= self->use) {
-                        //           break;
+                        break;
                 }
         }
         self->nextFree = 0;
