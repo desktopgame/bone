@@ -3,7 +3,7 @@
 #include "object.h"
 
 /**
- * 新しいbnArrayインスタンスを生成し、参照を返します。
+ * 新しい配列インスタンスを生成し、参照を返します。
  * @param bone
  * @param size
  * @return
