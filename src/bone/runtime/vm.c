@@ -187,353 +187,434 @@ void bnObjectInjection(bnInterpreter* bone, bnObject* src, bnObject* dst) {
 }
 
 int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
+        static void* addr_table[] = {
+            &&LABEL_OP_NOP,
+            &&LABEL_OP_DUP,
+            &&LABEL_OP_SWAP,
+            &&LABEL_OP_GEN_INT,
+            &&LABEL_OP_GEN_DOUBLE,
+            &&LABEL_OP_GEN_STRING,
+            &&LABEL_OP_GEN_ARRAY,
+            &&LABEL_OP_GEN_LAMBDA_BEGIN,
+            &&LABEL_OP_GEN_LAMBDA_END,
+            &&LABEL_OP_SET_REGISTER_0,
+            &&LABEL_OP_GET_REGISTER_0,
+            &&LABEL_OP_PUSH_SELF,
+            &&LABEL_OP_POP_SELF,
+            &&LABEL_OP_SCOPE_INJECTION,
+            &&LABEL_OP_OBJECT_INJECTION,
+            &&LABEL_OP_STORE,
+            &&LABEL_OP_LOAD,
+            &&LABEL_OP_PUT,
+            &&LABEL_OP_GET,
+            &&LABEL_OP_GOTO,
+            &&LABEL_OP_GOTO_IF,
+            &&LABEL_OP_GOTO_ELSE,
+            &&LABEL_OP_RETURN,
+            &&LABEL_OP_FUNCCALL,
+            &&LABEL_OP_GEN_CHAR,
+            &&LABEL_OP_DEFER_PUSH,
+            &&LABEL_OP_DEFER_BEGIN,
+            &&LABEL_OP_DEFER_NEXT,
+            &&LABEL_OP_DEFER_END,
+            &&LABEL_OP_POP,
+            &&LABEL_OP_CLEANUP_INJBUF,
+        };
         GList* snapshotIter = NULL;
         bool inDefer = false;
-        for (int PC = 0; PC < env->codeArray->len; PC++) {
-                bnOpcode code = (bnOpcode)g_ptr_array_index(env->codeArray, PC);
-                switch (code) {
-                        case BN_OP_NOP:
-                                break;
-                        case BN_OP_DUP: {
-                                gpointer data = bnPopStack(frame->vStack);
-                                bnPushStack(frame->vStack, data);
-                                bnPushStack(frame->vStack, data);
-                                break;
-                        }
-                        case BN_OP_SWAP: {
-                                void* a = bnPopStack(frame->vStack);
-                                void* b = bnPopStack(frame->vStack);
-                                bnPushStack(frame->vStack, a);
-                                bnPushStack(frame->vStack, b);
-                                break;
-                        }
-                        case BN_OP_GEN_INT: {
-                                int data = bnReadCode(env, ++PC);
-                                bnPushStack(frame->vStack,
-                                            bnNewInteger(bone, data));
-                                break;
-                        }
-                        case BN_OP_GEN_DOUBLE: {
-                                int idx = bnReadCode(env, ++PC);
-                                double dv = g_array_index(env->doubleConstants,
-                                                          double, idx);
-                                bnPushStack(frame->vStack,
-                                            bnNewDouble(bone, dv));
-                                break;
-                        }
-                        case BN_OP_GEN_CHAR: {
-                                char c = bnReadCode(env, ++PC);
-                                bnPushStack(frame->vStack, bnNewChar(bone, c));
-                                break;
-                        }
-                        case BN_OP_GEN_STRING: {
-                                bnStringView name = bnReadCode(env, ++PC);
-                                // create array for string
-                                const char* str = bnView2Str(bone->pool, name);
-                                int slen = strlen(str);
-                                bnPushStack(frame->vStack,
-                                            bnNewInteger(bone, slen));
-                                bnReference arrFunc =
-                                    bnReadVariable2(frame, bone->pool, "array");
-                                bnFrame* sub =
-                                    bnFuncCall(arrFunc, bone, frame, 1);
-                                if (sub->panic) {
-                                        frame->panic = sub->panic;
-                                        break;
-                                }
-                                // fill by char
-                                bnReference aryRef = bnPopStack(frame->vStack);
-                                bnObject* ary = bnGetObject(bone->heap, aryRef);
-                                for (int i = 0; i < slen; i++) {
-                                        bnSetArrayElementAt(
-                                            ary, i, bnNewChar(bone, str[i]));
-                                }
-                                bnPushStack(frame->vStack, aryRef);
-                                bnDeleteFrame(sub);
-                                bnGC(bone);
-                                // create string by string function
-                                bnFrame* sub2 =
-                                    bnFuncCall(bnReadVariable2(
-                                                   frame, bone->pool, "string"),
-                                               bone, frame, 1);
-                                if (sub2->panic) {
-                                        frame->panic = sub->panic;
-                                        break;
-                                }
-                                bnDeleteFrame(sub2);
-                                bnGC(bone);
-                                break;
-                        }
-                        case BN_OP_GEN_ARRAY: {
-                                int size = bnReadCode(env, ++PC);
-                                bnPushStack(frame->vStack,
-                                            bnNewInteger(bone, size));
-                                bnFrame* sub = bnFuncCall(
-                                    bnReadVariable2(frame, bone->pool, "array"),
-                                    bone, frame, 1);
-                                if (sub->panic) {
-                                        frame->panic = sub->panic;
-                                        break;
-                                }
-                                bnReference aryRef = bnPopStack(frame->vStack);
-                                bnObject* ary = bnGetObject(bone->heap, aryRef);
-                                for (int i = 0; i < size; i++) {
-                                        bnSetArrayElementAt(
-                                            ary, size - (i + 1),
-                                            bnPopStack(frame->vStack));
-                                }
-                                bnDeleteFrame(sub);
-                                bnPushStack(frame->vStack, aryRef);
-                                bnGC(bone);
-                                break;
-                        }
-                        case BN_OP_GEN_LAMBDA_BEGIN: {
-                                bnPushStack(frame->vStack,
-                                            bnCreateLambdaInActiveCode(
-                                                bone, env, frame, &PC));
-                                break;
-                        }
-                        case BN_OP_GEN_LAMBDA_END: {
-                                break;
-                        }
-                        case BN_OP_SET_REGISTER_0:
-                                frame->register0 = bnPopStack(frame->vStack);
-                                break;
-                        case BN_OP_GET_REGISTER_0:
-                                bnPushStack(frame->vStack, frame->register0);
-                                frame->register0 = NULL;
-                                break;
-                        case BN_OP_PUSH_SELF: {
-                                bnPushStack(frame->hierarcySelf,
-                                            bnPopStack(frame->vStack));
-                                break;
-                        }
-                        case BN_OP_POP_SELF: {
-                                bnPopStack(frame->hierarcySelf);
-                                break;
-                        }
-                        case BN_OP_SCOPE_INJECTION: {
-                                bnReference ref = bnPopStack(frame->vStack);
-                                bnObject* obj = bnGetObject(bone->heap, ref);
-                                bnScopeInjection(bone, obj, frame);
-                                break;
-                        }
-                        case BN_OP_OBJECT_INJECTION: {
-                                bnReference src = bnPopStack(frame->vStack);
-                                bnReference dst = bnPopStack(frame->vStack);
-                                bnObject* srcObj = bnGetObject(bone->heap, src);
-                                bnObject* dstObj = bnGetObject(bone->heap, dst);
-                                bnObjectInjection(bone, srcObj, dstObj);
-                                bnPushStack(frame->vStack, dst);
-                                break;
-                        }
-                        case BN_OP_STORE: {
-                                bnStringView name = bnReadCode(env, ++PC);
-                                bnReference ref = bnPopStack(frame->vStack);
-                                assert(ref != NULL);
-                                g_hash_table_replace(frame->variableTable,
-                                                     GINT_TO_POINTER((int)name),
-                                                     ref);
-                                break;
-                        }
-                        case BN_OP_LOAD: {
-                                bnStringView name = bnReadCode(env, ++PC);
-                                bnReference ref = bnReadVariable(frame, name);
-                                bnObject* value = bnGetObject(bone->heap, ref);
-                                const char* str = bnView2Str(bone->pool, name);
-                                assert(str != NULL);
-                                if (value == NULL) {
-                                        char buf[256];
-                                        sprintf(
-                                            buf,
-                                            "is'nt found local variable: %s",
-                                            str);
-                                        bnPanic(bone,
-                                                bnNewString(
-                                                    bone,
-                                                    bnIntern(bone->pool, buf)));
-                                        break;
-                                }
-                                assert(value != NULL);
-                                bnPushStack(frame->vStack, ref);
-                                break;
-                        }
-                        case BN_OP_PUT: {
-                                bnReference containerRef =
-                                    bnPopStack(frame->vStack);
-                                bnObject* container =
-                                    bnGetObject(bone->heap, containerRef);
-                                if (container == NULL) {
-                                        bnPanic(bone,
-                                                bnNewString2(
-                                                    bone, "receiver is null"));
-                                        break;
-                                }
-                                bnReference value = bnPopStack(frame->vStack);
-                                bnStringView name = bnReadCode(env, ++PC);
-                                bnDefine(container, name, value);
-                                break;
-                        }
-                        case BN_OP_GET: {
-                                bnReference containerRef =
-                                    bnPopStack(frame->vStack);
-                                bnObject* container =
-                                    bnGetObject(bone->heap, containerRef);
+        int PC = 0;
+        int codelen = env->codeArray->len;
 
-                                if (container == NULL) {
-                                        bnPanic(bone,
-                                                bnNewString2(
-                                                    bone, "receiver is null"));
-                                        break;
-                                }
-                                bnStringView name = bnReadCode(env, ++PC);
-                                bnReference objRef = bnLookup(container, name);
-                                bnObject* obj = bnGetObject(bone->heap, objRef);
-                                const char* str = bnView2Str(bone->pool, name);
-                                assert(str != NULL);
-                                if (obj == NULL) {
-                                        char buf[256];
-                                        sprintf(buf, "is'nt found member: %s",
-                                                str);
-                                        bnPanic(bone,
-                                                bnNewString(
-                                                    bone,
-                                                    bnIntern(bone->pool, buf)));
-                                        break;
-                                }
-                                assert(obj != NULL);
-                                bnPushStack(frame->vStack, objRef);
-                                break;
-                        }
-                        case BN_OP_GOTO: {
-                                bnLabel* jmp = bnReadLabel(env, ++PC);
-                                PC = jmp->pos;
-                                break;
-                        }
-                        case BN_OP_GOTO_IF: {
-                                bnLabel* jmp = bnReadLabel(env, ++PC);
-                                bnReference condRef = bnPopStack(frame->vStack);
-                                bnObject* cond =
-                                    bnGetObject(bone->heap, condRef);
-                                if (bnGetBoolValue(cond)) {
-                                        PC = jmp->pos;
-                                }
-                                break;
-                        }
-                        case BN_OP_GOTO_ELSE: {
-                                bnLabel* jmp = bnReadLabel(env, ++PC);
-                                bnReference condRef = bnPopStack(frame->vStack);
-                                bnObject* cond =
-                                    bnGetObject(bone->heap, condRef);
-                                if (!bnGetBoolValue(cond)) {
-                                        PC = jmp->pos;
-                                }
-                                break;
-                        }
-                        case BN_OP_RETURN: {
-                                PC = env->codeArray->len;
-                                break;
-                        }
-                        case BN_OP_FUNCCALL: {
-                                bnReference objRef = bnPopStack(frame->vStack);
-                                bnObject* obj = bnGetObject(bone->heap, objRef);
-                                if (obj->type != BN_OBJECT_LAMBDA) {
-                                        frame->panic =
-                                            bnNewString2(bone,
-                                                         "shoud be receiver is "
-                                                         "closure object");
-                                        break;
-                                }
-                                int argc = bnReadCode(env, ++PC);
+#define ADDR_NEXT(tpc) \
+        (addr_table[(int)g_ptr_array_index(env->codeArray, (tpc))])
 
-                                bnPushStack(bone->callStack,
-                                            bnCreateStackFrameString(bone, env,
-                                                                     obj, PC));
-                                bnFrame* sub =
-                                    bnFuncCall(objRef, bone, frame, argc);
-                                if (sub->panic == NULL) {
-                                        g_string_free(
-                                            bnPopStack(bone->callStack), TRUE);
-                                }
-                                bnDeleteFrame(sub);
-                                bnGC(bone);
-                                break;
-                        }
-                        case BN_OP_DEFER_PUSH: {
-                                bnLabel* jmp = bnReadLabel(env, ++PC);
-                                bnSnapShot* sn = bnNewSnapShot(jmp->pos);
-                                GHashTableIter hashIter;
-                                gpointer k, v;
-                                g_hash_table_iter_init(&hashIter,
-                                                       frame->variableTable);
-                                while (
-                                    g_hash_table_iter_next(&hashIter, &k, &v)) {
-                                        assert(v != NULL);
-                                        g_hash_table_replace(sn->table, k, v);
-                                }
-                                frame->snapshots = snapshotIter =
-                                    g_list_append(frame->snapshots, sn);
-                                break;
-                        }
-                        case BN_OP_DEFER_BEGIN: {
-                                int deferNest = 1;
-                                while (1) {
-                                        assert(PC < env->codeArray->len);
-                                        bnOpcode data = bnReadCode(env, ++PC);
-                                        // bug if index of string view equal
-                                        // BN_OP_GEN_LAMBDA_END
-                                        if (bnOperands(data) == 1) {
-                                                ++PC;
-                                                continue;
-                                        }
-                                        if (data == BN_OP_DEFER_BEGIN) {
-                                                deferNest++;
-                                        } else if (data == BN_OP_DEFER_END) {
-                                                if (--deferNest == 0) {
-                                                        break;
-                                                }
-                                        }
-                                }
-                                break;
-                        }
-                        case BN_OP_DEFER_NEXT: {
-                                if (snapshotIter != NULL) {
-                                        PC = ((bnSnapShot*)snapshotIter->data)
-                                                 ->pc;
-                                        snapshotIter = snapshotIter->next;
-                                } else {
-                                        PC = env->codeArray->len;
-                                        inDefer = false;
-                                }
-                                break;
-                        }
-                        case BN_OP_DEFER_END: {
-                                break;
-                        }
-                        case BN_OP_POP: {
-                                bnPopStack(frame->vStack);
-                                break;
-                        }
-                        case BN_OP_CLEANUP_INJBUF: {
-                                bnCleanupInjectionBuffer(
-                                    bone->pool,
-                                    bnGetObject(bone->heap,
-                                                bnPeekStack(frame->vStack)));
-                                break;
-                        }
+#define CHECK_DEFER()                                                       \
+                                                                            \
+        do {                                                                \
+                if (frame->panic && !inDefer) {                             \
+                        if (snapshotIter != NULL) {                         \
+                                PC = ((bnSnapShot*)snapshotIter->data)->pc; \
+                                snapshotIter = snapshotIter->next;          \
+                                inDefer = true;                             \
+                                goto* ADDR_NEXT(++PC);                      \
+                        } else {                                            \
+                                if (frame->prev) {                          \
+                                        frame->prev->panic = frame->panic;  \
+                                }                                           \
+                                return 0;                                   \
+                        }                                                   \
+                }                                                           \
+        } while (0)
+
+#define SWITCH_NEXT(tpc)                          \
+        do {                                      \
+                if ((tpc + 1) < codelen) {        \
+                        goto* ADDR_NEXT((++tpc)); \
+                } else {                          \
+                        return 0;                 \
+                }                                 \
+        } while (0)
+
+#define LOG(str) ((void)0)
+        //#define LOG(str) (printf("%s %d/%d\n", str, PC, codelen))
+
+        goto* ADDR_NEXT(PC);
+LABEL_OP_NOP : {
+        LOG("NOP");
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_DUP : {
+        LOG("DUP");
+        gpointer data = bnPopStack(frame->vStack);
+        bnPushStack(frame->vStack, data);
+        bnPushStack(frame->vStack, data);
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_SWAP : {
+        LOG("SWAP");
+        void* a = bnPopStack(frame->vStack);
+        void* b = bnPopStack(frame->vStack);
+        bnPushStack(frame->vStack, a);
+        bnPushStack(frame->vStack, b);
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_GEN_INT : {
+        LOG("INT");
+        int data = bnReadCode(env, ++PC);
+        bnPushStack(frame->vStack, bnNewInteger(bone, data));
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_GEN_DOUBLE : {
+        LOG("GEN DOUBLE");
+        int idx = bnReadCode(env, ++PC);
+        double dv = g_array_index(env->doubleConstants, double, idx);
+        bnPushStack(frame->vStack, bnNewDouble(bone, dv));
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_GEN_STRING : {
+        LOG("GEN STRING");
+        bnStringView name = bnReadCode(env, ++PC);
+        // create array for string
+        const char* str = bnView2Str(bone->pool, name);
+        int slen = strlen(str);
+        bnPushStack(frame->vStack, bnNewInteger(bone, slen));
+        bnReference arrFunc = bnReadVariable2(frame, bone->pool, "array");
+        bnFrame* sub = bnFuncCall(arrFunc, bone, frame, 1);
+        if (sub->panic) {
+                frame->panic = sub->panic;
+                CHECK_DEFER();
+                SWITCH_NEXT(PC);
+        }
+        // fill by char
+        bnReference aryRef = bnPopStack(frame->vStack);
+        bnObject* ary = bnGetObject(bone->heap, aryRef);
+        for (int i = 0; i < slen; i++) {
+                bnSetArrayElementAt(ary, i, bnNewChar(bone, str[i]));
+        }
+        bnPushStack(frame->vStack, aryRef);
+        bnDeleteFrame(sub);
+        bnGC(bone);
+        // create string by string function
+        bnFrame* sub2 = bnFuncCall(bnReadVariable2(frame, bone->pool, "string"),
+                                   bone, frame, 1);
+        if (sub2->panic) {
+                frame->panic = sub->panic;
+                CHECK_DEFER();
+                SWITCH_NEXT(PC);
+        }
+        bnDeleteFrame(sub2);
+        bnGC(bone);
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_GEN_ARRAY : {
+        LOG("GEN ARRAY");
+        int size = bnReadCode(env, ++PC);
+        bnPushStack(frame->vStack, bnNewInteger(bone, size));
+        bnFrame* sub = bnFuncCall(bnReadVariable2(frame, bone->pool, "array"),
+                                  bone, frame, 1);
+        if (sub->panic) {
+                frame->panic = sub->panic;
+                CHECK_DEFER();
+                SWITCH_NEXT(PC);
+        }
+        bnReference aryRef = bnPopStack(frame->vStack);
+        bnObject* ary = bnGetObject(bone->heap, aryRef);
+        for (int i = 0; i < size; i++) {
+                bnSetArrayElementAt(ary, size - (i + 1),
+                                    bnPopStack(frame->vStack));
+        }
+        bnDeleteFrame(sub);
+        bnPushStack(frame->vStack, aryRef);
+        bnGC(bone);
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_GEN_LAMBDA_BEGIN : {
+        LOG("GEN LAMBDA BEGIN");
+        bnPushStack(frame->vStack,
+                    bnCreateLambdaInActiveCode(bone, env, frame, &PC));
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_GEN_LAMBDA_END : {
+        LOG("GEN LAMBDA END");
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_SET_REGISTER_0 : {
+        LOG("SET REGISTER0");
+        frame->register0 = bnPopStack(frame->vStack);
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_GET_REGISTER_0 : {
+        LOG("GET REGISTER0");
+        bnPushStack(frame->vStack, frame->register0);
+        frame->register0 = NULL;
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_PUSH_SELF : {
+        LOG("PUSH SELF");
+        bnPushStack(frame->hierarcySelf, bnPopStack(frame->vStack));
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_POP_SELF : {
+        LOG("POP SELF");
+        bnPopStack(frame->hierarcySelf);
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_SCOPE_INJECTION : {
+        LOG("SCOPE INJECTION");
+        bnReference ref = bnPopStack(frame->vStack);
+        bnObject* obj = bnGetObject(bone->heap, ref);
+        bnScopeInjection(bone, obj, frame);
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_OBJECT_INJECTION : {
+        LOG("OBJECT INJECTION");
+        bnReference src = bnPopStack(frame->vStack);
+        bnReference dst = bnPopStack(frame->vStack);
+        bnObject* srcObj = bnGetObject(bone->heap, src);
+        bnObject* dstObj = bnGetObject(bone->heap, dst);
+        bnObjectInjection(bone, srcObj, dstObj);
+        bnPushStack(frame->vStack, dst);
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_STORE : {
+        LOG("STORE");
+        bnStringView name = bnReadCode(env, ++PC);
+        bnReference ref = bnPopStack(frame->vStack);
+        assert(ref != NULL);
+        g_hash_table_replace(frame->variableTable, GINT_TO_POINTER((int)name),
+                             ref);
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_LOAD : {
+        LOG("LOAD");
+        bnStringView name = bnReadCode(env, ++PC);
+        bnReference ref = bnReadVariable(frame, name);
+        bnObject* value = bnGetObject(bone->heap, ref);
+        const char* str = bnView2Str(bone->pool, name);
+        assert(str != NULL);
+        if (value == NULL) {
+                char buf[256];
+                sprintf(buf, "is'nt found local variable: %s", str);
+                bnPanic(bone, bnNewString(bone, bnIntern(bone->pool, buf)));
+                CHECK_DEFER();
+                SWITCH_NEXT(PC);
+        }
+        assert(value != NULL);
+        bnPushStack(frame->vStack, ref);
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_PUT : {
+        LOG("PUT");
+        bnReference containerRef = bnPopStack(frame->vStack);
+        bnObject* container = bnGetObject(bone->heap, containerRef);
+        if (container == NULL) {
+                bnPanic(bone, bnNewString2(bone, "receiver is null"));
+                CHECK_DEFER();
+                SWITCH_NEXT(PC);
+        }
+        bnReference value = bnPopStack(frame->vStack);
+        bnStringView name = bnReadCode(env, ++PC);
+        bnDefine(container, name, value);
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_GET : {
+        LOG("GET");
+        bnReference containerRef = bnPopStack(frame->vStack);
+        bnObject* container = bnGetObject(bone->heap, containerRef);
+
+        if (container == NULL) {
+                bnPanic(bone, bnNewString2(bone, "receiver is null"));
+                CHECK_DEFER();
+                SWITCH_NEXT(PC);
+        }
+        bnStringView name = bnReadCode(env, ++PC);
+        bnReference objRef = bnLookup(container, name);
+        bnObject* obj = bnGetObject(bone->heap, objRef);
+        const char* str = bnView2Str(bone->pool, name);
+        assert(str != NULL);
+        if (obj == NULL) {
+                char buf[256];
+                sprintf(buf, "is'nt found member: %s", str);
+                bnPanic(bone, bnNewString(bone, bnIntern(bone->pool, buf)));
+                CHECK_DEFER();
+                SWITCH_NEXT(PC);
+        }
+        assert(obj != NULL);
+        bnPushStack(frame->vStack, objRef);
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_GOTO : {
+        LOG("GOTO");
+        bnLabel* jmp = bnReadLabel(env, ++PC);
+        PC = jmp->pos;
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_GOTO_IF : {
+        LOG("GOTO IF");
+        bnLabel* jmp = bnReadLabel(env, ++PC);
+        bnReference condRef = bnPopStack(frame->vStack);
+        bnObject* cond = bnGetObject(bone->heap, condRef);
+        if (bnGetBoolValue(cond)) {
+                PC = jmp->pos;
+        }
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_GOTO_ELSE : {
+        LOG("GOTO ELSE");
+        bnLabel* jmp = bnReadLabel(env, ++PC);
+        bnReference condRef = bnPopStack(frame->vStack);
+        bnObject* cond = bnGetObject(bone->heap, condRef);
+        if (!bnGetBoolValue(cond)) {
+                PC = jmp->pos;
+        }
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_RETURN : {
+        LOG("RETURN");
+        PC = env->codeArray->len;
+        CHECK_DEFER();
+}
+LABEL_OP_FUNCCALL : {
+        LOG("FUNCCALL");
+        bnReference objRef = bnPopStack(frame->vStack);
+        bnObject* obj = bnGetObject(bone->heap, objRef);
+        if (obj->type != BN_OBJECT_LAMBDA) {
+                frame->panic = bnNewString2(bone,
+                                            "shoud be receiver is "
+                                            "closure object");
+                CHECK_DEFER();
+                SWITCH_NEXT(PC);
+        }
+        int argc = bnReadCode(env, ++PC);
+
+        bnPushStack(bone->callStack,
+                    bnCreateStackFrameString(bone, env, obj, PC));
+        bnFrame* sub = bnFuncCall(objRef, bone, frame, argc);
+        if (sub->panic == NULL) {
+                g_string_free(bnPopStack(bone->callStack), TRUE);
+        }
+        bnDeleteFrame(sub);
+        bnGC(bone);
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_GEN_CHAR : {
+        LOG("GEN CHAR");
+        char c = bnReadCode(env, ++PC);
+        bnPushStack(frame->vStack, bnNewChar(bone, c));
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_DEFER_PUSH : {
+        LOG("DEFER PUSH");
+        bnLabel* jmp = bnReadLabel(env, ++PC);
+        bnSnapShot* sn = bnNewSnapShot(jmp->pos);
+        GHashTableIter hashIter;
+        gpointer k, v;
+        g_hash_table_iter_init(&hashIter, frame->variableTable);
+        while (g_hash_table_iter_next(&hashIter, &k, &v)) {
+                assert(v != NULL);
+                g_hash_table_replace(sn->table, k, v);
+        }
+        frame->snapshots = snapshotIter = g_list_append(frame->snapshots, sn);
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_DEFER_BEGIN : {
+        LOG("DEFER BEGIN");
+        int deferNest = 1;
+        while (1) {
+                assert(PC < env->codeArray->len);
+                bnOpcode data = bnReadCode(env, ++PC);
+                // bug if index of string view equal
+                // BN_OP_GEN_LAMBDA_END
+                if (bnOperands(data) == 1) {
+                        ++PC;
+                        continue;
                 }
-                if (frame->panic && !inDefer) {
-                        if (snapshotIter != NULL) {
-                                PC = ((bnSnapShot*)snapshotIter->data)->pc;
-                                snapshotIter = snapshotIter->next;
-                                inDefer = true;
-                        } else {
-                                if (frame->prev) {
-                                        frame->prev->panic = frame->panic;
-                                }
+                if (data == BN_OP_DEFER_BEGIN) {
+                        deferNest++;
+                } else if (data == BN_OP_DEFER_END) {
+                        if (--deferNest == 0) {
                                 break;
                         }
                 }
         }
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_DEFER_NEXT : {
+        LOG("DEFER NEXT");
+        if (snapshotIter != NULL) {
+                PC = ((bnSnapShot*)snapshotIter->data)->pc;
+                snapshotIter = snapshotIter->next;
+        } else {
+                PC = env->codeArray->len;
+                inDefer = false;
+        }
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_DEFER_END : {
+        LOG("DEFER END");
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_POP : {
+        LOG("POP");
+        bnPopStack(frame->vStack);
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+LABEL_OP_CLEANUP_INJBUF : {
+        LOG("CLEANUP INJBUF");
+        bnCleanupInjectionBuffer(
+            bone->pool, bnGetObject(bone->heap, bnPeekStack(frame->vStack)));
+        CHECK_DEFER();
+        SWITCH_NEXT(PC);
+}
+
         return 0;
 }
