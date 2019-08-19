@@ -9,6 +9,7 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, bnEnviroment* env,
         int line = bnFindLineRange(env, pos);
         fprintf(fp, "<%d>", line);
         fprintf(fp, "[%d]", pos);
+        fprintf(fp, "@%d ", (int)data);
         switch (data) {
                 case BN_OP_NOP:
                         fprintf(fp, "nop");
