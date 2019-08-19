@@ -8,29 +8,30 @@
 #define BN_STDIN (bnStdin())
 
 /**
- * save a instance of stdout, stderr and stdin.
+ * stdout, stderr, stdinを保存します。
  */
 void bnInitIO();
 
 /**
- * return a saved instance of stdout.
+ * stdoutを返します。
  * @return
  */
 FILE* bnStdout();
 
 /**
- * return a saved instance of stderr.
+ * stderrを返します。
  * @return
  */
 FILE* bnStderr();
 
 /**
- * return a saved instance of stdin
+ * stdinを返します。
  * @return
  */
 FILE* bnStdin();
 
 /**
+ * 指定のファイルが存在するならtrueを返します。
  * @param path
  * @return
  */
