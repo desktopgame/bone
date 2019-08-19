@@ -8,6 +8,8 @@ struct bnObject;
 struct bnFrame;
 struct bnInterpreter;
 
+#define OBJECT_MAXSIZE (48)
+
 /**
  * @return
  */

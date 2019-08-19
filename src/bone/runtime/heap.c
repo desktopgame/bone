@@ -34,7 +34,7 @@ bnHeap* bnNewHeap() {
         bnHeap* ret = BN_MALLOC(sizeof(bnHeap));
         ret->stages = bnNewStack();
         ret->all = 0;
-        ret->storage = bnNewStorage(92, 100);
+        ret->storage = bnNewStorage(OBJECT_MAXSIZE, 128);
         g_rec_mutex_init(&ret->mutex);
         return ret;
 }
