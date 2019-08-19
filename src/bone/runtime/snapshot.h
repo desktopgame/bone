@@ -3,7 +3,8 @@
 #include "../glib.h"
 
 /**
- * bnSnapShot is save a state of frame at execution.
+ * bnSnapShotはインタプリタの実行中の状態を保存する構造体です。
+ * deferによる遅延実行を実装するために使用されます。
  */
 typedef struct bnSnapShot {
         int pc;
@@ -11,14 +12,14 @@ typedef struct bnSnapShot {
 } bnSnapShot;
 
 /**
- * return new instance of bnString.
+ * 新しいbnSnapShotインスタンスを返します。
  * @param pc
  * @return
  */
 bnSnapShot* bnNewSnapShot(int pc);
 
 /**
- * free a bnString.
+ * スナップショットを解放します。
  * @param self
  */
 void bnDeleteSnapShot(bnSnapShot* self);
