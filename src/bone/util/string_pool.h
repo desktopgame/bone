@@ -8,29 +8,25 @@
 #define BN_EMPTY_VIEW (1)
 
 /**
- * encoded string.
+ * 符号化された文字列を表す型です。
  */
 typedef unsigned int bnStringView;
 
 /**
- * bnStringPool is pool of string.
- * string pool policy
- * -- duplicate string of key always
- * -- string of return value should NOT be dispose!
- * -- should NOT be share instance between threads!
+ * bnStringPoolは文字列プールです。
+ * 文字列と整数を相互変換するためのマッピングを保存しています。
  */
 struct bnStringPool;
 
 /**
- * return new instance of bnStringPool.
- * @param value
+ * 新しいbnStringPoolインスタンスを生成して返します。
  * @return
  */
 struct bnStringPool* bnNewStringPool();
 
 /**
- * encode string to unsigned integer.
- * return old value, if already encoded.
+ * 文字列を整数へ変換して返します。
+ * 文字列が既にマッピング済みなら以前の値を返します。
  * @param self
  * @param str
  * @return
@@ -38,8 +34,8 @@ struct bnStringPool* bnNewStringPool();
 bnStringView bnIntern(struct bnStringPool* self, const char* str);
 
 /**
- * return of encoded integer from string.
- * terminate by assert if not already encoded.
+ * 文字列からマッピング済みの値を取得して返します。
+ * マッピングされていない場合はアサーションによって失敗します。
  * @param self
  * @param str
  * @return
@@ -47,8 +43,8 @@ bnStringView bnIntern(struct bnStringPool* self, const char* str);
 bnStringView bnStr2View(struct bnStringPool* self, const char* str);
 
 /**
- * return of string from encoded integer.
- * terminate by assert if not already encoded
+ * 整数からマッピング済みの文字列を取得して返します。
+ * マッピングされていない場合はアサーションによって失敗します。
  * @param self
  * @param view
  * @return
@@ -56,7 +52,7 @@ bnStringView bnStr2View(struct bnStringPool* self, const char* str);
 const char* bnView2Str(struct bnStringPool* self, bnStringView view);
 
 /**
- * free a bnStringPool.
+ * 文字列プールとマッピングのためのテーブルを解放します。
  * @param self
  */
 void bnDeleteStringPool(struct bnStringPool* self);
