@@ -255,17 +255,12 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                 }                                 \
         } while (0)
 
-#define LOG(str) ((void)0)
-        //#define LOG(str) (fprintf(stderr, "%s %d/%d\n", str, PC, codelen))
-
         goto* ADDR_NEXT(PC);
 LABEL_OP_NOP : {
-        LOG("NOP");
         CHECK_DEFER();
         SWITCH_NEXT(PC);
 }
 LABEL_OP_DUP : {
-        LOG("DUP");
         gpointer data = bnPopStack(frame->vStack);
         bnPushStack(frame->vStack, data);
         bnPushStack(frame->vStack, data);
@@ -273,7 +268,6 @@ LABEL_OP_DUP : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_SWAP : {
-        LOG("SWAP");
         void* a = bnPopStack(frame->vStack);
         void* b = bnPopStack(frame->vStack);
         bnPushStack(frame->vStack, a);
@@ -282,14 +276,12 @@ LABEL_OP_SWAP : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_GEN_INT : {
-        LOG("INT");
         int data = bnReadCode(env, ++PC);
         bnPushStack(frame->vStack, bnNewInteger(bone, data));
         CHECK_DEFER();
         SWITCH_NEXT(PC);
 }
 LABEL_OP_GEN_DOUBLE : {
-        LOG("GEN DOUBLE");
         int idx = bnReadCode(env, ++PC);
         double dv = g_array_index(env->doubleConstants, double, idx);
         bnPushStack(frame->vStack, bnNewDouble(bone, dv));
@@ -297,7 +289,6 @@ LABEL_OP_GEN_DOUBLE : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_GEN_STRING : {
-        LOG("GEN STRING");
         bnStringView name = bnReadCode(env, ++PC);
         // create array for string
         const char* str = bnView2Str(bone->pool, name);
@@ -333,7 +324,6 @@ LABEL_OP_GEN_STRING : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_GEN_ARRAY : {
-        LOG("GEN ARRAY");
         int size = bnReadCode(env, ++PC);
         bnPushStack(frame->vStack, bnNewInteger(bone, size));
         bnFrame* sub = bnFuncCall(bnReadVariable2(frame, bone->pool, "array"),
@@ -356,44 +346,37 @@ LABEL_OP_GEN_ARRAY : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_GEN_LAMBDA_BEGIN : {
-        LOG("GEN LAMBDA BEGIN");
         bnPushStack(frame->vStack,
                     bnCreateLambdaInActiveCode(bone, env, frame, &PC));
         CHECK_DEFER();
         SWITCH_NEXT(PC);
 }
 LABEL_OP_GEN_LAMBDA_END : {
-        LOG("GEN LAMBDA END");
         CHECK_DEFER();
         SWITCH_NEXT(PC);
 }
 LABEL_OP_SET_REGISTER_0 : {
-        LOG("SET REGISTER0");
         frame->register0 = bnPopStack(frame->vStack);
         CHECK_DEFER();
         SWITCH_NEXT(PC);
 }
 LABEL_OP_GET_REGISTER_0 : {
-        LOG("GET REGISTER0");
         bnPushStack(frame->vStack, frame->register0);
         frame->register0 = NULL;
         CHECK_DEFER();
         SWITCH_NEXT(PC);
 }
 LABEL_OP_PUSH_SELF : {
-        LOG("PUSH SELF");
         bnPushStack(frame->hierarcySelf, bnPopStack(frame->vStack));
         CHECK_DEFER();
         SWITCH_NEXT(PC);
 }
 LABEL_OP_POP_SELF : {
-        LOG("POP SELF");
         bnPopStack(frame->hierarcySelf);
         CHECK_DEFER();
         SWITCH_NEXT(PC);
 }
 LABEL_OP_SCOPE_INJECTION : {
-        LOG("SCOPE INJECTION");
         bnReference ref = bnPopStack(frame->vStack);
         bnObject* obj = bnGetObject(bone->heap, ref);
         bnScopeInjection(bone, obj, frame);
@@ -401,7 +384,6 @@ LABEL_OP_SCOPE_INJECTION : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_OBJECT_INJECTION : {
-        LOG("OBJECT INJECTION");
         bnReference src = bnPopStack(frame->vStack);
         bnReference dst = bnPopStack(frame->vStack);
         bnObject* srcObj = bnGetObject(bone->heap, src);
@@ -412,7 +394,6 @@ LABEL_OP_OBJECT_INJECTION : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_STORE : {
-        LOG("STORE");
         bnStringView name = bnReadCode(env, ++PC);
         bnReference ref = bnPopStack(frame->vStack);
         assert(ref != NULL);
@@ -422,7 +403,6 @@ LABEL_OP_STORE : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_LOAD : {
-        LOG("LOAD");
         bnStringView name = bnReadCode(env, ++PC);
         bnReference ref = bnReadVariable(frame, name);
         bnObject* value = bnGetObject(bone->heap, ref);
@@ -441,7 +421,6 @@ LABEL_OP_LOAD : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_PUT : {
-        LOG("PUT");
         bnReference containerRef = bnPopStack(frame->vStack);
         bnObject* container = bnGetObject(bone->heap, containerRef);
         if (container == NULL) {
@@ -456,7 +435,6 @@ LABEL_OP_PUT : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_GET : {
-        LOG("GET");
         bnReference containerRef = bnPopStack(frame->vStack);
         bnObject* container = bnGetObject(bone->heap, containerRef);
 
@@ -483,14 +461,12 @@ LABEL_OP_GET : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_GOTO : {
-        LOG("GOTO");
         bnLabel* jmp = bnReadLabel(env, ++PC);
         PC = jmp->pos;
         CHECK_DEFER();
         SWITCH_NEXT(PC);
 }
 LABEL_OP_GOTO_IF : {
-        LOG("GOTO IF");
         bnLabel* jmp = bnReadLabel(env, ++PC);
         bnReference condRef = bnPopStack(frame->vStack);
         bnObject* cond = bnGetObject(bone->heap, condRef);
@@ -501,7 +477,6 @@ LABEL_OP_GOTO_IF : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_GOTO_ELSE : {
-        LOG("GOTO ELSE");
         bnLabel* jmp = bnReadLabel(env, ++PC);
         bnReference condRef = bnPopStack(frame->vStack);
         bnObject* cond = bnGetObject(bone->heap, condRef);
@@ -512,12 +487,10 @@ LABEL_OP_GOTO_ELSE : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_RETURN : {
-        LOG("RETURN");
         PC = env->codeArray->len;
         CHECK_DEFER();
 }
 LABEL_OP_FUNCCALL : {
-        LOG("FUNCCALL");
         bnReference objRef = bnPopStack(frame->vStack);
         bnObject* obj = bnGetObject(bone->heap, objRef);
         if (obj->type != BN_OBJECT_LAMBDA) {
@@ -541,14 +514,12 @@ LABEL_OP_FUNCCALL : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_GEN_CHAR : {
-        LOG("GEN CHAR");
         char c = bnReadCode(env, ++PC);
         bnPushStack(frame->vStack, bnNewChar(bone, c));
         CHECK_DEFER();
         SWITCH_NEXT(PC);
 }
 LABEL_OP_DEFER_PUSH : {
-        LOG("DEFER PUSH");
         bnLabel* jmp = bnReadLabel(env, ++PC);
         bnSnapShot* sn = bnNewSnapShot(jmp->pos);
         GHashTableIter hashIter;
@@ -563,7 +534,6 @@ LABEL_OP_DEFER_PUSH : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_DEFER_BEGIN : {
-        LOG("DEFER BEGIN");
         int deferNest = 1;
         while (1) {
                 assert(PC < env->codeArray->len);
@@ -586,7 +556,6 @@ LABEL_OP_DEFER_BEGIN : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_DEFER_NEXT : {
-        LOG("DEFER NEXT");
         if (snapshotIter != NULL) {
                 PC = ((bnSnapShot*)snapshotIter->data)->pc;
                 snapshotIter = snapshotIter->next;
@@ -598,18 +567,15 @@ LABEL_OP_DEFER_NEXT : {
         SWITCH_NEXT(PC);
 }
 LABEL_OP_DEFER_END : {
-        LOG("DEFER END");
         CHECK_DEFER();
         SWITCH_NEXT(PC);
 }
 LABEL_OP_POP : {
-        LOG("POP");
         bnPopStack(frame->vStack);
         CHECK_DEFER();
         SWITCH_NEXT(PC);
 }
 LABEL_OP_CLEANUP_INJBUF : {
-        LOG("CLEANUP INJBUF");
         bnCleanupInjectionBuffer(
             bone->pool, bnGetObject(bone->heap, bnPeekStack(frame->vStack)));
         CHECK_DEFER();
