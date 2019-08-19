@@ -246,19 +246,17 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
                 }                                                           \
         } while (0)
 
-#define SWITCH_NEXT(tpc)                                                 \
-        do {                                                             \
-                if ((tpc + 1) < codelen) {                               \
-                        bnPrintOpcode(stderr, bone->pool, env, tpc + 1); \
-                        fprintf(stderr, "\n");                           \
-                        goto* ADDR_NEXT((++tpc));                        \
-                } else {                                                 \
-                        return 0;                                        \
-                }                                                        \
+#define SWITCH_NEXT(tpc)                          \
+        do {                                      \
+                if ((tpc + 1) < codelen) {        \
+                        goto* ADDR_NEXT((++tpc)); \
+                } else {                          \
+                        return 0;                 \
+                }                                 \
         } while (0)
 
-        //#define LOG(str) ((void)0)
-#define LOG(str) (fprintf(stderr, "%s %d/%d\n", str, PC, codelen))
+#define LOG(str) ((void)0)
+        //#define LOG(str) (fprintf(stderr, "%s %d/%d\n", str, PC, codelen))
 
         goto* ADDR_NEXT(PC);
 LABEL_OP_NOP : {
