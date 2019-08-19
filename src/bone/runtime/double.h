@@ -5,7 +5,7 @@ struct bnFrame;
 struct bnInterpreter;
 
 /**
- * return new instance of bnDouble.
+ * 新しい実数インスタンスを生成して、参照を返します。
  * @param bone
  * @param name
  * @return
@@ -13,12 +13,14 @@ struct bnInterpreter;
 bnReference bnNewDouble(struct bnInterpreter* bone, double value);
 
 /**
+ * 値を上書きします。
  * @param obj
  * @param value
  */
 void bnSetDoubleValue(bnObject* obj, double value);
 
 /**
+ * C言語のdoubleへ変換します。
  * @param obj
  * @return
  */
