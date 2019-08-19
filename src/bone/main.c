@@ -20,15 +20,14 @@ int main(int argc, char* argv[]) {
         bnInitIO();
         int status = 0;
         if (argc == 1) {
-                //$ bone
-                // start interactive mode
+                //デバッグモードならテスト、そうでなければインタラクティブモードを起動する。
 #if DEBUG
                 status = bnTest("testdata");
 #else
                 bnInteractive(stdin);
 #endif
         } else if (argc >= 2) {
-                //$ bone file, args...
+                //拡張子が指定されていなければ付け足す。
                 GString* input = g_string_new(argv[1]);
                 if (!g_str_has_suffix(input->str, ".bn") &&
                     !g_str_has_suffix(input->str, ".in")) {
