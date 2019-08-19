@@ -11,6 +11,10 @@
 #include "../lambda.h"
 #include "../string.h"
 
+static void bnExtDirFiles(struct bnInterpreter* bone, struct bnFrame* frame);
+static void bnExtDirDirectories(struct bnInterpreter* bone, struct bnFrame* frame);
+static void bnExtDirDelete(struct bnInterpreter* bone, struct bnFrame* frame);
+static void bnExtDirCreate(struct bnInterpreter* bone, struct bnFrame* frame);
 static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly);
 
 void bnExternDir(bnInterpreter* bone) {
@@ -33,15 +37,15 @@ void bnExternDir(bnInterpreter* bone) {
                            "path", BN_C_ADD_RETURN, "error", BN_C_ADD_EXIT));
 }
 
-void bnExtDirFiles(bnInterpreter* bone, bnFrame* frame) {
+static void bnExtDirFiles(bnInterpreter* bone, bnFrame* frame) {
         collect_files(bone, frame, true);
 }
 
-void bnExtDirDirectories(bnInterpreter* bone, bnFrame* frame) {
+static void bnExtDirDirectories(bnInterpreter* bone, bnFrame* frame) {
         collect_files(bone, frame, false);
 }
 
-void bnExtDirDelete(bnInterpreter* bone, bnFrame* frame) {
+static void bnExtDirDelete(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "should be `path` is string");
@@ -52,7 +56,7 @@ void bnExtDirDelete(bnInterpreter* bone, bnFrame* frame) {
 #pragma clang diagnostic pop
 }
 
-void bnExtDirCreate(bnInterpreter* bone, bnFrame* frame) {
+static void bnExtDirCreate(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_STRING) {
                 bnFormatThrow(bone, "should be `path` is string");

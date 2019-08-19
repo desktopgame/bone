@@ -16,6 +16,11 @@
 #include "../string.h"
 #include "../vm.h"
 
+static void bnExtSystemExit(struct bnInterpreter* bone, struct bnFrame* frame);
+static void bnExtSystemAbort(struct bnInterpreter* bone, struct bnFrame* frame);
+static void bnExtSystemSystem(struct bnInterpreter* bone,
+                              struct bnFrame* frame);
+
 void bnExternSystem(bnInterpreter* bone) {
         bnWriteExtern2(
             bone, "exit",
@@ -30,7 +35,7 @@ void bnExternSystem(bnInterpreter* bone) {
                            "args", BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
 }
 
-void bnExtSystemExit(bnInterpreter* bone, bnFrame* frame) {
+static void bnExtSystemExit(bnInterpreter* bone, bnFrame* frame) {
         bnObject* statusObj =
             bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (statusObj->type != BN_OBJECT_INTEGER) {
@@ -41,9 +46,9 @@ void bnExtSystemExit(bnInterpreter* bone, bnFrame* frame) {
         exit(bnGetIntegerValue(statusObj));
 }
 
-void bnExtSystemAbort(bnInterpreter* bone, bnFrame* frame) { abort(); }
+static void bnExtSystemAbort(bnInterpreter* bone, bnFrame* frame) { abort(); }
 
-void bnExtSystemSystem(bnInterpreter* bone, bnFrame* frame) {
+static void bnExtSystemSystem(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_ARRAY) {
                 bnThrow(

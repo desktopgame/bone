@@ -5,15 +5,10 @@
 
 #define FILE_T ("bone.lang.file")
 
-bnReference bnNewFile(struct bnInterpreter* bone, FILE* fp);
-
+/**
+ * ファイル操作のための関数をインタプリタへエクスポートします。
+ * @param bone
+ */
 void bnExternFile(struct bnInterpreter* bone);
 
-void bnExtFileOpen(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnExtFilePutc(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnExtFileGetc(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnExtFileClose(struct bnInterpreter* bone, struct bnFrame* frame);
 #endif

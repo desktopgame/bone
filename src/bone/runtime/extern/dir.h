@@ -4,13 +4,10 @@
 
 #define DIR_T ("bone.lang.dir")
 
+/**
+ * ディレクトリ操作のための関数をインタプリタへエクスポートします。
+ * @param bone
+ */
 void bnExternDir(struct bnInterpreter* bone);
 
-void bnExtDirFiles(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnExtDirDirectories(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnExtDirDelete(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnExtDirCreate(struct bnInterpreter* bone, struct bnFrame* frame);
 #endif

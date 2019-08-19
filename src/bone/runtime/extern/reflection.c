@@ -9,6 +9,19 @@
 #include "../lambda.h"
 #include "../string.h"
 
+static void bnExtReflectionDefine(struct bnInterpreter* bone,
+                                  struct bnFrame* frame);
+static void bnExtReflectionUndef(struct bnInterpreter* bone,
+                                 struct bnFrame* frame);
+static void bnExtReflectionDefined(struct bnInterpreter* bone,
+                                   struct bnFrame* frame);
+static void bnExtReflectionExpand(struct bnInterpreter* bone,
+                                  struct bnFrame* frame);
+static void bnExtReflectionEntries(struct bnInterpreter* bone,
+                                   struct bnFrame* frame);
+static void bnExtReflectionExport(struct bnInterpreter* bone,
+                                  struct bnFrame* frame);
+
 void bnExternReflection(bnInterpreter* bone) {
         bnWriteExtern2(
             bone, "define",
@@ -43,7 +56,7 @@ void bnExternReflection(bnInterpreter* bone) {
                                  BN_C_ADD_EXIT));
 }
 
-void bnExtReflectionDefine(bnInterpreter* bone, bnFrame* frame) {
+static void bnExtReflectionDefine(bnInterpreter* bone, bnFrame* frame) {
         bnReference a = bnPopStack(frame->vStack);
         bnReference b = bnPopStack(frame->vStack);
         bnReference c = bnPopStack(frame->vStack);
@@ -55,7 +68,7 @@ void bnExtReflectionDefine(bnInterpreter* bone, bnFrame* frame) {
         bnDefine(aObj, bnGetStringValue(bObj), c);
 }
 
-void bnExtReflectionUndef(bnInterpreter* bone, bnFrame* frame) {
+static void bnExtReflectionUndef(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (b->type != BN_OBJECT_STRING) {
@@ -66,7 +79,7 @@ void bnExtReflectionUndef(bnInterpreter* bone, bnFrame* frame) {
                          bnGetBool(bone->pool, frame, removed));
 }
 
-void bnExtReflectionDefined(bnInterpreter* bone, bnFrame* frame) {
+static void bnExtReflectionDefined(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (b->type != BN_OBJECT_STRING) {
@@ -77,7 +90,7 @@ void bnExtReflectionDefined(bnInterpreter* bone, bnFrame* frame) {
                          bnGetBool(bone->pool, frame, contains));
 }
 
-void bnExtReflectionExpand(bnInterpreter* bone, bnFrame* frame) {
+static void bnExtReflectionExpand(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (b->type != BN_OBJECT_STRING) {
@@ -92,7 +105,7 @@ void bnExtReflectionExpand(bnInterpreter* bone, bnFrame* frame) {
         }
 }
 
-void bnExtReflectionEntries(bnInterpreter* bone, bnFrame* frame) {
+static void bnExtReflectionEntries(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         GList* entries = NULL;
         GHashTableIter hashIter;
@@ -121,7 +134,7 @@ void bnExtReflectionEntries(bnInterpreter* bone, bnFrame* frame) {
         g_list_free(entries);
 }
 
-void bnExtReflectionExport(bnInterpreter* bone, bnFrame* frame) {
+static void bnExtReflectionExport(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         GHashTableIter hashIter;
         g_hash_table_iter_init(&hashIter, a->table);

@@ -3,17 +3,10 @@
 struct bnInterpreter;
 struct bnFrame;
 
+/**
+ * リフレクションのための関数をインタプリタをエクスポートします。
+ * @param bone
+ */
 void bnExternReflection(struct bnInterpreter* bone);
 
-void bnExtReflectionDefine(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnExtReflectionUndef(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnExtReflectionDefined(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnExtReflectionExpand(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnExtReflectionEntries(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnExtReflectionExport(struct bnInterpreter* bone, struct bnFrame* frame);
 #endif

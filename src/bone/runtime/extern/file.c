@@ -13,13 +13,11 @@ typedef struct bnFile {
         FILE* fp;
 } bnFile;
 
-bnReference bnNewFile(bnInterpreter* bone, FILE* fp) {
-        bnReference ref = bnAllocObject(bone->heap);
-        bnFile* ret = bnGetObject(bone->heap, ref);
-        bnInitAny(bone, &ret->base, FILE_T);
-        ret->fp = fp;
-        return ref;
-}
+static bnReference bnNewFile(struct bnInterpreter* bone, FILE* fp);
+static void bnExtFileOpen(struct bnInterpreter* bone, struct bnFrame* frame);
+static void bnExtFilePutc(struct bnInterpreter* bone, struct bnFrame* frame);
+static void bnExtFileGetc(struct bnInterpreter* bone, struct bnFrame* frame);
+static void bnExtFileClose(struct bnInterpreter* bone, struct bnFrame* frame);
 
 void bnExternFile(bnInterpreter* bone) {
         bnWriteExtern2(bone, "file.fopen",
@@ -46,7 +44,15 @@ void bnExternFile(bnInterpreter* bone) {
         bnWriteExtern2(bone, "file.stdin", bnNewFile(bone, stdin));
 }
 
-void bnExtFileOpen(bnInterpreter* bone, bnFrame* frame) {
+static bnReference bnNewFile(bnInterpreter* bone, FILE* fp) {
+        bnReference ref = bnAllocObject(bone->heap);
+        bnFile* ret = bnGetObject(bone->heap, ref);
+        bnInitAny(bone, &ret->base, FILE_T);
+        ret->fp = fp;
+        return ref;
+}
+
+static void bnExtFileOpen(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_STRING) {
@@ -67,7 +73,7 @@ void bnExtFileOpen(bnInterpreter* bone, bnFrame* frame) {
         bnWriteVariable2(frame, bone->pool, "ret", bnNewFile(bone, fp));
 }
 
-void bnExtFilePutc(bnInterpreter* bone, bnFrame* frame) {
+static void bnExtFilePutc(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_ANY || !bnMatchType(bone, a, FILE_T)) {
@@ -91,7 +97,7 @@ void bnExtFilePutc(bnInterpreter* bone, bnFrame* frame) {
         }
 }
 
-void bnExtFileGetc(bnInterpreter* bone, bnFrame* frame) {
+static void bnExtFileGetc(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_ANY || !bnMatchType(bone, a, FILE_T)) {
                 bnFormatThrow(bone, "should be `self` is file");
@@ -114,7 +120,7 @@ void bnExtFileGetc(bnInterpreter* bone, bnFrame* frame) {
         bnWriteVariable2(frame, bone->pool, "ret", bnNewChar(bone, c));
 }
 
-void bnExtFileClose(bnInterpreter* bone, bnFrame* frame) {
+static void bnExtFileClose(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         if (a->type != BN_OBJECT_ANY || !bnMatchType(bone, a, FILE_T)) {
                 bnFormatThrow(bone, "should be `self` is file");

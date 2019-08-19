@@ -3,11 +3,10 @@
 struct bnFrame;
 struct bnInterpreter;
 
+/**
+ * ユーティリティ関数をインタプリタへエクスポートします。
+ * @param bone
+ */
 void bnExternSystem(struct bnInterpreter* bone);
 
-void bnExtSystemExit(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnExtSystemAbort(struct bnInterpreter* bone, struct bnFrame* frame);
-
-void bnExtSystemSystem(struct bnInterpreter* bone, struct bnFrame* frame);
 #endif
