@@ -97,7 +97,7 @@ int bnGenerateNOP(bnEnviroment* self) {
 void bnGenerateEnterLambda(bnEnviroment* self) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
-        bnPushStack(self->labelFixStack, (void*)self->codeArray->len);
+        bnPushStack(self->labelFixStack, (void*)(self->codeArray->len - 1));
 #pragma clang diagnostic pop
 }
 
