@@ -5,11 +5,7 @@
 struct bnEnviroment;
 
 /**
- * bnOpcode is used by bone vm.
- * bnOpcode/bone vm policy
- * -- don't use constant pool
- *    for able to prototype object a every
- *    so,  always instance a primitive type
+ * bnOpcodeはインタプリタが実行するバイトコードの一覧です。
  */
 typedef enum bnOpcode {
         BN_OP_NOP,
@@ -54,8 +50,7 @@ typedef enum bnOpcode {
 } bnOpcode;
 
 /**
- * print a opcode.
- * return a next position of opcode.
+ * オペコードを出力して、次のオペコードの位置を返します。
  * @param fp
  * @param pool
  * @param env
@@ -66,6 +61,7 @@ int bnPrintOpcode(FILE* fp, struct bnStringPool* pool, struct bnEnviroment* env,
                   int pos);
 
 /**
+ * 指定のオペコードに必要なオペランドの数を返します。
  * @param data
  * @return
  */
