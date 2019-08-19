@@ -3,7 +3,7 @@
 #include "object.h"
 
 /**
- * return new instance of bnChar.
+ * 新しい文字インスタンスを生成し、参照を返します。
  * @param bone
  * @param name
  * @return
@@ -11,12 +11,14 @@
 bnReference bnNewChar(struct bnInterpreter* bone, char value);
 
 /**
+ * C言語のcharへ変換します。
  * @param obj
  * @return
  */
 char bnGetCharValue(bnObject* obj);
 
 /**
+ * 値を上書きします。
  * @param obj
  * @param c
  */
