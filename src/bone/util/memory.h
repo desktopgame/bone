@@ -44,16 +44,16 @@
 #endif
 
 /**
- * return memory of allocated by malloc.
- * abort if return NULL from malloc
+ * 指定のサイズだけメモリを確保して返します。
+ * 確保できなかった場合にはabort()します。
  * @param size
  * @return
  */
 void* bnSafeMalloc(size_t size);
 
 /**
- * return memory of allocated by realloc.
- * abort if return NULL from realloc
+ * 指定のサイズでメモリを再確保します。
+ * 確保できなかった場合にはabort()します。
  * @param block
  * @param newSize
  * @return
@@ -61,21 +61,25 @@ void* bnSafeMalloc(size_t size);
 void* bnSafeRealloc(void* block, size_t newSize);
 
 /**
- * free of memory by free.
- * declared function for future extension
+ * 指定のメモリブロックを解放します。
  * @param block
  */
 void bnSafeFree(void* block);
 
 /**
- * return a pdata.
- * exit if pdata equals a null
+ * 指定のメモリブロックがNULLであるかどうかアサーションします。
+ * NULLでなければメモリブロックをそのまま返します。
  * @param pdata
  * @param filename
  * @param lineno
- * @return pdata
+ * @return
  */
 void* bnNonNullFunc(void* pdata, const char* filename, int lineno);
+
+/**
+ * @param pdata
+ * @return
+ */
 #define bnNonNull(pdata) (bnNonNullFunc(pdata, __FILE__, __LINE__))
 
 #if _MSC_VER && DEBUG
