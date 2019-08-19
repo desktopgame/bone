@@ -29,7 +29,7 @@ bnStringView bnIntern(bnStringPool* self, const char* str) {
                 return BN_EMPTY_VIEW;
         }
         gpointer val = g_hash_table_lookup(self->table, (gconstpointer)str);
-        // key is not found
+        // キーが見つからなかったら登録する
         if (val != NULL) {
                 return (bnStringView)val;
         }
