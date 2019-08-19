@@ -3,7 +3,7 @@
 #include "object.h"
 
 /**
- * return new instance of bnBool.
+ * 新しい真偽値インスタンスを生成し、参照を返します。
  * @param bone
  * @param name
  * @return
@@ -11,6 +11,7 @@
 bnReference bnNewBool(struct bnInterpreter* bone, bool value);
 
 /**
+ * 二つの真偽値に反転する値への参照をもたせます。
  * @param heap
  * @param t
  * @param f
@@ -18,12 +19,14 @@ bnReference bnNewBool(struct bnInterpreter* bone, bool value);
 void bnSetFlipValue(struct bnHeap* heap, bnReference t, bnReference f);
 
 /**
+ * 真偽値の反転した値を返します。
  * @param obj
  * @return
  */
 bnReference bnGetFlipValue(bnObject* obj);
 
 /**
+ * C言語のboolへ変換します。
  * @param obj
  * @return
  */
