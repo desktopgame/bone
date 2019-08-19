@@ -3,22 +3,26 @@
 #include <setjmp.h>
 
 /**
- * BN_JMP_PUSH is call a setjmp and bnPushJStack.
+ * 現在のコンテキストを保存します。
+ * @param stack
  */
 #define BN_JMP_PUSH(stack) (setjmp(bnPushJStack(stack)->__buf))
 
 /**
- * BN_JMP_DO is call a longjmp and bnPeekJStack.
+ * 最後に保存されたコンテキストへジャンプします。
+ * @param stack
+ * @param code
  */
 #define BN_JMP_DO(stack, code) (longjmp(bnPeekJStack(stack)->__buf, (code)))
 
 /**
- * BN_JMP_POP is call a bnPopJStack.
+ * 最後に保存されたコンテキストを破棄します。
+ * @param stack
  */
 #define BN_JMP_POP(stack) (bnPopJStack(stack))
 
 /**
- * bnJStackElement is element of bnJStack.
+ * bnJStackElementは連結リストの構造でコンテキストを保存する構造体です。
  */
 typedef struct bnJStackElement {
         jmp_buf __buf;
@@ -26,40 +30,42 @@ typedef struct bnJStackElement {
 } bnJStackElement;
 
 /**
- * bnJStack is structure of stack for jmp_buf.
+ * bnJStackは連結リストの先頭を保存する構造体です。
  */
 typedef struct bnJStack {
         bnJStackElement* head;
 } bnJStack;
 
 /**
+ * 新しいbnNewJStackインスタンスを生成して返します。
  * @return
  */
 bnJStack* bnNewJStack();
 
 /**
- * in almost, is'nt need use this function.
- * shoud be called by macro in if statement.
+ * 現在のコンテキストを保存する新しい連結リストの要素を作成して、
+ * 現在のコンテキストを保存します。
+ * 戻り値としてコンテキストの保存された要素を返します。
  * @param self
  * @return
  */
 bnJStackElement* bnPushJStack(bnJStack* self);
 
 /**
- * in almost, is'nt need use this function.
- * shoud be called by macro in if statement.
+ * 最後に保存された要素を返します。
  * @param self
  * @return
  */
 bnJStackElement* bnPeekJStack(bnJStack* self);
 
 /**
- * in almost, is'nt need use this function.
+ * 最後に保存された要素を返します。
  * @param self
  */
 void bnPopJStack(bnJStack* self);
 
 /**
+ * 全ての要素を解放します。
  * @param self
  */
 void bnDeleteJStack(bnJStack* self);
