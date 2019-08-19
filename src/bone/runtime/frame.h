@@ -7,6 +7,9 @@ struct bnObject;
 struct bnLambda;
 struct bnInterpreter;
 
+/**
+ * bnFrameは実行時に変化する状態を保存する構造体です。
+ */
 typedef struct bnFrame {
         int pc;
         int depth;
@@ -22,31 +25,37 @@ typedef struct bnFrame {
 } bnFrame;
 
 /**
- * return new instance of bnFrame.
+ * 新しいbnFrameインスタンスを生成して返します。
  * @param type
  * @return
  */
 bnFrame* bnNewFrame();
 
 /**
+ * 指定のフレームの子フレームを生成して返します。
+ * 子フレームのローカル変数もまたルートとしてGCにマークされます。
  * @param self
  * @return
  */
 bnFrame* bnSubFrame(bnFrame* self);
 
 /**
+ * フレームのスタックの最後の値を返します。
  * @param self
  * @return
  */
 struct bnObject* bnReturnValue(bnFrame* self);
 
 /**
+ * 入力フレームのローカル変数を全て出力フレームへ書き出します。
  * @param src
  * @param dst
  */
 void bnInjectFrame(GHashTable* src, bnFrame* dst);
 
 /**
+ * 新しい配列インスタンスを生成し、フレームの全ての変数を書き出します。
+ * また、その参照を返します。
  * @param bone
  * @param self
  * @return
@@ -54,6 +63,7 @@ void bnInjectFrame(GHashTable* src, bnFrame* dst);
 bnReference bnExportAllVariable(struct bnInterpreter* bone, bnFrame* self);
 
 /**
+ * 指定の名前で変数を書き出します。
  * @param frame
  * @param name
  * @param ref
@@ -61,6 +71,7 @@ bnReference bnExportAllVariable(struct bnInterpreter* bone, bnFrame* self);
 void bnWriteVariable(bnFrame* frame, bnStringView name, bnReference ref);
 
 /**
+ * 指定の名前で変数を書き出します。
  * @param frame
  * @param pool
  * @param name
@@ -70,6 +81,7 @@ void bnWriteVariable2(bnFrame* frame, struct bnStringPool* pool,
                       const char* name, bnReference ref);
 
 /**
+ * 指定の名前の変数を読み出します。
  * @param frame
  * @param name
  * @return
@@ -77,6 +89,7 @@ void bnWriteVariable2(bnFrame* frame, struct bnStringPool* pool,
 bnReference bnReadVariable(bnFrame* frame, bnStringView name);
 
 /**
+ * 指定の名前の変数を読み出します。
  * @param frame
  * @param pool
  * @param name
@@ -86,7 +99,8 @@ bnReference bnReadVariable2(bnFrame* frame, struct bnStringPool* pool,
                             const char* name);
 
 /**
- * free a bnFrame.
+ * ローカル変数とスタックのための領域を解放します。
+ * オブジェクトは解放されません。
  * @param self
  */
 void bnDeleteFrame(bnFrame* self);
