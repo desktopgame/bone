@@ -1,7 +1,7 @@
 #ifndef BN_RUNTIME_LABEL_H
 #define BN_RUNTIME_LABEL_H
 /**
- * bnLabel is struct for goto.
+ * bnLabelはジャンプ先の位置を保存する構造体です。
  */
 typedef struct bnLabel {
         int pos;
@@ -9,14 +9,14 @@ typedef struct bnLabel {
 } bnLabel;
 
 /**
- * return new instance of bnLabel.
+ * 新しいbnLabelインスタンスを生成して返します。
  * @param pos
  * @return
  */
 bnLabel* bnNewLabel(int pos);
 
 /**
- * free a bnLabel.
+ * 参照カウントを減らして、0になったならラベルを解放します。
  * @param self
  */
 void bnDeleteLabel(bnLabel* self);
