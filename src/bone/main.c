@@ -39,12 +39,8 @@ int main(int argc, char* argv[]) {
                 bnDeleteInterpreter(bone);
                 g_string_free(input, TRUE);
         }
-#if DEBUG
-#if _MSC_VER
+#if _MSC_VER && DEBUG
         _CrtDumpMemoryLeaks();
-#else
-        bnDumpMemoryLeaks(stdout);
-#endif
 #endif
         return status;
 }

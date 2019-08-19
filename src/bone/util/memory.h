@@ -20,21 +20,9 @@
 #define BN_FREE(block) bnSafeFree(block)
 #endif
 #else
-#if DEBUG
-#if defined(NGLOBAL)
 #define BN_MALLOC(size) (bnSafeMalloc(size))
 #define BN_REALLOC(block, size) (bnSafeRealloc(block, size))
 #define BN_FREE(block) bnSafeFree(block)
-#else
-#define BN_MALLOC(size) (bnMallocFunc(size, __FILE__, __LINE__))
-#define BN_REALLOC(block, size) (bnReallocFunc(block, size, __FILE__, __LINE__))
-#define BN_FREE(block) (bnFreeFunc(block, __FILE__, __LINE__))
-#endif
-#else
-#define BN_MALLOC(size) (bnSafeMalloc(size))
-#define BN_REALLOC(block, size) (bnSafeRealloc(block, size))
-#define BN_FREE(block) bnSafeFree(block)
-#endif
 #endif
 
 #if _MSC_VER
@@ -81,55 +69,4 @@ void* bnNonNullFunc(void* pdata, const char* filename, int lineno);
  * @return
  */
 #define bnNonNull(pdata) (bnNonNullFunc(pdata, __FILE__, __LINE__))
-
-#if _MSC_VER && DEBUG
-
-#define bnMallocFunc(size) \
-        (_malloc_dbg(size, _NORMAL_BLOCK, __FILE__, __LINE__))
-#define bnReallocFunc(block, size) \
-        (_realloc_dbg(block, size, _NORMAL_BLOCK, __FILE__, __LINE__))
-#define bnFreeFunc(block) (_free_dbg(block, _NORMAL_BLOCK))
-#else
-
-/**
- * include debug information to allocated memory
- * in general, called by macro
- * @param size
- * @param filename
- * @param lineno
- * @return
- */
-void* bnMallocFunc(size_t size, const char* filename, int lineno);
-
-/**
- * include debug information to allocated memory
- * in general, called by macro
- * @param block
- * @param newSize
- * @param filename
- * @param lineno
- * @return
- */
-void* bnReallocFunc(void* block, size_t newSize, const char* filename,
-                    int lineno);
-/**
- * free of memory by free.
- * declared function for future extension
- * @param block
- * @param filename
- * @param lineno
- */
-void bnFreeFunc(void* block, const char* filename, int lineno);
-#endif
-
-/**
- * check a overrun in memory
- */
-void bnCheckMemoryBounds();
-
-/**
- * dump a still freed memory.
- * @param fp
- */
-void bnDumpMemoryLeaks(FILE* fp);
 #endif
