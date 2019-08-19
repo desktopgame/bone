@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include "../bone.h"
 
+/**
+ * bnASTTagはASTの種類を表す列挙です。
+ */
 typedef enum bnASTTag {
         BN_AST_ROOT,
         BN_AST_BLANK,
@@ -76,6 +79,9 @@ typedef enum bnASTTag {
 
 } bnASTTag;
 
+/**
+ * bnASTはプログラムの構造を表す要素です。
+ */
 typedef struct bnAST {
         union {
                 int ivalue;
@@ -88,77 +94,275 @@ typedef struct bnAST {
         int line;
 } bnAST;
 
+/**
+ * 構文解析に失敗したために、中途半端に構築途中のASTが残った場合はこれを呼び出します。
+ * @param error
+ */
 void bnCleanAST(bool error);
 
+/**
+ * 指定のタグで新しいbnASTインスタンスを生成して返します。
+ * @param tag
+ * @return
+ */
 bnAST* bnNewAST(bnASTTag tag);
 
+/**
+ * リストが空であることを表すbnASTインスタンスを生成して返します。
+ * @return
+ */
 bnAST* bnNewBlankAST();
 
+/**
+ * 遅延実行ブロックを表すbnASTインスタンスを生成して返します。
+ * @param astmt
+ * @return
+ */
 bnAST* bnNewDeferAST(bnAST* astmt);
 
+/**
+ * 配列リテラルを表すbnASTインスタンスを生成して返します。
+ * @param aargs
+ * @return
+ */
 bnAST* bnNewArrayLit(bnAST* aargs);
 
+/**
+ * 配列参照を表すbnASTインスタンスを生成して返します。
+ * @param aexpr
+ * @param aindex
+ * @return
+ */
 bnAST* bnNewArraySubscriptAST(bnAST* aexpr, bnAST* aindex);
 
+/**
+ * 可変長戻り値を表すbnASTインスタンスを生成して返します。
+ * @return
+ */
 bnAST* bnNewDotDotDotAST();
 
+/**
+ * スコープインジェクションを表すbnASTインスタンスを生成して返します。
+ * @param aexpr
+ * @return
+ */
 bnAST* bnNewScopeInjectionAST(bnAST* aexpr);
 
+/**
+ * オブジェクトインジェクションを表すbnASTインスタンスを生成して返します。
+ * @param aleft
+ * @param aright
+ * @return
+ */
 bnAST* bnNewObjectInjectionAST(bnAST* aleft, bnAST* aright);
 
+/**
+ * return文を表すbnASTインスタンスを生成して返します。
+ * @param expr
+ * @return
+ */
 bnAST* bnNewReturnAST(bnAST* expr);
 
+/**
+ * 式だけで構成される文を表すbnASTインスタンスを生成して返します。
+ * @param aexpr
+ * @return
+ */
 bnAST* bnNewExprStmtAST(bnAST* aexpr);
 
+/**
+ * if文を表すbnASTインスタンスを生成して返します。
+ * @param aexpr
+ * @param astmt
+ * @return
+ */
 bnAST* bnNewIfAST(bnAST* aexpr, bnAST* astmt);
 
+/**
+ * if-else文を表すbnASTインスタンスを生成して返します。
+ * @param aif
+ * @param astmt
+ * @return
+ */
 bnAST* bnNewIfElseAST(bnAST* aif, bnAST* astmt);
 
+/**
+ * while文を表すbnASTインスタンスを生成して返します。
+ * @param aexpr
+ * @param astmt
+ * @return
+ */
 bnAST* bnNewWhileAST(bnAST* aexpr, bnAST* astmt);
 
+/**
+ * 実引数を表すbnASTインスタンスを生成して返します。
+ * @param aexpr
+ * @return
+ */
 bnAST* bnNewArgumentAST(bnAST* aexpr);
 
+/**
+ * 実引数リストを表すbnASTインスタンスを生成して返します。
+ * @param aexpr
+ * @param aargs
+ * @return
+ */
 bnAST* bnNewArgumentListAST(bnAST* aexpr, bnAST* aargs);
 
+/**
+ * 仮引数を表すbnASTインスタンスを生成して返します。
+ * @param name
+ * @return
+ */
 bnAST* bnNewParameterAST(bnStringView name);
 
+/**
+ * 仮引数リストを表すbnASTインスタンスを生成して返します。
+ * @param aparam
+ * @param aparams
+ * @return
+ */
 bnAST* bnNewParameterListAST(bnAST* aparam, bnAST* aparams);
 
+/**
+ * ラムダ式を表すbnASTインスタンスを生成して返します。
+ * @param aparams
+ * @param areturn
+ * @param astmt
+ * @return
+ */
 bnAST* bnNewLambdaAST(bnAST* aparams, bnAST* areturn, bnAST* astmt);
 
+/**
+ * 文のリストを表すbnASTインスタンスを生成して返します。
+ * @param astmt
+ * @param astmts
+ * @return
+ */
 bnAST* bnNewStatementListAST(bnAST* astmt, bnAST* astmtList);
 
+/**
+ * 変数を表すbnASTインスタンスを生成して返します。
+ * @param name
+ * @return
+ */
 bnAST* bnNewVariableAST(bnStringView name);
 
+/**
+ * メンバアクセスを表すbnASTインスタンスを生成して返します。
+ * @param aexpr
+ * @param name
+ * @return
+ */
 bnAST* bnNewMemberAccessAST(bnAST* aexpr, bnStringView name);
 
+/**
+ * 関数呼び出しを表すbnASTインスタンスを生成して返します。
+ * @param aexpr
+ * @param aargs
+ * @return
+ */
 bnAST* bnNewFuncCall(bnAST* aexpr, bnAST* aargs);
 
+/**
+ * 整数リテラルを表すbnASTインスタンスを生成して返します。
+ * @param ivalue
+ * @return
+ */
 bnAST* bnNewIntAST(int ivalue);
 
+/**
+ * 文字列リテラルを表すbnASTインスタンスを生成して返します。
+ * @param value
+ * @return
+ */
 bnAST* bnNewStringAST(bnStringView value);
 
+/**
+ * 文字リテラルを表すbnASTインスタンスを生成して返します。
+ * @param cvalue
+ * @return
+ */
 bnAST* bnNewCharAST(char cvalue);
 
+/**
+ * 実数リテラルを表すbnASTインスタンスを生成して返します。
+ * @param value
+ * @return
+ */
 bnAST* bnNewDoubleAST(double dvalue);
 
+/**
+ * 単項演算子を表すbnASTインスタンスを生成して返します。
+ * @param tag
+ * @param a
+ * @return
+ */
 bnAST* bnNewUnaryAST(bnASTTag tag, bnAST* a);
 
+/**
+ * 二項演算氏を表すbnASTインスタンスを生成して返します。
+ * @param tag
+ * @param left
+ * @param right
+ * @return
+ */
 bnAST* bnNewBinaryAST(bnASTTag tag, bnAST* left, bnAST* right);
 
+/**
+ * selfにaを子要素として追加します。
+ * @param self
+ * @param a
+ */
 void bnPushAST(bnAST* self, bnAST* a);
 
+/**
+ * ASTをダンプします。
+ * @param fp
+ * @param pool
+ * @param self
+ */
 void bnDumpAST(FILE* fp, struct bnStringPool* pool, bnAST* self);
 
+/**
+ * ASTを一段階だけ出力します。
+ * @param fp
+ * @param pool
+ * @param self
+ */
 void bnPrintAST(FILE* fp, struct bnStringPool* pool, bnAST* self);
 
+/**
+ * ASTを再帰的に解放します。
+ * @param self
+ */
 void bnDeleteAST(bnAST* self);
 
+/**
+ * 0番目の子要素を返します。
+ * @param self
+ * @return
+ */
 bnAST* bnFirstAST(bnAST* self);
 
+/**
+ * 1番目の子要素を返します。
+ * @param self
+ * @return
+ */
 bnAST* bnSecondAST(bnAST* self);
 
+/**
+ * 2番目の子要素を返します。
+ * @param self
+ * @return
+ */
 bnAST* bnThirdAST(bnAST* self);
 
+/**
+ * ASTの値を計算して返します。
+ * @param self
+ * @return
+ */
 double bnEvalAST(bnAST* self);
 #endif
