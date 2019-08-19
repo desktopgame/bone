@@ -2,12 +2,12 @@
 #define BONE_UTIL_STACK_H
 
 /**
- * delete function for element in stack.
+ * bnStackElementDeleterはスタックの中身を解放する関数ポインタ型です。
  */
 typedef void (*bnStackElementDeleter)(void*);
 
 /**
- * single link list.
+ * bnStackElementはスタックの要素です。
  */
 typedef struct bnStackElement {
         void* value;
@@ -15,28 +15,28 @@ typedef struct bnStackElement {
 } bnStackElement;
 
 /**
- * stack.
+ * bnStackはスタックの先頭を保存します。
  */
 typedef struct bnStack {
         bnStackElement* head;
 } bnStack;
 
 /**
- * return new instance of bnStack.
+ * 新しいスタックインスタンスを生成して返します。
  * @param type
  * @return
  */
 bnStack* bnNewStack();
 
 /**
- * push to stack.
+ * スタックの末尾へ要素を追加します。
  * @param self
  * @param data
  */
 void bnPushStack(bnStack* self, void* data);
 
 /**
- * pop from stack.
+ * スタックの末尾の要素を返します。
  * @param self
  * @return
  */
@@ -50,14 +50,14 @@ void* bnPopStack(bnStack* self);
 void* bnPeekStack(bnStack* self);
 
 /**
- * return size of stack.
+ * スタックの長さを返します。
  * @param self
  * @return
  */
 int bnGetStackSize(bnStack* self);
 
 /**
- * free a bnStack.
+ * スタックとその中身を解放します。
  * @param self
  * @param deleter
  */
