@@ -14,7 +14,7 @@ typedef void (*bnNativeFunc)(struct bnInterpreter* bone, struct bnFrame* frame);
 #define BN_C_ADD_EXIT (2)
 
 /**
- * bnLambdaType is type of bnLambda.
+ * bnLambdaTypeはラムダの種類を表します。
  */
 typedef enum bnLambdaType {
         BN_LAMBDA_SCRIPT,
@@ -24,7 +24,7 @@ typedef enum bnLambdaType {
 #define bnNewLambda(bone, type) \
         (bnNewLambdaFunc(bone, type, __FILE__, __LINE__))
 /**
- * return new instance of bnLambda.
+ * 新しいラムダインスタンスを生成して、参照を返します。
  * @param bone
  * @param type
  * @param filename
@@ -38,7 +38,7 @@ bnReference bnNewLambdaFunc(struct bnInterpreter* bone, bnLambdaType type,
         (bnNewLambdaFromCFuncFunc(bone, func, pool, __FILE__, __LINE__, \
                                   __VA_ARGS__))
 /**
- * return new instance of bnLambda, from C function.
+ * 新しいラムダインスタンスを生成して、参照を返します。
  * @param bone
  * @param func
  * @param pool
@@ -53,7 +53,11 @@ bnReference bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
                                      const char* filename, int lineno, ...);
 
 /**
- * return true, if first parameter name is self.
+ * 指定のラムダインスタンスがインスタンスベースのラムダであるなら true
+ * を返します。 インスタンスベースのラムダの条件は、引数の最初の名前が self
+ * であることです。
+ * これを満たすラムダインスタンスがあるオブジェクトのフィールドとして格納されると、
+ * 通常のメソッドのように呼び出せるようになります。
  * @param pool
  * @param self
  * @return
@@ -61,7 +65,7 @@ bnReference bnNewLambdaFromCFuncFunc(struct bnInterpreter* bone,
 bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnObject* self);
 
 /**
- * return true, if variadic return value.
+ * 戻り値が可変長ならtrueを返します。
  * @param pool
  * @param self
  * @return
@@ -69,78 +73,96 @@ bool bnIsInstanceBaseLambda(struct bnStringPool* pool, bnObject* self);
 bool bnIsVariadicReturn(struct bnStringPool* pool, bnObject* self);
 
 /**
+ * ラムダインスタンスのバイトコードを上書きします。
  * @param obj
  * @param env
  */
 void bnSetEnviroment(bnObject* obj, bnEnviroment* env);
 
 /**
+ * ラムダインスタンスのバイトコードを返します。
  * @param obj
  * @return
  */
 bnEnviroment* bnGetEnviroment(bnObject* obj);
 
 /**
+ * 指定のラムダインスタンスが、スクリプトではなくネイティブメソッドとして実装されているなら、
+ * C関数へのポインタを返します。
  * @param obj
  * @return
  */
 bnNativeFunc bnGetNativeFunc(bnObject* obj);
 
 /**
+ * 指定のラムダインスタンスに引数を追加します。
  * @param obj
  * @param param
  */
 void bnAddParameter(bnObject* obj, gpointer param);
 
 /**
+ * 指定のラムダインスタンスの引数の一覧を返します。
  * @param obj
  * @return
  */
 GList* bnGetParameterList(bnObject* obj);
 
 /**
+ * 指定のラムダインスタンスに戻り値を追加します。
  * @param obj
  * @param retval
  */
 void bnAddReturnValue(bnObject* obj, gpointer retval);
 
 /**
+ * 指定のラムダインスタンスの戻り値の一覧を返します。
  * @param obj
  * @return
  */
 GList* bnGetReturnValueList(bnObject* obj);
 
 /**
+ * 指定のラムダインスタンスがキャプチャしている変数テーブルを返します。
  * @param obj
  * @return
  */
 GHashTable* bnGetCapturedMap(bnObject* obj);
 
 /**
+ * ラムダインスタンスの定義されたファイル名を上書きします。
+ * エラー情報のために使用されます。
  * @param obj
  * @param filename
  */
 void bnSetLambdaFileName(bnObject* obj, bnStringView filename);
 
 /**
+ * ラムダインスタンスの定義されたファイル名を返します。
+ * エラー情報のために使用されます。
  * @param obj
  * @return
  */
 bnStringView bnGetLambdaFileName(bnObject* obj);
 
 /**
+ * ラムダインスタンスの定義された行番号を上書きします。
+ * エラー情報のために使用されます。
  * @param obj
  * @param line
  */
 void bnSetLambdaLineNumber(bnObject* obj, int line);
 
 /**
+ * ラムダインスタンスの定義された行番号を返します。
+ * エラー情報のために使用されます。
  * @param obj
  * @return
  */
 int bnGetLambdaLineNumber(bnObject* obj);
 
 /**
+ * 指定のラムダインスタンスの種類を返します。
  * @param obj
  * @return
  */
