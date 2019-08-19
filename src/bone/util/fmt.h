@@ -3,13 +3,13 @@
 #include <stdio.h>
 
 /**
- * call bnFindent with  stdout.
+ * bnFindent(FILE*, int)を使用して標準出力にインデントを出力します。
  * @param depth
  */
 void bnIndent(int depth);
 
 /**
- * output spaces to file stream.
+ * 指定の深さだけインデントを出力します。
  * @param fp
  * @param depth
  */
