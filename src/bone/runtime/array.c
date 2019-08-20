@@ -83,7 +83,7 @@ void bnSetArrayElementAt(bnObject* obj, int index, bnReference ref) {
         g_ptr_array_index(((bnArray*)obj)->arr, index) = ref;
 }
 
-// Array
+// private
 static void bnStdArrayArraySet(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));

@@ -40,7 +40,7 @@ char bnGetCharValue(bnObject* obj) { return ((bnChar*)obj)->value; }
 
 void bnSetCharValue(bnObject* obj, char c) { ((bnChar*)obj)->value = c; }
 
-// Char
+// private
 
 static void bnStdCharEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));

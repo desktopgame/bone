@@ -51,7 +51,7 @@ bool bnGetBoolValue(bnObject* obj) {
         }
         return true;
 }
-// Bool
+// private
 
 static void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));

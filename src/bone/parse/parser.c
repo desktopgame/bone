@@ -32,7 +32,6 @@ bnAST *bnParseFile(struct bnStringPool *pool, const char *filename) {
         yyin = fp;
         gLineQ = g_queue_new();
         if (yyparse()) {
-                //失敗
                 free_lq();
                 g_rec_mutex_unlock(&gMutex);
                 bnCleanAST(true);
