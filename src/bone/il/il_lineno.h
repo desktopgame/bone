@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 /**
+ * 現在の中間表現の行番号を出力します。
  * @param fp
  * @param line
  */
