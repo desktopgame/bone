@@ -4,7 +4,7 @@
 #include "il_expression.h"
 
 /**
- * bnILStmtIf is if statement.
+ * bnILStmtIfはif文を表す構造体です。
  */
 typedef struct bnILStmtIf {
         bnILExpression* cond;
@@ -12,14 +12,14 @@ typedef struct bnILStmtIf {
 } bnILStmtIf;
 
 /**
- * return new instance of bnILStmtIf.
+ * 新しいbnILStmtIfインスタンスを生成して返します。
  * @param cond
  * @return
  */
 bnILStmtIf* bnNewILStmtIf(bnILExpression* cond);
 
 /**
- * print a information of bnILStmtIf.
+ * if文を再帰的にダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -28,17 +28,24 @@ bnILStmtIf* bnNewILStmtIf(bnILExpression* cond);
 void bnDumpILStmtIf(FILE* fp, struct bnStringPool* pool, bnILStmtIf* self,
                     int depth);
 
+/**
+ * if文のバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILStmtIf(struct bnInterpreter* bone, bnILStmtIf* self,
                         struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
- * free a bnILStmtIf.
+ * if文を再帰的に解放します。
  * @param self
  */
 void bnDeleteILStmtIf(bnILStmtIf* self);
 
 /**
- * bnILStmtIfElse is if statement with else.
+ * if-else文を表す構造体です。
  */
 typedef struct bnILStmtIfElse {
         bnILStmtIf* trueCase;
@@ -46,14 +53,14 @@ typedef struct bnILStmtIfElse {
 } bnILStmtIfElse;
 
 /**
- * return new instance of bnILStmtIf.
+ * 新しいbnILStmtIfElseインスタンスを生成して返します。
  * @param trueCase
  * @return
  */
 bnILStmtIfElse* bnNewILStmtIfElse(bnILStmtIf* trueCase);
 
 /**
- * print a information of bnILStmtIfElse.
+ * if-else文を再帰的にダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -63,11 +70,18 @@ void bnDumpILStmtIfElse(FILE* fp, struct bnStringPool* pool,
                         bnILStmtIfElse* self, int depth);
 
 /**
- * free a bnILStmtIf.
+ * if-else文を再帰的に解放します。
  * @param self
  */
 void bnDeleteILStmtIfElse(bnILStmtIfElse* self);
 
+/**
+ * if-else文のバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILStmtIfElse(struct bnInterpreter* bone, bnILStmtIfElse* self,
                             struct bnEnviroment* env, bnCompileCache* ccache);
 #endif
