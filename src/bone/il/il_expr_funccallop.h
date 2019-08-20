@@ -6,7 +6,7 @@ struct bnEnviroment;
 struct bnInterpreter;
 
 /**
- * bnILExprFuncCallOp is func call.
+ * bnILExprFuncCallOpは関数呼び出しを表す構造体です。
  */
 typedef struct bnILExprFuncCallOp {
         bnILExpression* expr;
@@ -14,14 +14,14 @@ typedef struct bnILExprFuncCallOp {
 } bnILExprFuncCallOp;
 
 /**
- * return new instance of bnILExprFuncCallOp.
+ * 新しいbnILExprFuncCallOpインスタンスを生成して返します。
  * @param expr
  * @return
  */
 bnILExprFuncCallOp* bnNewILExprFuncCallOp(bnILExpression* expr);
 
 /**
- * print a information of bnILExprFuncCallOp.
+ * 関数呼び出し演算子を再帰的にダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -30,13 +30,20 @@ bnILExprFuncCallOp* bnNewILExprFuncCallOp(bnILExpression* expr);
 void bnDumpILExprFuncCallOp(FILE* fp, struct bnStringPool* pool,
                             bnILExprFuncCallOp* self, int depth);
 
+/**
+ * 関数呼び出し演算子のバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILExprFuncCallOp(struct bnInterpreter* bone,
                                 bnILExprFuncCallOp* self,
                                 struct bnEnviroment* env,
                                 bnCompileCache* ccache);
 
 /**
- * free a bnILExprFuncCallOp.
+ * 関数呼び出し演算子を再帰的に解放します。
  * @param self
  */
 void bnDeleteILExprFuncCallOp(bnILExprFuncCallOp* self);
