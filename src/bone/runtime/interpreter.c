@@ -115,7 +115,6 @@ void bnWriteBuiltin(bnInterpreter* self, bnFrame* frame,
         // declare true, false
         bnReference t = bnNewBool(self, true);
         bnReference f = bnNewBool(self, false);
-        bnSetFlipValue(self->heap, t, f);
         bnWriteVariable2(frame, pool, "true", t);
         bnWriteVariable2(frame, pool, "false", f);
 #if DEBUG

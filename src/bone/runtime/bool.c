@@ -19,7 +19,6 @@ static void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame);
 typedef struct bnBool {
         bnObject base;
         bool value;
-        bnReference r;
 } bnBool;
 
 bnReference bnNewBool(bnInterpreter* bone, bool value) {
@@ -27,7 +26,6 @@ bnReference bnNewBool(bnInterpreter* bone, bool value) {
         bnBool* ret = bnGetObject(bone->heap, ref);
         bnInitObject(bone, &ret->base, BN_OBJECT_BOOL);
         ret->value = value;
-        ret->r = NULL;
         bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_NOT),
                  bnNewLambdaFromCFunc(bone, bnStdBoolNot, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN,
@@ -45,15 +43,6 @@ bnReference bnNewBool(bnInterpreter* bone, bool value) {
         return ref;
 }
 
-void bnSetFlipValue(struct bnHeap* heap, bnReference t, bnReference f) {
-        bnBool* tobj = bnGetObject(heap, t);
-        bnBool* fobj = bnGetObject(heap, f);
-        tobj->r = f;
-        fobj->r = t;
-}
-
-bnReference bnGetFlipValue(bnObject* obj) { return (((bnBool*)obj)->r); }
-
 bool bnGetBoolValue(bnObject* obj) {
         if (obj->type == BN_OBJECT_BOOL) {
                 return ((bnBool*)obj)->value;
@@ -70,7 +59,13 @@ static void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame) {
                 _throw(bone, frame, "should be `self` is bool");
         }
         bnBool* b = (bnBool*)a;
-        bnWriteVariable2(frame, bone->pool, "ret", b->r);
+        if (b->value) {
+                bnWriteVariable2(frame, bone->pool, "ret",
+                                 bnGetFalse(bone->pool, frame));
+        } else {
+                bnWriteVariable2(frame, bone->pool, "ret",
+                                 bnGetTrue(bone->pool, frame));
+        }
 }
 
 static void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame) {
