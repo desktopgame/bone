@@ -5,7 +5,7 @@
 struct bnEnviroment;
 struct bnInterpreter;
 /**
- * bnILBinOpType is type of binary operator.
+ * bnILBinOpTypeは二項演算子の種類を表す列挙です。
  */
 typedef enum bnILBinOpType {
         BN_IL_BINOP_PLUS,
@@ -30,7 +30,7 @@ typedef enum bnILBinOpType {
 } bnILBinOpType;
 
 /**
- * bnILExprBinOp is binary operator.
+ * bnILExprBinOpは二項演算子を表す構造体です。
  */
 typedef struct bnILExprBinOp {
         bnILExpression* left;
@@ -39,14 +39,14 @@ typedef struct bnILExprBinOp {
 } bnILExprBinOp;
 
 /**
- * return new instance of bnILExprBinOp.
+ * 新しいbnILExprBinOpインスタンスを生成して返します。
  * @param type
  * @return
  */
 bnILExprBinOp* bnNewILExprBinOp(bnILBinOpType type);
 
 /**
- * print a information of bnILExprBinOp.
+ * 二項演算氏を再帰的にダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -55,11 +55,18 @@ bnILExprBinOp* bnNewILExprBinOp(bnILBinOpType type);
 void bnDumpILExprBinOp(FILE* fp, struct bnStringPool* pool, bnILExprBinOp* self,
                        int depth);
 
+/**
+ * 二項演算子のバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILExprBinOp(struct bnInterpreter* bone, bnILExprBinOp* self,
                            struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
- * free a bnILExprBinOp.
+ * 二項演算子を再帰的に解放します。
  * @param self
  */
 void bnDeleteILExprBinOp(bnILExprBinOp* self);
