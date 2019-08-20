@@ -20,6 +20,7 @@ bnModule* bnNewModule(const char* path);
 
 /**
  * 指定の名前でシンボルを読み込んで返します。
+ * 実際に検索される名前は ファイル名_name です。
  * @param self
  * @param name
  * @return
