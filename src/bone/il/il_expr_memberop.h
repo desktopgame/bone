@@ -6,7 +6,7 @@ struct bnEnviroment;
 struct bnInterpreter;
 
 /**
- * bnILExprMemberOp is member operator.
+ * bnILExprMemberOpはメンバアクセスを表す構造体です。
  */
 typedef struct bnILExprMemberOp {
         bnILExpression* expr;
@@ -14,14 +14,14 @@ typedef struct bnILExprMemberOp {
 } bnILExprMemberOp;
 
 /**
- * return new instance of bnILExprMemberOp.
+ * 新しいbnILExprMemberOpインスタンスを生成して返します。
  * @param name
  * @return
  */
 bnILExprMemberOp* bnNewILExprMemberOp(bnStringView name);
 
 /**
- * print a information of bnILExprMemberOp.
+ * メンバアクセスを再帰的にダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -30,12 +30,19 @@ bnILExprMemberOp* bnNewILExprMemberOp(bnStringView name);
 void bnDumpILExprMemberOp(FILE* fp, struct bnStringPool* pool,
                           bnILExprMemberOp* self, int depth);
 
+/**
+ * メンバアクセスのバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILExprMemberOp(struct bnInterpreter* bone,
                               bnILExprMemberOp* self, struct bnEnviroment* env,
                               bnCompileCache* ccache);
 
 /**
- * free a bnILExprMemberOp.
+ * メンバアクセスを再帰的に解放します。
  * @param self
  */
 void bnDeleteILExprMemberOp(bnILExprMemberOp* self);
