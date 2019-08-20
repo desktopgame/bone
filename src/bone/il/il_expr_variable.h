@@ -6,21 +6,21 @@ struct bnEnviroment;
 struct bnInterpreter;
 
 /**
- * bnILExprVariable is local variable.
+ * bnILExprVariableは変数を表す構造体です。
  */
 typedef struct bnILExprVariable {
         bnStringView name;
 } bnILExprVariable;
 
 /**
- * return new instance of bnILExprVariable.
+ * 新しいbnILExprVariableインスタンスを生成して返します。
  * @param name
  * @return
  */
 bnILExprVariable* bnNewILExprVariable(bnStringView name);
 
 /**
- * print a information of bnILExprVariable.
+ * 変数をダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -29,12 +29,19 @@ bnILExprVariable* bnNewILExprVariable(bnStringView name);
 void bnDumpILExprVariable(FILE* fp, struct bnStringPool* pool,
                           bnILExprVariable* self, int depth);
 
+/**
+ * 変数のバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param cache
+ */
 void bnGenerateILExprVariable(struct bnInterpreter* bone,
                               bnILExprVariable* self, struct bnEnviroment* env,
                               bnCompileCache* ccache);
 
 /**
- * free a bnILExprVariable.
+ * 変数を解放します。
  * @param self
  */
 void bnDeleteILExprVariable(bnILExprVariable* self);
