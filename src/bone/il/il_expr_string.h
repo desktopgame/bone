@@ -6,21 +6,21 @@ struct bnEnviroment;
 struct bnInterpreter;
 
 /**
- * bnILExprString is literal of string.
+ * bnILExprStringは文字リテラルを表す構造体です。
  */
 typedef struct bnILExprString {
         bnStringView value;
 } bnILExprString;
 
 /**
- * return new instance of bnILExprString.
+ * 新しいbnILExprStringインスタンスを生成して返します。
  * @param value
  * @return
  */
 bnILExprString* bnNewILExprString(bnStringView value);
 
 /**
- * print a information of bnILExprString.
+ * 文字リテラルをダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -29,11 +29,18 @@ bnILExprString* bnNewILExprString(bnStringView value);
 void bnDumpILExprString(FILE* fp, struct bnStringPool* pool,
                         bnILExprString* self, int depth);
 
+/**
+ * 文字リテラルのバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILExprString(struct bnInterpreter* bone, bnILExprString* self,
                             struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
- * free a bnILExprString.
+ * 文字リテラルを解放します。
  * @param self
  */
 void bnDeleteILExprString(bnILExprString* self);
