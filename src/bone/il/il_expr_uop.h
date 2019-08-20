@@ -5,7 +5,7 @@
 struct bnInterpreter;
 
 /**
- * bnILUOpType is type of binary operator.
+ * bnILUOpTypeは単項演算子の種類を表す列挙です。
  */
 typedef enum bnILUOpType {
         BN_IL_UNOP_NOT,
@@ -14,7 +14,7 @@ typedef enum bnILUOpType {
 } bnILUOpType;
 
 /**
- * bnILExprUOp is unary operator.
+ * bnILExprUOpは単項演算子の種類を表す構造体です。
  */
 typedef struct bnILExprUOp {
         bnILExpression* a;
@@ -22,14 +22,14 @@ typedef struct bnILExprUOp {
 } bnILExprUOp;
 
 /**
- * return new instance of bnILExprUOp.
+ * 新しいbnILExprUOpインスタンスを生成して返します。
  * @param type
  * @return
  */
 bnILExprUOp* bnNewILExprUOp(bnILUOpType type);
 
 /**
- * print a information of bnILExprUOp.
+ * 単項演算子を再帰的にダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -38,11 +38,18 @@ bnILExprUOp* bnNewILExprUOp(bnILUOpType type);
 void bnDumpILExprUOp(FILE* fp, struct bnStringPool* pool, bnILExprUOp* self,
                      int depth);
 
+/**
+ * 単項演算子のバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILExprUOp(struct bnInterpreter* bone, bnILExprUOp* self,
                          struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
- * free a bnILExprUOp.
+ * 単項演算子を再帰的に解放します。
  * @param self
  */
 void bnDeleteILExprUOp(bnILExprUOp* self);
