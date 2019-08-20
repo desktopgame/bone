@@ -5,21 +5,21 @@
 struct bnEnviroment;
 struct bnInterpreter;
 /**
- * bnILExprDouble is literal of double precision floating point type.
+ * bnILExprDoubleは実数リテラルを表す構造体です。
  */
 typedef struct bnILExprDouble {
         double value;
 } bnILExprDouble;
 
 /**
- * return new instance of bnILExprDouble.
+ * 新しいbnILExprDoubleインスタンスを生成して返します。
  * @param value
  * @return
  */
 bnILExprDouble* bnNewILExprDouble(double value);
 
 /**
- * print a information of bnILExprDouble.
+ * 実数リテラルをダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -28,11 +28,18 @@ bnILExprDouble* bnNewILExprDouble(double value);
 void bnDumpILExprDouble(FILE* fp, struct bnStringPool* pool,
                         bnILExprDouble* self, int depth);
 
+/**
+ * 実数リテラルのバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILExprDouble(struct bnInterpreter* bone, bnILExprDouble* self,
                             struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
- * free a bnILExprDouble.
+ * 実数リテラルを解放します。
  * @param self
  */
 void bnDeleteILExprDouble(bnILExprDouble* self);
