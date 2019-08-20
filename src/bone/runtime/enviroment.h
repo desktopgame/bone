@@ -128,13 +128,6 @@ void bnGenerateExitLambda(bnEnviroment* self);
 int bnGetLambdaOffset(bnEnviroment* self);
 
 /**
- * 最後のラムダ式からのオフセットを返します。
- * @param self
- * @return
- */
-int bnGetPrependPos(bnEnviroment* self);
-
-/**
  * 全てのオペコードやジャンプテーブルを解放します。
  * @param self
  */

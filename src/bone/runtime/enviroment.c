@@ -112,13 +112,6 @@ int bnGetLambdaOffset(bnEnviroment* self) {
         return ((int)bnPeekStack(self->labelFixStack));
 }
 
-int bnGetPrependPos(bnEnviroment* self) {
-        if (bnGetStackSize(self->labelFixStack) == 0) {
-                return 0;
-        }
-        return (int)bnPeekStack(self->labelFixStack);
-}
-
 void bnGenerateFillNOP(bnEnviroment* self, int count) {
         while (count-- > 0) {
                 bnGenerateNOP(self);
