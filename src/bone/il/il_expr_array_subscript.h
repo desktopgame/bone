@@ -4,7 +4,7 @@
 #include "il_expression.h"
 
 /**
- * bnILExprArraySubscript is array[index].
+ * bnILExprArraySubscriptは配列参照演算子を表す構造体です。
  */
 typedef struct bnILExprArraySubscript {
         bnILExpression* arrayExpr;
@@ -12,7 +12,7 @@ typedef struct bnILExprArraySubscript {
 } bnILExprArraySubscript;
 
 /**
- * return new instance of bnILExprArraySubscript.
+ * 新しいbnILExprArraySubscriptインスタンスを生成して返します。
  * @param arrayExpr
  * @param indexExpr
  * @return
@@ -21,7 +21,7 @@ bnILExprArraySubscript* bnNewILExprArraySubscript(bnILExpression* arrayExpr,
                                                   bnILExpression* indexExpr);
 
 /**
- * print a information of bnILExprArraySubscript.
+ * 配列参照演算子を再帰的にダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -30,13 +30,20 @@ bnILExprArraySubscript* bnNewILExprArraySubscript(bnILExpression* arrayExpr,
 void bnDumpILExprArraySubscript(FILE* fp, struct bnStringPool* pool,
                                 bnILExprArraySubscript* self, int depth);
 
+/**
+ * 配列参照演算子のバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILExprArraySubscript(struct bnInterpreter* bone,
                                     bnILExprArraySubscript* self,
                                     struct bnEnviroment* env,
                                     bnCompileCache* ccache);
 
 /**
- * free a bnILExprArraySubscript.
+ * 配列参照演算子を再帰的に解放します。
  * @param self
  */
 void bnDeleteILExprArraySubscript(bnILExprArraySubscript* self);
