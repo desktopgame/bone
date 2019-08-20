@@ -29,6 +29,7 @@ int bnInteractive(FILE* in) {
         bnInterpreter* bone = bnNewInterpreter("stdin", 0, NULL);
         bnFrame* current = NULL;
         GString* line = g_string_new(NULL);
+        int loops = 0;
         //バージョン情報を表示
         printf("bone %s\n", BUILD_VERSION);
         printf("launched a interactive mode.\n");
@@ -37,8 +38,15 @@ int bnInteractive(FILE* in) {
         //メインループ開始
         while (r) {
                 show_gutter();
-                g_string_erase(line, 0, line->len);
-                read_line(in, line);
+                if (loops > 0) {
+                        g_string_erase(line, 0, line->len);
+                        read_line(in, line);
+                } else {
+                        const char* initCode = "{} <- load(\"repl.bn\");";
+                        g_string_append(line, initCode);
+                        printf("%s\n", initCode);
+                        loops++;
+                }
                 // 空行
                 if (line->len == 0) {
                         continue;

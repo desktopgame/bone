@@ -1,0 +1,3 @@
+{} <- load("file.bn");
+{} <- load("dir.bn");
+{} <- load("array.bn");
