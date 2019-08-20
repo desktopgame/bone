@@ -4,21 +4,21 @@
 #include "il_statement.h"
 
 /**
- * bnILStmtDefer is defer statemetn.
+ * bnILStmtDeferは遅延実行ブロックを表す構造体です。
  */
 typedef struct bnILStmtDefer {
         bnILStatement* stmt;
 } bnILStmtDefer;
 
 /**
- * return new instance of bnILStmtDefer.
+ * 新しいbnILStmtDeferインスタンスを生成して返します。
  * @param stmt
  * @return
  */
 bnILStmtDefer* bnNewILStmtDefer(bnILStatement* stmt);
 
 /**
- * print a information of bnILStmtDefer.
+ * 遅延実行ブロックを再帰的にダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -27,11 +27,18 @@ bnILStmtDefer* bnNewILStmtDefer(bnILStatement* stmt);
 void bnDumpILStmtDefer(FILE* fp, struct bnStringPool* pool, bnILStmtDefer* self,
                        int depth);
 
+/**
+ * 遅延実行ブロックのバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILStmtDefer(struct bnInterpreter* bone, bnILStmtDefer* self,
                            struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
- * free a bnILStmtDefer.
+ * 遅延実行ブロックを再帰的に解放します。
  * @param self
  */
 void bnDeleteILStmtDefer(bnILStmtDefer* self);
