@@ -28,7 +28,7 @@ static void _throw(bnInterpreter* bone, bnFrame* frame, const char* str);
 static bool file_exists(const char* path);
 static bool compare_list_array(bnInterpreter* bone, GList* a, bnObject* b);
 
-// only in debug build
+// デバッグビルドでのみ有効な関数
 #if DEBUG
 void bnStdDebugAssert(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
@@ -36,7 +36,6 @@ void bnStdDebugAssert(bnInterpreter* bone, bnFrame* frame) {
                 _throw(bone, frame, "internal error");
         }
         if (!bnGetBoolValue(a)) {
-                // abort();
                 _throw(bone, frame, "assertion failed");
         }
 }
@@ -62,7 +61,8 @@ void bnStdDebugBreak(bnInterpreter* bone, bnFrame* frame) {
 #if CAN_BREAK
         raise(SIGINT);
 #else
-        // please set break point at here
+        //インタプリタを任意の地点でブレークするための関数です。
+        //実際はここにブレークポイントを設定してください。
         abort();
 #endif
 }
@@ -89,7 +89,6 @@ static void showInfo(bnInterpreter* bone, bnObject* a, int depth) {
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
                 const char* strk = bnView2Str(bone->pool, (bnStringView)k);
                 for (int i = 0; i < depth; i++) fprintf(BN_STDOUT, "    ");
-                // bnFindent(BN_STDOUT, depth);
                 fprintf(BN_STDOUT, "%s", strk);
                 fprintf(BN_STDOUT, "[");
                 bnPrintObject(BN_STDOUT, bone, v);
@@ -107,7 +106,7 @@ void bnStdDebugShowInfo(bnInterpreter* bone, bnFrame* frame) {
 }
 #endif
 
-// Built-in
+// 組み込み関数
 
 void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
         BN_CHECK_MEM();
@@ -120,13 +119,14 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
         if (!file_exists(pathStr)) {
                 bnFormatThrow(bone, "`%s` is not found", pathStr);
         }
-        // parse file
+        // 指定のファイルを解析する
         bnAST* ast = bnParseFile(bone->pool, pathStr);
         if (ast == NULL) {
                 bnFormatThrow(bone, "syntax error in `%s`", pathStr);
         }
+        //中間表現へ変換
         bnILToplevel* iltop = bnAST2IL(ast);
-        // gen code
+        //コード生成して実行
         bnFrame* sub = bnSubFrame(frame);
         bnEnviroment* env = bnNewEnviroment(bnIntern(bone->pool, pathStr));
         bnGenerateILTopLevel(bone, iltop, env);
@@ -150,13 +150,14 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
         if (!file_exists(pathStr)) {
                 bnFormatThrow(bone, "`%s` is not found", pathStr);
         }
-        // parse file
+        //指定のファイルを解析
         bnAST* ast = bnParseFile(bone->pool, pathStr);
         if (ast == NULL) {
                 bnFormatThrow(bone, "syntax error in `%s`", pathStr);
         }
+        //中間表現へ変換
         bnILToplevel* iltop = bnAST2IL(ast);
-        // gen code
+        //コード生成して実行
         bnFrame* sub = bnSubFrame(frame);
         bnEnviroment* env = bnNewEnviroment(bnIntern(bone->pool, pathStr));
         bnGenerateILTopLevel(bone, iltop, env);
@@ -170,7 +171,6 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
                 keys = g_list_append(keys, v);
         }
         bnExecute(bone, env, sub);
-        // assert(frame->panic == NULL);
         // remove default
         GList* listIter = keys;
         while (listIter != NULL) {
@@ -192,13 +192,14 @@ void bnStdSystemEval(bnInterpreter* bone, bnFrame* frame) {
         }
         bnStringView srcView = bnGetStringValue(a);
         const char* srcStr = bnView2Str(bone->pool, srcView);
-        // parse file
+        // 指定の文字列を解析する
         bnAST* ast = bnParseString(bone->pool, srcStr);
         if (ast == NULL) {
                 bnFormatThrow(bone, "syntax error in `%s`", "string");
         }
+        //中間表現へ変換する
         bnILToplevel* iltop = bnAST2IL(ast);
-        // gen code
+        //コード生成して実行
         bnFrame* sub = bnSubFrame(frame);
         bnEnviroment* env = bnNewEnviroment(bnIntern(bone->pool, "string"));
         bnGenerateILTopLevel(bone, iltop, env);
@@ -270,7 +271,7 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
         if (returns->type != BN_OBJECT_ARRAY) {
                 _throw(bone, frame, "should be `returns` is array");
         }
-        // find from extern table
+        //エクスポートテーブルから検索する
         bnReference objRef = bnReadExtern(bone, bnGetStringValue(name));
         if (objRef == NULL) {
                 bnFormatThrow(bone, "not bound variable: `%s`",
@@ -280,7 +281,7 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
         if (obj->type != BN_OBJECT_LAMBDA) {
                 _throw(bone, frame, "C value is not lambda");
         }
-        // check parameters
+        //実際の関数テーブルとマッチするか引数をチェックする
         bnObject* lambda = obj;
         bnObject* paraArr = params;
         if (bnGetArrayLength(paraArr) !=
@@ -292,7 +293,7 @@ void bnStdSystemExternDef(bnInterpreter* bone, bnFrame* frame) {
         if (!compare_list_array(bone, bnGetParameterList(lambda), paraArr)) {
                 bnFormatThrow(bone, "missing parameter");
         }
-        // check returns
+        //実際の関数テーブルとマッチするか戻り値をチェックする
         bnObject* retuArr = returns;
         if (bnGetArrayLength(retuArr) !=
             g_list_length(bnGetReturnValueList(lambda))) {
