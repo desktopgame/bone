@@ -25,6 +25,8 @@ static void bnStdObjectToString(bnInterpreter* bone, bnFrame* frame);
 static void funccall_capture_script(bnObject* lambda, bnFrame* sub);
 static void funccall_capture_native(bnObject* lambda, bnFrame* frame,
                                     bnFrame* sub);
+static void funccall_set_retval(bnInterpreter* bone, bnObject* lambda,
+                                bnFrame* frame, bnFrame* sub);
 
 void bnInitObject(bnInterpreter* bone, bnObject* self, bnObjectType type) {
         self->table =
@@ -164,30 +166,9 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
                 funccall_capture_script(lambda, sub);
                 bnExecute(bone, bnGetEnviroment(lambda), sub);
         }
-        // ... maybe was compactioned
+        //多分コンパクションによってアドレスが変わっているので、再取得
         lambda = bnGetObject(bone->heap, ref);
-        int retc = g_list_length(bnGetReturnValueList(lambda));
-        if (bnIsVariadicReturn(bone->pool, lambda)) {
-                bnReference arrRef = bnExportAllVariable(bone, sub);
-                bnPushStack(frame->vStack, arrRef);
-        } else if (retc > 0) {
-                // assert(lambda->returns->data != NULL);
-                bnReference bodyRef = bnReadVariable(
-                    sub, (bnStringView)bnGetReturnValueList(lambda)->data);
-                bnObject* body = bnGetObject(bone->heap, bodyRef);
-                assert(body != NULL);
-                GList* iter = bnGetReturnValueList(lambda);
-                while (iter != NULL) {
-                        bnStringView retName = (bnStringView)iter->data;
-                        // create private member
-                        bnStringView exportName =
-                            bnGetExportVariableName(bone->pool, retName);
-                        bnDefine(body, exportName,
-                                 bnReadVariable(sub, (bnStringView)iter->data));
-                        iter = iter->next;
-                }
-                bnPushStack(frame->vStack, bodyRef);
-        }
+        funccall_set_retval(bone, lambda, frame, sub);
         return sub;
 }
 
@@ -331,5 +312,30 @@ static void funccall_capture_native(bnObject* lambda, bnFrame* frame,
         while (g_hash_table_iter_next(&iter, &k, &v)) {
                 assert(v != NULL);
                 g_hash_table_replace(sub->variableTable, k, v);
+        }
+}
+static void funccall_set_retval(bnInterpreter* bone, bnObject* lambda,
+                                bnFrame* frame, bnFrame* sub) {
+        int retc = g_list_length(bnGetReturnValueList(lambda));
+        if (bnIsVariadicReturn(bone->pool, lambda)) {
+                bnReference arrRef = bnExportAllVariable(bone, sub);
+                bnPushStack(frame->vStack, arrRef);
+        } else if (retc > 0) {
+                // assert(lambda->returns->data != NULL);
+                bnReference bodyRef = bnReadVariable(
+                    sub, (bnStringView)bnGetReturnValueList(lambda)->data);
+                bnObject* body = bnGetObject(bone->heap, bodyRef);
+                assert(body != NULL);
+                GList* iter = bnGetReturnValueList(lambda);
+                while (iter != NULL) {
+                        bnStringView retName = (bnStringView)iter->data;
+                        // create private member
+                        bnStringView exportName =
+                            bnGetExportVariableName(bone->pool, retName);
+                        bnDefine(body, exportName,
+                                 bnReadVariable(sub, (bnStringView)iter->data));
+                        iter = iter->next;
+                }
+                bnPushStack(frame->vStack, bodyRef);
         }
 }
