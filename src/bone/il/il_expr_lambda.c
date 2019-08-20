@@ -20,7 +20,7 @@ void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
                         bnILExprLambda* self, int depth) {
         bnFindent(fp, depth);
         fprintf(fp, "lambda\n");
-        // parameters
+        //仮引数をダンプ
         bnFindent(fp, depth + 1);
         fprintf(fp, "parameters\n");
         for (int i = 0; i < self->parameters->len; i++) {
@@ -29,7 +29,7 @@ void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
                 bnFindent(fp, depth + 2);
                 fprintf(fp, "%s\n", bnView2Str(pool, param));
         }
-        // returns
+        //戻り値をダンプ
         bnFindent(fp, depth + 1);
         fprintf(fp, "returns\n");
         for (int i = 0; i < self->returns->len; i++) {
@@ -38,7 +38,7 @@ void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
                 bnFindent(fp, depth + 2);
                 fprintf(fp, "%s\n", bnView2Str(pool, param));
         }
-        // statements
+        //全ての文をダンプ
         bnFindent(fp, depth + 1);
         fprintf(fp, "statements\n");
         for (int i = 0; i < self->statements->len; i++) {
