@@ -4,20 +4,20 @@
 #include "il_expression.h"
 
 /**
- * bnILExprArrayLit is {...}.
+ * bnILExprArrayLitは配列リテラルを表す構造体です。
  */
 typedef struct bnILExprArrayLit {
         GPtrArray* expressions;
 } bnILExprArrayLit;
 
 /**
- * return new instance of bnILExprArrayLit.
+ * 新しいbnILExprArrayLitインスタンスを生成して返します。
  * @return
  */
 bnILExprArrayLit* bnNewILExprArrayLit();
 
 /**
- * print a information of bnILExprArrayLit.
+ * 配列リテラルを再帰的にダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -26,12 +26,19 @@ bnILExprArrayLit* bnNewILExprArrayLit();
 void bnDumpILExprArrayLit(FILE* fp, struct bnStringPool* pool,
                           bnILExprArrayLit* self, int depth);
 
+/**
+ * 配列リテラルのバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILExprArrayLit(struct bnInterpreter* bone,
                               bnILExprArrayLit* self, struct bnEnviroment* env,
                               bnCompileCache* ccache);
 
 /**
- * free a bnILExprArrayLit.
+ * 配列リテラルを再帰的に解放します。
  * @param self
  */
 void bnDeleteILExprArrayLit(bnILExprArrayLit* self);
