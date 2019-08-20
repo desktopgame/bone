@@ -109,6 +109,9 @@ bnReference bnReadVariable2(bnFrame* frame, struct bnStringPool* pool,
 }
 
 void bnDeleteFrame(bnFrame* self) {
+        if (self == NULL) {
+                return;
+        }
         assert(self->next == NULL);
         if (self->prev != NULL) {
                 self->prev->next = NULL;
