@@ -68,20 +68,20 @@ bnReference bnCreateLambdaInActiveCode(bnInterpreter* bone, bnEnviroment* env,
         bnEnviroment* lmbEnv = bnNewEnviroment(env->filename);
         lmbEnv->lineOffset = line;
         bnSetEnviroment(lmb, lmbEnv);
-        // is instance base?
+        //仮引数を追加
         int parameterLen = bnReadCode(env, ++(*pPC));
         for (int i = 0; i < parameterLen; i++) {
                 bnAddParameter(lmb,
                                g_ptr_array_index(env->codeArray, ++(*pPC)));
         }
-        // length of named return
+        //戻り値を追加
         int namedReturnLen = bnReadCode(env, ++(*pPC));
         bnWriteCode(bnGetEnviroment(lmb), BN_OP_NOP);
         for (int i = 0; i < namedReturnLen; i++) {
                 bnAddReturnValue(lmb,
                                  g_ptr_array_index(env->codeArray, ++(*pPC)));
         }
-        // collect all variables
+        //定義された場所の変数を全てキャプチャ
         GHashTableIter hashIter;
         g_hash_table_iter_init(&hashIter, frame->variableTable);
         gpointer k, v;
@@ -90,12 +90,10 @@ bnReference bnCreateLambdaInActiveCode(bnInterpreter* bone, bnEnviroment* env,
                 g_hash_table_replace(bnGetCapturedMap(lmb), k, v);
         }
         int lambdaNest = 1;
-        // generate code
+        //ラムダが定義された場所のコードをそのまま展開する
         while (1) {
                 assert(*pPC < env->codeArray->len);
                 bnOpcode data = bnReadCode(env, ++(*pPC));
-                // bug if index of string view equal
-                // BN_OP_GEN_LAMBDA_END
                 if (bnOperands(data) == 1) {
                         if (data == BN_OP_GOTO || data == BN_OP_GOTO_IF ||
                             data == BN_OP_GOTO_ELSE) {
@@ -117,11 +115,12 @@ bnReference bnCreateLambdaInActiveCode(bnInterpreter* bone, bnEnviroment* env,
                         }
                         continue;
                 }
+                //ラムダ式がネストしている場合
                 if (data == BN_OP_GEN_LAMBDA_BEGIN) {
                         bnWriteCode(bnGetEnviroment(lmb), data);
                         line = bnReadCode(env, ++(*pPC));
                         bnWriteCode(bnGetEnviroment(lmb), line);
-                        // add params
+                        //仮引数を追加
                         parameterLen = bnReadCode(env, ++(*pPC));
                         bnWriteCode(bnGetEnviroment(lmb), parameterLen);
                         for (int i = 0; i < parameterLen; i++) {
@@ -129,7 +128,7 @@ bnReference bnCreateLambdaInActiveCode(bnInterpreter* bone, bnEnviroment* env,
                                                 g_ptr_array_index(
                                                     env->codeArray, ++(*pPC)));
                         }
-                        // add returns
+                        //戻り値を追加
                         namedReturnLen = bnReadCode(env, ++(*pPC));
                         bnWriteCode(bnGetEnviroment(lmb), namedReturnLen);
                         bnWriteCode(bnGetEnviroment(lmb), BN_OP_NOP);
@@ -153,7 +152,6 @@ bnReference bnCreateLambdaInActiveCode(bnInterpreter* bone, bnEnviroment* env,
 }
 
 void bnScopeInjection(bnInterpreter* bone, bnObject* src, bnFrame* dst) {
-        // collect all hidden variables
         GHashTableIter hashIter;
         g_hash_table_iter_init(&hashIter, src->table);
         gpointer k, v;
@@ -170,7 +168,6 @@ void bnScopeInjection(bnInterpreter* bone, bnObject* src, bnFrame* dst) {
 }
 
 void bnObjectInjection(bnInterpreter* bone, bnObject* src, bnObject* dst) {
-        // collect all hidden variables
         GHashTableIter hashIter;
         g_hash_table_iter_init(&hashIter, src->table);
         gpointer k, v;
@@ -290,7 +287,7 @@ LABEL_OP_GEN_DOUBLE : {
 }
 LABEL_OP_GEN_STRING : {
         bnStringView name = bnReadCode(env, ++PC);
-        // create array for string
+        //配列を生成
         const char* str = bnView2Str(bone->pool, name);
         int slen = strlen(str);
         bnPushStack(frame->vStack, bnNewInteger(bone, slen));
@@ -301,7 +298,7 @@ LABEL_OP_GEN_STRING : {
                 CHECK_DEFER();
                 SWITCH_NEXT(PC);
         }
-        // fill by char
+        //全ての要素を文字で埋める
         bnReference aryRef = bnPopStack(frame->vStack);
         bnObject* ary = bnGetObject(bone->heap, aryRef);
         for (int i = 0; i < slen; i++) {
@@ -310,7 +307,7 @@ LABEL_OP_GEN_STRING : {
         bnPushStack(frame->vStack, aryRef);
         bnDeleteFrame(sub);
         bnGC(bone);
-        // create string by string function
+        //文字配列から文字列を生成する
         bnFrame* sub2 = bnFuncCall(bnReadVariable2(frame, bone->pool, "string"),
                                    bone, frame, 1);
         if (sub2->panic) {
@@ -538,8 +535,6 @@ LABEL_OP_DEFER_BEGIN : {
         while (1) {
                 assert(PC < env->codeArray->len);
                 bnOpcode data = bnReadCode(env, ++PC);
-                // bug if index of string view equal
-                // BN_OP_GEN_LAMBDA_END
                 if (bnOperands(data) == 1) {
                         ++PC;
                         continue;
