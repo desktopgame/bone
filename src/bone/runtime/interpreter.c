@@ -39,7 +39,6 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
         ret->frame = NULL;
         ret->externTable =
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
-        ret->nativeAlloc = NULL;
         ret->__jstack = bnNewJStack();
         ret->callStack = bnNewStack();
         if (ret->argc > 1) {

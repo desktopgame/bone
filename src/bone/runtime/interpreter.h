@@ -21,7 +21,6 @@ struct bnHeap;
  */
 typedef struct bnInterpreter {
         const char* filenameRef;
-        GList* nativeAlloc;
         GList* plugins;
         int argc;
         GPtrArray* argv;

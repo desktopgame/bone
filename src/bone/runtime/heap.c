@@ -22,7 +22,6 @@ static void gc_clear(bnHeap* self, bnFrame* frame);
 static void gc_mark_stage(bnHeap* self);
 static void gc_mark_frame(bnHeap* self, bnFrame* frame);
 static void gc_mark_extern(bnInterpreter* bone);
-static void gc_mark_native(bnInterpreter* bone);
 static void gc_mark_rec(bnHeap* self, bnReference ref);
 static void gc_mark_array(bnHeap* self, bnObject* array);
 static void gc_mark_lambda(bnHeap* self, bnObject* lambda);
@@ -67,7 +66,6 @@ void bnGC(bnInterpreter* bone) {
         gc_mark_stage(self);
         gc_mark_frame(self, frame);
         gc_mark_extern(bone);
-        gc_mark_native(bone);
         gc_sweep(self, frame);
         BN_CHECK_MEM();
         bnCompact(self->storage);
@@ -152,14 +150,6 @@ static void gc_mark_extern(bnInterpreter* bone) {
         g_hash_table_iter_init(&hashIter, bone->externTable);
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
                 gc_mark_rec(bone->heap, v);
-        }
-}
-
-static void gc_mark_native(bnInterpreter* bone) {
-        GList* iter = bone->nativeAlloc;
-        while (iter != NULL) {
-                gc_mark_rec(bone->heap, iter->data);
-                iter = iter->next;
         }
 }
 
