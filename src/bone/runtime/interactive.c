@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../config.h"
 #include "../il/il_toplevel.h"
 #include "../parse/ast.h"
 #include "../parse/ast2il.h"
@@ -18,103 +19,59 @@
 typedef SSIZE_T ssize_t;
 #endif
 
-// https://stackoverflow.com/questions/735126/are-there-alternate-implementations-of-gnu-getline-interface/735472#735472
-#if defined(_MSC_VER)
-size_t windows_getline(char** lineptr, size_t* n, FILE* stream) {
-        char* bufptr = NULL;
-        char* p = bufptr;
-        size_t size;
-        int c;
-
-        if (lineptr == NULL) {
-                return -1;
-        }
-        if (stream == NULL) {
-                return -1;
-        }
-        if (n == NULL) {
-                return -1;
-        }
-        bufptr = *lineptr;
-        size = *n;
-
-        c = fgetc(stream);
-        if (c == EOF) {
-                return -1;
-        }
-        if (bufptr == NULL) {
-                bufptr = malloc(128);
-                if (bufptr == NULL) {
-                        return -1;
-                }
-                size = 128;
-        }
-        p = bufptr;
-        while (c != EOF) {
-                if ((p - bufptr) > (size - 1)) {
-                        size = size + 128;
-                        bufptr = realloc(bufptr, size);
-                        if (bufptr == NULL) {
-                                return -1;
-                        }
-                }
-                *p++ = c;
-                if (c == '\n') {
-                        break;
-                }
-                c = fgetc(stream);
-        }
-
-        *p++ = '\0';
-        *lineptr = bufptr;
-        *n = size;
-
-        return p - bufptr - 1;
-}
-#endif
-
-#if defined(_MSC_VER)
-#define xgetline(line, n, stream) (windows_getline(line, n, stream))
-#else
-#define xgetline(line, n, stream) (getline(line, n, stream))
-#endif
+static void show_gutter();
+static void remove_escapes(GString* buf);
+static void read_line(FILE* in, GString* buf);
 
 int bnInteractive(FILE* in) {
         int status = 0;
         bool r = true;
-        char* line;
-        size_t len;
-        ssize_t read;
         bnInterpreter* bone = bnNewInterpreter("stdin", 0, NULL);
         bnFrame* current = NULL;
+        GString* line = g_string_new(NULL);
+        //バージョン情報を表示
+        printf("bone %s\n", BUILD_VERSION);
+        printf("launched a interactive mode.\n");
+        printf("break from loop can by type quit or exit.\n");
+        printf("if want input multilines, please line terminated by escape.\n");
+        //メインループ開始
         while (r) {
-                if ((read = xgetline(&line, &len, in)) == -1) {
-                        perror("bnInteractive");
-                        break;
+                show_gutter();
+                g_string_erase(line, 0, line->len);
+                read_line(in, line);
+                // 空行
+                if (line->len == 0) {
+                        continue;
                 }
-                if (line[read - 1] == '\n') {
-                        line[read - 1] = '\0';
-                }
-                if (!strcmp(line, "exit") || !strcmp(line, "quit")) {
+                // exit, quitで終了する
+                if (!strcmp(line->str, "exit") || !strcmp(line->str, "quit")) {
                         r = false;
                         break;
                 }
-                // line parse
-                bnAST* a = bnParseString(bone->pool, line);
+                //最後がエスケープで終了するなら、継続して読み込む
+                while (g_str_has_suffix(line->str, "\\")) {
+                        remove_escapes(line);
+                        show_gutter();
+                        read_line(in, line);
+                }
+                remove_escapes(line);
+                // 1行をASTにパースする
+                bnAST* a = bnParseString(bone->pool, line->str);
                 if (a == NULL) {
                         continue;
                 }
-                // to il
+                //中間表現へ変換
                 bnILToplevel* top = bnAST2IL(a);
-                // gen code
+                //コード生成
                 bnEnviroment* env =
                     bnNewEnviroment(bnIntern(bone->pool, "stdin"));
                 bnGenerateILTopLevel(bone, top, env);
                 bnWriteCode(env, BN_OP_DEFER_NEXT);
-                // run code
+                //実行
                 bnFrame* fr = bnNewFrame();
                 bnWriteBuiltin(bone, fr, bone->pool);
                 if (current != NULL) {
+                        //以前の実行の情報を引き継ぐ
                         bnInjectFrame(current->variableTable, fr);
                         bnDeleteFrame(current);
                 }
@@ -125,7 +82,7 @@ int bnInteractive(FILE* in) {
                 bnDeleteAST(a);
                 current = fr;
         }
-        free(line);
+        g_string_free(line, TRUE);
         bnGC(bone);
         bnDeleteFrame(bone->frame);
         bone->frame = NULL;
@@ -133,4 +90,37 @@ int bnInteractive(FILE* in) {
         bnGC(bone);
         bnDeleteInterpreter(bone);
         return status;
+}
+
+static void show_gutter() {
+        printf(">>> ");
+        fflush(stdout);
+}
+
+static void remove_escapes(GString* buf) {
+        int len = 0;
+        int pos = buf->len - 1;
+        while (pos > 0) {
+                char c = buf->str[pos];
+                if (c != '\\') {
+                        break;
+                }
+                len++;
+                pos--;
+        }
+        if (len > 0) {
+                g_string_erase(buf, pos + 1, len);
+        }
+}
+
+static void read_line(FILE* in, GString* buf) {
+        char last = '\0';
+        while (1) {
+                int c = fgetc(in);
+                if (c == EOF || c == '\n') {
+                        break;
+                }
+                last = c;
+                bnGStringAppendC(buf, c);
+        }
 }
