@@ -80,7 +80,7 @@ int bnEval(bnInterpreter* self) {
         bnEnviroment* env =
             bnNewEnviroment(bnIntern(self->pool, self->filenameRef));
         self->frame = bnNewFrame();
-        bnWriteDefaults(self, self->frame, self->pool);
+        bnWriteBuiltin(self, self->frame, self->pool);
         bnGenerateILTopLevel(self, iltop, env);
         bnWriteCode(env, BN_OP_DEFER_NEXT);
         bnDeleteAST(ret);
@@ -110,7 +110,7 @@ int bnEval(bnInterpreter* self) {
         return status;
 }
 
-void bnWriteDefaults(bnInterpreter* self, bnFrame* frame,
+void bnWriteBuiltin(bnInterpreter* self, bnFrame* frame,
                      struct bnStringPool* pool) {
         // declare true, false
         bnReference t = bnNewBool(self, true);

@@ -160,7 +160,7 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
         bnFrame* sub = bnSubFrame(frame);
         bnEnviroment* env = bnNewEnviroment(bnIntern(bone->pool, pathStr));
         bnGenerateILTopLevel(bone, iltop, env);
-        bnWriteDefaults(bone, sub, bone->pool);
+        bnWriteBuiltin(bone, sub, bone->pool);
         // get default hash
         GList* keys = NULL;
         GHashTableIter hashIter;

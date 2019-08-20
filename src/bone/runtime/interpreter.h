@@ -82,8 +82,8 @@ int bnEval(bnInterpreter* self);
  * @param frame
  * @param pool
  */
-void bnWriteDefaults(bnInterpreter* self, struct bnFrame* frame,
-                     struct bnStringPool* pool);
+void bnWriteBuiltin(bnInterpreter* self, struct bnFrame* frame,
+                    struct bnStringPool* pool);
 
 /**
  * 指定のメッセージでインタプリタをパニック状態にしてロングジャンプします。

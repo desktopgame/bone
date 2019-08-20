@@ -113,7 +113,7 @@ int bnInteractive(FILE* in) {
                 bnWriteCode(env, BN_OP_DEFER_NEXT);
                 // run code
                 bnFrame* fr = bnNewFrame();
-                bnWriteDefaults(bone, fr, bone->pool);
+                bnWriteBuiltin(bone, fr, bone->pool);
                 if (current != NULL) {
                         bnInjectFrame(current->variableTable, fr);
                         bnDeleteFrame(current);
