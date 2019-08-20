@@ -4,21 +4,21 @@
 #include "il_expression.h"
 
 /**
- * bnILStmtScopeInjection is scope injection.
+ * bnILStmtScopeInjectionはスコープインジェクションを表す構造体です。
  */
 typedef struct bnILStmtScopeInjection {
         bnILExpression* expr;
 } bnILStmtScopeInjection;
 
 /**
- * return new instance of bnILStmtScopeInjection.
+ * 新しいbnILStmtScopeInjectionインスタンスを生成して返します。
  * @param expr
  * @return
  */
 bnILStmtScopeInjection* bnNewILStmtScopeInjection(bnILExpression* expr);
 
 /**
- * print a information of bnILStmtScopeInjection.
+ * スコープインジェクションを再帰的にダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -27,13 +27,20 @@ bnILStmtScopeInjection* bnNewILStmtScopeInjection(bnILExpression* expr);
 void bnDumpILStmtScopeInjection(FILE* fp, struct bnStringPool* pool,
                                 bnILStmtScopeInjection* self, int depth);
 
+/**
+ * スコープインジェクションのバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILStmtScopeInjection(struct bnInterpreter* bone,
                                     bnILStmtScopeInjection* self,
                                     struct bnEnviroment* env,
                                     bnCompileCache* ccache);
 
 /**
- * free a bnILStmtScopeInjection.
+ * スコープインジェクションを再帰的に解放します。
  * @param self
  */
 void bnDeleteILStmtScopeInjection(bnILStmtScopeInjection* self);
