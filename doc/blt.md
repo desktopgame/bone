@@ -111,3 +111,11 @@ def extern_var(name)(ret)
 ```
 def extern_def(name, params, returns)(ret)
 ```
+
+## cwd
+
+カレントワーキングディレクトリを表す文字列
+
+## dir
+
+bone 実行ファイルのディレクトリを表す文字列
