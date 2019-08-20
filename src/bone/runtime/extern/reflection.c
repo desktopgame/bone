@@ -145,7 +145,6 @@ static void bnExtReflectionExport(bnInterpreter* bone, bnFrame* frame) {
                 if (*str == '$') {
                         continue;
                 }
-                // view = bnGetExportVariableName(bone->pool, view);
                 bnWriteVariable(frame, view, v);
         }
 }

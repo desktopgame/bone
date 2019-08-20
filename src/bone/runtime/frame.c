@@ -67,7 +67,6 @@ bnReference bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
                 }
                 bnStringView exportName =
                     bnGetExportVariableName(bone->pool, retName);
-                // create private member
                 bnDefine(arr, exportName, v);
                 arr = bnGetObject(bone->heap, arrRef);
                 bnSetArrayElementAt(arr, arrI, v);

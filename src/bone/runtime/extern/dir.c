@@ -12,7 +12,8 @@
 #include "../string.h"
 
 static void bnExtDirFiles(struct bnInterpreter* bone, struct bnFrame* frame);
-static void bnExtDirDirectories(struct bnInterpreter* bone, struct bnFrame* frame);
+static void bnExtDirDirectories(struct bnInterpreter* bone,
+                                struct bnFrame* frame);
 static void bnExtDirDelete(struct bnInterpreter* bone, struct bnFrame* frame);
 static void bnExtDirCreate(struct bnInterpreter* bone, struct bnFrame* frame);
 static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly);
@@ -81,7 +82,7 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
         }
         const gchar* name = NULL;
         GList* files = NULL;
-        // check files
+        //ディレクトリ内の全てのファイルを確認する
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wparentheses"
         while (name = g_dir_read_name(dp)) {
@@ -89,7 +90,7 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
                 gboolean is_dir = g_file_test(path, G_FILE_TEST_IS_DIR);
                 int pathlen = strlen(path);
                 if ((!is_dir && fileOnly) || (is_dir && !fileOnly)) {
-                        // create new char array
+                        //ファイル名を格納するための配列を作成
                         bnPushStack(frame->vStack, bnNewInteger(bone, pathlen));
                         bnFrame* sub = bnFuncCall(aryFuncRef, bone, frame, 1);
                         if (sub->panic) {
@@ -99,9 +100,10 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
                         bnReference chary =
                             bnStaging(bone->heap, bnPopStack(frame->vStack));
                         bnFillString(bone, path, chary);
-                        // create string
+                        //配列を文字で埋める
                         bnPushStack(frame->vStack, chary);
                         bnDeleteFrame(sub);
+                        //文字配列から文字列を作成する
                         sub = bnFuncCall(strFuncRef, bone, frame, 1);
                         if (sub->panic) {
                                 frame->panic = sub->panic;
@@ -116,7 +118,7 @@ static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
         }
 #pragma clang diagnostic pop
         g_dir_close(dp);
-        // create new array
+        //全てのパス文字列を格納する配列を作成する
         bnPushStack(frame->vStack, bnNewInteger(bone, g_list_length(files)));
         bnFrame* sub = bnFuncCall(aryFuncRef, bone, frame, 1);
         if (sub->panic) {
