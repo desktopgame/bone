@@ -136,7 +136,6 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
                 retIter = retIter->next;
         }
         if (bnGetLambdaType(lambda) == BN_LAMBDA_NATIVE) {
-                // write captured vatiable
                 funccall_capture_native(lambda, frame, sub);
                 // staging all arguments.
                 bnPushStage(bone->heap);
@@ -316,7 +315,6 @@ static void bnStdObjectToString(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void funccall_capture_script(bnObject* lambda, bnFrame* sub) {
-        // write captured vatiable
         GHashTableIter iter;
         gpointer k, v;
         g_hash_table_iter_init(&iter, bnGetCapturedMap(lambda));
