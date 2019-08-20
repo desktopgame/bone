@@ -4,21 +4,21 @@
 #include "il_expression.h"
 
 /**
- * bnILStmtReturn is return statement.
+ * bnILStmtReturnはreturn文を表す構造体です。
  */
 typedef struct bnILStmtReturn {
         bnILExpression* expr;
 } bnILStmtReturn;
 
 /**
- * return new instance of bnILStmtReturn.
+ * 新しいbnILStmtReturnインスタンスを生成して返します。
  * @param expr
  * @return
  */
 bnILStmtReturn* bnNewILStmtReturn(bnILExpression* expr);
 
 /**
- * print a information of bnILStmtReturn.
+ * return文をダンプします。
  * @param fp
  * @param self
  * @param depth
@@ -26,11 +26,18 @@ bnILStmtReturn* bnNewILStmtReturn(bnILExpression* expr);
 void bnDumpILStmtReturn(FILE* fp, struct bnStringPool* pool,
                         bnILStmtReturn* self, int depth);
 
+/**
+ * return文のバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILStmtReturn(struct bnInterpreter* bone, bnILStmtReturn* self,
                             struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
- * free a bnILStmtReturn.
+ * return文を解放します。
  * @param self
  */
 void bnDeleteILStmtReturn(bnILStmtReturn* self);
