@@ -52,7 +52,7 @@ bnReference bnNewString2(bnInterpreter* bone, const char* str) {
 
 bnStringView bnGetStringValue(bnObject* obj) { return ((bnString*)obj)->value; }
 
-// String
+// private
 
 static void bnStdStringEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
