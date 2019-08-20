@@ -26,7 +26,6 @@ void bnDumpILStmtIf(FILE* fp, struct bnStringPool* pool, bnILStmtIf* self,
 
 void bnGenerateILStmtIf(struct bnInterpreter* bone, bnILStmtIf* self,
                         bnEnviroment* env, bnCompileCache* ccache) {
-        // generate condition
         bnGenerateILExpression(bone, self->cond, env, ccache);
         bnWriteCode(env, BN_OP_GOTO_ELSE);
         bnLabel* ifFalse = bnGenerateLabel(env, -1);

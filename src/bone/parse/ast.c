@@ -3,9 +3,10 @@
 #include <stdio.h>
 #include "parser.h"
 
-// proto
-
-// use for dispose a list, if parse failed.
+//構文解析に失敗すると、
+//内部に中途半端にキャッシュが残ってしまうため
+//あらかじめ全てのASTは一つのリストにつないでおいて
+//あとで簡単に全て削除できるようにしておきます。
 static GRecMutex gMutex;
 static GList* gAllAST = NULL;
 static void ast_child_delete(gpointer item);
