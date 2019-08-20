@@ -6,21 +6,21 @@ struct bnEnviroment;
 struct bnInterpreter;
 
 /**
- * bnILExprInt is literal of integer.
+ * bnILExprIntは整数リテラルを表す構造体です。
  */
 typedef struct bnILExprInt {
         int value;
 } bnILExprInt;
 
 /**
- * return new instance of bnILExprInt.
+ * 新しいbnILExprIntインスタンスを生成して返します。
  * @param value
  * @return
  */
 bnILExprInt* bnNewILExprInt(int value);
 
 /**
- * print a information of bnILExprInt.
+ * 整数リテラルをダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -29,11 +29,18 @@ bnILExprInt* bnNewILExprInt(int value);
 void bnDumpILExprInt(FILE* fp, struct bnStringPool* pool, bnILExprInt* self,
                      int depth);
 
+/**
+ * 整数リテラルのバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param cache
+ */
 void bnGenerateILExprInt(struct bnInterpreter* bone, bnILExprInt* self,
                          struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
- * free a bnILExprInt.
+ * 整数リテラルを解放します。
  * @param self
  */
 void bnDeleteILExprInt(bnILExprInt* self);
