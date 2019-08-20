@@ -203,11 +203,11 @@ void bnWriteBuiltin(bnInterpreter* self, bnFrame* frame,
                                  BN_C_ADD_RETURN, "ret", BN_C_ADD_EXIT));
         //カレントワーキングディレクトリ
         gchar* cwd = g_get_current_dir();
-        bnWriteVariable2(frame, pool, "cwd", bnNewString2(self, cwd));
+        bnWriteVariable2(frame, pool, "CWD", bnNewString2(self, cwd));
         g_free(cwd);
         // bone実行ファイルのディレクトリ
         GString* asmPath = bnGetExecutableFileDir();
-        bnWriteVariable2(frame, pool, "dir", bnNewString2(self, asmPath->str));
+        bnWriteVariable2(frame, pool, "DIR", bnNewString2(self, asmPath->str));
         g_string_free(asmPath, TRUE);
 }
 
