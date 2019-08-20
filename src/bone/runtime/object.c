@@ -34,7 +34,6 @@ void bnInitObject(bnInterpreter* bone, bnObject* self, bnObjectType type) {
         self->mark = false;
         self->type = type;
         self->freeFunc = NULL;
-        // bnAddToHeap(bone->heap, self);
 }
 
 bnReference bnNewObject(bnInterpreter* bone) {
@@ -109,11 +108,8 @@ bool bnDefined2(bnObject* self, struct bnStringPool* pool, const char* str) {
 
 bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
                     int argc) {
-        // assert(self != NULL && self->type == BN_OBJECT_LAMBDA);
         bnObject* lambda = bnGetObject(bone->heap, ref);
-        // int paramLen = g_list_length(lambda->parameters);
-        // assert(paramLen == argc);
-        // create new frame
+        // 新しい子フレームに実引数をプッシュ
         bnFrame* sub = bnSubFrame(frame);
         sub->currentCall = ref;
         for (int i = 0; i < argc; i++) {
@@ -130,7 +126,7 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
                     bone, bnIntern(bone->pool, "illegal arguments"));
                 return sub;
         }
-        // set default return value
+        //全ての名前付き戻り値のデフォルト値を設定する
         GList* retIter = bnGetReturnValueList(lambda);
         while (retIter != NULL) {
                 g_hash_table_replace(sub->variableTable, retIter->data,
@@ -139,7 +135,8 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
         }
         if (bnGetLambdaType(lambda) == BN_LAMBDA_NATIVE) {
                 funccall_capture_native(lambda, frame, sub);
-                // staging all arguments.
+                // 全ての実引数をステージングする
+                // GCから回収されないために必要です。
                 bnPushStage(bone->heap);
                 bnStackElement* stackIter = sub->vStack->head;
                 while (stackIter != NULL) {
@@ -156,7 +153,6 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
                         if (code != BN_JMP_CODE_EXCEPTION) {
                                 abort();
                         } else {
-                                // on exception...
                                 frame->panic = sub->panic;
                         }
                 }
@@ -235,7 +231,8 @@ void bnDeleteObject(bnStorage* storage, bnReference ref, struct bnObject* obj) {
                 bnFreeMemory(storage, ref);
         }
 }
-// Object
+
+// private
 
 static void bnStdObjectEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnPopStack(frame->vStack);
@@ -321,7 +318,6 @@ static void funccall_set_retval(bnInterpreter* bone, bnObject* lambda,
                 bnReference arrRef = bnExportAllVariable(bone, sub);
                 bnPushStack(frame->vStack, arrRef);
         } else if (retc > 0) {
-                // assert(lambda->returns->data != NULL);
                 bnReference bodyRef = bnReadVariable(
                     sub, (bnStringView)bnGetReturnValueList(lambda)->data);
                 bnObject* body = bnGetObject(bone->heap, bodyRef);
@@ -329,7 +325,6 @@ static void funccall_set_retval(bnInterpreter* bone, bnObject* lambda,
                 GList* iter = bnGetReturnValueList(lambda);
                 while (iter != NULL) {
                         bnStringView retName = (bnStringView)iter->data;
-                        // create private member
                         bnStringView exportName =
                             bnGetExportVariableName(bone->pool, retName);
                         bnDefine(body, exportName,
