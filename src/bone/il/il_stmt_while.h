@@ -4,7 +4,7 @@
 #include "il_expression.h"
 
 /**
- * bnILStmtWhile is while statement.
+ * bnILStmtWhileはwhile文を表す構造体です。
  */
 typedef struct bnILStmtWhile {
         bnILExpression* cond;
@@ -12,14 +12,14 @@ typedef struct bnILStmtWhile {
 } bnILStmtWhile;
 
 /**
- * return new instance of bnILStmtWhile.
+ * 新しいbnILStmtWhileインスタンスを生成して返します。
  * @param cond
  * @return
  */
 bnILStmtWhile* bnNewILStmtWhile(bnILExpression* cond);
 
 /**
- * print a information of bnILStmtWhile.
+ * while文を再帰的にダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -28,11 +28,18 @@ bnILStmtWhile* bnNewILStmtWhile(bnILExpression* cond);
 void bnDumpILStmtWhile(FILE* fp, struct bnStringPool* pool, bnILStmtWhile* self,
                        int depth);
 
+/**
+ * while文のバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILStmtWhile(struct bnInterpreter* bone, bnILStmtWhile* self,
                            struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
- * free a bnILStmtWhile.
+ * while文を再帰的に解放します。
  * @param self
  */
 void bnDeleteILStmtWhile(bnILStmtWhile* self);
