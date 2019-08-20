@@ -5,6 +5,9 @@
 #include "compile_cache.h"
 struct bnInterpreter;
 
+/**
+ * 計算可能な要素の種類を表す列挙です。
+ */
 typedef enum bnILExpressionType {
         BN_IL_EXPR_NONE,
         BN_IL_EXPR_INT,
@@ -37,6 +40,9 @@ struct bnILExprObjectInjection;
 struct bnILExprArraySubscript;
 struct bnILExprArrayLit;
 
+/**
+ * 計算可能な要素を表す構造体です。
+ */
 typedef struct bnILExpression {
         bnILExpressionType type;
         union {
@@ -57,13 +63,36 @@ typedef struct bnILExpression {
         int line;
 } bnILExpression;
 
+/**
+ * 新しいbnILExpressionインスタンスを生成して返します。
+ * @param type
+ * @return
+ */
 bnILExpression* bnNewILExpression(bnILExpressionType type);
 
+/**
+ * 計算可能な要素を再帰的にダンプします。
+ * @param fp
+ * @parram pool
+ * @param self
+ * @param depth
+ */
 void bnDumpILExpression(FILE* fp, struct bnStringPool* pool,
                         bnILExpression* self, int depth);
 
+/**
+ * 計算可能な要素のバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILExpression(struct bnInterpreter* bone, bnILExpression* self,
                             struct bnEnviroment* env, bnCompileCache* ccache);
 
+/**
+ * 計算可能な要素を再帰的に解放します。
+ * @param self
+ */
 void bnDeleteILExpression(bnILExpression* self);
 #endif
