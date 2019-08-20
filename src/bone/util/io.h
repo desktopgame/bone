@@ -32,6 +32,15 @@ FILE* bnStderr();
 FILE* bnStdin();
 
 /**
+ * 指定のパスを以下の順番で解決し、解決できた時点でのパスを返します。
+ * - bone実行ファイルのディレクトリ
+ * - カレントワーキングディレクトリ
+ * @param relative
+ * @return
+ */
+GString* bnResolveLoadPath(const char* relative);
+
+/**
  * 実行ファイルが格納されているディレクトリを返します。
  * 正常に取得できなかった場合、カレントワーキングディレクトリを参照します。
  * @return

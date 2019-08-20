@@ -1,12 +1,14 @@
 #include "io.h"
 #include <stdlib.h>
 #if __APPLE__
+#include <limits.h>
 #include <mach-o/dyld.h>
 #endif
 #if HAVE_WINDOWS
 #include <Windows.h>
 #endif
 #include "../config.h"
+#include "string.h"
 
 static FILE* out = NULL;
 static FILE* err = NULL;
@@ -24,6 +26,32 @@ FILE* bnStderr() { return err == NULL ? stderr : err; }
 
 FILE* bnStdin() { return in == NULL ? stdin : in; }
 
+GString* bnResolveLoadPath(const char* relative) {
+        //実行ファイルから解決
+        GString* exeDir = bnGetExecutableFileDir();
+        const char* fullpath = g_build_filename(exeDir->str, relative, NULL);
+        if (bnExists(fullpath)) {
+                GString* ret = g_string_new(fullpath);
+                g_free((gpointer)fullpath);
+                g_string_free(exeDir, TRUE);
+                return ret;
+        }
+        g_free((gpointer)fullpath);
+        g_string_free(exeDir, TRUE);
+        //カレントワーキングディレクトリから解決
+        gchar* cwd = g_get_current_dir();
+        fullpath = g_build_filename(cwd, relative, NULL);
+        if (bnExists(fullpath)) {
+                GString* ret = g_string_new(fullpath);
+                g_free((gpointer)fullpath);
+                g_free((gpointer)cwd);
+                return ret;
+        }
+        g_free((gpointer)fullpath);
+        g_free(cwd);
+        return g_string_new(relative);
+}
+
 GString* bnGetExecutableFileDir() {
         GString* str = g_string_new(NULL);
 #define SET_CWD(buf)                     \
@@ -35,6 +63,8 @@ GString* bnGetExecutableFileDir() {
         uint32_t bufsize = 512;
         if (!_NSGetExecutablePath(buf, &bufsize)) {
                 g_string_append(str, buf);
+                int lc = bnLastPathComponent(str->str);
+                g_string_erase(str, lc, str->len - lc);
         } else {
                 SET_CWD(str);
         }
@@ -44,8 +74,10 @@ GString* bnGetExecutableFileDir() {
         int ret = readlink("/proc/self/exe", buf, 512);
         if (ret != -1) {
                 g_string_append(str, buf);
-                perror("bnGetExecutableFileDir");
+                int lc = bnLastPathComponent(str->str);
+                g_string_erase(str, lc, str->len - lc);
         } else {
+                perror("bnGetExecutableFileDir");
                 SET_CWD(str);
         }
         return str;
