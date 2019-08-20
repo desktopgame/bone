@@ -4,6 +4,9 @@
 #include "../util/string_pool.h"
 #include "compile_cache.h"
 
+/**
+ * 文の種類を表す列挙です。
+ */
 typedef enum bnILStatementType {
         BN_IL_STMT_NONE,
         BN_IL_STMT_EXPRSTMT,
@@ -28,6 +31,9 @@ struct bnEnviroment;
 struct bnInterpreter;
 struct bnILStmtDefer;
 
+/**
+ * 文を表す構造体です。
+ */
 typedef struct bnILStatement {
         bnILStatementType type;
         union {
@@ -42,13 +48,36 @@ typedef struct bnILStatement {
         int line;
 } bnILStatement;
 
+/**
+ * 新しいbnILStatementインスタンスを生成します。
+ * @param type
+ * @return
+ */
 bnILStatement* bnNewILStatement(bnILStatementType type);
 
+/**
+ * 文をダンプします。
+ * @param fp
+ * @param pool
+ * @param self
+ * @param depth
+ */
 void bnDumpILStatement(FILE* fp, struct bnStringPool* pool, bnILStatement* self,
                        int depth);
 
+/**
+ * 文を解放します。
+ * @param self
+ */
 void bnDeleteILStatement(bnILStatement* self);
 
+/**
+ * 文のバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILStatement(struct bnInterpreter* bone, bnILStatement* self,
                            struct bnEnviroment* env, bnCompileCache* ccache);
 #endif
