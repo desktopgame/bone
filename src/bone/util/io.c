@@ -54,10 +54,12 @@ GString* bnResolveLoadPath(const char* relative) {
 
 GString* bnGetExecutableFileDir() {
         GString* str = g_string_new(NULL);
-#define SET_CWD(buf)                     \
-        gchar* cd = g_get_current_dir(); \
-        g_string_append(buf, cd);        \
-        g_free(cd);
+#define SET_CWD(buf)                             \
+        do {                                     \
+                gchar* cd = g_get_current_dir(); \
+                g_string_append(buf, cd);        \
+                g_free(cd);                      \
+        } while (0)
 #if __APPLE__
         char buf[512];
         uint32_t bufsize = 512;
