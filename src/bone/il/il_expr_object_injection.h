@@ -4,7 +4,7 @@
 #include "il_expression.h"
 
 /**
- * bnILExprObjectInjection is injection.
+ * bnILExprObjectInjectionはオブジェクトインジェクションを表す構造体です。
  */
 typedef struct bnILExprObjectInjection {
         bnILExpression* leftExpr;
@@ -12,7 +12,7 @@ typedef struct bnILExprObjectInjection {
 } bnILExprObjectInjection;
 
 /**
- * return new instance of bnILExprObjectInjection.
+ * 新しいbnILExprObjectInjectionインスタンスを生成して返します。
  * @param leftExpr
  * @param rightExpr
  * @return
@@ -21,7 +21,7 @@ bnILExprObjectInjection* bnNewILExprObjectInjection(bnILExpression* leftExpr,
                                                     bnILExpression* rightExpr);
 
 /**
- * print a information of bnILExprObjectInjection.
+ * オブジェクトインジェクションを再帰的にダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -30,13 +30,20 @@ bnILExprObjectInjection* bnNewILExprObjectInjection(bnILExpression* leftExpr,
 void bnDumpILExprObjectInjection(FILE* fp, struct bnStringPool* pool,
                                  bnILExprObjectInjection* self, int depth);
 
+/**
+ * オブジェクトインジェクションのバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILExprObjectInjection(struct bnInterpreter* bone,
                                      bnILExprObjectInjection* self,
                                      struct bnEnviroment* env,
                                      bnCompileCache* ccache);
 
 /**
- * free a bnILExprObjectInjection.
+ * オブジェクトインジェクションを再帰的に解放します。
  * @param self
  */
 void bnDeleteILExprObjectInjection(bnILExprObjectInjection* self);
