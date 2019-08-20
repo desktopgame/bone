@@ -8,15 +8,12 @@
 #define _throw(bone, frame, fmt) (bnFormatThrow(bone, fmt))
 #define message() ("should be parameter is int")
 
-// Integer
 static void bnStdIntegerNegative(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerPlus(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerMinus(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerMultiply(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerDivide(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerModulo(bnInterpreter* bone, bnFrame* frame);
-// static void bnStdIntegerLogicAnd(bnInterpreter* bone, bnFrame* frame);
-// static void bnStdIntegerLogicOr(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerLShift(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerRShift(bnInterpreter* bone, bnFrame* frame);
 static void bnStdIntegerGT(bnInterpreter* bone, bnFrame* frame);
@@ -139,7 +136,6 @@ static void bnStdIntegerPlus(bnInterpreter* bone, bnFrame* frame) {
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
-        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
         bnWriteVariable2(frame, bone->pool, "ret", bnNewInteger(bone, ai + bi));
 }
 
@@ -151,7 +147,6 @@ static void bnStdIntegerMinus(bnInterpreter* bone, bnFrame* frame) {
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
-        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
         bnWriteVariable2(frame, bone->pool, "ret", bnNewInteger(bone, ai - bi));
 }
 
@@ -163,7 +158,6 @@ static void bnStdIntegerMultiply(bnInterpreter* bone, bnFrame* frame) {
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
-        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
         bnWriteVariable2(frame, bone->pool, "ret", bnNewInteger(bone, ai * bi));
 }
 
@@ -175,7 +169,6 @@ static void bnStdIntegerDivide(bnInterpreter* bone, bnFrame* frame) {
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
-        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
         bnWriteVariable2(frame, bone->pool, "ret", bnNewInteger(bone, ai / bi));
 }
 
@@ -187,13 +180,8 @@ static void bnStdIntegerModulo(bnInterpreter* bone, bnFrame* frame) {
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
-        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
         bnWriteVariable2(frame, bone->pool, "ret", bnNewInteger(bone, ai % bi));
 }
-
-// static void bnStdIntegerLogicAnd(bnInterpreter* bone, bnFrame* frame){}
-
-// static void bnStdIntegerLogicOr(bnInterpreter* bone, bnFrame* frame){}
 
 static void bnStdIntegerLShift(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
@@ -227,7 +215,6 @@ static void bnStdIntegerGT(bnInterpreter* bone, bnFrame* frame) {
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
-        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi))
         bnWriteVariable2(frame, bone->pool, "ret",
                          bnGetBool(bone->pool, frame, ai > bi));
 }
@@ -240,7 +227,6 @@ static void bnStdIntegerGE(bnInterpreter* bone, bnFrame* frame) {
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
-        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
         bnWriteVariable2(frame, bone->pool, "ret",
                          bnGetBool(bone->pool, frame, ai >= bi));
 }
@@ -253,7 +239,6 @@ static void bnStdIntegerLT(bnInterpreter* bone, bnFrame* frame) {
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
-        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
         bnWriteVariable2(frame, bone->pool, "ret",
                          bnGetBool(bone->pool, frame, ai < bi));
 }
@@ -266,7 +251,6 @@ static void bnStdIntegerLE(bnInterpreter* bone, bnFrame* frame) {
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
-        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
         bnWriteVariable2(frame, bone->pool, "ret",
                          bnGetBool(bone->pool, frame, ai <= bi));
 }
@@ -279,7 +263,6 @@ static void bnStdIntegerEqual(bnInterpreter* bone, bnFrame* frame) {
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
-        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
         bnWriteVariable2(frame, bone->pool, "ret",
                          bnGetBool(bone->pool, frame, ai == bi));
 }
@@ -292,7 +275,6 @@ static void bnStdIntegerNotEqual(bnInterpreter* bone, bnFrame* frame) {
         }
         int ai = ((bnInteger*)a)->value;
         int bi = ((bnInteger*)b)->value;
-        // bnPushStack(frame->vStack, bnNewInteger(bone, ai + bi));
         bnWriteVariable2(frame, bone->pool, "ret",
                          bnGetBool(bone->pool, frame, ai != bi));
 }
