@@ -116,15 +116,12 @@ static test_result test_check_parse(const char* testDir, const char* testName,
                                     const gchar* path, int flags) {
         struct bnStringPool* pool = bnNewStringPool();
         test_result ret = test_result_pass;
-        // clear parse result file
         char out[512];
         memset(out, '\0', 512);
         sprintf(out, "%s/out/%s.out", testDir, testName);
-        // gchar* out = g_strconcat(testDir, ".out", NULL);
         if (g_file_test(out, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
                 xremove(out);
         }
-        // parse and test
         bnAST* a = bnParseFile(pool, path);
         if (flags & test_mask_expect_pass) {
                 bnILToplevel* iltop = bnAST2IL(a);
@@ -147,7 +144,6 @@ static test_result test_check_vm(const char* testDir, const char* testName,
                                  const gchar* path, int flags) {
         bnInterpreter* bone = bnNewInterpreter("", bnArgc(), bnArgv());
         test_result ret = test_result_pass;
-        // clear parse result file
         char out[512];
         memset(out, '\0', 512);
         sprintf(out, "%s/out/%s.out", testDir, testName);
@@ -179,7 +175,6 @@ static test_result test_check_run(const char* testDir, const char* testName,
                                   const gchar* path, int flags) {
         bool panicTest = flags & test_mask_panic;
         test_result res = test_result_pass;
-        // clear run result file
         char out[512];
         memset(out, '\0', 512);
         sprintf(out, "%s/out/%s.std.out", testDir, testName);
@@ -191,7 +186,6 @@ static test_result test_check_run(const char* testDir, const char* testName,
         FILE* _stdout = stdout;
         stdout = soutfp;
 #endif
-        // parse and test
         bnInterpreter* bone = bnNewInterpreter(path, bnArgc(), bnArgv());
 #if _WIN32
         bnLink(bone, "testdata\\plugins");
@@ -233,23 +227,6 @@ static test_result test_check(const char* testDir, const char* testName,
 }
 
 static test_result test_run(const char* testDir, const gchar* path) {
-        /*
-        // filename rule: file_TypeExpect
-        // examples
-        //
-        // file_ParsePass:
-        // parse test.
-        // expect pass.
-        //
-        // file_VMFail:
-        // code generate test.
-        // expect fail.
-        //
-        // file_RunPass:
-        // run test:
-        // expect pass.
-        //
-        */
         // testdata/file_type.in
         int pos = bnLastPathComponent(path);
         // file_type.in
@@ -266,7 +243,7 @@ static test_result test_run(const char* testDir, const gchar* path) {
                 type = filename_wext + underbarPos + 1;
         }
         int flags = 0;
-        // check test type
+        // テストの種類を判別する
         if (g_str_has_prefix(type, "Parse")) {
                 flags |= test_mask_parse;
                 type += 5;
@@ -280,7 +257,7 @@ static test_result test_run(const char* testDir, const gchar* path) {
                 printf("no matches to rule: %s\n", path);
                 abort();
         }
-        // check expect type
+        //期待するテスト結果を判別
         if (g_str_has_prefix(type, "Pass")) {
                 flags |= test_mask_expect_pass;
                 type += 4;
@@ -291,7 +268,7 @@ static test_result test_run(const char* testDir, const gchar* path) {
                 printf("no matches to rule: %s\n", path);
                 abort();
         }
-        // check panic
+        //パニックを期待するかどうか判別する
         if (*type != '\0' && g_str_has_prefix(type, "Panic")) {
                 flags |= test_mask_panic;
                 type += 5;
