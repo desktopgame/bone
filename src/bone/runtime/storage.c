@@ -33,7 +33,6 @@ bnReference bnAllocMemory(bnStorage* self) {
                 return bnAllocMemory(append_storage(self));
         }
         out->use++;
-        // assert(*ret != 517);
         int i = *ret - out->offset;
         bool* bit = out->bitmap + (sizeof(bool) * i);
         (*bit) = false;
