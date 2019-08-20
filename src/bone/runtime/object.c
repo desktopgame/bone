@@ -22,6 +22,9 @@
 static void bnStdObjectEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdObjectNotEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdObjectToString(bnInterpreter* bone, bnFrame* frame);
+static void funccall_capture_script(bnObject* lambda, bnFrame* sub);
+static void funccall_capture_native(bnObject* lambda, bnFrame* frame,
+                                    bnFrame* sub);
 
 void bnInitObject(bnInterpreter* bone, bnObject* self, bnObjectType type) {
         self->table =
@@ -134,13 +137,7 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
         }
         if (bnGetLambdaType(lambda) == BN_LAMBDA_NATIVE) {
                 // write captured vatiable
-                GHashTableIter iter;
-                gpointer k, v;
-                g_hash_table_iter_init(&iter, frame->variableTable);
-                while (g_hash_table_iter_next(&iter, &k, &v)) {
-                        assert(v != NULL);
-                        g_hash_table_replace(sub->variableTable, k, v);
-                }
+                funccall_capture_native(lambda, frame, sub);
                 // staging all arguments.
                 bnPushStage(bone->heap);
                 bnStackElement* stackIter = sub->vStack->head;
@@ -165,14 +162,7 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
                 BN_JMP_POP(bone->__jstack);
                 bnPopStage(bone->heap);
         } else {
-                // write captured vatiable
-                GHashTableIter iter;
-                gpointer k, v;
-                g_hash_table_iter_init(&iter, bnGetCapturedMap(lambda));
-                while (g_hash_table_iter_next(&iter, &k, &v)) {
-                        assert(v != NULL);
-                        g_hash_table_replace(sub->variableTable, k, v);
-                }
+                funccall_capture_script(lambda, sub);
                 bnExecute(bone, bnGetEnviroment(lambda), sub);
         }
         // ... maybe was compactioned
@@ -323,4 +313,25 @@ static void bnStdObjectToString(bnInterpreter* bone, bnFrame* frame) {
         bnWriteVariable2(frame, bone->pool, "ret",
                          bnNewString2(bone, str->str));
         g_string_free(str, TRUE);
+}
+
+static void funccall_capture_script(bnObject* lambda, bnFrame* sub) {
+        // write captured vatiable
+        GHashTableIter iter;
+        gpointer k, v;
+        g_hash_table_iter_init(&iter, bnGetCapturedMap(lambda));
+        while (g_hash_table_iter_next(&iter, &k, &v)) {
+                assert(v != NULL);
+                g_hash_table_replace(sub->variableTable, k, v);
+        }
+}
+static void funccall_capture_native(bnObject* lambda, bnFrame* frame,
+                                    bnFrame* sub) {
+        GHashTableIter iter;
+        gpointer k, v;
+        g_hash_table_iter_init(&iter, frame->variableTable);
+        while (g_hash_table_iter_next(&iter, &k, &v)) {
+                assert(v != NULL);
+                g_hash_table_replace(sub->variableTable, k, v);
+        }
 }
