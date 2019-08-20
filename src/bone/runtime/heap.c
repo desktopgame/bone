@@ -116,14 +116,15 @@ static void gc_mark_frame(bnHeap* self, bnFrame* frame) {
         if (frame->next != NULL) {
                 gc_mark_frame(self, frame->next);
         }
-        // mark local variable
+        //全てのローカル変数をマークする
         GHashTableIter hashIter;
         gpointer k, v;
         g_hash_table_iter_init(&hashIter, frame->variableTable);
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
                 gc_mark_rec(self, v);
         }
-        // mark defer
+        //遅延実行ブロックを登録した時点での
+        //変数をマークする
         GList* defIter = frame->snapshots;
         while (defIter != NULL) {
                 bnSnapShot* sn = defIter->data;
@@ -133,7 +134,7 @@ static void gc_mark_frame(bnHeap* self, bnFrame* frame) {
                 }
                 defIter = defIter->next;
         }
-        // mark stack
+        //スタック領域をマークする
         bnStackElement* stackE = frame->vStack->head;
         while (stackE != NULL) {
                 gc_mark_rec(self, stackE->value);
