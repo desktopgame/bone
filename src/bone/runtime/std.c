@@ -120,10 +120,13 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
                 bnFormatThrow(bone, "`%s` is not found", pathStr);
         }
         // 指定のファイルを解析する
-        bnAST* ast = bnParseFile(bone->pool, pathStr);
+        GString* resolved = bnResolveLoadPath(pathStr);
+        bnAST* ast = bnParseFile(bone->pool, resolved->str);
         if (ast == NULL) {
+                g_string_free(resolved, TRUE);
                 bnFormatThrow(bone, "syntax error in `%s`", pathStr);
         }
+        g_string_free(resolved, TRUE);
         //中間表現へ変換
         bnILToplevel* iltop = bnAST2IL(ast);
         //コード生成して実行
@@ -151,10 +154,13 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
                 bnFormatThrow(bone, "`%s` is not found", pathStr);
         }
         //指定のファイルを解析
-        bnAST* ast = bnParseFile(bone->pool, pathStr);
+        GString* resolved = bnResolveLoadPath(pathStr);
+        bnAST* ast = bnParseFile(bone->pool, resolved->str);
         if (ast == NULL) {
+                g_string_free(resolved, TRUE);
                 bnFormatThrow(bone, "syntax error in `%s`", pathStr);
         }
+        g_string_free(resolved, TRUE);
         //中間表現へ変換
         bnILToplevel* iltop = bnAST2IL(ast);
         //コード生成して実行

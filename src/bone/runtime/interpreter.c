@@ -69,12 +69,15 @@ int bnEval(bnInterpreter* self) {
                 printf("abort:`%s` is not found", self->filenameRef);
                 return 1;
         }
-        bnAST* ret = bnParseFile(self->pool, self->filenameRef);
+        GString* resolved = bnResolveLoadPath(self->filenameRef);
+        bnAST* ret = bnParseFile(self->pool, resolved->str);
         if (ret == NULL) {
                 //構文解析に失敗したので終了
                 printf("abort:syntax error in `%s`", self->filenameRef);
+                g_string_free(resolved, TRUE);
                 return 1;
         }
+        g_string_free(resolved, TRUE);
         //中間表現に変換
         bnILToplevel* iltop = bnAST2IL(ret);
         //コード生成して実行
