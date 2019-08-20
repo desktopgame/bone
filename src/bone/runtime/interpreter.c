@@ -71,12 +71,13 @@ int bnEval(bnInterpreter* self) {
         }
         bnAST* ret = bnParseFile(self->pool, self->filenameRef);
         if (ret == NULL) {
-                // fail parse
+                //構文解析に失敗したので終了
                 printf("abort:syntax error in `%s`", self->filenameRef);
                 return 1;
         }
+        //中間表現に変換
         bnILToplevel* iltop = bnAST2IL(ret);
-        // generate instructions
+        //コード生成して実行
         bnEnviroment* env =
             bnNewEnviroment(bnIntern(self->pool, self->filenameRef));
         self->frame = bnNewFrame();
@@ -100,7 +101,6 @@ int bnEval(bnInterpreter* self) {
         self->frame->panic = NULL;
         bnDeleteILTopLevel(iltop);
         bnDeleteEnviroment(env);
-        // g_hash_table_remove_all(self->externTable);
         bnGC(self);
         bnDeleteFrame(self->frame);
         self->frame = NULL;
@@ -111,8 +111,7 @@ int bnEval(bnInterpreter* self) {
 }
 
 void bnWriteBuiltin(bnInterpreter* self, bnFrame* frame,
-                     struct bnStringPool* pool) {
-        // declare true, false
+                    struct bnStringPool* pool) {
         bnReference t = bnNewBool(self, true);
         bnReference f = bnNewBool(self, false);
         bnWriteVariable2(frame, pool, "true", t);
@@ -271,11 +270,11 @@ bnReference bnReadExtern2(bnInterpreter* self, const char* str) {
 }
 
 void bnDeleteInterpreter(bnInterpreter* self) {
-        // free a allocated by bone program
+        //あらゆるルートを参照不可にしてから
+        //ガベージコレクションを実施
         self->frame = NULL;
         g_hash_table_remove_all(self->externTable);
         bnGC(self);
-        // free a other
         bnDeleteStringPool(self->pool);
         bnDeleteHeap(self->heap);
         bnDeleteJStack(self->__jstack);
@@ -313,7 +312,8 @@ static void load_plugins(bnInterpreter* self, const char* currentdir) {
 
 static void load_plugin(bnInterpreter* self, gchar* path) {
         bnModule* mod = bnNewModule(path);
-        // check version
+        //プラグインの要求するバージョンと、
+        //実際に動作するバージョンが一致するか確認する
         bnPluginGetTargetVersion getTargetVersion =
             (bnPluginGetTargetVersion)bnGetSymbol(mod, "GetTargetVersion");
         if (getTargetVersion == NULL) {
@@ -330,7 +330,7 @@ static void load_plugin(bnInterpreter* self, gchar* path) {
                 bnDeleteModule(mod);
                 return;
         }
-        // call _Init
+        //初期化関数を呼び出す
         bnPluginInit init = (bnPluginInit)bnGetSymbol(mod, "Init");
         if (init != NULL) {
                 init(self);
