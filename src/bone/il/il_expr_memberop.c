@@ -19,8 +19,6 @@ void bnGenerateILExprMemberOp(struct bnInterpreter* bone,
                               bnILExprMemberOp* self, bnEnviroment* env,
                               bnCompileCache* ccache) {
         bnGenerateILExpression(bone, self->expr, env, ccache);
-        // for instance based closure
-        // see: il_expr_funccallop.c
         bnWriteCode(env, BN_OP_DUP);
         bnWriteCode(env, BN_OP_SET_REGISTER_0);
         bnWriteCode(env, BN_OP_GET);

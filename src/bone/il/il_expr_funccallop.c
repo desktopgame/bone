@@ -34,7 +34,8 @@ void bnGenerateILExprFuncCallOp(struct bnInterpreter* bone,
                 bnWriteCode(env, BN_OP_CLEANUP_INJBUF);
         }
         bnGenerateILExpression(bone, self->expr, env, ccache);
-        // instance based closure?
+        //インスタンスベースのラムダであるなら、
+        //レシーバーを第一引数として認識させる。
         if (self->expr->type == BN_IL_EXPR_MEMBEROP) {
                 bnWriteCode(env, BN_OP_GET_REGISTER_0);
                 bnWriteCode(env, BN_OP_PUSH_SELF);
