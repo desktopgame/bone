@@ -213,20 +213,22 @@ static int int_compare(const void* a, const void* b) {
 
 static void compact_impl(bnStorage* self) {
         if (self->use >= self->objectCount) {
-                // can't compaction
+                // 全てのオブジェクトが使用済みなのでコンパクション不可能
                 return;
         }
         int count = 0;
         int lastFree = self->objectCount - 1;
-        // sort all objects
+        //現在のインデックス情報を保存する
         int mapBuf[self->objectCount];
         char poolBuf[self->objectSize * self->objectCount];
         bool bitmapBuf[sizeof(bool) * self->objectCount];
         memcpy(mapBuf, self->table, sizeof(int) * self->objectCount);
         memset(poolBuf, 0, self->objectSize * self->objectCount);
         memset(bitmapBuf, true, sizeof(bool) * self->objectCount);
-        // sort 0 -> 100
+        // 0, 1, 2... のようにテーブルをソートする
         qsort(self->table, self->objectCount, sizeof(int), int_compare);
+        //テーブルをソートした結果とその前で状態が変わっているなら、
+        //バッファを同じようにソートする
         if (memcmp(mapBuf, self->table, sizeof(int) * self->objectCount)) {
                 for (int i = 0; i < self->objectCount; i++) {
                         int oldPos = mapBuf[i] - self->offset;
@@ -243,7 +245,7 @@ static void compact_impl(bnStorage* self) {
                 memcpy(self->bitmap, bitmapBuf,
                        sizeof(bool) * self->objectCount);
         }
-        // compaction
+        //先頭から順番に使用済みのデータを検索する
         for (int i = 0; i < self->objectCount; i++) {
                 int index = self->table[i];
                 int localIndex = index - self->offset;
@@ -254,6 +256,7 @@ static void compact_impl(bnStorage* self) {
                         continue;
                 }
                 count++;
+                //最後に未使用データが見つかった位置から先頭方向へ未使用オブジェクトを探す
                 for (int j = lastFree; j >= i; j--) {
                         int swapIndex = self->table[j];
                         int swapLocalIndex = swapIndex - self->offset;
@@ -264,12 +267,14 @@ static void compact_impl(bnStorage* self) {
                         if (!(*swapBit)) {
                                 continue;
                         }
+                        //位置を入れ替える
                         self->table[i] = swapIndex;
                         self->table[j] = index;
                         memmove(swapObj, obj, self->objectSize);
                         memset(obj, 0, self->objectSize);
                         (*swapBit) = false;
                         (*bit) = true;
+                        //次の検索開始位置を設定する
                         lastFree = j - 1;
                         break;
                 }
