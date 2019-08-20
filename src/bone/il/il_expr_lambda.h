@@ -6,7 +6,7 @@ struct bnEnviroment;
 struct bnInterpreter;
 
 /**
- * bnILExprLambda is lambda.
+ * bnILExprLambdaはラムダ式を表す構造体です。
  */
 typedef struct bnILExprLambda {
         GPtrArray* parameters;
@@ -17,7 +17,7 @@ typedef struct bnILExprLambda {
 } bnILExprLambda;
 
 /**
- * return new instance of bnILExprLambda.
+ * 新しいbnILExprLambdaインスタンスを生成して返します。
  * @param filename
  * @param lineno
  * @return
@@ -25,7 +25,7 @@ typedef struct bnILExprLambda {
 bnILExprLambda* bnNewILExprLambda(bnStringView filename, int lineno);
 
 /**
- * print a information of bnILExprLambda.
+ * ラムダ式を再帰的にダンプします。
  * @param fp
  * @param pool
  * @param self
@@ -34,11 +34,18 @@ bnILExprLambda* bnNewILExprLambda(bnStringView filename, int lineno);
 void bnDumpILExprLambda(FILE* fp, struct bnStringPool* pool,
                         bnILExprLambda* self, int depth);
 
+/**
+ * ラムダ式のバイトコードを生成します。
+ * @param bone
+ * @param self
+ * @param env
+ * @param ccache
+ */
 void bnGenerateILExprLambda(struct bnInterpreter* bone, bnILExprLambda* self,
                             struct bnEnviroment* env, bnCompileCache* ccache);
 
 /**
- * free a bnILExprLambda.
+ * ラムダ式を再帰的に解放します。
  * @param self
  */
 void bnDeleteILExprLambda(bnILExprLambda* self);
