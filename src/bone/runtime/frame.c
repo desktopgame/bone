@@ -34,11 +34,11 @@ bnFrame* bnSubFrame(bnFrame* self) {
         return ret;
 }
 
-bnObject* bnReturnValue(bnFrame* self) {
+bnReference bnReturnValue(bnFrame* self) {
         if (bnGetStackSize(self->vStack) == 0) {
                 return NULL;
         }
-        return bnPopStack(self->vStack);
+        return (bnReference)bnPopStack(self->vStack);
 }
 
 void bnInjectFrame(GHashTable* src, bnFrame* dst) {

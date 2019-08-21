@@ -44,7 +44,7 @@ bnFrame* bnSubFrame(bnFrame* self);
  * @param self
  * @return
  */
-struct bnObject* bnReturnValue(bnFrame* self);
+bnReference bnReturnValue(bnFrame* self);
 
 /**
  * 入力フレームのローカル変数を全て出力フレームへ書き出します。
