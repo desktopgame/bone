@@ -522,3 +522,35 @@ fun(ary...)
 //オブジェクト... で、その中身を一段階展開する。
 //C++のパラメータパック展開のようなもの
 ```
+
+### デフォルト引数
+
+```
+fun := def(paramA, paramB)() {
+    ...
+};
+fun.paramA := "default value";
+fun.paramB := 10;
+
+fun();
+fun("myValue", 20);
+```
+
+### デフォルト戻り値
+
+```
+fun := def()(retA, retB) {
+    ...
+};
+fun.retA := "default value";
+fun.retB := 10;
+```
+
+### ドキュメンテーションコメント
+
+```
+fun := def()(retA, retB) {
+    ...
+};
+fun.comment := "funはホゲホゲをフガフガします。";
+```
