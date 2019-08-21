@@ -1,2 +1,2 @@
 ioutil := object() <- load("ioutil.bn");
-println(ioutil.read_all("./testdata/iotest/test.out"));
+println(ioutil.read_all(DIR + "./testdata/iotest/test.out"));

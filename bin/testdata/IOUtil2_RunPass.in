@@ -1,2 +1,2 @@
 ioutil := object() <- load("ioutil.bn");
-ioutil.write_all("./testdata/iotest/ioutil_test.out", "golang\ngo");
+ioutil.write_all(DIR + "./testdata/iotest/ioutil_test.out", "golang\ngo");
