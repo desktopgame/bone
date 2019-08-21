@@ -14,6 +14,10 @@ static void bnStdStringEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdStringNotEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdStringAt(bnInterpreter* bone, bnFrame* frame);
 static void bnStdStringPlus(bnInterpreter* bone, bnFrame* frame);
+static void plus_string_string(bnInterpreter* bone, bnFrame* frame, bnObject* a,
+                               bnObject* b);
+static void plus_string_char(bnInterpreter* bone, bnFrame* frame, bnObject* a,
+                             bnObject* b);
 
 /**
  * bnString is bone string.
@@ -108,12 +112,17 @@ static void bnStdStringAt(bnInterpreter* bone, bnFrame* frame) {
 static void bnStdStringPlus(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
         bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_STRING) {
-                _throw(bone, frame, "should be `self` is string");
+        if (a->type == BN_OBJECT_STRING && b->type == BN_OBJECT_STRING) {
+                plus_string_string(bone, frame, a, b);
+        } else if (a->type == BN_OBJECT_STRING && b->type == BN_OBJECT_CHAR) {
+                plus_string_char(bone, frame, a, b);
+        } else {
+                _throw(bone, frame, "string+: not supported format");
         }
-        if (b->type != BN_OBJECT_STRING) {
-                _throw(bone, frame, "should be `other` is string");
-        }
+}
+
+static void plus_string_string(bnInterpreter* bone, bnFrame* frame, bnObject* a,
+                               bnObject* b) {
         //文字列をくっつける
         bnStringView ai = ((bnString*)a)->value;
         bnStringView bi = ((bnString*)b)->value;
@@ -126,6 +135,31 @@ static void bnStdStringPlus(bnInterpreter* bone, bnFrame* frame) {
         //配列を作成
         bnReference aryFunc = bnReadVariable2(frame, bone->pool, "array");
         bnPushStack(frame->vStack, bnNewInteger(bone, alen + blen));
+        bnFrame* sub = bnFuncCall(aryFunc, bone, frame, 1);
+        bnReference aryInst = bnStaging(bone->heap, bnReturnValue(frame));
+        bnDeleteFrame(sub);
+        //文字で埋める
+        bnFillString(bone, newstr, aryInst);
+        //文字を作成
+        bnReference strFunc = bnReadVariable2(frame, bone->pool, "string");
+        bnPushStack(frame->vStack, aryInst);
+        sub = bnFuncCall(strFunc, bone, frame, 1);
+        bnReference strInst = bnStaging(bone->heap, bnReturnValue(frame));
+        bnDeleteFrame(sub);
+        bnWriteVariable2(frame, bone->pool, "ret", strInst);
+}
+
+static void plus_string_char(bnInterpreter* bone, bnFrame* frame, bnObject* a,
+                             bnObject* b) {
+        //文字列をくっつける
+        bnStringView ai = ((bnString*)a)->value;
+        const char* astr = bnView2Str(bone->pool, ai);
+        int alen = strlen(astr);
+        char newstr[alen + 2];
+        sprintf(newstr, "%s%c", astr, bnGetCharValue(b));
+        //配列を作成
+        bnReference aryFunc = bnReadVariable2(frame, bone->pool, "array");
+        bnPushStack(frame->vStack, bnNewInteger(bone, alen + 1));
         bnFrame* sub = bnFuncCall(aryFunc, bone, frame, 1);
         bnReference aryInst = bnStaging(bone->heap, bnReturnValue(frame));
         bnDeleteFrame(sub);
