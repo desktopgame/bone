@@ -5,12 +5,12 @@ element_class.new := def()(ret) {
     ret.data := false;
     ret.append := def(self, data)() {
         if(self.data) {
-            if(self.next) {
-                self.next.append(data);
-            } else {
-                self.next := element_class.new();
-                self.next.data := data;
+            iter := self;
+            while(iter.next) {
+                iter := iter.next;
             }
+            iter.next := element_class.new();
+            iter.next.data := data;
         } else {
             self.data := data;
         }
