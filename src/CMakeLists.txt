@@ -83,23 +83,30 @@ add_custom_target(
 )
 
 install(CODE "execute_process(COMMAND doxygen)")
-install(DIRECTORY DESTINATION ${BONE_INSTALL_DIR})
 install(
     DIRECTORY ./../bin
+    USE_SOURCE_PERMISSIONS
     DESTINATION ${BONE_INSTALL_DIR}
 )
 install(
     DIRECTORY ./../doc
+    USE_SOURCE_PERMISSIONS
     DESTINATION ${BONE_INSTALL_DIR}
 )
 install(
     DIRECTORY ./../lib
+    USE_SOURCE_PERMISSIONS
     DESTINATION ${BONE_INSTALL_DIR}
+)
+install(
+    DIRECTORY bone
+    USE_SOURCE_PERMISSIONS
+    DESTINATION ${BONE_INSTALL_DIR}/include
+    FILES_MATCHING PATTERN "*.h"
 )
 add_custom_target(_add_path
     COMMAND printf "%s %s" export PATH=${BONE_INSTALL_DIR}/bin:$$ >> ~/.bash_profile
     COMMAND echo "PATH" >> ~/.bash_profile
-    COMMAND sudo chmod +x ${BONE_INSTALL_DIR}/bin/bone
     COMMAND source ~/.bash_profile
 )
 add_custom_target(_uninstall rm -r ${BONE_INSTALL_DIR})
