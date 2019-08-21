@@ -236,17 +236,17 @@ void bnDeleteObject(bnStorage* storage, bnReference ref, struct bnObject* obj) {
 // private
 
 static void bnStdObjectEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnPopArg(bone, frame, self);
+        bnPopArg(bone, frame, other);
         bnWriteVariable2(frame, bone->pool, "ret",
-                         bnGetBool(bone->pool, frame, a == b));
+                         bnGetBool(bone->pool, frame, selfObj == otherObj));
 }
 
 static void bnStdObjectNotEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnPopStack(frame->vStack);
-        bnObject* b = bnPopStack(frame->vStack);
+        bnPopArg(bone, frame, self);
+        bnPopArg(bone, frame, other);
         bnWriteVariable2(frame, bone->pool, "ret",
-                         bnGetBool(bone->pool, frame, a != b));
+                         bnGetBool(bone->pool, frame, selfObj != otherObj));
 }
 
 static void to_string(bnInterpreter* bone, GString* str, bnObject* root,
