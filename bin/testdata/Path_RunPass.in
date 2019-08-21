@@ -1,0 +1,2 @@
+println(CWD);
+println(DIR);
