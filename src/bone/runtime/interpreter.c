@@ -248,6 +248,59 @@ void bnPanic(bnInterpreter* self, bnReference exception) {
         iter->panic = exception;
 }
 
+bnObject* bnTypeAssert(bnInterpreter* bone, const char* paramName,
+                       bnObject* obj, bnObjectType expect,
+                       const char* optExtensionName) {
+        if (expect != BN_OBJECT_ANY && expect == obj->type) {
+                return obj;
+        }
+        if (expect == BN_OBJECT_ANY) {
+                if (((bnAny*)obj)->type ==
+                    bnIntern(bone->pool, optExtensionName)) {
+                        return obj;
+                } else {
+                        bnFormatThrow(bone, "shoud be `%s` is %s", paramName,
+                                      optExtensionName);
+                }
+        }
+        switch (expect) {
+                case BN_OBJECT_PROTO: {
+                        bnFormatThrow(bone, "shoud be `%s` is plain object",
+                                      paramName);
+                }
+                case BN_OBJECT_INTEGER: {
+                        bnFormatThrow(bone, "shoud be `%s` is integer",
+                                      paramName);
+                }
+                case BN_OBJECT_DOUBLE: {
+                        bnFormatThrow(bone, "shoud be `%s` is double",
+                                      paramName);
+                }
+                case BN_OBJECT_CHAR: {
+                        bnFormatThrow(bone, "shoud be `%s` is char", paramName);
+                }
+                case BN_OBJECT_STRING: {
+                        bnFormatThrow(bone, "shoud be `%s` is string",
+                                      paramName);
+                }
+                case BN_OBJECT_BOOL: {
+                        bnFormatThrow(bone, "shoud be `%s` is bool", paramName);
+                }
+                case BN_OBJECT_LAMBDA: {
+                        bnFormatThrow(bone, "shoud be `%s` is lambda",
+                                      paramName);
+                }
+                case BN_OBJECT_ARRAY: {
+                        bnFormatThrow(bone, "shoud be `%s` is array",
+                                      paramName);
+                }
+                case BN_OBJECT_ANY: {
+                        bnFormatThrow(bone, "shoud be `%s` is any", paramName);
+                }
+        }
+        return obj;
+}
+
 bnReference bnGetBool(struct bnStringPool* pool, bnFrame* frame, bool cond) {
         bnReference ret =
             cond ? bnGetTrue(pool, frame) : bnGetFalse(pool, frame);

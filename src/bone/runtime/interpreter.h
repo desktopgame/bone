@@ -118,6 +118,57 @@ void bnThrow(bnInterpreter* self, bnReference exception, int code);
 void bnPanic(bnInterpreter* self, bnReference exception);
 
 /**
+ * ネイティブ関数の先頭で行われる定型的な宣言をマクロにラップしたものです。
+ * @param bone
+ * @param frame
+ * @param name 引数名
+ * @param expect 期待する型
+ * @param optExt (必要なら)期待するbnAnyの名前
+ */
+#define bnPopGenericArg(bone, frame, name, expect, optExt)        \
+        bnReference name##Ref = bnPopStack(frame->vStack);        \
+        bnObject* name##Obj = bnGetObject(bone->heap, name##Ref); \
+        name##Obj = bnTypeAssert(bone, name, name##Obj, expect, optExt)
+
+#define bnPopCharArg(bone, frame, name) \
+        bnPopGenericArg(bone, frame, name, BN_OBJECT_CHAR, NULL)
+
+#define bnPopStringArg(bone, frame, name) \
+        bnPopGenericArg(bone, frame, name, BN_OBJECT_STRING, NULL)
+
+#define bnPopArrayArg(bone, frame, name) \
+        bnPopGenericArg(bone, frame, name, BN_OBJECT_ARRAY, NULL)
+
+#define bnPopBoolArg(bone, frame, name) \
+        bnPopGenericArg(bone, frame, name, BN_OBJECT_BOOL, NULL)
+
+#define bnPopLambdaArg(bone, frame, name) \
+        bnPopGenericArg(bone, frame, name, BN_OBJECT_LAMBDA, NULL)
+
+#define bnPopIntArg(bone, frame, name) \
+        bnPopGenericArg(bone, frame, name, BN_OBJECT_INTEGER, NULL)
+
+#define bnPopDoubleArg(bone, frame, name) \
+        bnPopGenericArg(bone, frame, name, BN_OBJECT_DOUBLE, NULL)
+
+#define bnPopAnyArg(bone, frame, anyName) \
+        bnPopGenericArg(bone, frame, name, BN_OBJECT_ANY, anyName)
+
+/**
+ * 指定のオブジェクトのタイプを検証します。
+ * タイプが正しくない場合はパニックしてロングジャンプします。
+ * @param bone
+ * @param paramName 引数名
+ * @param obj 実引数
+ * @param expect 期待する型
+ * @param optExtensionName (必要なら)期待するbnAnyの名前
+ * @return
+ */
+bnObject* bnTypeAssert(bnInterpreter* bone, const char* paramName,
+                       bnObject* obj, bnObjectType expect,
+                       const char* optExtensionName);
+
+/**
  * 変数テーブルから対応する真偽値型のインスタンスを返します。
  * @param pool
  * @param frame
