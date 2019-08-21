@@ -1,0 +1,47 @@
+REGEX_CASELESS := extern_var("regex.compile_flags.G_REGEX_CASELESS");
+REGEX_MULTILINE := extern_var("regex.compile_flags.G_REGEX_MULTILINE");
+REGEX_DOTALL := extern_var("regex.compile_flags.G_REGEX_DOTALL");
+REGEX_EXTENDED := extern_var("regex.compile_flags.G_REGEX_EXTENDED");
+REGEX_ANCHORED := extern_var("regex.compile_flags.G_REGEX_ANCHORED");
+REGEX_DOLLAR_ENDONLY := extern_var("regex.compile_flags.G_REGEX_DOLLAR_ENDONLY");
+REGEX_UNGREEDY := extern_var("regex.compile_flags.G_REGEX_UNGREEDY");
+REGEX_RAW := extern_var("regex.compile_flags.G_REGEX_RAW");
+REGEX_NO_AUTO_CAPTURE := extern_var("regex.compile_flags.G_REGEX_NO_AUTO_CAPTURE");
+REGEX_OPTIMIZE := extern_var("regex.compile_flags.G_REGEX_OPTIMIZE");
+REGEX_FIRSTLINE := extern_var("regex.compile_flags.G_REGEX_FIRSTLINE");
+REGEX_DUPNAMES := extern_var("regex.compile_flags.G_REGEX_DUPNAMES");
+REGEX_NEWLINE_CR := extern_var("regex.compile_flags.G_REGEX_NEWLINE_CR");
+REGEX_NEWLINE_LF := extern_var("regex.compile_flags.G_REGEX_NEWLINE_LF");
+REGEX_NEWLINE_CRLF := extern_var("regex.compile_flags.G_REGEX_NEWLINE_CRLF");
+REGEX_NEWLINE_ANYCRLF := extern_var("regex.compile_flags.G_REGEX_NEWLINE_ANYCRLF");
+REGEX_BSR_ANYCRLF := extern_var("regex.compile_flags.G_REGEX_BSR_ANYCRLF");
+REGEX_JAVASCRIPT_COMPAT := extern_var("regex.compile_flags.G_REGEX_JAVASCRIPT_COMPAT");
+
+REGEX_MATCH_ANCHORED := extern_var("regex.match_flags.G_REGEX_MATCH_ANCHORED");
+REGEX_MATCH_NOTBOL := extern_var("regex.match_flags.G_REGEX_MATCH_NOTBOL");
+REGEX_MATCH_NOTEOL := extern_var("regex.match_flags.G_REGEX_MATCH_NOTEOL");
+REGEX_MATCH_NOTEMPTY := extern_var("regex.match_flags.G_REGEX_MATCH_NOTEMPTY");
+REGEX_MATCH_PARTIAL := extern_var("regex.match_flags.G_REGEX_MATCH_PARTIAL");
+REGEX_MATCH_NEWLINE_CR := extern_var("regex.match_flags.G_REGEX_MATCH_NEWLINE_CR");
+REGEX_MATCH_NEWLINE_LF := extern_var("regex.match_flags.G_REGEX_MATCH_NEWLINE_LF");
+REGEX_MATCH_NEWLINE_CRLF := extern_var("regex.match_flags.G_REGEX_MATCH_NEWLINE_CRLF");
+REGEX_MATCH_NEWLINE_ANY := extern_var("regex.match_flags.G_REGEX_MATCH_NEWLINE_ANY");
+REGEX_MATCH_NEWLINE_ANYCRLF := extern_var("regex.match_flags.G_REGEX_MATCH_NEWLINE_ANYCRLF");
+REGEX_MATCH_BSR_ANYCRLF := extern_var("regex.match_flags.G_REGEX_MATCH_BSR_ANYCRLF");
+REGEX_MATCH_BSR_ANY := extern_var("regex.match_flags.G_REGEX_MATCH_BSR_ANY");
+REGEX_MATCH_PARTIAL_SOFT := extern_var("regex.match_flags.G_REGEX_MATCH_PARTIAL_SOFT");
+REGEX_MATCH_PARTIAL_HARD := extern_var("regex.match_flags.G_REGEX_MATCH_PARTIAL_HARD");
+REGEX_MATCH_NOTEMPTY_ATSTART := extern_var("regex.match_flags.G_REGEX_MATCH_NOTEMPTY_ATSTART");
+
+
+_compile := extern_def("regex.compile", ["pattern", "compile_options", "match_options"], ["ret", "error"]);
+_replace := extern_def("regex.replace", ["self", "source", "start", "replacement", "match_options"], ["ret", "error"]);
+_match := extern_def("regex.match", ["self", "source", "match_options",  "func"], ["ret"]);
+compile := def(pattern, compile_options, match_options)(ret, error) {
+    {} <- _compile(pattern, compile_options, match_options);
+    if(error) {
+        return;
+    }
+    ret.replace := _replace;
+    ret.match := _match;
+};

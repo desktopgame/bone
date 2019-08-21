@@ -1,0 +1,9 @@
+regexp := object() <- load("regex.bn");
+stdio := object() <- load("file.bn");
+
+text := "watashi_otoko_koe_hanasemasu";
+regex := regexp.compile("[a-z]+", 0, 0);
+regex.match(text, 0, def(word, start, end)() {
+    println(word);
+});
+println(regex.replace(text, 0, "*****", 0));
