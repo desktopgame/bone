@@ -1,0 +1,2 @@
+ary := array(5);
+ary.set("bug", "bug!");
