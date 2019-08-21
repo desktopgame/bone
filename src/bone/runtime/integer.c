@@ -120,172 +120,126 @@ void bnSetIntegerValue(bnObject* obj, int value) {
 // private
 
 static void bnStdIntegerNegative(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        bnWriteVariable2(frame, bone->pool, "ret", bnNewInteger(bone, -ai));
+        bnPopIntArg(bone, frame, self);
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnNewInteger(bone, -bnGetIntegerValue(selfObj)));
 }
 
 static void bnStdIntegerPlus(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        int bi = ((bnInteger*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret", bnNewInteger(bone, ai + bi));
+        bnPopIntArg(bone, frame, self);
+        bnPopIntArg(bone, frame, other);
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnNewInteger(bone, bnGetIntegerValue(selfObj) +
+                                                bnGetIntegerValue(otherObj)));
 }
 
 static void bnStdIntegerMinus(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        int bi = ((bnInteger*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret", bnNewInteger(bone, ai - bi));
+        bnPopIntArg(bone, frame, self);
+        bnPopIntArg(bone, frame, other);
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnNewInteger(bone, bnGetIntegerValue(selfObj) -
+                                                bnGetIntegerValue(otherObj)));
 }
 
 static void bnStdIntegerMultiply(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        int bi = ((bnInteger*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret", bnNewInteger(bone, ai * bi));
+        bnPopIntArg(bone, frame, self);
+        bnPopIntArg(bone, frame, other);
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnNewInteger(bone, bnGetIntegerValue(selfObj) *
+                                                bnGetIntegerValue(otherObj)));
 }
 
 static void bnStdIntegerDivide(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        int bi = ((bnInteger*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret", bnNewInteger(bone, ai / bi));
+        bnPopIntArg(bone, frame, self);
+        bnPopIntArg(bone, frame, other);
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnNewInteger(bone, bnGetIntegerValue(selfObj) /
+                                                bnGetIntegerValue(otherObj)));
 }
 
 static void bnStdIntegerModulo(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        int bi = ((bnInteger*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret", bnNewInteger(bone, ai % bi));
+        bnPopIntArg(bone, frame, self);
+        bnPopIntArg(bone, frame, other);
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnNewInteger(bone, bnGetIntegerValue(selfObj) %
+                                                bnGetIntegerValue(otherObj)));
 }
 
 static void bnStdIntegerLShift(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnFormatThrow(bone, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        int bi = ((bnInteger*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret",
-                         bnNewInteger(bone, ai << bi));
+        bnPopIntArg(bone, frame, self);
+        bnPopIntArg(bone, frame, other);
+        bnWriteVariable2(
+            frame, bone->pool, "ret",
+            bnNewInteger(bone, bnGetIntegerValue(selfObj)
+                                   << bnGetIntegerValue(otherObj)));
 }
 
 static void bnStdIntegerRShift(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                bnFormatThrow(bone, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        int bi = ((bnInteger*)b)->value;
+        bnPopIntArg(bone, frame, self);
+        bnPopIntArg(bone, frame, other);
         bnWriteVariable2(frame, bone->pool, "ret",
-                         bnNewInteger(bone, ai >> bi));
+                         bnNewInteger(bone, bnGetIntegerValue(selfObj) >>
+                                                bnGetIntegerValue(otherObj)));
 }
 
 static void bnStdIntegerGT(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        int bi = ((bnInteger*)b)->value;
+        bnPopIntArg(bone, frame, self);
+        bnPopIntArg(bone, frame, other);
         bnWriteVariable2(frame, bone->pool, "ret",
-                         bnGetBool(bone->pool, frame, ai > bi));
+                         bnGetBool(bone->pool, frame,
+                                   bnGetIntegerValue(selfObj) >
+                                       bnGetIntegerValue(otherObj)));
 }
 
 static void bnStdIntegerGE(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        int bi = ((bnInteger*)b)->value;
+        bnPopIntArg(bone, frame, self);
+        bnPopIntArg(bone, frame, other);
         bnWriteVariable2(frame, bone->pool, "ret",
-                         bnGetBool(bone->pool, frame, ai >= bi));
+                         bnGetBool(bone->pool, frame,
+                                   bnGetIntegerValue(selfObj) >=
+                                       bnGetIntegerValue(otherObj)));
 }
 
 static void bnStdIntegerLT(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        int bi = ((bnInteger*)b)->value;
+        bnPopIntArg(bone, frame, self);
+        bnPopIntArg(bone, frame, other);
         bnWriteVariable2(frame, bone->pool, "ret",
-                         bnGetBool(bone->pool, frame, ai < bi));
+                         bnGetBool(bone->pool, frame,
+                                   bnGetIntegerValue(selfObj) <
+                                       bnGetIntegerValue(otherObj)));
 }
 
 static void bnStdIntegerLE(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        int bi = ((bnInteger*)b)->value;
+        bnPopIntArg(bone, frame, self);
+        bnPopIntArg(bone, frame, other);
         bnWriteVariable2(frame, bone->pool, "ret",
-                         bnGetBool(bone->pool, frame, ai <= bi));
+                         bnGetBool(bone->pool, frame,
+                                   bnGetIntegerValue(selfObj) <=
+                                       bnGetIntegerValue(otherObj)));
 }
 
 static void bnStdIntegerEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        int bi = ((bnInteger*)b)->value;
+        bnPopIntArg(bone, frame, self);
+        bnPopIntArg(bone, frame, other);
         bnWriteVariable2(frame, bone->pool, "ret",
-                         bnGetBool(bone->pool, frame, ai == bi));
+                         bnGetBool(bone->pool, frame,
+                                   bnGetIntegerValue(selfObj) ==
+                                       bnGetIntegerValue(otherObj)));
 }
 
 static void bnStdIntegerNotEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_INTEGER || b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, message());
-        }
-        int ai = ((bnInteger*)a)->value;
-        int bi = ((bnInteger*)b)->value;
+        bnPopIntArg(bone, frame, self);
+        bnPopIntArg(bone, frame, other);
         bnWriteVariable2(frame, bone->pool, "ret",
-                         bnGetBool(bone->pool, frame, ai != bi));
+                         bnGetBool(bone->pool, frame,
+                                   bnGetIntegerValue(selfObj) !=
+                                       bnGetIntegerValue(otherObj)));
 }
 
 static void bnStdIntegerToString(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, message());
-        }
+        bnPopIntArg(bone, frame, self);
         char buf[100];
-        sprintf(buf, "%d", ((bnInteger*)a)->value);
+        sprintf(buf, "%d", bnGetIntegerValue(selfObj));
         bnWriteVariable2(frame, bone->pool, "ret",
                          bnNewString(bone, bnIntern(bone->pool, buf)));
 }
