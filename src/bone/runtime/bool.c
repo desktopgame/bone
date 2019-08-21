@@ -54,12 +54,8 @@ bool bnGetBoolValue(bnObject* obj) {
 // private
 
 static void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_BOOL) {
-                _throw(bone, frame, "should be `self` is bool");
-        }
-        bnBool* b = (bnBool*)a;
-        if (b->value) {
+        bnPopBoolArg(bone, frame, self);
+        if (bnGetBoolValue(selfObj)) {
                 bnWriteVariable2(frame, bone->pool, "ret",
                                  bnGetFalse(bone->pool, frame));
         } else {
@@ -69,35 +65,21 @@ static void bnStdBoolNot(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnStdBoolBitAnd(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_BOOL) {
-                _throw(bone, frame, message());
-        }
-        if (b->type != BN_OBJECT_BOOL) {
-                _throw(bone, frame, message());
-        }
-        bnBool* boolA = (bnBool*)a;
-        bnBool* boolB = (bnBool*)b;
-        bnReference c =
-            bnReadVariable2(frame, bone->pool,
-                            (boolA->value & boolB->value) ? "true" : "false");
+        bnPopBoolArg(bone, frame, self);
+        bnPopBoolArg(bone, frame, other);
+        bnReference c = bnReadVariable2(
+            frame, bone->pool,
+            (bnGetBoolValue(selfObj) & bnGetBoolValue(otherObj)) ? "true"
+                                                                 : "false");
         bnWriteVariable2(frame, bone->pool, "ret", c);
 }
 
 static void bnStdBoolBitOr(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_BOOL) {
-                _throw(bone, frame, message());
-        }
-        if (b->type != BN_OBJECT_BOOL) {
-                _throw(bone, frame, message());
-        }
-        bnBool* boolA = (bnBool*)a;
-        bnBool* boolB = (bnBool*)b;
-        bnReference c =
-            bnReadVariable2(frame, bone->pool,
-                            (boolA->value | boolB->value) ? "true" : "false");
+        bnPopBoolArg(bone, frame, self);
+        bnPopBoolArg(bone, frame, other);
+        bnReference c = bnReadVariable2(
+            frame, bone->pool,
+            (bnGetBoolValue(selfObj) | bnGetBoolValue(otherObj)) ? "true"
+                                                                 : "false");
         bnWriteVariable2(frame, bone->pool, "ret", c);
 }
