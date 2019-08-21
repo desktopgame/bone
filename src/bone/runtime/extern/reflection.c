@@ -58,50 +58,37 @@ void bnExternReflection(bnInterpreter* bone) {
 
 static void bnExtReflectionDefine(bnInterpreter* bone, bnFrame* frame) {
         bnReference a = bnPopStack(frame->vStack);
-        bnReference b = bnPopStack(frame->vStack);
+        bnPopStringArg(bone, frame, name);
         bnReference c = bnPopStack(frame->vStack);
         bnObject* aObj = bnGetObject(bone->heap, a);
-        bnObject* bObj = bnGetObject(bone->heap, b);
-        if (bObj->type != BN_OBJECT_STRING) {
-                bnFormatThrow(bone, "shoud be `name` is string");
-        }
-        bnDefine(aObj, bnGetStringValue(bObj), c);
+        bnDefine(aObj, bnGetStringValue(nameObj), c);
 }
 
 static void bnExtReflectionUndef(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (b->type != BN_OBJECT_STRING) {
-                bnFormatThrow(bone, "shoud be `name` is string");
-        }
-        bool removed = bnUndef(a, bnGetStringValue(b));
+        bnPopStringArg(bone, frame, name);
+        bool removed = bnUndef(a, bnGetStringValue(nameObj));
         bnWriteVariable2(frame, bone->pool, "ret",
                          bnGetBool(bone->pool, frame, removed));
 }
 
 static void bnExtReflectionDefined(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (b->type != BN_OBJECT_STRING) {
-                bnFormatThrow(bone, "shoud be `name` is string");
-        }
-        bool contains = bnDefined(a, bnGetStringValue(b));
+        bnPopStringArg(bone, frame, name);
+        bool contains = bnDefined(a, bnGetStringValue(nameObj));
         bnWriteVariable2(frame, bone->pool, "ret",
                          bnGetBool(bone->pool, frame, contains));
 }
 
 static void bnExtReflectionExpand(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (b->type != BN_OBJECT_STRING) {
-                bnFormatThrow(bone, "shoud be `name` is string");
-        }
-        bool contains = bnDefined(a, bnGetStringValue(b));
+        bnPopStringArg(bone, frame, name);
+        bool contains = bnDefined(a, bnGetStringValue(nameObj));
         bnWriteVariable2(frame, bone->pool, "error",
                          bnGetBool(bone->pool, frame, !contains));
         if (contains) {
                 bnWriteVariable2(frame, bone->pool, "ret",
-                                 bnLookup(a, bnGetStringValue(b)));
+                                 bnLookup(a, bnGetStringValue(nameObj)));
         }
 }
 
