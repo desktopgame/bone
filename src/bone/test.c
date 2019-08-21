@@ -15,23 +15,36 @@
 #include "util/args.h"
 #include "util/string.h"
 #include "util/string_pool.h"
+
+#if !defined(_WIN32)
+#define EXCHANGE_STDOUT (1)
+#endif
+
 static int string_compare(const void* a, const void* b) {
         return strcmp((const char*)a, (const char*)b);
 }
 
 static GList* get_files(const char* dir) {
+        GString* exeDir = bnGetExecutableFileDir();
+        gchar* fullDir = g_build_filename(exeDir->str, dir, NULL);
         GError* err = NULL;
-        GDir* dirp = g_dir_open(dir, 0, &err);
+        GDir* dirp = g_dir_open(fullDir, 0, &err);
+        if (dirp == NULL) {
+                printf("%s\n", err->message);
+                g_string_free(exeDir, TRUE);
+                g_free(fullDir);
+                return NULL;
+        }
         const gchar* file = ".";
-        gchar* cwd = g_get_current_dir();
         GList* ret = NULL;
         while ((file = g_dir_read_name(dirp)) != NULL) {
-                gchar* path = g_build_filename(cwd, dir, file, NULL);
+                gchar* path = g_build_filename(fullDir, file, NULL);
                 ret = g_list_append(ret, path);
         }
         ret = g_list_sort(ret, string_compare);
         g_dir_close(dirp);
-        g_free(cwd);
+        g_free(fullDir);
+        g_string_free(exeDir, TRUE);
         return ret;
 }
 
@@ -181,10 +194,14 @@ static test_result test_check_run(const char* testDir, const char* testName,
         if (g_file_test(out, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
                 xremove(out);
         }
-#if !defined(_WIN32)
-        FILE* soutfp = fopen(out, "w");
-        FILE* _stdout = stdout;
-        stdout = soutfp;
+#if defined(EXCHANGE_STDOUT)
+        FILE* cacheFP = fopen(out, "w");
+        if (cacheFP == NULL) {
+                perror("test_check_run");
+                abort();
+        }
+        FILE* trueStdout = stdout;
+        stdout = cacheFP;
 #endif
         bnInterpreter* bone = bnNewInterpreter(path, bnArgc(), bnArgv());
 #if _WIN32
@@ -193,9 +210,9 @@ static test_result test_check_run(const char* testDir, const char* testName,
         bnLink(bone, "./testdata/plugins");
 #endif
         int ret = bnEval(bone);
-#if !defined(_WIN32)
-        stdout = _stdout;
-        fclose(soutfp);
+#if defined(EXCHANGE_STDOUT)
+        stdout = trueStdout;
+        fclose(cacheFP);
         writeFile(out);
 #endif
         if (flags & test_mask_expect_pass) {
@@ -284,6 +301,7 @@ int bnTest(const char* dir) {
         GPtrArray* fails = g_ptr_array_new_full(2, string_destroy);
         GList* files = get_files(dir);
         GList* iter = files;
+        GString* exeDir = bnGetExecutableFileDir();
         while (iter != NULL) {
                 gchar* path = iter->data;
                 if (!g_str_has_suffix(path, ".in")) {
@@ -292,13 +310,16 @@ int bnTest(const char* dir) {
                         iter = iter->next;
                         continue;
                 }
-                if (test_run(dir, path) == test_result_fail) {
+                gchar* fullDir = g_build_filename(exeDir->str, dir, NULL);
+                if (test_run(fullDir, path) == test_result_fail) {
                         g_ptr_array_add(fails, g_string_new(path));
                 }
+                g_free(fullDir);
                 g_free(path);
                 iter->data = NULL;
                 iter = iter->next;
         }
+        g_string_free(exeDir, TRUE);
         if (fails->len) {
                 printf("failed %d:\n", fails->len);
                 for (int i = 0; i < fails->len; i++) {

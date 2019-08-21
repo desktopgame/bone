@@ -65,11 +65,12 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
 void bnLink(bnInterpreter* bone, const char* path) { load_plugins(bone, path); }
 
 int bnEval(bnInterpreter* self) {
-        if (!bnExists(self->filenameRef)) {
+        GString* resolved = bnResolveLoadPath(self->filenameRef);
+        if (!bnExists(resolved->str)) {
+                g_string_free(resolved, TRUE);
                 printf("abort:`%s` is not found", self->filenameRef);
                 return 1;
         }
-        GString* resolved = bnResolveLoadPath(self->filenameRef);
         bnAST* ret = bnParseFile(self->pool, resolved->str);
         if (ret == NULL) {
                 //構文解析に失敗したので終了

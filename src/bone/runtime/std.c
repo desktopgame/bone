@@ -25,16 +25,12 @@
 #include "vm.h"
 
 static void _throw(bnInterpreter* bone, bnFrame* frame, const char* str);
-static bool file_exists(const char* path);
 static bool compare_list_array(bnInterpreter* bone, GList* a, bnObject* b);
 
 // デバッグビルドでのみ有効な関数
 #if DEBUG
 void bnStdDebugAssert(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_BOOL) {
-                _throw(bone, frame, "internal error");
-        }
         if (!bnGetBoolValue(a)) {
                 _throw(bone, frame, "assertion failed");
         }
@@ -116,11 +112,12 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
         }
         bnStringView pathView = bnGetStringValue(a);
         const char* pathStr = bnView2Str(bone->pool, pathView);
-        if (!file_exists(pathStr)) {
+        GString* resolved = bnResolveLoadPath(pathStr);
+        if (!bnExists(resolved->str)) {
+                g_string_free(resolved, TRUE);
                 bnFormatThrow(bone, "`%s` is not found", pathStr);
         }
         // 指定のファイルを解析する
-        GString* resolved = bnResolveLoadPath(pathStr);
         bnAST* ast = bnParseFile(bone->pool, resolved->str);
         if (ast == NULL) {
                 g_string_free(resolved, TRUE);
@@ -150,11 +147,12 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
         }
         bnStringView pathView = bnGetStringValue(a);
         const char* pathStr = bnView2Str(bone->pool, pathView);
-        if (!file_exists(pathStr)) {
+        GString* resolved = bnResolveLoadPath(pathStr);
+        if (!bnExists(resolved->str)) {
+                g_string_free(resolved, TRUE);
                 bnFormatThrow(bone, "`%s` is not found", pathStr);
         }
         //指定のファイルを解析
-        GString* resolved = bnResolveLoadPath(pathStr);
         bnAST* ast = bnParseFile(bone->pool, resolved->str);
         if (ast == NULL) {
                 g_string_free(resolved, TRUE);
@@ -333,8 +331,6 @@ static void _throw(bnInterpreter* bone, bnFrame* frame, const char* str) {
         bnThrow(bone, bnNewString(bone, bnIntern(bone->pool, str)),
                 BN_JMP_CODE_EXCEPTION);
 }
-
-static bool file_exists(const char* path) { return bnExists(path); }
 
 static bool compare_list_array(bnInterpreter* bone, GList* a, bnObject* b) {
         if (g_list_length(a) != bnGetArrayLength(b)) {
