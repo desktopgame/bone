@@ -1,5 +1,6 @@
 _file := object() <- load("file.bn");
 _list := object() <- load("list.bn");
+_str := object() <- load("string_buffer.bn");
 
 write_all := def(path, t)(error) {
     fp := object() <- _file.open(path, "w");
@@ -17,14 +18,14 @@ read_all := def(path)(ret, error) {
         error := fp.error;
         return;
     }
-    buf := _list.new();
+    buf := _str.new();
     while(1) {
         ch := object() <- fp.ret.getc();
         if(ch.error) {
             break;
         }
-        buf.append(ch.ret);
+        buf.append_c(ch.ret);
     }
     fp.ret.close();
-    ret := string(buf.toArray());
+    ret := buf.to_string();
 };
