@@ -1,0 +1,3 @@
+a := "hoge" + '_' + "huge";
+assert(a == "hoge_huge");
+println(a);
