@@ -47,35 +47,26 @@ static void bnExtDirDirectories(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnExtDirDelete(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_STRING) {
-                bnFormatThrow(bone, "should be `path` is string");
-        }
+        bnPopStringArg(bone, frame, path);
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wimplicit-function-declaration"
-        g_rmdir(bnView2Str(bone->pool, bnGetStringValue(a)));
+        g_rmdir(bnView2Str(bone->pool, bnGetStringValue(pathObj)));
 #pragma clang diagnostic pop
 }
 
 static void bnExtDirCreate(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_STRING) {
-                bnFormatThrow(bone, "should be `path` is string");
-        }
+        bnPopStringArg(bone, frame, path);
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wimplicit-function-declaration"
-        g_mkdir(bnView2Str(bone->pool, bnGetStringValue(a)), 0755);
+        g_mkdir(bnView2Str(bone->pool, bnGetStringValue(pathObj)), 0755);
 #pragma clang diagnostic pop
 }
 
 static void collect_files(bnInterpreter* bone, bnFrame* frame, bool fileOnly) {
         bnReference aryFuncRef = bnReadVariable2(frame, bone->pool, "array");
         bnReference strFuncRef = bnReadVariable2(frame, bone->pool, "string");
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_STRING) {
-                bnFormatThrow(bone, "should be `path` is string");
-        }
-        const char* dirname = bnView2Str(bone->pool, bnGetStringValue(a));
+        bnPopStringArg(bone, frame, path);
+        const char* dirname = bnView2Str(bone->pool, bnGetStringValue(pathObj));
         GDir* dp = g_dir_open(dirname, 0, NULL);
         if (dp == NULL) {
                 bnFormatThrow(bone, "can't open directory");
