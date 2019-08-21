@@ -109,105 +109,77 @@ void bnSetDoubleValue(bnObject* obj, double value) {
 double bnGetDoubleValue(bnObject* obj) { return ((bnDouble*)obj)->value; }
 
 static void bnStdDoublePlus(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, message());
-        }
-        double ai = ((bnDouble*)a)->value;
-        double bi = ((bnDouble*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret", bnNewDouble(bone, ai + bi));
+        bnPopDoubleArg(bone, frame, self);
+        bnPopDoubleArg(bone, frame, other);
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnNewDouble(bone, bnGetDoubleValue(selfObj) +
+                                               bnGetDoubleValue(otherObj)));
 }
 
 static void bnStdDoubleMinus(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, message());
-        }
-        double ai = ((bnDouble*)a)->value;
-        double bi = ((bnDouble*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret", bnNewDouble(bone, ai - bi));
+        bnPopDoubleArg(bone, frame, self);
+        bnPopDoubleArg(bone, frame, other);
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnNewDouble(bone, bnGetDoubleValue(selfObj) -
+                                               bnGetDoubleValue(otherObj)));
 }
 
 static void bnStdDoubleMultiply(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, message());
-        }
-        double ai = ((bnDouble*)a)->value;
-        double bi = ((bnDouble*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret", bnNewDouble(bone, ai * bi));
+        bnPopDoubleArg(bone, frame, self);
+        bnPopDoubleArg(bone, frame, other);
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnNewDouble(bone, bnGetDoubleValue(selfObj) *
+                                               bnGetDoubleValue(otherObj)));
 }
 
 static void bnStdDoubleDivide(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, message());
-        }
-        double ai = ((bnDouble*)a)->value;
-        double bi = ((bnDouble*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret", bnNewDouble(bone, ai / bi));
+        bnPopDoubleArg(bone, frame, self);
+        bnPopDoubleArg(bone, frame, other);
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnNewDouble(bone, bnGetDoubleValue(selfObj) /
+                                               bnGetDoubleValue(otherObj)));
 }
 
 static void bnStdDoubleModulo(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, message());
-        }
-        double ai = ((bnDouble*)a)->value;
-        double bi = ((bnDouble*)b)->value;
+        bnPopDoubleArg(bone, frame, self);
+        bnPopDoubleArg(bone, frame, other);
         bnWriteVariable2(frame, bone->pool, "ret",
-                         bnNewDouble(bone, fmod(ai, bi)));
+                         bnNewDouble(bone, fmod(bnGetDoubleValue(selfObj),
+                                                bnGetDoubleValue(otherObj))));
 }
 
 static void bnStdDoubleGT(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, message());
-        }
-        double ai = ((bnDouble*)a)->value;
-        double bi = ((bnDouble*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret",
-                         bnGetBool(bone->pool, frame, ai > bi));
+        bnPopDoubleArg(bone, frame, self);
+        bnPopDoubleArg(bone, frame, other);
+        bnWriteVariable2(
+            frame, bone->pool, "ret",
+            bnGetBool(bone->pool, frame,
+                      bnGetDoubleValue(selfObj) > bnGetDoubleValue(otherObj)));
 }
 static void bnStdDoubleGE(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, message());
-        }
-        double ai = ((bnDouble*)a)->value;
-        double bi = ((bnDouble*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret",
-                         bnGetBool(bone->pool, frame, ai >= bi));
+        bnPopDoubleArg(bone, frame, self);
+        bnPopDoubleArg(bone, frame, other);
+        bnWriteVariable2(
+            frame, bone->pool, "ret",
+            bnGetBool(bone->pool, frame,
+                      bnGetDoubleValue(selfObj) >= bnGetDoubleValue(otherObj)));
 }
 
 static void bnStdDoubleLT(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, message());
-        }
-        double ai = ((bnDouble*)a)->value;
-        double bi = ((bnDouble*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret",
-                         bnGetBool(bone->pool, frame, ai < bi));
+        bnPopDoubleArg(bone, frame, self);
+        bnPopDoubleArg(bone, frame, other);
+        bnWriteVariable2(
+            frame, bone->pool, "ret",
+            bnGetBool(bone->pool, frame,
+                      bnGetDoubleValue(selfObj) < bnGetDoubleValue(otherObj)));
 }
 static void bnStdDoubleLE(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, message());
-        }
-        double ai = ((bnDouble*)a)->value;
-        double bi = ((bnDouble*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret",
-                         bnGetBool(bone->pool, frame, ai <= bi));
+        bnPopDoubleArg(bone, frame, self);
+        bnPopDoubleArg(bone, frame, other);
+        bnWriteVariable2(
+            frame, bone->pool, "ret",
+            bnGetBool(bone->pool, frame,
+                      bnGetDoubleValue(selfObj) <= bnGetDoubleValue(otherObj)));
 }
 static void bnStdDoubleEqual(bnInterpreter* bone, bnFrame* frame) {
         bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
@@ -221,24 +193,18 @@ static void bnStdDoubleEqual(bnInterpreter* bone, bnFrame* frame) {
                          bnGetBool(bone->pool, frame, ai == bi));
 }
 static void bnStdDoubleNotEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_DOUBLE || b->type != BN_OBJECT_DOUBLE) {
-                _throw(bone, frame, message());
-        }
-        double ai = ((bnDouble*)a)->value;
-        double bi = ((bnDouble*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret",
-                         bnGetBool(bone->pool, frame, ai == bi));
+        bnPopDoubleArg(bone, frame, self);
+        bnPopDoubleArg(bone, frame, other);
+        bnWriteVariable2(
+            frame, bone->pool, "ret",
+            bnGetBool(bone->pool, frame,
+                      bnGetDoubleValue(selfObj) == bnGetDoubleValue(otherObj)));
 }
 
 static void bnStdDoubleToString(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_DOUBLE) {
-                bnFormatThrow(bone, message());
-        }
+        bnPopDoubleArg(bone, frame, self);
         char buf[100];
-        sprintf(buf, "%lf", ((bnDouble*)a)->value);
+        sprintf(buf, "%lf", bnGetDoubleValue(selfObj));
         bnWriteVariable2(frame, bone->pool, "ret",
                          bnNewString(bone, bnIntern(bone->pool, buf)));
 }
