@@ -1,0 +1,24 @@
+_new := extern_def("string_buffer.new", [], ["ret"]);
+append_c := extern_def("string_buffer.append_c", ["self", "c"], ["ret"]);
+append_str := extern_def("string_buffer.append_str", ["self", "str"], ["ret"]);
+erase := extern_def("string_buffer.erase", ["self", "offset", "length"], ["ret"]);
+length := extern_def("string_buffer.length", ["self"], ["ret"]);
+set := extern_def("string_buffer.set", ["self", "index", "c"], ["ret"]);
+get := extern_def("string_buffer.get", ["self", "index"], ["ret"]);
+to_string := extern_def("string_buffer.to_string", ["self"], ["ret"]);
+
+new := def()(ret) {
+    ret := _new();
+    ret.append_c := append_c;
+    ret.append_str := append_str;
+    ret.erase := erase;
+    ret.set := set;
+    ret.get := get;
+    ret.to_string := to_string;
+    ret.opArraySet := def(self, i, v)() {
+        self.set(i, v);
+    };
+    ret.opArrayGet := def(self, i)(ret) {
+        ret := self.get(i);
+    };
+};

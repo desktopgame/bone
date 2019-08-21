@@ -10,6 +10,7 @@
 #include "extern/dir.h"
 #include "extern/file.h"
 #include "extern/reflection.h"
+#include "extern/string_buffer.h"
 #include "extern/system.h"
 #include "frame.h"
 #include "heap.h"
@@ -61,6 +62,7 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
         bnExternFile(ret);
         bnExternDir(ret);
         bnExternReflection(ret);
+        bnExternStringBuffer(ret);
         return ret;
 }
 

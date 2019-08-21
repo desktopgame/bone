@@ -1,0 +1,22 @@
+{} <- load("string_buffer.bn");
+
+buf := new();
+buf.append_c('a');
+buf.append_c('b');
+buf.append_c('c');
+
+str := buf.to_string();
+assert(str == "abc");
+println(str);
+
+buf.append_str("world");
+
+str := buf.to_string();
+assert(str == "abcworld");
+println(str);
+
+buf.erase(0, 3);
+
+str := buf.to_string();
+assert(str == "world");
+println(str);
