@@ -165,7 +165,7 @@ void bnPanic(bnInterpreter* self, bnReference exception);
 #define bnPopDoubleArg(bone, frame, name) \
         bnPopGenericArg(bone, frame, name, BN_OBJECT_DOUBLE, NULL)
 
-#define bnPopAnyArg(bone, frame, anyName) \
+#define bnPopAnyArg(bone, frame, name, anyName) \
         bnPopGenericArg(bone, frame, name, BN_OBJECT_ANY, anyName)
 
 /**
