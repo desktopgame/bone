@@ -25,6 +25,7 @@ typedef struct bnInterpreter {
         int argc;
         GPtrArray* argv;
         GHashTable* externTable;
+        GHashTable* sharedTable;
         struct bnStringPool* pool;
         struct bnFrame* frame;
         struct bnHeap* heap;
@@ -173,6 +174,57 @@ bnReference bnReadExtern(bnInterpreter* self, bnStringView name);
  * @return
  */
 bnReference bnReadExtern2(bnInterpreter* self, const char* str);
+
+/**
+ * 指定の名前で共有されるオブジェクトがあるならtrueを返します。
+ * @param self
+ * @param name
+ * @return
+ */
+bool bnIsShared(bnInterpreter* self, bnStringView name);
+
+/**
+ * 指定の名前で共有されるオブジェクトがあるならtrueを返します。
+ * @param self
+ * @param str
+ * @return
+ */
+bool bnIsShared2(bnInterpreter* self, const char* str);
+
+/**
+ * 指定の名前でオブジェクトを共有します。
+ * @param self
+ * @param name
+ * @param ref
+ * @return
+ */
+bnReference bnAddShared(bnInterpreter* self, bnStringView name,
+                        bnReference ref);
+
+/**
+ * 指定の名前でオブジェクトを共有します。
+ * @param self
+ * @param str
+ * @param ref
+ * @return
+ */
+bnReference bnAddShared2(bnInterpreter* self, const char* str, bnReference ref);
+
+/**
+ * 指定の名前の共有されたオブジェクトを返します。
+ * @param self
+ * @param name
+ * @return
+ */
+bnReference bnGetShared(bnInterpreter* self, bnStringView name);
+
+/**
+ * 指定の名前の共有されたオブジェクトを返します。
+ * @param self
+ * @param str
+ * @return
+ */
+bnReference bnGetShared2(bnInterpreter* self, const char* str);
 
 /**
  * インタプリタに関連するあらゆる状態を解放します。

@@ -39,6 +39,8 @@ bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
         ret->frame = NULL;
         ret->externTable =
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
+        ret->sharedTable =
+            g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         ret->__jstack = bnNewJStack();
         ret->callStack = bnNewStack();
         if (ret->argc > 1) {
@@ -281,16 +283,55 @@ bnReference bnReadExtern2(bnInterpreter* self, const char* str) {
         return bnReadExtern(self, bnIntern(self->pool, str));
 }
 
+bool bnIsShared(bnInterpreter* self, bnStringView name) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+        return g_hash_table_contains(self->sharedTable, (gpointer)name);
+#pragma clang diagnostic pop
+}
+
+bool bnIsShared2(bnInterpreter* self, const char* str) {
+        return bnIsShared(self, bnIntern(self->pool, str));
+}
+
+bnReference bnAddShared(bnInterpreter* self, bnStringView name,
+                        bnReference ref) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+        g_hash_table_replace(self->sharedTable, (gpointer)name, ref);
+#pragma clang diagnostic pop
+        return ref;
+}
+
+bnReference bnAddShared2(bnInterpreter* self, const char* str,
+                         bnReference ref) {
+        bnAddShared(self, bnIntern(self->pool, str), ref);
+        return ref;
+}
+
+bnReference bnGetShared(bnInterpreter* self, bnStringView name) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+        return g_hash_table_lookup(self->sharedTable, (gpointer)name);
+#pragma clang diagnostic pop
+}
+
+bnReference bnGetShared2(bnInterpreter* self, const char* str) {
+        return bnGetShared(self, bnIntern(self->pool, str));
+}
+
 void bnDeleteInterpreter(bnInterpreter* self) {
         //あらゆるルートを参照不可にしてから
         //ガベージコレクションを実施
         self->frame = NULL;
+        g_hash_table_remove_all(self->sharedTable);
         g_hash_table_remove_all(self->externTable);
         bnGC(self);
         bnDeleteStringPool(self->pool);
         bnDeleteHeap(self->heap);
         bnDeleteJStack(self->__jstack);
         bnDeleteStack(self->callStack, free_gstr);
+        g_hash_table_destroy(self->sharedTable);
         g_hash_table_destroy(self->externTable);
         g_ptr_array_unref(self->argv);
         BN_FREE(self);

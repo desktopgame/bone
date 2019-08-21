@@ -25,6 +25,7 @@ static void gc_mark_extern(bnInterpreter* bone);
 static void gc_mark_rec(bnHeap* self, bnReference ref);
 static void gc_mark_array(bnHeap* self, bnObject* array);
 static void gc_mark_lambda(bnHeap* self, bnObject* lambda);
+static void gc_mark_shared(bnInterpreter* bone, bnHeap* self);
 static void gc_sweep(bnHeap* self, bnFrame* frame);
 static stage* new_stage();
 static void delete_stage(stage* self);
@@ -66,6 +67,7 @@ void bnGC(bnInterpreter* bone) {
         gc_mark_stage(self);
         gc_mark_frame(self, frame);
         gc_mark_extern(bone);
+        gc_mark_shared(bone, self);
         gc_sweep(self, frame);
         BN_CHECK_MEM();
         bnCompact(self->storage);
@@ -188,6 +190,15 @@ static void gc_mark_lambda(bnHeap* self, bnObject* lambda) {
         gpointer k, v;
         while (g_hash_table_iter_next(&hashIter, &k, &v)) {
                 gc_mark_rec(self, v);
+        }
+}
+
+static void gc_mark_shared(bnInterpreter* bone, bnHeap* self) {
+        GHashTableIter hashIter;
+        gpointer k, v;
+        g_hash_table_iter_init(&hashIter, bone->sharedTable);
+        while (g_hash_table_iter_next(&hashIter, &k, &v)) {
+                gc_mark_rec(self, (bnReference)v);
         }
 }
 
