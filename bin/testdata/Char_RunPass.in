@@ -1,0 +1,3 @@
+a := 'a';
+assert(a == 'a');
+assert(a != 'b');
