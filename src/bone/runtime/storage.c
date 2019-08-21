@@ -53,15 +53,15 @@ void* bnGetMemory(bnStorage* self, bnReference index) {
         if (index == NULL) {
                 return NULL;
         }
-#if DEBUG
-        int gd = bnGetGlobalStorageIndexFromPointer(self, index);
-        if (gd > 0) {
-                bnReference vref =
-                    bnGetReferenceFromGlobalStorageIndex(self, gd);
-                void* mem = bnGetMemory(self, vref);
-                assert(memcmp(mem, index, self->objectSize));
-        }
-#endif
+        /*#if DEBUG
+                int gd = bnGetGlobalStorageIndexFromPointer(self, index);
+                if (gd > 0) {
+                        bnReference vref =
+                            bnGetReferenceFromGlobalStorageIndex(self, gd);
+                        void* mem = bnGetMemory(self, vref);
+                        assert(memcmp(mem, index, self->objectSize));
+                }
+        #endif*/
         int i;
         bnStorage* str = bnGetStorage(self, index, &i);
         char* obj = (char*)(str->pool + (self->objectSize * i));
