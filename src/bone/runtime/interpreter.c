@@ -259,43 +259,45 @@ bnObject* bnTypeAssert(bnInterpreter* bone, const char* paramName,
                     bnIntern(bone->pool, optExtensionName)) {
                         return obj;
                 } else {
-                        bnFormatThrow(bone, "shoud be `%s` is %s", paramName,
+                        bnFormatThrow(bone, "should be `%s` is %s", paramName,
                                       optExtensionName);
                 }
         }
         switch (expect) {
                 case BN_OBJECT_PROTO: {
-                        bnFormatThrow(bone, "shoud be `%s` is plain object",
+                        bnFormatThrow(bone, "should be `%s` is plain object",
                                       paramName);
                 }
                 case BN_OBJECT_INTEGER: {
-                        bnFormatThrow(bone, "shoud be `%s` is integer",
+                        bnFormatThrow(bone, "should be `%s` is integer",
                                       paramName);
                 }
                 case BN_OBJECT_DOUBLE: {
-                        bnFormatThrow(bone, "shoud be `%s` is double",
+                        bnFormatThrow(bone, "should be `%s` is double",
                                       paramName);
                 }
                 case BN_OBJECT_CHAR: {
-                        bnFormatThrow(bone, "shoud be `%s` is char", paramName);
+                        bnFormatThrow(bone, "should be `%s` is char",
+                                      paramName);
                 }
                 case BN_OBJECT_STRING: {
-                        bnFormatThrow(bone, "shoud be `%s` is string",
+                        bnFormatThrow(bone, "should be `%s` is string",
                                       paramName);
                 }
                 case BN_OBJECT_BOOL: {
-                        bnFormatThrow(bone, "shoud be `%s` is bool", paramName);
+                        bnFormatThrow(bone, "should be `%s` is bool",
+                                      paramName);
                 }
                 case BN_OBJECT_LAMBDA: {
-                        bnFormatThrow(bone, "shoud be `%s` is lambda",
+                        bnFormatThrow(bone, "should be `%s` is lambda",
                                       paramName);
                 }
                 case BN_OBJECT_ARRAY: {
-                        bnFormatThrow(bone, "shoud be `%s` is array",
+                        bnFormatThrow(bone, "should be `%s` is array",
                                       paramName);
                 }
                 case BN_OBJECT_ANY: {
-                        bnFormatThrow(bone, "shoud be `%s` is any", paramName);
+                        bnFormatThrow(bone, "should be `%s` is any", paramName);
                 }
         }
         return obj;
