@@ -1,4 +1,5 @@
 #include "string.h"
+#include "array.h"
 #include "char.h"
 #include "frame.h"
 #include "heap.h"
@@ -12,6 +13,7 @@
 static void bnStdStringEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdStringNotEqual(bnInterpreter* bone, bnFrame* frame);
 static void bnStdStringAt(bnInterpreter* bone, bnFrame* frame);
+static void bnStdStringPlus(bnInterpreter* bone, bnFrame* frame);
 
 /**
  * bnString is bone string.
@@ -42,6 +44,11 @@ bnReference bnNewString(bnInterpreter* bone, bnStringView value) {
                  bnNewLambdaFromCFunc(bone, bnStdStringAt, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "index", BN_C_ADD_RETURN, "ret",
+                                      BN_C_ADD_EXIT));
+        bnDefine(&ret->base, bnIntern(bone->pool, BN_KWD_PLUS),
+                 bnNewLambdaFromCFunc(bone, bnStdStringPlus, bone->pool,
+                                      BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
+                                      "other", BN_C_ADD_RETURN, "ret",
                                       BN_C_ADD_EXIT));
         return ref;
 }
@@ -96,4 +103,39 @@ static void bnStdStringAt(bnInterpreter* bone, bnFrame* frame) {
                               astrlen, bv);
         }
         bnWriteVariable2(frame, bone->pool, "ret", bnNewChar(bone, astr[bv]));
+}
+
+static void bnStdStringPlus(bnInterpreter* bone, bnFrame* frame) {
+        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
+        if (a->type != BN_OBJECT_STRING) {
+                _throw(bone, frame, "should be `self` is string");
+        }
+        if (b->type != BN_OBJECT_STRING) {
+                _throw(bone, frame, "should be `other` is string");
+        }
+        //文字列をくっつける
+        bnStringView ai = ((bnString*)a)->value;
+        bnStringView bi = ((bnString*)b)->value;
+        const char* astr = bnView2Str(bone->pool, ai);
+        const char* bstr = bnView2Str(bone->pool, bi);
+        int alen = strlen(astr);
+        int blen = strlen(bstr);
+        char newstr[alen + blen + 1];
+        sprintf(newstr, "%s%s", astr, bstr);
+        //配列を作成
+        bnReference aryFunc = bnReadVariable2(frame, bone->pool, "array");
+        bnPushStack(frame->vStack, bnNewInteger(bone, alen + blen));
+        bnFrame* sub = bnFuncCall(aryFunc, bone, frame, 1);
+        bnReference aryInst = bnStaging(bone->heap, bnReturnValue(frame));
+        bnDeleteFrame(sub);
+        //文字で埋める
+        bnFillString(bone, newstr, aryInst);
+        //文字を作成
+        bnReference strFunc = bnReadVariable2(frame, bone->pool, "string");
+        bnPushStack(frame->vStack, aryInst);
+        sub = bnFuncCall(strFunc, bone, frame, 1);
+        bnReference strInst = bnStaging(bone->heap, bnReturnValue(frame));
+        bnDeleteFrame(sub);
+        bnWriteVariable2(frame, bone->pool, "ret", strInst);
 }
