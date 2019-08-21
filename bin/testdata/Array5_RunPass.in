@@ -1,15 +1,15 @@
 {} <- load("./array.bn");
 arr := [10, 20, 30, 40, 50];
 arr.foreach(def(e)() {
-    println(e.toString());
+    println(e.to_string());
 });
 println("---");
 arr2 := arr.sub(0, 1);
 arr2.foreach(def(e)() {
-    println(e.toString());
+    println(e.to_string());
 });
 println("---");
 arr.fill(0);
 arr.foreach(def(e)() {
-    println(e.toString());
+    println(e.to_string());
 });

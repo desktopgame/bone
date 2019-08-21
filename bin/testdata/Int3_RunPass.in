@@ -1,9 +1,9 @@
 a := 0;
-println(a.toString());
+println(a.to_string());
 assert(a == 0);
 a += 1;
-println(a.toString());
+println(a.to_string());
 assert(a == 1);
 a += 3;
-println(a.toString());
+println(a.to_string());
 assert(a == 4);

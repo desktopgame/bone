@@ -4,4 +4,4 @@ b := def()(a) {
 };
 
 a := object() <- b();
-println(a.a.toString());
+println(a.a.to_string());

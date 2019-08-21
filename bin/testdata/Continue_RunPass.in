@@ -6,6 +6,6 @@ while(1) {
     } else if(i == 5) {
         break;
     }
-    println(i.toString());
+    println(i.to_string());
     i += 1;
 }

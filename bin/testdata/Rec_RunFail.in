@@ -1,6 +1,6 @@
 rec := false;
 rec := def(i)() {
-    println(i.toString());
+    println(i.to_string());
     if(i > 0) {
         rec(i - 1);
     }

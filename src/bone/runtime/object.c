@@ -53,7 +53,8 @@ bnReference bnNewObject(bnInterpreter* bone) {
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "other", BN_C_ADD_RETURN, "ret",
                                       BN_C_ADD_EXIT));
-        bnDefine(bnGetObject(bone->heap, ref), bnIntern(bone->pool, "toString"),
+        bnDefine(bnGetObject(bone->heap, ref),
+                 bnIntern(bone->pool, "to_string"),
                  bnNewLambdaFromCFunc(bone, bnStdObjectToString, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN,
                                       "ret", BN_C_ADD_EXIT));

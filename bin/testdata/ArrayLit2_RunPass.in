@@ -7,6 +7,6 @@ a <- load("./testdata/lib/foreach.in");
 a.foreach(def(e)() {
     e <- load("./testdata/lib/foreach.in");
     e.foreach(def(e)() {
-        println(e.toString());
+        println(e.to_string());
     });
 });

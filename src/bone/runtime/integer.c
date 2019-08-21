@@ -105,7 +105,7 @@ bnReference bnNewInteger(bnInterpreter* bone, int value) {
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_PARAM,
                                       "other", BN_C_ADD_RETURN, "ret",
                                       BN_C_ADD_EXIT));
-        bnDefine(&ret->base, bnIntern(bone->pool, "toString"),
+        bnDefine(&ret->base, bnIntern(bone->pool, "to_string"),
                  bnNewLambdaFromCFunc(bone, bnStdIntegerToString, bone->pool,
                                       BN_C_ADD_PARAM, "self", BN_C_ADD_RETURN,
                                       "ret", BN_C_ADD_EXIT));

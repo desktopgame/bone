@@ -1,2 +1,2 @@
 c := "aaa" && 0;
-println(c.toString());
+println(c.to_string());

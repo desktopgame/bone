@@ -1,4 +1,4 @@
 a := 0;
-println(a.toString());
+println(a.to_string());
 a := a + 1;
-println(a.toString());
+println(a.to_string());
