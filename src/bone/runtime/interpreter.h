@@ -14,6 +14,7 @@
 struct bnObject;
 struct bnFrame;
 struct bnHeap;
+enum bnObjectType;
 
 /**
  * bnInterpreterはboneの実行に必要なあらゆる情報のルートです。
@@ -177,9 +178,9 @@ void bnPanic(bnInterpreter* self, bnReference exception);
  * @param optExtensionName (必要なら)期待するbnAnyの名前
  * @return
  */
-bnObject* bnTypeAssert(bnInterpreter* bone, const char* paramName,
-                       bnObject* obj, bnObjectType expect,
-                       const char* optExtensionName);
+struct bnObject* bnTypeAssert(bnInterpreter* bone, const char* paramName,
+                              struct bnObject* obj, enum bnObjectType expect,
+                              const char* optExtensionName);
 
 /**
  * 変数テーブルから対応する真偽値型のインスタンスを返します。

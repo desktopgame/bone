@@ -85,30 +85,25 @@ void bnSetArrayElementAt(bnObject* obj, int index, bnReference ref) {
 
 // private
 static void bnStdArrayArraySet(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnReference cRef = bnPopStack(frame->vStack);
-        if (a->type != BN_OBJECT_ARRAY) {
-                _throw(bone, frame, "should be `self` is array");
-        }
-        if (b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "should be `index` is integer");
-        }
-        bnSetArrayElementAt(a, bnGetIntegerValue(b), cRef);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
+        // self:Array
+        // index:Integer
+        bnPopArrayArg(bone, frame, self);
+        bnPopIntArg(bone, frame, index);
+        bnPopArg(bone, frame, val);
+        bnSetArrayElementAt(selfObj, bnGetIntegerValue(indexObj), valRef);
+#pragma clang diagnostic pop
 }
 
 static void bnStdArrayArrayGet(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_ARRAY) {
-                _throw(bone, frame, "should be `self` is array");
-        }
-        if (b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "should be `index` is integer");
-        }
-        bnArray* arr = (bnArray*)a;
-        bnReference r = g_ptr_array_index(arr->arr, bnGetIntegerValue(b));
-        bnWriteVariable2(frame, bone->pool, "ret", r);
+        // self:Array
+        // index:Integer
+        bnPopArrayArg(bone, frame, self);
+        bnPopIntArg(bone, frame, index);
+        bnWriteVariable2(
+            frame, bone->pool, "ret",
+            bnGetArrayElementAt(selfObj, bnGetIntegerValue(indexObj)));
 }
 
 static void free_array(bnStorage* storage, bnReference ref, bnObject* obj) {
