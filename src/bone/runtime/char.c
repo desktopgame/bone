@@ -43,27 +43,19 @@ void bnSetCharValue(bnObject* obj, char c) { ((bnChar*)obj)->value = c; }
 // private
 
 static void bnStdCharEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_CHAR || b->type != BN_OBJECT_CHAR) {
-                _throw(bone, frame, message());
-        }
-        bnChar* aChar = (bnChar*)a;
-        bnChar* bChar = (bnChar*)b;
+        bnPopCharArg(bone, frame, self);
+        bnPopCharArg(bone, frame, other);
         bnWriteVariable2(
             frame, bone->pool, "ret",
-            bnGetBool(bone->pool, frame, aChar->value == bChar->value));
+            bnGetBool(bone->pool, frame,
+                      bnGetCharValue(selfObj) == bnGetCharValue(otherObj)));
 }
 
 static void bnStdCharNotEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_CHAR || b->type != BN_OBJECT_CHAR) {
-                _throw(bone, frame, message());
-        }
-        bnChar* aChar = (bnChar*)a;
-        bnChar* bChar = (bnChar*)b;
+        bnPopCharArg(bone, frame, self);
+        bnPopCharArg(bone, frame, other);
         bnWriteVariable2(
             frame, bone->pool, "ret",
-            bnGetBool(bone->pool, frame, aChar->value != bChar->value));
+            bnGetBool(bone->pool, frame,
+                      bnGetCharValue(selfObj) != bnGetCharValue(otherObj)));
 }
