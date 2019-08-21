@@ -119,6 +119,7 @@ void bnPanic(bnInterpreter* self, bnReference exception);
 
 /**
  * スタックから要素を一つ取り出して nameRef, nameObj として定義します。
+ * 必ずネイティブ関数の先頭で展開してください。
  * @param bone
  * @param frame
  * @param name
@@ -131,6 +132,7 @@ void bnPanic(bnInterpreter* self, bnReference exception);
  * ネイティブ関数の先頭で行われる定型的な宣言をマクロにラップしたものです。
  * スタックから要素を一つ取り出して nameRef, nameObj として定義します。
  * さらに、型を検査して必要ならパニックします。
+ * 必ずネイティブ関数の先頭で展開してください。
  * @param bone
  * @param frame
  * @param name 引数名
