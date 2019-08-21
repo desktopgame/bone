@@ -66,47 +66,35 @@ bnStringView bnGetStringValue(bnObject* obj) { return ((bnString*)obj)->value; }
 // private
 
 static void bnStdStringEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_STRING || b->type != BN_OBJECT_STRING) {
-                _throw(bone, frame, message());
-        }
-        bnStringView ai = ((bnString*)a)->value;
-        bnStringView bi = ((bnString*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret",
-                         bnGetBool(bone->pool, frame, ai == bi));
+        bnPopStringArg(bone, frame, self);
+        bnPopStringArg(bone, frame, other);
+        bnWriteVariable2(
+            frame, bone->pool, "ret",
+            bnGetBool(bone->pool, frame,
+                      bnGetStringValue(selfObj) == bnGetStringValue(otherObj)));
 }
 
 static void bnStdStringNotEqual(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_STRING || b->type != BN_OBJECT_STRING) {
-                _throw(bone, frame, message());
-        }
-        bnStringView ai = ((bnString*)a)->value;
-        bnStringView bi = ((bnString*)b)->value;
-        bnWriteVariable2(frame, bone->pool, "ret",
-                         bnGetBool(bone->pool, frame, ai != bi));
+        bnPopStringArg(bone, frame, self);
+        bnPopStringArg(bone, frame, other);
+        bnWriteVariable2(
+            frame, bone->pool, "ret",
+            bnGetBool(bone->pool, frame,
+                      bnGetStringValue(selfObj) != bnGetStringValue(otherObj)));
 }
 
 static void bnStdStringAt(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_STRING) {
-                _throw(bone, frame, "should be `self` is string");
-        }
-        if (b->type != BN_OBJECT_INTEGER) {
-                _throw(bone, frame, "should be `index` is string");
-        }
-        bnStringView ai = ((bnString*)a)->value;
-        const char* astr = bnView2Str(bone->pool, ai);
-        int astrlen = strlen(astr);
-        int bv = bnGetIntegerValue(b);
+        bnPopStringArg(bone, frame, self);
+        bnPopIntArg(bone, frame, other);
+        const char* selfStr = bnView2Str(bone->pool, bnGetStringValue(selfObj));
+        int astrlen = strlen(selfStr);
+        int bv = bnGetIntegerValue(otherObj);
         if (bv < 0 || bv >= astrlen) {
                 bnFormatThrow(bone, "over index in bounds: %d~%d[%d]", 0,
                               astrlen, bv);
         }
-        bnWriteVariable2(frame, bone->pool, "ret", bnNewChar(bone, astr[bv]));
+        bnWriteVariable2(frame, bone->pool, "ret",
+                         bnNewChar(bone, selfStr[bv]));
 }
 
 static void bnStdStringPlus(bnInterpreter* bone, bnFrame* frame) {
