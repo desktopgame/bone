@@ -53,16 +53,10 @@ static bnReference bnNewFile(bnInterpreter* bone, FILE* fp) {
 }
 
 static void bnExtFileOpen(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_STRING) {
-                bnFormatThrow(bone, "should be `path` is string");
-        }
-        if (b->type != BN_OBJECT_STRING) {
-                bnFormatThrow(bone, "should be `mode` is string");
-        }
-        FILE* fp = fopen(bnView2Str(bone->pool, bnGetStringValue(a)),
-                         bnView2Str(bone->pool, bnGetStringValue(b)));
+        bnPopStringArg(bone, frame, path);
+        bnPopStringArg(bone, frame, mode);
+        FILE* fp = fopen(bnView2Str(bone->pool, bnGetStringValue(pathObj)),
+                         bnView2Str(bone->pool, bnGetStringValue(modeObj)));
         bnWriteVariable2(frame, bone->pool, "error",
                          bnGetFalse(bone->pool, frame));
         if (fp == NULL) {
@@ -74,23 +68,16 @@ static void bnExtFileOpen(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnExtFilePutc(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_ANY || !bnMatchType(bone, a, FILE_T)) {
-                bnFormatThrow(bone, "should be `self` is file");
-        }
-        if (b->type != BN_OBJECT_CHAR) {
-                bnFormatThrow(bone, "should be `c` is char");
-        }
-        bnFile* afile = ((bnFile*)a);
+        bnPopAnyArg(bone, frame, self, FILE_T);
+        bnPopCharArg(bone, frame, c);
+        bnFile* afile = ((bnFile*)selfObj);
         if (afile->fp == NULL) {
                 bnFormatThrow(bone, "file is already closed");
         }
         bnWriteVariable2(frame, bone->pool, "error",
                          bnGetFalse(bone->pool, frame));
         FILE* fp = afile->fp;
-        char c = bnGetCharValue(b);
-        int code = fputc(c, fp);
+        int code = fputc(bnGetCharValue(cObj), fp);
         if (code == EOF) {
                 bnWriteVariable2(frame, bone->pool, "error",
                                  bnGetTrue(bone->pool, frame));
@@ -98,11 +85,8 @@ static void bnExtFilePutc(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnExtFileGetc(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_ANY || !bnMatchType(bone, a, FILE_T)) {
-                bnFormatThrow(bone, "should be `self` is file");
-        }
-        bnFile* afile = ((bnFile*)a);
+        bnPopAnyArg(bone, frame, self, FILE_T);
+        bnFile* afile = ((bnFile*)selfObj);
         if (afile->fp == NULL) {
                 bnFormatThrow(bone, "file is already closed");
         }
@@ -121,11 +105,8 @@ static void bnExtFileGetc(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void bnExtFileClose(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_ANY || !bnMatchType(bone, a, FILE_T)) {
-                bnFormatThrow(bone, "should be `self` is file");
-        }
-        bnFile* afile = (bnFile*)a;
+        bnPopAnyArg(bone, frame, self, FILE_T);
+        bnFile* afile = (bnFile*)selfObj;
         if (afile->fp != NULL) {
                 fclose(afile->fp);
                 afile->fp = NULL;
