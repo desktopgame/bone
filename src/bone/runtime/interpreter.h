@@ -118,17 +118,28 @@ void bnThrow(bnInterpreter* self, bnReference exception, int code);
 void bnPanic(bnInterpreter* self, bnReference exception);
 
 /**
+ * スタックから要素を一つ取り出して nameRef, nameObj として定義します。
+ * @param bone
+ * @param frame
+ * @param name
+ */
+#define bnPopArg(bone, frame, name)                        \
+        bnReference name##Ref = bnPopStack(frame->vStack); \
+        bnObject* name##Obj = bnGetObject(bone->heap, name##Ref)
+
+/**
  * ネイティブ関数の先頭で行われる定型的な宣言をマクロにラップしたものです。
+ * スタックから要素を一つ取り出して nameRef, nameObj として定義します。
+ * さらに、型を検査して必要ならパニックします。
  * @param bone
  * @param frame
  * @param name 引数名
  * @param expect 期待する型
  * @param optExt (必要なら)期待するbnAnyの名前
  */
-#define bnPopGenericArg(bone, frame, name, expect, optExt)        \
-        bnReference name##Ref = bnPopStack(frame->vStack);        \
-        bnObject* name##Obj = bnGetObject(bone->heap, name##Ref); \
-        name##Obj = bnTypeAssert(bone, name, name##Obj, expect, optExt)
+#define bnPopGenericArg(bone, frame, name, expect, optExt) \
+        bnPopArg(bone, frame, name);                       \
+        name##Obj = bnTypeAssert(bone, #name, name##Obj, expect, optExt)
 
 #define bnPopCharArg(bone, frame, name) \
         bnPopGenericArg(bone, frame, name, BN_OBJECT_CHAR, NULL)
