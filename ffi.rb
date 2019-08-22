@@ -6,11 +6,12 @@ H_FFI = 'ffi.h'
 C_FFI = 'ffi.c'
 
 class Parameter
-    attr_accessor :type, :name
+    attr_accessor :type, :name, :unknown
 
     def initialize(type, name)
         @type = type
         @name = name
+        @unknown = false
     end
 end
 
@@ -69,10 +70,10 @@ unless File.exist?(DOT_FFI)
     fp.puts('}')
     fp.puts('static char* my_gets() {')
     fp.puts('        printf("my_puts");')
-    fp.puts('        return "my_puts"')
+    fp.puts('        return "my_puts";')
     fp.puts('}')
     fp.puts('static char* my_cat(char* str) {')
-    fp.puts('        return str')
+    fp.puts('        return str;')
     fp.puts('}')
     fp.puts('%%END')
     fp.puts('$type/MyHoge')
@@ -178,7 +179,7 @@ File.open(C_FFI, 'w') do |fp|
     tyname = type.name
     fp.puts(sprintf('typedef struct %s {', tyname))
     fp.puts('        bnAny base;');
-    fp.puts('}')
+    fp.puts(sprintf('} %s;', tyname))
     fp.puts(sprintf('static %s* bnNew%s(bnInterpreter* bone) {', tyname, tyname))
     fp.puts(sprintf('        %s* ret = BN_MALLOC(sizeof(%s));', tyname, tyname))
     fp.puts(sprintf('        bnInitAny(bone, &ret->base, "ffi.%s_%s");', NAME, tyname))
@@ -198,43 +199,27 @@ File.open(C_FFI, 'w') do |fp|
     fp.puts(sprintf('static void ffi_%s_%s(bnInterpreter* bone, bnFrame* frame) {', NAME, f.name))
     f.parameter_list.each_with_index do |param, i|
         fp.puts(sprintf('        // parameter[%d] %s', i, param.name))
-        fp.puts(sprintf('        bnObject* arg%d = bnPopStack(frame->vStack);', i))
         if param.type == 'int'
-            fp.puts(sprintf('        if(arg%d->type != BN_OBJECT_INTEGER) {', i))
-            fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be int");', param.name))
-            fp.puts('        }')
-            fp.puts(sprintf('        int val%d = ((bnInteger*)arg%d)->value;', i, i))
+            fp.puts(sprintf('        bnPopIntArg(bone, frame, %s);', param.name))
+            fp.puts(sprintf('        int %sVal = bnGetIntegerValue(%sObj);', param.name, param.name))
         elsif param.type == 'double'
-            fp.puts(sprintf('        if(arg%d->type != BN_OBJECT_DOUBLE) {', i))
-            fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be double");', param.name))
-            fp.puts('        }')
-            fp.puts(sprintf('        double val%d = ((bnDouble*)arg%d)->value;', i, i))
+            fp.puts(sprintf('        bnPopDoubleArg(bone, frame, %s);', param.name))
+            fp.puts(sprintf('        double %sVal = bnGetDoubleValue(%sObj);', param.name, param.name))
         elsif param.type == 'char'
-            fp.puts(sprintf('        if(arg%d->type != BN_OBJECT_CHAR) {', i))
-            fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be char");', param.name))
-            fp.puts('        }')
-            fp.puts(sprintf('        char val%d = ((bnChar*)arg%d)->value;', i, i))
+            fp.puts(sprintf('        bnPopCharArg(bone, frame, %s);', param.name))
+            fp.puts(sprintf('        char %sVal = bnGetCharValue(%sObj);', param.name, param.name))
         elsif param.type == 'char*'
-          fp.puts(sprintf('        if(arg%d->type != BN_OBJECT_STRING) {', i))
-          fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be string");', param.name))
-          fp.puts('        }')
-          fp.puts(sprintf('        bnStringView val%d = ((bnString*)arg%d)->value;', i, i))
-          fp.puts(sprintf('        const char* str%d = bnView2Str(bone->pool, val%d);', i, i))
+          fp.puts(sprintf('        bnPopStringArg(bone, frame, %s);', param.name))
+          fp.puts(sprintf('        bnStringView %sVal = bnGetStringValue(%sObj);', param.name, param.name))
+          fp.puts(sprintf('        const char* %sStr = bnView2Str(bone->pool, %sVal);', param.name, param.name))
         elsif param.type == 'bool'
-          fp.puts(sprintf('        if(arg%d->type != BN_OBJECT_BOOL) {', i))
-          fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be bool");', param.name))
-          fp.puts('        }')
-          fp.puts(sprintf('        bool val%d = ((bnBool*)arg%d)->value;', i, i))
+          fp.puts(sprintf('        bnPopBoolArg(bone, frame, %s);', param.name))
+          fp.puts(sprintf('        bool %sVal = bnGetBoolValue(%sObj);', param.name, param.name))
         elsif param.type == 'void*'
-          # nothing
+          fp.puts(sprintf('        bnPopArg(bone, frame, %s);', param.name))
         else
-          fp.puts(sprintf('        if(arg%d->type != BN_OBJECT_ANY) {', i))
-          fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be %s");', param.name, param.type))
-          fp.puts('        }')
-          fp.puts(sprintf('        bnAny* val%d = ((bnAny*)arg%d);', i, i))
-          fp.puts(sprintf('        if(any->type != bnIntern(bone->pool, "ffi.%s_%s") {', NAME, param.type))
-          fp.puts(sprintf('                bnFormatThrow(bone, "`%s` is shoud be %s");', param.name, param.type))
-          fp.puts(sprintf('        }'))
+          param.unknown = true
+          fp.puts(sprintf('        bnPopAnyArg(bone, frame, %s, "ffi.%s_%s");', param.name, NAME, param.type))
         end
     end
     if f.return_type == 'void*'
@@ -244,11 +229,15 @@ File.open(C_FFI, 'w') do |fp|
     end
     fp.write(sprintf('%s(', f.name))
     f.parameter_list.each_with_index do |param, i|
-      argname = param.type == 'char*' ? 'str' : 'val'
-      if i == f.parameter_list.length - 1
-        fp.write(sprintf('%s%d);', argname, i))
+      if param.type == 'void*' || param.unknown
+        argname = 'Obj'
       else
-        fp.write(sprintf('%s%d, ', argname, i))
+        argname = param.type == 'char*' ? 'Str' : 'Val'
+      end
+      if i == f.parameter_list.length - 1
+        fp.write(sprintf('%s%s);', param.name, argname))
+      else
+        fp.write(sprintf('%s%s, ', param.name,argname))
       end
     end
     if f.parameter_list.size == 0
