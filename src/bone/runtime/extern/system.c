@@ -36,31 +36,17 @@ void bnExternSystem(bnInterpreter* bone) {
 }
 
 static void bnExtSystemExit(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* statusObj =
-            bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (statusObj->type != BN_OBJECT_INTEGER) {
-                bnThrow(bone,
-                        bnNewString2(bone, "should be `status` is integer"),
-                        BN_JMP_CODE_EXCEPTION);
-        }
+        bnPopIntArg(bone, frame, status);
         exit(bnGetIntegerValue(statusObj));
 }
 
 static void bnExtSystemAbort(bnInterpreter* bone, bnFrame* frame) { abort(); }
 
 static void bnExtSystemSystem(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_ARRAY) {
-                bnThrow(
-                    bone,
-                    bnNewString(bone, bnIntern(bone->pool,
-                                               "should be `args` is array")),
-                    BN_JMP_CODE_EXCEPTION);
-        }
-        bnObject* args = a;
+        bnPopArrayArg(bone, frame, args);
         GString* gbuf = g_string_new("");
-        for (int i = 0; i < bnGetArrayLength(args); i++) {
-                bnReference eRef = bnGetArrayElementAt(args, i);
+        for (int i = 0; i < bnGetArrayLength(argsObj); i++) {
+                bnReference eRef = bnGetArrayElementAt(argsObj, i);
                 bnObject* e = bnGetObject(bone->heap, eRef);
                 if (e->type != BN_OBJECT_STRING) {
                         bnFormatThrow(bone, "should be [%d] i string", i);
