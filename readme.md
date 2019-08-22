@@ -32,6 +32,8 @@ bone はプロトタイピング言語をベースとしており、
 名前つき戻り値
 
 ```
+//mdtest
+{} <- load("file.bn");
 f := def()(value, error) {
     value := "value is string";
     error := false;
@@ -39,13 +41,13 @@ f := def()(value, error) {
 
 // オブジェクトインジェクション
 v := object() <- f();
-println(v.value);
-println(v.error);
+stdout.puts(v.value);
+stdout.puts(v.error.to_string());
 
 // スコープインジェクション
 {} <- f();
-println(value);
-println(error);
+stdout.puts(value);
+stdout.puts(error.to_string());
 
 // ネストした名前つき戻り値
 f2 := def()(value, error, value2) {
@@ -57,15 +59,17 @@ f2 := def()(value, error, value2) {
 オブジェクトインジェクション
 
 ```
-std := object() <- load("./std.bn");
-std.printf("hello, world");
+//mdtest
+stdio := object() <- load("./file.bn");
+stdio.stdout.puts("hello, world");
 ```
 
 スコープインジェクション
 
 ```
-{} <- load("./std.bn");
-printf("hello, world");
+//mdtest
+{} <- load("./file.bn");
+stdout.puts("hello, world");
 ```
 
 # 詳細
