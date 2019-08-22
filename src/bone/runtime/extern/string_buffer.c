@@ -76,56 +76,30 @@ static void ext_new_string_buffer(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void ext_append_c(bnInterpreter* bone, bnFrame* frame) {
-        bnReference aref = bnPopStack(frame->vStack);
-        bnObject* a = bnGetObject(bone->heap, aref);
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_ANY ||
-            !bnMatchType(bone, a, STRING_BUFFER_T)) {
-                bnFormatThrow(bone, "should be `self` is string_buffer");
-        }
-        if (b->type != BN_OBJECT_CHAR) {
-                bnFormatThrow(bone, "should be `c` is char");
-        }
-        bnStringBuffer* abuf = (bnStringBuffer*)a;
-        bnGStringAppendC(abuf->str, bnGetCharValue(b));
-        bnWriteVariable2(frame, bone->pool, "ret", aref);
+        bnPopAnyArg(bone, frame, self, STRING_BUFFER_T);
+        bnPopCharArg(bone, frame, c);
+        bnStringBuffer* abuf = (bnStringBuffer*)selfObj;
+        bnGStringAppendC(abuf->str, bnGetCharValue(cObj));
+        bnWriteVariable2(frame, bone->pool, "ret", selfRef);
 }
 
 static void ext_append_str(bnInterpreter* bone, bnFrame* frame) {
-        bnReference aref = bnPopStack(frame->vStack);
-        bnObject* a = bnGetObject(bone->heap, aref);
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_ANY ||
-            !bnMatchType(bone, a, STRING_BUFFER_T)) {
-                bnFormatThrow(bone, "should be `self` is string_buffer");
-        }
-        if (b->type != BN_OBJECT_STRING) {
-                bnFormatThrow(bone, "should be `str` is string");
-        }
-        bnStringBuffer* abuf = (bnStringBuffer*)a;
-        g_string_append(abuf->str, bnView2Str(bone->pool, bnGetStringValue(b)));
-        bnWriteVariable2(frame, bone->pool, "ret", aref);
+        bnPopAnyArg(bone, frame, self, STRING_BUFFER_T);
+        bnPopStringArg(bone, frame, str);
+        bnStringBuffer* abuf = (bnStringBuffer*)selfObj;
+        g_string_append(abuf->str,
+                        bnView2Str(bone->pool, bnGetStringValue(strObj)));
+        bnWriteVariable2(frame, bone->pool, "ret", selfRef);
 }
 
 static void ext_erase(bnInterpreter* bone, bnFrame* frame) {
-        bnReference aref = bnPopStack(frame->vStack);
-        bnObject* a = bnGetObject(bone->heap, aref);
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* c = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_ANY ||
-            !bnMatchType(bone, a, STRING_BUFFER_T)) {
-                bnFormatThrow(bone, "should be `self` is string_buffer");
-        }
-        if (b->type != BN_OBJECT_INTEGER) {
-                bnFormatThrow(bone, "should be `offset` is integer");
-        }
-        if (c->type != BN_OBJECT_INTEGER) {
-                bnFormatThrow(bone, "should be `length` is integer");
-        }
+        bnPopAnyArg(bone, frame, self, STRING_BUFFER_T);
+        bnPopIntArg(bone, frame, offset);
+        bnPopIntArg(bone, frame, length);
         //境界をチェック
-        bnStringBuffer* abuf = (bnStringBuffer*)a;
-        int offset = bnGetIntegerValue(b);
-        int length = bnGetIntegerValue(c);
+        bnStringBuffer* abuf = (bnStringBuffer*)selfObj;
+        int offset = bnGetIntegerValue(offsetObj);
+        int length = bnGetIntegerValue(lengthObj);
         if (offset < 0) {
                 bnFormatThrow(bone, "should be `offset` is greater than zero");
         }
@@ -135,70 +109,42 @@ static void ext_erase(bnInterpreter* bone, bnFrame* frame) {
                               "length of string");
         }
         g_string_erase(abuf->str, offset, length);
-        bnWriteVariable2(frame, bone->pool, "ret", aref);
+        bnWriteVariable2(frame, bone->pool, "ret", selfRef);
 }
 
 static void ext_length(bnInterpreter* bone, bnFrame* frame) {
-        bnReference aref = bnPopStack(frame->vStack);
-        bnObject* a = bnGetObject(bone->heap, aref);
-        if (a->type != BN_OBJECT_ANY ||
-            !bnMatchType(bone, a, STRING_BUFFER_T)) {
-                bnFormatThrow(bone, "should be `self` is string_buffer");
-        }
-        bnWriteVariable2(frame, bone->pool, "ret",
-                         bnNewInteger(bone, ((bnStringBuffer*)a)->str->len));
+        bnPopAnyArg(bone, frame, self, STRING_BUFFER_T);
+        bnWriteVariable2(
+            frame, bone->pool, "ret",
+            bnNewInteger(bone, ((bnStringBuffer*)selfObj)->str->len));
 }
 
 static void ext_set(bnInterpreter* bone, bnFrame* frame) {
-        bnReference aref = bnPopStack(frame->vStack);
-        bnObject* a = bnGetObject(bone->heap, aref);
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* c = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-
-        if (a->type != BN_OBJECT_ANY ||
-            !bnMatchType(bone, a, STRING_BUFFER_T)) {
-                bnFormatThrow(bone, "should be `self` is string_buffer");
-        }
-        if (b->type != BN_OBJECT_INTEGER) {
-                bnFormatThrow(bone, "should be `index` is integer");
-        }
-        if (c->type != BN_OBJECT_INTEGER) {
-                bnFormatThrow(bone, "should be `c` is integer");
-        }
-        int bint = bnGetIntegerValue(b);
-        if (bint < 0 || bint >= ((bnStringBuffer*)a)->str->len) {
+        bnPopAnyArg(bone, frame, self, STRING_BUFFER_T);
+        bnPopIntArg(bone, frame, index);
+        bnPopCharArg(bone, frame, c);
+        int bint = bnGetIntegerValue(indexObj);
+        if (bint < 0 || bint >= ((bnStringBuffer*)selfObj)->str->len) {
                 bnFormatThrow(bone, "internal error");
         }
-        ((bnStringBuffer*)a)->str->str[bint] = bnGetCharValue(c);
+        ((bnStringBuffer*)selfObj)->str->str[bint] = bnGetCharValue(cObj);
 }
 
 static void ext_get(bnInterpreter* bone, bnFrame* frame) {
-        bnReference aref = bnPopStack(frame->vStack);
-        bnObject* a = bnGetObject(bone->heap, aref);
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-
-        if (a->type != BN_OBJECT_ANY ||
-            !bnMatchType(bone, a, STRING_BUFFER_T)) {
-                bnFormatThrow(bone, "should be `self` is string_buffer");
-        }
-        if (b->type != BN_OBJECT_INTEGER) {
-                bnFormatThrow(bone, "should be `index` is integer");
-        }
-        int bint = bnGetIntegerValue(b);
-        if (bint < 0 || bint >= ((bnStringBuffer*)a)->str->len) {
+        bnPopAnyArg(bone, frame, self, STRING_BUFFER_T);
+        bnPopIntArg(bone, frame, index);
+        int bint = bnGetIntegerValue(indexObj);
+        if (bint < 0 || bint >= ((bnStringBuffer*)selfObj)->str->len) {
                 bnFormatThrow(bone, "internal error");
         }
-        bnWriteVariable2(frame, bone->pool, "ret",
-                         bnNewChar(bone, ((bnStringBuffer*)a)->str->str[bint]));
+        bnWriteVariable2(
+            frame, bone->pool, "ret",
+            bnNewChar(bone, ((bnStringBuffer*)selfObj)->str->str[bint]));
 }
 
 static void ext_to_string(bnInterpreter* bone, bnFrame* frame) {
-        bnReference aref = bnPopStack(frame->vStack);
-        bnObject* a = bnGetObject(bone->heap, aref);
-        if (a->type != BN_OBJECT_ANY ||
-            !bnMatchType(bone, a, STRING_BUFFER_T)) {
-                bnFormatThrow(bone, "should be `self` is string_buffer");
-        }
-        bnWriteVariable2(frame, bone->pool, "ret",
-                         bnNewString2(bone, ((bnStringBuffer*)a)->str->str));
+        bnPopAnyArg(bone, frame, self, STRING_BUFFER_T);
+        bnWriteVariable2(
+            frame, bone->pool, "ret",
+            bnNewString2(bone, ((bnStringBuffer*)selfObj)->str->str));
 }

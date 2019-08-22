@@ -248,56 +248,61 @@ void bnPanic(bnInterpreter* self, bnReference exception) {
         iter->panic = exception;
 }
 
-bnObject* bnTypeAssert(bnInterpreter* bone, const char* paramName,
-                       bnObject* obj, bnObjectType expect,
-                       const char* optExtensionName) {
+bnObject* bnTypeAssertFunc(bnInterpreter* bone, const char* paramName,
+                           bnObject* obj, bnObjectType expect,
+                           const char* optExtensionName, const char* filename,
+                           int lineno) {
         if (expect != BN_OBJECT_ANY && expect == obj->type) {
                 return obj;
         }
         if (expect == BN_OBJECT_ANY) {
-                if (((bnAny*)obj)->type ==
-                    bnIntern(bone->pool, optExtensionName)) {
+                bnStringView a = ((bnAny*)obj)->type;
+                bnStringView b = bnIntern(bone->pool, optExtensionName);
+                if (a == b) {
                         return obj;
                 } else {
-                        bnFormatThrow(bone, "should be `%s` is %s", paramName,
-                                      optExtensionName);
+                        bnFormatThrow(bone, "should be `%s` is %s :%s<%d>",
+                                      paramName, optExtensionName, filename,
+                                      lineno);
                 }
         }
         switch (expect) {
                 case BN_OBJECT_PROTO: {
-                        bnFormatThrow(bone, "should be `%s` is plain object",
-                                      paramName);
+                        bnFormatThrow(bone,
+                                      "should be `%s` is plain object :%s<%d>",
+                                      paramName, filename, lineno);
                 }
                 case BN_OBJECT_INTEGER: {
-                        bnFormatThrow(bone, "should be `%s` is integer",
-                                      paramName);
+                        bnFormatThrow(bone, "should be `%s` is integer :%s<%d>",
+                                      paramName, filename, lineno);
                 }
                 case BN_OBJECT_DOUBLE: {
-                        bnFormatThrow(bone, "should be `%s` is double",
-                                      paramName);
+                        bnFormatThrow(bone, "should be `%s` is double :%s<%d>",
+                                      paramName, filename, lineno);
                 }
                 case BN_OBJECT_CHAR: {
-                        bnFormatThrow(bone, "should be `%s` is char",
-                                      paramName);
+                        bnFormatThrow(bone, "should be `%s` is char :%s<%d>",
+                                      paramName, filename, lineno);
                 }
                 case BN_OBJECT_STRING: {
-                        bnFormatThrow(bone, "should be `%s` is string",
-                                      paramName);
+                        bnFormatThrow(bone, "should be `%s` is string :%s<%d>",
+                                      paramName, filename, lineno);
                 }
                 case BN_OBJECT_BOOL: {
-                        bnFormatThrow(bone, "should be `%s` is bool",
-                                      paramName);
+                        bnFormatThrow(bone, "should be `%s` is bool :%s<%d>",
+                                      paramName, filename, lineno);
                 }
                 case BN_OBJECT_LAMBDA: {
-                        bnFormatThrow(bone, "should be `%s` is lambda",
-                                      paramName);
+                        bnFormatThrow(bone, "should be `%s` is lambda :%s<%d>",
+                                      paramName, filename, lineno);
                 }
                 case BN_OBJECT_ARRAY: {
-                        bnFormatThrow(bone, "should be `%s` is array",
-                                      paramName);
+                        bnFormatThrow(bone, "should be `%s` is array :%s<%d>",
+                                      paramName, filename, lineno);
                 }
                 case BN_OBJECT_ANY: {
-                        bnFormatThrow(bone, "should be `%s` is any", paramName);
+                        bnFormatThrow(bone, "should be `%s` is any :%s<%d>",
+                                      paramName, filename, lineno);
                 }
         }
         return obj;

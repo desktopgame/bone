@@ -168,6 +168,9 @@ void bnPanic(bnInterpreter* self, bnReference exception);
 #define bnPopAnyArg(bone, frame, name, anyName) \
         bnPopGenericArg(bone, frame, name, BN_OBJECT_ANY, anyName)
 
+#define bnTypeAssert(bone, paramName, obj, expect, optExtensionName)      \
+        (bnTypeAssertFunc(bone, paramName, obj, expect, optExtensionName, \
+                          __FILE__, __LINE__))
 /**
  * 指定のオブジェクトのタイプを検証します。
  * タイプが正しくない場合はパニックしてロングジャンプします。
@@ -176,11 +179,15 @@ void bnPanic(bnInterpreter* self, bnReference exception);
  * @param obj 実引数
  * @param expect 期待する型
  * @param optExtensionName (必要なら)期待するbnAnyの名前
+ * @param filename
+ * @param lineno
  * @return
  */
-struct bnObject* bnTypeAssert(bnInterpreter* bone, const char* paramName,
-                              struct bnObject* obj, enum bnObjectType expect,
-                              const char* optExtensionName);
+struct bnObject* bnTypeAssertFunc(bnInterpreter* bone, const char* paramName,
+                                  struct bnObject* obj,
+                                  enum bnObjectType expect,
+                                  const char* optExtensionName,
+                                  const char* filename, int lineno);
 
 /**
  * 変数テーブルから対応する真偽値型のインスタンスを返します。
