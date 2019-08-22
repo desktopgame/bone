@@ -41,27 +41,33 @@ bone のクロージャが他のプログラム言語と異なるのは、
 通常のクロージャ
 
 ```
-FUNC := def (param, param2,,,) {
-    ...
+//mdtest
+stdio := object() <- load("file.bn");
+FUNC := def (param, param2)() {
+    stdio.stdout.puts(param);
+    stdio.stdout.puts(param2);
 };
 FUNC("hoge", "huga");
 
-obj := ...
-obj.func = FUNC;
+obj := object();
+obj.func := FUNC;
 obj.func("hoge", "huga");
 ```
 
 "それを持っているオブジェクトに依存する"クロージャ
 
 ```
-FUNC := def (self, param, param2,,,) {
-    ...
+//mdtest
+stdio := object() <- load("file.bn");
+FUNC := def (self, param)() {
+    stdio.stdout.puts(self);
+    stdio.stdout.puts(param);
 };
-FUNC("self", "hoge", "huga");
+FUNC("hoge", "huga");
 
-obj := ...
-obj.func = FUNC;
-obj.func(/* ここにobj(here is obj) */ "hoge", "huga");
+obj := "self string";
+obj.func := FUNC;
+obj.func(/* ここにobj自身が入る*/ "huga");
 ```
 
 この機能は演算子オーバーロードのために追加されました。
@@ -73,8 +79,10 @@ obj.func(/* ここにobj(here is obj) */ "hoge", "huga");
 名前つき戻り値
 
 ```
+//mdtest
+stdio := object() <- load("file.bn");
 a := def() (value) {
-    value := "aaa"
+    value := "aaa";
 
     // return value;
     // 値を返すreturnはboneでは使えません。
@@ -87,20 +95,18 @@ val := a();
 
 // val へインジェクションを行います。
 val <- a();
-println(val.value);
+stdio.stdout.puts(val.value);
 
 // 現在のスコープで "value" という名前の変数が定義されます。
 {} <- a();
-println(value)
+stdio.stdout.puts(value);
 
 b := def() (return1, return2) {
-    return1 := "value1"
-    return2 := "value2"
+    return1 := "value1";
+    return2 := "value2";
 };
 
 // "value1"がvalに代入されます。
-// "value1" assigned into val
-//
 // 複数の名前つき戻り値を持つ関数が呼ばれた時、その最初の要素を返すからです。
 // この仕様は、主要なデータを第一の名前つき戻り値にして、
 // エラー情報やそのたオプショナルな情報を第二以降の名前つき戻り値にするといった使い方ができます。
@@ -110,13 +116,13 @@ val := b();
 
 // val へインジェクションを行います。
 val <- b();
-println(val.return1);
-println(val.return2);
+stdio.stdout.puts(val.return1);
+stdio.stdout.puts(val.return2);
 
 // 現在のスコープで "return1", "return2" という名前の変数が定義されます。
 {} <- b();
-println(return1);
-println(return2);
+stdio.stdout.puts(return1);
+stdio.stdout.puts(return2);
 ```
 
 他の多くの言語と異なるのは、値を返すためには常に名前つき戻り値を使わなければいけない点です。
@@ -165,15 +171,21 @@ println(return2);
 ネストした名前つき戻り値のサンプル
 
 ```
+//mdtest
+stdio := object() <- load("file.bn");
 a := def() (val, val2) {
-    val := "aaa"
-    val2 := "bbb"
+    val := "aaa";
+    val2 := "bbb";
 };
 
 b := def() (val, val2, val3) {
-    {} <- a()
-    val3 = "cccc"
-}
+    {} <- a();
+    val3 := "cccc";
+};
+{} <- b();
+stdio.stdout.puts(val);
+stdio.stdout.puts(val2);
+stdio.stdout.puts(val3);
 ```
 
 ## 可変長名前つき戻り値
