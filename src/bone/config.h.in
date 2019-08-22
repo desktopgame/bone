@@ -1,7 +1,6 @@
 #ifndef BONE_CONFIG_H
 #define BONE_CONFIG_H
 
-#define REVISION ("${REVISION}")
 #define BUILD_VERSION ("${BONE_BUILD_VERSION} rev.${REVISION}")
 #cmakedefine HAVE_UNISTD @HAVE_UNISTD@
 #cmakedefine HAVE_DLFCN @HAVE_DLFCN@
