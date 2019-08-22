@@ -128,21 +128,12 @@ static bnReference bnNewRegex(bnInterpreter* bone, const char* pattern,
 }
 
 static void ext_compile(bnInterpreter* bone, bnFrame* frame) {
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* c = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_STRING) {
-                bnFormatThrow(bone, "should be `pattern` is string");
-        }
-        if (b->type != BN_OBJECT_INTEGER) {
-                bnFormatThrow(bone, "should be `compile_option` is integer");
-        }
-        if (c->type != BN_OBJECT_INTEGER) {
-                bnFormatThrow(bone, "should be `match_option` is integer");
-        }
-        const char* pattern = bnView2Str(bone->pool, bnGetStringValue(a));
-        int compile_options = bnGetIntegerValue(b);
-        int match_options = bnGetIntegerValue(c);
+        bnPopStringArg(bone, frame, path);
+        bnPopIntArg(bone, frame, compile_options);
+        bnPopIntArg(bone, frame, match_options);
+        const char* pattern = bnView2Str(bone->pool, bnGetStringValue(pathObj));
+        int compile_options = bnGetIntegerValue(compile_optionsObj);
+        int match_options = bnGetIntegerValue(match_optionsObj);
         GError* err = NULL;
         bnReference ref =
             bnNewRegex(bone, pattern, compile_options, match_options, &err);
@@ -164,31 +155,18 @@ static void ext_replace(bnInterpreter* bone, bnFrame* frame) {
         // start
         // replacement
         // match_options
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* c = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* d = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* e = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        if (a->type != BN_OBJECT_ANY || !bnMatchType(bone, a, REGEX_T)) {
-                bnFormatThrow(bone, "should be `self` is regex");
-        }
-        if (b->type != BN_OBJECT_STRING) {
-                bnFormatThrow(bone, "should be `source` is string");
-        }
-        if (c->type != BN_OBJECT_INTEGER) {
-                bnFormatThrow(bone, "should be `start` is integer");
-        }
-        if (d->type != BN_OBJECT_STRING) {
-                bnFormatThrow(bone, "should be `replacement` is string");
-        }
-        if (e->type != BN_OBJECT_INTEGER) {
-                bnFormatThrow(bone, "should be `match_options` is integer");
-        }
-        bnRegex* regex = (bnRegex*)a;
-        const char* source = bnView2Str(bone->pool, bnGetStringValue(b));
-        int start = bnGetIntegerValue(c);
-        const char* replacement = bnView2Str(bone->pool, bnGetStringValue(d));
-        int match_options = bnGetIntegerValue(e);
+        bnPopAnyArg(bone, frame, self, REGEX_T);
+        bnPopStringArg(bone, frame, source);
+        bnPopIntArg(bone, frame, start);
+        bnPopStringArg(bone, frame, replacement);
+        bnPopIntArg(bone, frame, match_options);
+        bnRegex* regex = (bnRegex*)selfObj;
+        const char* source =
+            bnView2Str(bone->pool, bnGetStringValue(sourceObj));
+        int start = bnGetIntegerValue(startObj);
+        const char* replacement =
+            bnView2Str(bone->pool, bnGetStringValue(replacementObj));
+        int match_options = bnGetIntegerValue(match_optionsObj);
         GError* err = NULL;
         bnWriteVariable2(frame, bone->pool, "error",
                          bnGetFalse(bone->pool, frame));
@@ -206,31 +184,21 @@ static void ext_replace(bnInterpreter* bone, bnFrame* frame) {
 }
 
 static void ext_match(bnInterpreter* bone, bnFrame* frame) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
         // self
         // source
         // match_options
         // func
-        bnObject* a = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* b = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnObject* c = bnGetObject(bone->heap, bnPopStack(frame->vStack));
-        bnReference dref = bnPopStack(frame->vStack);
-        bnObject* d = bnGetObject(bone->heap, dref);
+        bnPopAnyArg(bone, frame, self, REGEX_T);
+        bnPopStringArg(bone, frame, source);
+        bnPopIntArg(bone, frame, match_options);
+        bnPopLambdaArg(bone, frame, func);
 
-        if (a->type != BN_OBJECT_ANY || !bnMatchType(bone, a, REGEX_T)) {
-                bnFormatThrow(bone, "should be `self` is regex");
-        }
-        if (b->type != BN_OBJECT_STRING) {
-                bnFormatThrow(bone, "should be `source` is string");
-        }
-        if (c->type != BN_OBJECT_INTEGER) {
-                bnFormatThrow(bone, "should be `match_options` is integer");
-        }
-        if (d->type != BN_OBJECT_LAMBDA) {
-                bnFormatThrow(bone, "should be `func` is lambda");
-        }
-        bnRegex* regex = (bnRegex*)a;
-        const char* source = bnView2Str(bone->pool, bnGetStringValue(b));
-        int match_options = bnGetIntegerValue(c);
+        bnRegex* regex = (bnRegex*)selfObj;
+        const char* source =
+            bnView2Str(bone->pool, bnGetStringValue(sourceObj));
+        int match_options = bnGetIntegerValue(match_optionsObj);
         GMatchInfo* info;
         gboolean matches =
             g_regex_match(regex->regex, source, match_options, &info);
@@ -243,10 +211,11 @@ static void ext_match(bnInterpreter* bone, bnFrame* frame) {
                 bnPushStack(frame->vStack, bnNewString2(bone, word));
                 bnPushStack(frame->vStack, bnNewInteger(bone, start));
                 bnPushStack(frame->vStack, bnNewInteger(bone, end));
-                bnFrame* sub = bnFuncCall(dref, bone, frame, 3);
+                bnFrame* sub = bnFuncCall(funcRef, bone, frame, 3);
                 bnDeleteFrame(sub);
                 g_free(word);
                 g_match_info_next(info, NULL);
         }
         g_match_info_free(info);
+#pragma clang diagnostic pop
 }
