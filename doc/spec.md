@@ -471,6 +471,31 @@ p := def()() {
 p();
 ```
 
+## コメント
+
+C 言語と同じ方法でコメントを使用できます。
+
+単一行コメント
+
+```
+//mdtest
+stdio := object() <- load("file.bn");
+//stdio.stdout.puts("hello");
+stdio.stdout.puts("world");
+```
+
+複数行コメント
+
+```
+//mdtest
+stdio := object() <- load("file.bn");
+/*
+stdio.stdout.puts("hello");
+stdio.stdout.puts("world");
+*/
+stdio.stdout.puts("test");
+```
+
 ## エラーメッセージ
 
 パニックによる終了の時
