@@ -390,6 +390,7 @@ exampleC:
 ## C とのバインディング
 
 bone から C の変数、関数を参照するには次の関数を使用します。
+対応する関数が事前に C 側から bnWriteExtern によって登録されている必要があります。
 
 ```
 stdout := extern_var("stdout");
