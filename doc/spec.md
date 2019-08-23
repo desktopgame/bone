@@ -309,6 +309,7 @@ opArrayGet
 演算子オーバーロードの使用例
 
 ```
+//mdtest
 a := 10;
 a.opPlus := def(self, other)(ret) {
     ret := "hello";
@@ -334,9 +335,10 @@ if 文, while 文で "false" として扱われるのは
 例えば、次のコードは完全に合法です。
 
 ```
+//mdtest
 count := 10;
 while(count) {
-    println(count.toString());
+    println(count.to_string());
     count -= 1;
 }
 ```
@@ -348,6 +350,7 @@ ruby の仕様に近いです。
 最後に評価された値を返します。
 
 ```
+//mdtest
 a := "aaa" && "bbb";
 //aは"bbb"
 
@@ -408,6 +411,7 @@ bone では、二種類の例外処理の方法が存在します。
 戻り値が一つの場合
 
 ```
+//mdtest
 unsafe := def(index)(error) {
     if(index == 0) {
         error := "index is zero";
@@ -422,6 +426,7 @@ if(error) {
 戻り値が二つ以上の場合
 
 ```
+//mdtest
 unsafe := def(index)(value, error) {
     value := "not error";
     error := false;
@@ -439,6 +444,7 @@ if(a.error) {
 戻り値が二つ以上の場合
 
 ```
+//mdtest
 unsafe := def(index)(value, error) {
     value := "not error";
     error := false;
@@ -457,6 +463,7 @@ if(error) {
 これは go 言語に習った仕様になっています。
 
 ```
+//mdtest
 p := def()() {
     defer println(recover());
     panic("recover");
