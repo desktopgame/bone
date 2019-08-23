@@ -16,6 +16,9 @@ typedef struct bnFrame {
         bnStack* vStack;
         bnStack* hierarcySelf;
         GHashTable* variableTable;
+        //ラムダ式の内部で宣言された変数の一覧を記録するリスト
+        //外側の変数は含まない
+        GPtrArray* variableListExcludeOuter;
         bnReference currentCall;
         bnReference panic;
         bnReference register0;
@@ -97,6 +100,18 @@ bnReference bnReadVariable(bnFrame* frame, bnStringView name);
  */
 bnReference bnReadVariable2(bnFrame* frame, struct bnStringPool* pool,
                             const char* name);
+
+/**
+ * 指定の変数を宣言したことにします。
+ * これは可変長戻り値のために必要です。
+ * def()(...) のような形式の戻り値がインジェクションされる時、
+ * 全ての戻り値をインジェクションする必要がありますが、
+ * ただ単にテーブルの中身全てをインジェクションしてしまうとラムダの性質のためにキャプチャされた外側の変数もインジェクションされてしまいます。
+ * これを回避するために、変数が宣言された場合にはこれを呼び出します。
+ * @param frame
+ * @param name
+ */
+void bnAddDeclareVariable(bnFrame* frame, bnStringView name);
 
 /**
  * ローカル変数とスタックのための領域を解放します。

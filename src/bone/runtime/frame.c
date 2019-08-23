@@ -17,6 +17,7 @@ bnFrame* bnNewFrame() {
         ret->vStack = bnNewStack();
         ret->currentCall = NULL;
         ret->depth = 0;
+        ret->variableListExcludeOuter = g_ptr_array_new();
         ret->variableTable =
             g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, NULL);
         ret->pc = 0;
@@ -53,24 +54,26 @@ void bnInjectFrame(GHashTable* src, bnFrame* dst) {
 
 bnReference bnExportAllVariable(bnInterpreter* bone, bnFrame* self) {
         bnReference arrRef =
-            bnNewArray(bone, g_hash_table_size(self->variableTable));
+            bnNewArray(bone, self->variableListExcludeOuter->len);
         bnObject* arr = bnGetObject(bone->heap, arrRef);
-        GHashTableIter iter;
-        g_hash_table_iter_init(&iter, self->variableTable);
-        gpointer k, v;
         int arrI = 0;
-        while (g_hash_table_iter_next(&iter, &k, &v)) {
-                bnStringView retName = (bnStringView)k;
-                const char* retNameStr = bnView2Str(bone->pool, retName);
-                if (*retNameStr == '_') {
+        for (int i = 0; i < self->variableListExcludeOuter->len; i++) {
+                bnStringView name = (bnStringView)g_ptr_array_index(
+                    self->variableListExcludeOuter, i);
+                const char* nameStr = bnView2Str(bone->pool, name);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+                void* v = g_hash_table_lookup(self->variableTable,
+                                              (gconstpointer)name);
+#pragma clang diagnostic pop
+                // _から始まる変数は公開されない仕様
+                if (*nameStr == '_') {
                         continue;
                 }
                 bnStringView exportName =
-                    bnGetExportVariableName(bone->pool, retName);
+                    bnGetExportVariableName(bone->pool, name);
                 bnDefine(arr, exportName, v);
-                arr = bnGetObject(bone->heap, arrRef);
                 bnSetArrayElementAt(arr, arrI, v);
-                arr = bnGetObject(bone->heap, arrRef);
                 arrI++;
         }
         return arrRef;
@@ -107,6 +110,18 @@ bnReference bnReadVariable2(bnFrame* frame, struct bnStringPool* pool,
         return bnReadVariable(frame, bnIntern(pool, name));
 }
 
+void bnAddDeclareVariable(bnFrame* frame, bnStringView name) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+        guint i;
+        if (!g_ptr_array_find(frame->variableListExcludeOuter,
+                              (gconstpointer)name, &i)) {
+                g_ptr_array_add(frame->variableListExcludeOuter,
+                                GINT_TO_POINTER((int)name));
+        }
+#pragma clang diagnostic pop
+}
+
 void bnDeleteFrame(bnFrame* self) {
         if (self == NULL) {
                 return;
@@ -117,6 +132,7 @@ void bnDeleteFrame(bnFrame* self) {
         }
         bnDeleteStack(self->vStack, NULL);
         bnDeleteStack(self->hierarcySelf, NULL);
+        g_ptr_array_free(self->variableListExcludeOuter, FALSE);
         g_hash_table_destroy(self->variableTable);
         g_list_free_full(self->snapshots, delete_snapshot);
         BN_FREE(self);

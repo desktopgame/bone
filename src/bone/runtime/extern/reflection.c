@@ -133,5 +133,6 @@ static void bnExtReflectionExport(bnInterpreter* bone, bnFrame* frame) {
                         continue;
                 }
                 bnWriteVariable(frame, view, v);
+                bnAddDeclareVariable(frame, view);
         }
 }

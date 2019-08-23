@@ -129,9 +129,10 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
         }
         //全ての名前付き戻り値のデフォルト値を設定する
         GList* retIter = bnGetReturnValueList(lambda);
-        while (retIter != NULL) {
+        while (!bnIsVariadicReturn(bone->pool, lambda) && retIter != NULL) {
                 g_hash_table_replace(sub->variableTable, retIter->data,
                                      bnNewObject(bone));
+                bnAddDeclareVariable(sub, (bnStringView)retIter->data);
                 retIter = retIter->next;
         }
         if (bnGetLambdaType(lambda) == BN_LAMBDA_NATIVE) {
