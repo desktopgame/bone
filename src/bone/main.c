@@ -33,11 +33,16 @@ int main(int argc, char* argv[]) {
                     !g_str_has_suffix(input->str, ".in")) {
                         g_string_append(input, ".bn");
                 }
+                GString* exeDir = bnGetExecutableFileDir();
+                gchar* pluginDir =
+                    g_build_filename(exeDir->str, "plugins", NULL);
                 bnInterpreter* bone = bnNewInterpreter(input->str, argc, argv);
-                bnLink(bone, "plugins");
+                bnLink(bone, pluginDir);
                 status = bnEval(bone);
                 bnDeleteInterpreter(bone);
+                g_free(pluginDir);
                 g_string_free(input, TRUE);
+                g_string_free(exeDir, TRUE);
         }
 #if _MSC_VER && DEBUG
         _CrtDumpMemoryLeaks();

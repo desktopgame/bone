@@ -204,11 +204,6 @@ static test_result test_check_run(const char* testDir, const char* testName,
         stdout = cacheFP;
 #endif
         bnInterpreter* bone = bnNewInterpreter(path, bnArgc(), bnArgv());
-#if _WIN32
-        bnLink(bone, "testdata\\plugins");
-#else
-        bnLink(bone, "./testdata/plugins");
-#endif
         int ret = bnEval(bone);
 #if defined(EXCHANGE_STDOUT)
         stdout = trueStdout;
