@@ -6,9 +6,23 @@ bone は macOS で開発されています。
 windows への対応は現状後回しになっているので、  
 windows では一部の機能が使えません。
 
-linux 環境では全く動作を確認していません。
-
 **Mac**
+
+OS 情報
+
+```
+  システムのバージョン:	macOS 10.14.4 (18E226)
+  カーネルのバージョン:	Darwin 18.5.0
+```
+
+コンパイラ
+
+```
+Apple LLVM version 10.0.1 (clang-1001.0.46.4)
+Target: x86_64-apple-darwin18.5.0
+Thread model: posix
+InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+```
 
 - [x] プログラムの実行/テスト
 - [x] C への埋め込み
@@ -17,11 +31,5 @@ linux 環境では全く動作を確認していません。
 **Windows**
 
 - [x] プログラムの実行/テスト
-- [ ] C への埋め込み
-- [ ] プラグインの作成
-
-**Linux**
-
-- [ ] プログラムの実行/テスト
 - [ ] C への埋め込み
 - [ ] プラグインの作成
