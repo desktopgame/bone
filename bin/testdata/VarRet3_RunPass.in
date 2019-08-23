@@ -1,0 +1,20 @@
+stdio := object() <- load("file.bn");
+varret := def ()(...) {
+    a := "aaa";
+    b := "ccc";
+    c := "ddd";
+};
+{} <- varret();
+stdio.stdout.puts(a);
+stdio.stdout.puts(b);
+stdio.stdout.puts(c);
+
+stdio.stdout.puts("---");
+
+// 可変長名前つき戻り値を直接格納する場合、
+// 配列へラップされます。
+// "最初の要素" が存在しないからです。
+arr := varret();
+stdio.stdout.puts(arr[0]);
+stdio.stdout.puts(arr[1]);
+stdio.stdout.puts(arr[2]);
