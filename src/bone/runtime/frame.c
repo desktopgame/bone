@@ -1,4 +1,5 @@
 #include "frame.h"
+#include "../glib.h"
 #include "../util/string_pool.h"
 #include "array.h"
 #include "heap.h"
@@ -6,7 +7,6 @@
 #include "object.h"
 #include "snapshot.h"
 #include "storage.h"
-#include "../glib.h"
 
 static void delete_snapshot(gpointer data);
 
@@ -114,12 +114,15 @@ bnReference bnReadVariable2(bnFrame* frame, struct bnStringPool* pool,
 void bnDeclareVariable(bnFrame* frame, bnStringView name) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
-        guint i;
-        if (!g_ptr_array_find(frame->variableListExcludeOuter,
-                              (gconstpointer)name, &i)) {
-                g_ptr_array_add(frame->variableListExcludeOuter,
-                                GINT_TO_POINTER((int)name));
+        for (int i = 0; i < frame->variableListExcludeOuter->len; i++) {
+                bnStringView e = (bnStringView)g_ptr_array_index(
+                    frame->variableListExcludeOuter, i);
+                if (e == name) {
+                        return;
+                }
         }
+        g_ptr_array_add(frame->variableListExcludeOuter,
+                        GINT_TO_POINTER((int)name));
 #pragma clang diagnostic pop
 }
 
