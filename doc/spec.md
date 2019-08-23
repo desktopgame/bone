@@ -194,23 +194,27 @@ stdio.stdout.puts(val3);
 次の構文を使用します。
 
 ```
+//mdtest
+stdio := object() <- load("file.bn");
 varret := def ()(...) {
     a := "aaa";
     b := "ccc";
     c := "ddd";
 };
 {} <- varret();
-println(a);
-println(b);
-println(c);
+stdio.stdout.puts(a);
+stdio.stdout.puts(b);
+stdio.stdout.puts(c);
+
+stdio.stdout.puts("---");
 
 // 可変長名前つき戻り値を直接格納する場合、
 // 配列へラップされます。
 // "最初の要素" が存在しないからです。
 arr := varret();
-println(arr[0]);
-println(arr[1]);
-println(arr[2]);
+stdio.stdout.puts(arr[0]);
+stdio.stdout.puts(arr[1]);
+stdio.stdout.puts(arr[2]);
 ```
 
 load は内部的にこれを使用しています。
