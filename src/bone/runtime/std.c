@@ -134,9 +134,8 @@ void bnStdSystemInclude(bnInterpreter* bone, bnFrame* frame) {
         bnExecute(bone, env, sub);
         bnInjectFrame(sub->variableTable, frame);
         for (int i = 0; i < sub->variableListExcludeOuter->len; i++) {
-                bnAddDeclareVariable(frame,
-                                     (bnStringView)g_ptr_array_index(
-                                         sub->variableListExcludeOuter, i));
+                bnDeclareVariable(frame, (bnStringView)g_ptr_array_index(
+                                             sub->variableListExcludeOuter, i));
         }
         bnDeleteAST(ast);
         bnDeleteILTopLevel(iltop);
@@ -189,9 +188,8 @@ void bnStdSystemLoad(bnInterpreter* bone, bnFrame* frame) {
         g_list_free(keys);
         bnInjectFrame(sub->variableTable, frame);
         for (int i = 0; i < sub->variableListExcludeOuter->len; i++) {
-                bnAddDeclareVariable(frame,
-                                     (bnStringView)g_ptr_array_index(
-                                         sub->variableListExcludeOuter, i));
+                bnDeclareVariable(frame, (bnStringView)g_ptr_array_index(
+                                             sub->variableListExcludeOuter, i));
         }
         bnDeleteAST(ast);
         bnDeleteILTopLevel(iltop);

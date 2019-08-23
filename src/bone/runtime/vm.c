@@ -163,7 +163,7 @@ void bnScopeInjection(bnInterpreter* bone, bnObject* src, bnFrame* dst) {
                         bnStringView origView = bnIntern(bone->pool, origName);
                         bnWriteVariable(dst, origView, v);
                         g_hash_table_iter_remove(&hashIter);
-                        bnAddDeclareVariable(dst, origView);
+                        bnDeclareVariable(dst, origView);
                 }
         }
 }
@@ -398,7 +398,7 @@ LABEL_OP_STORE : {
         //ここで宣言された変数を記録する
         // def()(...)のようなラムダの戻り値を返す時に、
         //外側の変数が含まれないようにするために必要
-        bnAddDeclareVariable(frame, name);
+        bnDeclareVariable(frame, name);
         g_hash_table_replace(frame->variableTable, GINT_TO_POINTER((int)name),
                              ref);
         CHECK_DEFER();

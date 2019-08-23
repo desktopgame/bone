@@ -132,7 +132,7 @@ bnFrame* bnFuncCall(bnReference ref, bnInterpreter* bone, bnFrame* frame,
         while (!bnIsVariadicReturn(bone->pool, lambda) && retIter != NULL) {
                 g_hash_table_replace(sub->variableTable, retIter->data,
                                      bnNewObject(bone));
-                bnAddDeclareVariable(sub, (bnStringView)retIter->data);
+                bnDeclareVariable(sub, (bnStringView)retIter->data);
                 retIter = retIter->next;
         }
         if (bnGetLambdaType(lambda) == BN_LAMBDA_NATIVE) {

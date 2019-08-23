@@ -111,7 +111,7 @@ bnReference bnReadVariable2(bnFrame* frame, struct bnStringPool* pool,
  * @param frame
  * @param name
  */
-void bnAddDeclareVariable(bnFrame* frame, bnStringView name);
+void bnDeclareVariable(bnFrame* frame, bnStringView name);
 
 /**
  * ローカル変数とスタックのための領域を解放します。

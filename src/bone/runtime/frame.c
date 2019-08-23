@@ -110,7 +110,7 @@ bnReference bnReadVariable2(bnFrame* frame, struct bnStringPool* pool,
         return bnReadVariable(frame, bnIntern(pool, name));
 }
 
-void bnAddDeclareVariable(bnFrame* frame, bnStringView name) {
+void bnDeclareVariable(bnFrame* frame, bnStringView name) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
         guint i;
