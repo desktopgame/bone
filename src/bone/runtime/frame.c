@@ -6,6 +6,7 @@
 #include "object.h"
 #include "snapshot.h"
 #include "storage.h"
+#include "../glib.h"
 
 static void delete_snapshot(gpointer data);
 
