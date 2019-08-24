@@ -118,7 +118,11 @@ static void plus_string_string(bnInterpreter* bone, bnFrame* frame, bnObject* a,
         const char* bstr = bnView2Str(bone->pool, bi);
         int alen = strlen(astr);
         int blen = strlen(bstr);
+#if _MSC_VER
+        char* newstr = alloca(alen + blen + 1);
+#else
         char newstr[alen + blen + 1];
+#endif
         sprintf(newstr, "%s%s", astr, bstr);
         //配列を作成
         bnReference aryFunc = bnReadVariable2(frame, bone->pool, "array");
@@ -143,7 +147,11 @@ static void plus_string_char(bnInterpreter* bone, bnFrame* frame, bnObject* a,
         bnStringView ai = ((bnString*)a)->value;
         const char* astr = bnView2Str(bone->pool, ai);
         int alen = strlen(astr);
+#if _MSC_VER
+        char* newstr = alloca(alen + 2);
+#else
         char newstr[alen + 2];
+#endif
         sprintf(newstr, "%s%c", astr, bnGetCharValue(b));
         //配列を作成
         bnReference aryFunc = bnReadVariable2(frame, bone->pool, "array");
