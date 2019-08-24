@@ -39,7 +39,12 @@ int bnInteractive(FILE* in) {
         while (r) {
                 show_gutter();
                 if (loops > 0) {
+#if _MSC_VER
+                        g_string_free(line, TRUE);
+                        line = g_string_new(NULL);
+#else
                         g_string_erase(line, 0, line->len);
+#endif
                         read_line(in, line);
                 } else {
                         const char* initCode = "{} <- load(\"repl.bn\");";
