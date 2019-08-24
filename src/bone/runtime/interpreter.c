@@ -28,6 +28,7 @@ static void load_plugins(bnInterpreter* self, const char* currentdir);
 static void load_plugin(bnInterpreter* self, gchar* path);
 static void unload_plugins(bnInterpreter* self);
 static bool is_dll(gchar* path);
+static void show_stack_trace(bnInterpreter* self);
 
 bnInterpreter* bnNewInterpreter(const char* filenameRef, int argc,
                                 char* argv[]) {
@@ -96,19 +97,7 @@ int bnEval(bnInterpreter* self) {
         bnWriteCode(env, BN_OP_DEFER_NEXT);
         bnDeleteAST(ret);
         bnExecute(self, env, self->frame);
-        while (bnGetStackSize(self->callStack) > 0) {
-                GString* gbuf = bnPopStack(self->callStack);
-                if (self->frame->panic != NULL) {
-                        printf("TRACE: %s\n", gbuf->str);
-                }
-                g_string_free(gbuf, TRUE);
-        }
-        if (self->frame->panic != NULL) {
-                printf("panic:");
-                bnPrintObject(stdout, self,
-                              bnGetObject(self->heap, self->frame->panic));
-                printf("\n");
-        }
+        show_stack_trace(self);
         int status = self->frame->panic ? 1 : 0;
         self->frame->panic = NULL;
         bnDeleteILTopLevel(iltop);
@@ -484,4 +473,20 @@ static bool is_dll(gchar* path) {
 #else
         return false;
 #endif
+}
+
+static void show_stack_trace(bnInterpreter* self) {
+        while (bnGetStackSize(self->callStack) > 0) {
+                GString* gbuf = bnPopStack(self->callStack);
+                if (self->frame->panic != NULL) {
+                        printf("TRACE: %s\n", gbuf->str);
+                }
+                g_string_free(gbuf, TRUE);
+        }
+        if (self->frame->panic != NULL) {
+                printf("panic:");
+                bnPrintObject(stdout, self,
+                              bnGetObject(self->heap, self->frame->panic));
+                printf("\n");
+        }
 }
