@@ -5,6 +5,7 @@
 //まずは普通に呼び出す
 {} <- load("./testdata/UMV8.inc");
 print("hello, world");
+print("---");
 
 //includeの場合、呼び出し側の変数を参照可能
 //現在トップレベルにはprintが存在するので、
