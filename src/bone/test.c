@@ -20,6 +20,11 @@
 #define EXCHANGE_STDOUT (1)
 #endif
 
+#if defined(_MSC_VER)
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#endif
+
 static int string_compare(const void* a, const void* b) {
         return strcmp((const char*)a, (const char*)b);
 }
