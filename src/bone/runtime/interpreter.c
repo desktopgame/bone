@@ -226,7 +226,7 @@ void bnFormatThrow(bnInterpreter* self, const char* fmt, ...) {
 }
 
 void bnVFormatThrow(bnInterpreter* self, const char* fmt, va_list ap) {
-        char buf[100];
+        char buf[512];
         vsprintf(buf, fmt, ap);
         bnReference ref = bnNewString(self, bnIntern(self->pool, buf));
         bnThrow(self, ref, BN_JMP_CODE_EXCEPTION);
