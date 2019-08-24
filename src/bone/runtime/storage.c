@@ -218,10 +218,16 @@ static void compact_impl(bnStorage* self) {
         }
         int count = 0;
         int lastFree = self->objectCount - 1;
-        //現在のインデックス情報を保存する
+//現在のインデックス情報を保存する
+#if _MSC_VER
+        int* mapBuf = alloca(self->objectCount);
+        char* poolBuf = alloca(self->objectSize * self->objectCount);
+        bool* bitmapBuf = alloca(sizeof(bool) * self->objectCount);
+#else
         int mapBuf[self->objectCount];
         char poolBuf[self->objectSize * self->objectCount];
         bool bitmapBuf[sizeof(bool) * self->objectCount];
+#endif
         memcpy(mapBuf, self->table, sizeof(int) * self->objectCount);
         memset(poolBuf, 0, self->objectSize * self->objectCount);
         memset(bitmapBuf, true, sizeof(bool) * self->objectCount);
