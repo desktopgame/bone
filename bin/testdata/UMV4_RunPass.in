@@ -17,11 +17,15 @@ stdout.puts(a.to_string());
 stdout.puts(b.to_string());
 stdout.puts(c);
 
+stdout.puts("---");
+
 //オブジェクトインジェクション
 ab := object() <- sample2();
 stdout.puts(ab.a.to_string());
 stdout.puts(ab.b.to_string());
 stdout.puts(ab.c);
+
+stdout.puts("---");
 
 //インジェクションせずに直接代入すると、
 //最初の名前つき戻り値が返ります。

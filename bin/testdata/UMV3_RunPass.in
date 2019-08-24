@@ -12,10 +12,14 @@ sample := def()(a, b) {
 stdout.puts(a.to_string());
 stdout.puts(b.to_string());
 
+stdout.puts("---");
+
 //オブジェクトインジェクション
 ab := object() <- sample();
 stdout.puts(ab.a.to_string());
 stdout.puts(ab.b.to_string());
+
+stdout.puts("---");
 
 //インジェクションせずに直接代入すると、
 //最初の名前つき戻り値が返ります。
