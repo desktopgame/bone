@@ -12,6 +12,8 @@ koya := object() <- sample();
 stdout.puts(koya.name);
 stdout.puts(koya.age.to_string());
 
+stdout.puts("---");
+
 //インジェクションせずに直接代入すると、
 //配列にラップされます。
 obj := sample();
