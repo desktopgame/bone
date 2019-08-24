@@ -5,12 +5,16 @@
 sample := def()(...) {
     name := "Koya";
     age := 22;
+    //_から始まる名前は公開されない
+    _private := "himitu";
 };
 
 //オブジェクトインジェクション
 koya := object() <- sample();
 stdout.puts(koya.name);
 stdout.puts(koya.age.to_string());
+//これを外すとパニック
+//stdout.puts(koya._private);
 
 stdout.puts("---");
 
