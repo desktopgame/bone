@@ -8,6 +8,7 @@ a := def(self, a, b)() {
     stdout.puts((a + b).to_string());
 };
 a("self string", 5, 5);
+stdout.puts("---");
 
 obj := "self string";
 //プロトタイピングの要素を持っているので、
