@@ -7,7 +7,7 @@
 #if HAVE_WINDOWS
 #include <Windows.h>
 #endif
-#include "../config.h"
+#include "../config.inc"
 #include "string.h"
 
 static FILE* out = NULL;

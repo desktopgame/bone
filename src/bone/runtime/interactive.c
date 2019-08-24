@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../config.h"
+#include "../config.inc"
 #include "../il/il_toplevel.h"
 #include "../parse/ast.h"
 #include "../parse/ast2il.h"
