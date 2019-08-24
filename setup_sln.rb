@@ -60,7 +60,7 @@ solution_dir = Bone::unique_dir(File::dirname(Dir::pwd) + "\\bone_sln")
 Dir.mkdir(solution_dir)
 # create project
 puts("create project...")
-o, e, s = Open3.capture3(sprintf("cmake -D BONE_RUN=1 -S %s\\src -B %s", Dir::pwd, solution_dir))
+o, e, s = Open3.capture3(sprintf("cmake -D BONE_RUN=1 -D CMAKE_BUILD_TYPE=Debug -S %s\\src -B %s", Dir::pwd, solution_dir))
 if s != 0
     puts o
     puts e
