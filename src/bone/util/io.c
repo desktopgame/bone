@@ -1,5 +1,6 @@
 #include "io.h"
 #include <stdlib.h>
+#include "../config.inc"
 #if __APPLE__
 #include <limits.h>
 #include <mach-o/dyld.h>
@@ -8,7 +9,6 @@
 #include <Windows.h>
 #include <tchar.h>
 #endif
-#include "../config.inc"
 #include "string.h"
 
 static FILE* out = NULL;
