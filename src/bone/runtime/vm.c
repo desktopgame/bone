@@ -12,7 +12,9 @@
 #include "snapshot.h"
 #include "string.h"
 
+#if !defined(_MSC_VER)
 static int execute_tc(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame);
+#endif
 #ifdef _MSC_VER
 static int execute_switch(bnInterpreter* bone, bnEnviroment* env,
                           bnFrame* frame);
@@ -197,6 +199,7 @@ int bnExecute(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
 #endif
 }
 
+#if !defined(_MSC_VER)
 static int execute_tc(bnInterpreter* bone, bnEnviroment* env, bnFrame* frame) {
         static void* addr_table[] = {
             &&LABEL_OP_NOP,
@@ -597,6 +600,7 @@ LABEL_OP_CLEANUP_INJBUF : {
 
         return 0;
 }
+#endif
 
 #ifdef _MSC_VER
 static int execute_switch(bnInterpreter* bone, bnEnviroment* env,
