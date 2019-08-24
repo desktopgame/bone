@@ -748,6 +748,7 @@ static int execute_switch(bnInterpreter* bone, bnEnviroment* env,
                         case BN_OP_STORE: {
                                 bnStringView name = bnReadCode(env, ++PC);
                                 bnReference ref = bnPopStack(frame->vStack);
+                                bnDeclareVariable(frame, name);
                                 assert(ref != NULL);
                                 g_hash_table_replace(frame->variableTable,
                                                      GINT_TO_POINTER((int)name),
