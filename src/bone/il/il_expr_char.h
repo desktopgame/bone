@@ -1,4 +1,4 @@
-#ifndef BONE_IL_ILEXPRCHAR_H
+﻿#ifndef BONE_IL_ILEXPRCHAR_H
 #define BONE_IL_ILEXPRCHAR_H
 #include "../bone.h"
 #include "compile_cache.h"

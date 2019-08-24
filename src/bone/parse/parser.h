@@ -1,4 +1,4 @@
-#ifndef BONE_PARSE_PARSER_H
+﻿#ifndef BONE_PARSE_PARSER_H
 #define BONE_PARSE_PARSER_H
 #include "../util/string_pool.h"
 #include "ast.h"

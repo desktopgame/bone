@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_EXTERN_REGEX_H
+﻿#ifndef BONE_RUNTIME_EXTERN_REGEX_H
 #define BONE_RUNTIME_EXTERN_REGEX_H
 struct bnInterpreter;
 struct bnFrame;

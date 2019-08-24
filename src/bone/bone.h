@@ -1,4 +1,4 @@
-#ifndef BONE_BONE_H
+﻿#ifndef BONE_BONE_H
 #define BONE_BONE_H
 
 #include <assert.h>

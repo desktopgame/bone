@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_ARRAY_H
+﻿#ifndef BONE_RUNTIME_ARRAY_H
 #define BONE_RUNTIME_ARRAY_H
 #include "object.h"
 

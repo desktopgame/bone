@@ -1,4 +1,4 @@
-#ifndef BONE_IL_ILEXPRMEMBEROP_H
+﻿#ifndef BONE_IL_ILEXPRMEMBEROP_H
 #define BONE_IL_ILEXPRMEMBEROP_H
 #include "../bone.h"
 #include "il_expression.h"

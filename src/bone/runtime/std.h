@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_STD_H
+﻿#ifndef BONE_RUNTIME_STD_H
 #define BONE_RUNTIME_STD_H
 struct bnFrame;
 struct bnInterpreter;

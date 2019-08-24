@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_ANY_H
+﻿#ifndef BONE_RUNTIME_ANY_H
 #define BONE_RUNTIME_ANY_H
 #include "object.h"
 struct bnInterpreter;

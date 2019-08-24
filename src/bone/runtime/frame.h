@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_FRAME_H
+﻿#ifndef BONE_RUNTIME_FRAME_H
 #define BONE_RUNTIME_FRAME_H
 #include "../bone.h"
 #include "../util/stack.h"

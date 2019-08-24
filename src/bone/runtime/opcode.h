@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_OPCODE_H
+﻿#ifndef BONE_RUNTIME_OPCODE_H
 #define BONE_RUNTIME_OPCODE_H
 #include <stdio.h>
 #include "../bone.h"

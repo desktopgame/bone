@@ -1,4 +1,4 @@
-#include "il_expr_int.h"
+﻿#include "il_expr_int.h"
 #include "../runtime/enviroment.h"
 
 bnILExprInt* bnNewILExprInt(int value) {

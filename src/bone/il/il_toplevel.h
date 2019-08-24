@@ -1,4 +1,4 @@
-#ifndef BONE_IL_ILTOPLEVEL_H
+﻿#ifndef BONE_IL_ILTOPLEVEL_H
 #define BONE_IL_ILTOPLEVEL_H
 #include "../bone.h"
 struct bnEnviroment;

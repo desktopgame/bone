@@ -1,4 +1,4 @@
-#include "il_lineno.h"
+﻿#include "il_lineno.h"
 #include <stdbool.h>
 
 #if !defined(NGLOBAL)

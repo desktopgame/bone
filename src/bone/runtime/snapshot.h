@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_SNAPSHOT_H
+﻿#ifndef BONE_RUNTIME_SNAPSHOT_H
 #define BONE_RUNTIME_SNAPSHOT_H
 #include "../glib.h"
 

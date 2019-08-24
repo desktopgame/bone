@@ -1,4 +1,4 @@
-#include "any.h"
+﻿#include "any.h"
 #include "interpreter.h"
 
 void bnInitAny(bnInterpreter* bone, bnAny* self, const char* type) {

@@ -1,4 +1,4 @@
-#include "module.h"
+﻿#include "module.h"
 #include "../bone.h"
 
 #if HAVE_DLFCN

@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_EXTERN_SYSTEM_H
+﻿#ifndef BONE_RUNTIME_EXTERN_SYSTEM_H
 #define BONE_RUNTIME_EXTERN_SYSTEM_H
 struct bnFrame;
 struct bnInterpreter;

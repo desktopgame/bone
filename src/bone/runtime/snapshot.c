@@ -1,4 +1,4 @@
-#include "snapshot.h"
+﻿#include "snapshot.h"
 #include "../util/memory.h"
 
 bnSnapShot* bnNewSnapShot(int pc) {

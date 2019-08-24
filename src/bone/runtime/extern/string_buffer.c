@@ -1,4 +1,4 @@
-#include "string_buffer.h"
+﻿#include "string_buffer.h"
 #include "../../glib.h"
 #include "../any.h"
 #include "../char.h"

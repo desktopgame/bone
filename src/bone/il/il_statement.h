@@ -1,4 +1,4 @@
-#ifndef BONE_IL_ILSTATEMENT_H
+﻿#ifndef BONE_IL_ILSTATEMENT_H
 #define BONE_IL_ILSTATEMENT_H
 #include <stdio.h>
 #include "../util/string_pool.h"

@@ -1,4 +1,4 @@
-#include "stack.h"
+﻿#include "stack.h"
 #include "../bone.h"
 
 static bnStackElement* new_elem(void* data);

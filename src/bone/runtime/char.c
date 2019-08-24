@@ -1,4 +1,4 @@
-#include "char.h"
+﻿#include "char.h"
 #include "frame.h"
 #include "heap.h"
 #include "interpreter.h"

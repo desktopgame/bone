@@ -1,4 +1,4 @@
-#include "il_expr_memberop.h"
+﻿#include "il_expr_memberop.h"
 #include "../runtime/enviroment.h"
 
 bnILExprMemberOp* bnNewILExprMemberOp(bnStringView name) {

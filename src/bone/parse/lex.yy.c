@@ -1,4 +1,4 @@
-#pragma clang diagnostic push
+﻿#pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
 #pragma clang diagnostic ignored "-Wimplicit-function-declaration"
 #pragma clang diagnostic ignored "-Wextra-tokens"

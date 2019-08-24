@@ -1,4 +1,4 @@
-#include "label.h"
+﻿#include "label.h"
 #include "../bone.h"
 
 bnLabel* bnNewLabel(int pos) {

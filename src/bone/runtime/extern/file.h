@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_EXTERN_FILE_H
+﻿#ifndef BONE_RUNTIME_EXTERN_FILE_H
 #define BONE_RUNTIME_EXTERN_FILE_H
 #include <stdio.h>
 #include "../any.h"

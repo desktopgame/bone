@@ -1,4 +1,4 @@
-#ifndef BONE_IL_ILEXPROBJECTINJECTION_H
+﻿#ifndef BONE_IL_ILEXPROBJECTINJECTION_H
 #define BONE_IL_ILEXPROBJECTINJECTION_H
 #include "../bone.h"
 #include "il_expression.h"

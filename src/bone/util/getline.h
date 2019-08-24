@@ -1,4 +1,4 @@
-#ifndef BONE_UTIL_GETLINE_H
+﻿#ifndef BONE_UTIL_GETLINE_H
 #define BONE_UTIL_GETLINE_H
 #include <stdio.h>
 

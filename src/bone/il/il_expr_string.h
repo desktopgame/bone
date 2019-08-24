@@ -1,4 +1,4 @@
-#ifndef BONE_IL_ILEXPRSTRING_H
+﻿#ifndef BONE_IL_ILEXPRSTRING_H
 #define BONE_IL_ILEXPRSTRING_H
 #include "../bone.h"
 #include "compile_cache.h"

@@ -1,4 +1,4 @@
-#ifndef BONE_IL_COMPILECACHE_H
+﻿#ifndef BONE_IL_COMPILECACHE_H
 #define BONE_IL_COMPILECACHE_H
 #include "../util/stack.h"
 

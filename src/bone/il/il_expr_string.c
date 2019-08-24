@@ -1,4 +1,4 @@
-#include "il_expr_string.h"
+﻿#include "il_expr_string.h"
 #include "../runtime/enviroment.h"
 
 bnILExprString* bnNewILExprString(bnStringView value) {

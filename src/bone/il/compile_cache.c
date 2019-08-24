@@ -1,4 +1,4 @@
-#include "compile_cache.h"
+﻿#include "compile_cache.h"
 #include "../util/memory.h"
 
 bnCompileCache* bnNewCompileCache() {

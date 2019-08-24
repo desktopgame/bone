@@ -1,4 +1,4 @@
-#include "winglib.h"
+﻿#include "winglib.h"
 #include "../glib.h"
 #if _MSC_VER
 struct GString* bnGStringAppendC(struct GString* str, char c) {

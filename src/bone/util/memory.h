@@ -1,4 +1,4 @@
-#ifndef BONE_MEMORY_H
+﻿#ifndef BONE_MEMORY_H
 #define BONE_MEMORY_H
 #include <stdio.h>
 #include <stdlib.h>

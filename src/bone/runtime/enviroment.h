@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_ENVIROMENT_H
+﻿#ifndef BONE_RUNTIME_ENVIROMENT_H
 #define BONE_RUNTIME_ENVIROMENT_H
 #include "../bone.h"
 #include "../util/stack.h"

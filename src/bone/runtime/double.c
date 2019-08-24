@@ -1,4 +1,4 @@
-#include "double.h"
+﻿#include "double.h"
 #include <math.h>
 #include <stdio.h>
 #include "bool.h"

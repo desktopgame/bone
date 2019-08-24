@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_LAMBDA_H
+﻿#ifndef BONE_RUNTIME_LAMBDA_H
 #define BONE_RUNTIME_LAMBDA_H
 #include <stdarg.h>
 #include <stdbool.h>

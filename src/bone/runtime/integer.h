@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_INTEGER_H
+﻿#ifndef BONE_RUNTIME_INTEGER_H
 #define BONE_RUNTIME_INTEGER_H
 #include "interpreter.h"
 #include "object.h"

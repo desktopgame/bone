@@ -1,4 +1,4 @@
-#include "il_expr_char.h"
+﻿#include "il_expr_char.h"
 #include "../runtime/enviroment.h"
 
 bnILExprChar* bnNewILExprChar(char value) {

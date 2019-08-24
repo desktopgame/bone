@@ -1,4 +1,4 @@
-#include "opcode.h"
+﻿#include "opcode.h"
 #include "enviroment.h"
 #include "label.h"
 

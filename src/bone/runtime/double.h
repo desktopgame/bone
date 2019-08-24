@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_DOUBLE_H
+﻿#ifndef BONE_RUNTIME_DOUBLE_H
 #define BONE_RUNTIME_DOUBLE_H
 #include "object.h"
 struct bnFrame;

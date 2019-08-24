@@ -1,4 +1,4 @@
-#include "il_stmt_scope_injection.h"
+﻿#include "il_stmt_scope_injection.h"
 #include "../runtime/enviroment.h"
 
 bnILStmtScopeInjection* bnNewILStmtScopeInjection(bnILExpression* expr) {

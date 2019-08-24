@@ -1,4 +1,4 @@
-#include "getline.h"
+﻿#include "getline.h"
 
 #ifdef _MSC_VER
 size_t getline_win(char **lineptr, size_t *n, FILE *stream) {

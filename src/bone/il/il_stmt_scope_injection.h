@@ -1,4 +1,4 @@
-#ifndef BONE_IL_ILSTMTSCOPEINJECTION_H
+﻿#ifndef BONE_IL_ILSTMTSCOPEINJECTION_H
 #define BONE_IL_ILSTMTSCOPEINJECTION_H
 #include "../bone.h"
 #include "il_expression.h"

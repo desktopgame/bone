@@ -1,4 +1,4 @@
-#ifndef BONE_IL_ILSTMTALL_H
+﻿#ifndef BONE_IL_ILSTMTALL_H
 #define BONE_IL_ILSTMTALL_H
 
 #include "il_statement.h"

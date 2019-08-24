@@ -1,4 +1,4 @@
-#ifndef BONE_IL_ILEXPRDOUBLE_H
+﻿#ifndef BONE_IL_ILEXPRDOUBLE_H
 #define BONE_IL_ILEXPRDOUBLE_H
 #include "../bone.h"
 #include "compile_cache.h"

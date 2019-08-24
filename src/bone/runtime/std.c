@@ -1,4 +1,4 @@
-#include "std.h"
+﻿#include "std.h"
 
 #ifdef __APPLE__
 #include <signal.h>

@@ -1,4 +1,4 @@
-#ifndef BONE_UTIL_STACK_H
+﻿#ifndef BONE_UTIL_STACK_H
 #define BONE_UTIL_STACK_H
 
 /**

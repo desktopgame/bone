@@ -1,4 +1,4 @@
-#ifndef BONE_UTIL_STRING_H
+﻿#ifndef BONE_UTIL_STRING_H
 #define BONE_UTIL_STRING_H
 
 /**

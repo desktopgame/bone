@@ -1,4 +1,4 @@
-#pragma clang diagnostic push
+﻿#pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wimplicit-function-declaration"
 #pragma clang diagnostic ignored "-Wunused-function"
 /* A Bison parser, made by GNU Bison 3.0.5.  */

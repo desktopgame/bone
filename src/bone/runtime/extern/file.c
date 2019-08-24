@@ -1,4 +1,4 @@
-#include "file.h"
+﻿#include "file.h"
 #include <errno.h>
 #include "../../bone.h"
 #include "../char.h"

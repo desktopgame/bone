@@ -1,4 +1,4 @@
-#ifndef BONE_PARSE_PARSE_AST_H
+﻿#ifndef BONE_PARSE_PARSE_AST_H
 #define BONE_PARSE_PARSE_AST_H
 #include <stdio.h>
 #include "../bone.h"

@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_STORAGE_H
+﻿#ifndef BONE_RUNTIME_STORAGE_H
 #define BONE_RUNTIME_STORAGE_H
 #include <stdbool.h>
 

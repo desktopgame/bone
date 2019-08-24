@@ -1,4 +1,4 @@
-#ifndef BONE_UTIL_IO_H
+﻿#ifndef BONE_UTIL_IO_H
 #define BONE_UTIL_IO_H
 #include <stdbool.h>
 #include <stdio.h>

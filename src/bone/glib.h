@@ -1,4 +1,4 @@
-#ifndef BONE_GLIB_H
+﻿#ifndef BONE_GLIB_H
 #define BONE_GLIB_H
 
 #if _WIN32

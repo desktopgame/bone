@@ -1,4 +1,4 @@
-#include "vm.h"
+﻿#include "vm.h"
 #include "../glib.h"
 #include "../util/string.h"
 #include "array.h"

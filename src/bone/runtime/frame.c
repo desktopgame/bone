@@ -1,4 +1,4 @@
-#include "frame.h"
+﻿#include "frame.h"
 #include "../glib.h"
 #include "../util/string_pool.h"
 #include "array.h"

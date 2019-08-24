@@ -1,4 +1,4 @@
-#include "il_expr_double.h"
+﻿#include "il_expr_double.h"
 #include "../runtime/enviroment.h"
 
 bnILExprDouble* bnNewILExprDouble(double value) {

@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_CHAR_H
+﻿#ifndef BONE_RUNTIME_CHAR_H
 #define BONE_RUNTIME_CHAR_H
 #include "object.h"
 

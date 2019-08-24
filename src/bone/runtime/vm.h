@@ -1,4 +1,4 @@
-#ifndef BONE_RUNTIME_VM_H
+﻿#ifndef BONE_RUNTIME_VM_H
 #define BONE_RUNTIME_VM_H
 #include "enviroment.h"
 #include "frame.h"

@@ -1,4 +1,4 @@
-#include "line_range.h"
+﻿#include "line_range.h"
 #include "../util/memory.h"
 
 bnLineRange* bnNewLineRange() {

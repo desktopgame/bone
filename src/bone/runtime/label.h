@@ -1,4 +1,4 @@
-#ifndef BN_RUNTIME_LABEL_H
+﻿#ifndef BN_RUNTIME_LABEL_H
 #define BN_RUNTIME_LABEL_H
 /**
  * bnLabelはジャンプ先の位置を保存する構造体です。

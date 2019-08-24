@@ -1,4 +1,4 @@
-#ifndef BONE_UTIL_WINGLIB_H
+﻿#ifndef BONE_UTIL_WINGLIB_H
 #define BONE_UTIL_WINGLIB_H
 #if _MSC_VER
 struct GString;

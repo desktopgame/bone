@@ -1,4 +1,4 @@
-#ifndef BONE_UTIL_ARGS_H
+﻿#ifndef BONE_UTIL_ARGS_H
 #define BONE_UTIL_ARGS_H
 #include "../glib.h"
 
