@@ -98,7 +98,9 @@ int bnEval(bnInterpreter* self) {
         bnExecute(self, env, self->frame);
         while (bnGetStackSize(self->callStack) > 0) {
                 GString* gbuf = bnPopStack(self->callStack);
-                printf("TRACE: %s\n", gbuf->str);
+                if (self->frame->panic != NULL) {
+                        printf("TRACE: %s\n", gbuf->str);
+                }
                 g_string_free(gbuf, TRUE);
         }
         if (self->frame->panic != NULL) {
