@@ -13,6 +13,7 @@
 #include "runtime/opcode.h"
 #include "runtime/vm.h"
 #include "util/args.h"
+#include "util/getline.h"
 #include "util/string.h"
 #include "util/string_pool.h"
 
@@ -103,7 +104,7 @@ static void writeFile(const gchar* out) {
         char* line = NULL;
         size_t len = 0;
         ssize_t read;
-        while ((read = getline(&line, &len, fp)) != -1) {
+        while ((read = bnGetLine(&line, &len, fp)) != -1) {
                 printf("    %s", line);
         }
         free(line);
