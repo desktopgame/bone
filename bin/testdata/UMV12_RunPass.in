@@ -1,0 +1,19 @@
+//
+//パニックからの復帰
+//
+{} <- load("file.bn");
+
+div := def(a, b)(ret) {
+    if(b == 0) {
+        panic("error! divide by zero");
+    }
+    ret := a / b;
+};
+
+main := def()() {
+    defer stdout.puts(recover());
+    div(5, 0);
+};
+
+main();
+stdout.puts("main finished");

@@ -1,0 +1,12 @@
+//
+//ユーザが定義したライブラリを隠蔽する(隠蔽側)
+//
+
+//_から始まる名前はloadされた時に公開されない
+_orig_print := print;
+
+print := def(str)() {
+    _orig_print("start print");
+    _orig_print(str);
+    _orig_print("end print");
+};

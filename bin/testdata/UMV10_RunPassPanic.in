@@ -1,0 +1,25 @@
+//
+//エラーの表現(複数の名前つき戻り値による)
+//
+{} <- load("file.bn");
+
+div := def(a, b)(ret, error) {
+    if(b == 0) {
+        error := true;
+        return;
+    }
+    ret := a / b;
+};
+
+//戻り値からエラーを確認する
+result := object() <- div(5, 0);
+if(result.error) {
+    stdout.puts("error!");
+}
+//直接代入した場合最初の名前つき戻り値が入ることを利用して、
+//エラーを無視する
+result := div(5, 0);
+
+//名前つき戻り値はデフォルトで空オブジェクト(object()の戻り値)を使用しているため
+//ここでパニックが発生してしまう(putsは文字列が入ることを期待している)
+stdout.puts(result);

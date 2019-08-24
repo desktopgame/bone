@@ -1,0 +1,5 @@
+_file := object() <- load("file.bn");
+
+print := def(str)() {
+    _file.stdout.puts(str);
+};

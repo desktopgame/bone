@@ -1,0 +1,29 @@
+//
+//ユーザ定義関数のネストとインジェクション
+//
+{} <- load("file.bn");
+sample := def()(a, b) {
+    a := 5;
+    b := 20;
+};
+sample2 := def()(a, b, c) {
+    {} <- sample();
+    c := "hoge";
+};
+
+//スコープインジェクション
+{} <- sample2();
+stdout.puts(a.to_string());
+stdout.puts(b.to_string());
+stdout.puts(c);
+
+//オブジェクトインジェクション
+ab := object() <- sample2();
+stdout.puts(ab.a.to_string());
+stdout.puts(ab.b.to_string());
+stdout.puts(ab.c);
+
+//インジェクションせずに直接代入すると、
+//最初の名前つき戻り値が返ります。
+obj := sample();
+stdout.puts(obj.to_string());

@@ -1,0 +1,23 @@
+//
+//ユーザ定義関数とインジェクション
+//
+{} <- load("file.bn");
+sample := def()(a, b) {
+    a := 5;
+    b := 20;
+};
+
+//スコープインジェクション
+{} <- sample();
+stdout.puts(a.to_string());
+stdout.puts(b.to_string());
+
+//オブジェクトインジェクション
+ab := object() <- sample();
+stdout.puts(ab.a.to_string());
+stdout.puts(ab.b.to_string());
+
+//インジェクションせずに直接代入すると、
+//最初の名前つき戻り値が返ります。
+obj := sample();
+stdout.puts(obj.to_string());

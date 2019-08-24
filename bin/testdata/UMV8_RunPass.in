@@ -1,0 +1,13 @@
+//
+//ユーザが定義したライブラリを隠蔽する(利用側)
+//
+
+//まずは普通に呼び出す
+{} <- load("./testdata/UMV8.inc");
+print("hello, world");
+
+//includeの場合、呼び出し側の変数を参照可能
+//現在トップレベルにはprintが存在するので、
+//"./testdata/UMV8.inc2"からそれを参照できる
+{} <- include("./testdata/UMV8.inc2");
+print("hello, world");

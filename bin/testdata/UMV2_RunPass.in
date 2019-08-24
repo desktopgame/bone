@@ -1,0 +1,5 @@
+//
+//オブジェクトインジェクションを使用したHelloWorld
+//
+stdio := object() <- load("file.bn");
+stdio.stdout.puts("hello, world");

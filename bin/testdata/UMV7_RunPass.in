@@ -1,0 +1,10 @@
+//
+//ユーザが定義したライブラリを利用する(利用側)
+//
+{} <- load("file.bn");
+
+//自由に名前空間をつけられる
+my_lib := object() <- load("./testdata/UMV7.inc");
+
+stdout.puts(my_lib.add(1, 2).to_string());
+stdout.puts(my_lib.sub(1, 2).to_string());

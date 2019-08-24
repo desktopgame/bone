@@ -1,0 +1,19 @@
+//
+//インスタンスに関連づいたラムダ
+//
+{} <- load("file.bn");
+
+a := def(self, a, b)() {
+    stdout.puts(self);
+    stdout.puts((a + b).to_string());
+};
+a("self string", 5, 5);
+
+obj := "self string";
+//プロトタイピングの要素を持っているので、
+//このように代入可能
+obj.func := a;
+
+//第一引数には暗黙的にobjが付け加えられる
+obj.func(5, 10);
+

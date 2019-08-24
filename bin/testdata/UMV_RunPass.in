@@ -1,0 +1,5 @@
+//
+//スコープインジェクションを使用したHelloWorld
+//
+{} <- load("file.bn");
+stdout.puts("hello, world");

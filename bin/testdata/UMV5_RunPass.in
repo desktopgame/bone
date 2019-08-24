@@ -1,0 +1,19 @@
+//
+//可変長名前つき戻り値
+//
+{} <- load("file.bn");
+sample := def()(...) {
+    name := "Koya";
+    age := 22;
+};
+
+//オブジェクトインジェクション
+koya := object() <- sample();
+stdout.puts(koya.name);
+stdout.puts(koya.age.to_string());
+
+//インジェクションせずに直接代入すると、
+//配列にラップされます。
+obj := sample();
+stdout.puts(obj[0]);
+stdout.puts(obj[1].to_string());

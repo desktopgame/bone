@@ -1,0 +1,16 @@
+//
+//組み込みライブラリを隠蔽する(利用側)
+//
+
+//組み込み関数は最初から存在するので、
+//トップレベルにエクスポートする段階は必要ない
+{} <- load("./testdata/UMV9.inc");
+
+//スコープインジェクションされているので、
+//この時点で新しいloadに上書きされている
+lib := object() <- load("./testdata/UMV9.libb");
+
+lib.api.print("hello, world");
+lib.api.print(lib.info.author);
+lib.api.print(lib.info.version);
+lib.api.print(lib.info.mail);
