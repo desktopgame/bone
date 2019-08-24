@@ -6,6 +6,7 @@
 #endif
 #if HAVE_WINDOWS
 #include <Windows.h>
+#include <tchar.h>
 #endif
 #include "../config.inc"
 #include "string.h"
@@ -84,7 +85,21 @@ GString* bnGetExecutableFileDir() {
         }
         return str;
 #elif HAVE_WINDOWS
-        SET_CWD(str);
+        TCHAR path[MAX_PATH];
+        //参考URL:http://www7.plala.or.jp/kfb/program/exedir.html
+        if (GetModuleFileName(NULL, path, MAX_PATH)) {
+                TCHAR* ptmp = _tcsrchr(path, _T('\\'));
+                if (ptmp != NULL) {
+                        ptmp = _tcsinc(ptmp);
+                        *ptmp = _T('\0');
+                        g_string_append(str, (char*)path);
+                } else {
+                        SET_CWD(str);
+                }
+        } else {
+                SET_CWD(str);
+        }
+        return str;
 #else
         SET_CWD(str);
         return str;
