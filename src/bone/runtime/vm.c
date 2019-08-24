@@ -514,7 +514,7 @@ LABEL_OP_FUNCCALL : {
         if (obj->type != BN_OBJECT_LAMBDA) {
                 frame->panic = bnNewString2(bone,
                                             "shoud be receiver is "
-                                            "closure object");
+                                            "lambda object");
                 CHECK_DEFER();
                 SWITCH_NEXT(PC);
         }
@@ -860,7 +860,7 @@ static int execute_switch(bnInterpreter* bone, bnEnviroment* env,
                                         frame->panic =
                                             bnNewString2(bone,
                                                          "shoud be receiver is "
-                                                         "closure object");
+                                                         "lambda object");
                                         break;
                                 }
                                 int argc = bnReadCode(env, ++PC);
