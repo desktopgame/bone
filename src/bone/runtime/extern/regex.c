@@ -173,8 +173,10 @@ static void ext_replace(bnInterpreter* bone, bnFrame* frame) {
         gchar* result = g_regex_replace(regex->regex, source, -1, start,
                                         replacement, match_options, &err);
         if (result == NULL || err != NULL) {
-                bnWriteVariable2(frame, bone->pool, "error",
-                                 bnNewString2(bone, err->message));
+                bnWriteVariable2(
+                    frame, bone->pool, "error",
+                    bnNewString2(
+                        bone, err == NULL ? "illegal pattern" : err->message));
                 bnWriteVariable2(frame, bone->pool, "ret",
                                  bnGetFalse(bone->pool, frame));
                 return;
