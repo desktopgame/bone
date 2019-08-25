@@ -1,0 +1,4 @@
+with := def(obj, fun)(ret) {
+    ret := obj;
+    obj <- fun();
+};

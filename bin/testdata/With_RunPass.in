@@ -1,0 +1,10 @@
+{} <- load("with.bn");
+{} <- load("file.bn");
+
+obj := object();
+with(obj, def()(...) {
+    name := "koya";
+    age := 22;
+});
+stdout.puts(obj.name);
+stdout.puts(obj.age.to_string());
