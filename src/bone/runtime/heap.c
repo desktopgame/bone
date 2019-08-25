@@ -15,7 +15,6 @@ typedef struct bnHeap {
         bnStack* stages;
         bnStorage* storage;
         int all;
-        GRecMutex mutex;
 } bnHeap;
 
 static void gc_clear(bnHeap* self, bnFrame* frame);
@@ -35,7 +34,6 @@ bnHeap* bnNewHeap() {
         ret->stages = bnNewStack();
         ret->all = 0;
         ret->storage = bnNewStorage(OBJECT_MAXSIZE, 128);
-        g_rec_mutex_init(&ret->mutex);
         return ret;
 }
 int* bnAllocObject(bnHeap* self) { return bnAllocMemory(self->storage); }
@@ -61,7 +59,6 @@ void bnPopStage(bnHeap* self) { delete_stage(bnPopStack(self->stages)); }
 void bnGC(bnInterpreter* bone) {
         bnHeap* self = bone->heap;
         bnFrame* frame = bone->frame;
-        g_rec_mutex_lock(&self->mutex);
         BN_CHECK_MEM();
         gc_clear(self, frame);
         gc_mark_stage(self);
@@ -71,17 +68,14 @@ void bnGC(bnInterpreter* bone) {
         gc_sweep(self, frame);
         BN_CHECK_MEM();
         bnCompact(self->storage);
-        g_rec_mutex_unlock(&self->mutex);
 }
 
 bnStorage* bnGetHeapStorage(bnHeap* self) { return self->storage; }
 
 void bnDeleteHeap(bnHeap* self) {
-        g_rec_mutex_lock(&self->mutex);
         bnDeleteStack(self->stages, NULL);
         bnDeleteStorage(self->storage);
         BN_FREE(self);
-        g_rec_mutex_unlock(&self->mutex);
 }
 
 static void gc_clear(bnHeap* self, bnFrame* frame) {
