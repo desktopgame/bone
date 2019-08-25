@@ -14,8 +14,8 @@
 #include "runtime/vm.h"
 #include "util/args.h"
 #include "util/getline.h"
-#include "util/string.h"
 #include "util/string_pool.h"
+#include "util/string_util.h"
 
 #if !defined(_WIN32)
 #define EXCHANGE_STDOUT (1)

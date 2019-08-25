@@ -1,6 +1,6 @@
 ﻿#include "vm.h"
 #include "../glib.h"
-#include "../util/string.h"
+#include "../util/string_util.h"
 #include "array.h"
 #include "bool.h"
 #include "char.h"

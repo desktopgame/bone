@@ -1,5 +1,5 @@
-﻿#ifndef BONE_UTIL_STRING_H
-#define BONE_UTIL_STRING_H
+﻿#ifndef BONE_UTIL_STRING_UTIL_H
+#define BONE_UTIL_STRING_UTIL_H
 
 /**
  * 文字列を後ろから辿って、最初に / が見つかった位置を返します。

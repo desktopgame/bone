@@ -1,4 +1,4 @@
-﻿#include "string.h"
+﻿#include "string_util.h"
 #include <string.h>
 
 #if _MSC_VER

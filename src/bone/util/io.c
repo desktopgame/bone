@@ -9,7 +9,7 @@
 #include <Windows.h>
 #include <tchar.h>
 #endif
-#include "string.h"
+#include "string_util.h"
 
 static FILE* out = NULL;
 static FILE* err = NULL;
