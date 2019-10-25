@@ -15,7 +15,7 @@ brew install cmake
 
 ```
 cd your_clone_dir/src
-cmake -D BONE_RUN=1 .
+cmake -D CMAKE_BUILD_TYPE=Debug -D BONE_RUN=1 .
 make
 ```
 
